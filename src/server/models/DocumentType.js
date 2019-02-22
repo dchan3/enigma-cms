@@ -20,6 +20,9 @@ const DocumentTypeSchema = new Schema({
   },
   attributes: {
     type: [Object]
+  },
+  slugFrom: {
+    type: String
   }
 });
 

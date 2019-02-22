@@ -29,36 +29,39 @@ class MainPage extends Component {
           'My Website'}</TextHeader>
         {this.props.user ?
           <DropdownMenu menuNodes={this.props.user.roleId === 0 ?
-            [{ url: '/admin', text: 'Dashboard', childNodes: [
-              { url: '/admin/config', text: 'Site Settings' },
+            [{ url: '/admin/config', text: 'Site Settings' },
               { url: '/', text: 'View Front End' },
-              { url: '/admin/register_type',
-                text: 'Register New Document Type' },
-            ] }, {
-              url: '', text: 'New...', childNodes:
-              this.props.docTypes.map((docType) => {
-                return { url: '/admin/new/' + docType.docTypeId,
-                  text: docType.docTypeName };
-              })
-            }, {
-              url: '', text: 'Edit Existing...',  childNodes:
-              this.props.docTypes.map((docType) => {
-                return { url: '/admin/edit/' + docType.docTypeId,
-                  text: docType.docTypeName };
-              })
-            }, {
-              url: '', text: 'Edit Display Template For...',  childNodes:
-              this.props.docTypes.map((docType) => {
-                return { url: '/admin/edit_template/' + docType.docTypeId,
-                  text: docType.docTypeName };
-              })
-            }, {
-              url: (process.env.SERVER_URL || 'http://localhost:' +
+              { url: '/admin/register_type', text: 'Register Document Type' },
+              { url: '', text: 'Edit Document Type...', childNodes:
+                this.props.docTypes.map((docType) => {
+                  return { url: '/admin/edit_type/' + docType.docTypeId,
+                    text: docType.docTypeName };
+                })
+              },
+              { url: '', text: 'New...', childNodes:
+                this.props.docTypes.map((docType) => {
+                  return { url: '/admin/new/' + docType.docTypeId,
+                    text: docType.docTypeName };
+                })
+              },
+              { url: '', text: 'Edit Existing...', childNodes:
+                this.props.docTypes.map((docType) => {
+                  return { url: '/admin/edit/' + docType.docTypeId,
+                    text: docType.docTypeName };
+                })
+              },
+              { url: '', text: 'Edit Display Template For...',  childNodes:
+                this.props.docTypes.map((docType) => {
+                  return { url: '/admin/edit_template/' + docType.docTypeId,
+                    text: docType.docTypeName };
+                })
+              },
+              { url: (process.env.SERVER_URL || 'http://localhost:' +
+                (process.env.SERVER_PORT || 8080)) + '/api/users/logout',
+              text: 'Logout' }] : [
+              { url: (process.env.SERVER_URL || 'http://localhost:' +
               (process.env.SERVER_PORT || 8080)) + '/api/users/logout',
-              text: 'Logout'
-            }] : [{ url: (process.env.SERVER_URL || 'http://localhost:' +
-            (process.env.SERVER_PORT || 8080)) + '/api/users/logout',
-            text: 'Logout' }] } /> : null}
+              text: 'Logout' }] } /> : null}
       </div>
     </div>;
   }

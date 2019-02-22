@@ -17,7 +17,8 @@ var TableText = styled.p`
 
 class EditDocumentLanding extends Component {
   static propTypes = {
-    match: PropTypes.object
+    match: PropTypes.object,
+    config: PropTypes.object
   }
 
   constructor(props) {
@@ -56,14 +57,23 @@ class EditDocumentLanding extends Component {
         <TextHeader>{'Edit ' + this.state.docType.docTypeName}</TextHeader>,
         <EverAfter.TablePaginator perPage={10}
           items={this.state.documents} truncate={true} columns={
-            this.state.docType.attributes.map(function(attr) {
+            [this.state.docType.attributes.map(function(attr) {
               return {
                 headerText: attr.attrName,
                 display: (item) => (
-                  <TableText><a href={'/admin/edit_document/' + item.docNodeId}>
-                    {item.content[attr.attrName]}</a></TableText>)
+                  <TableText>{item.content[attr.attrName]}</TableText>)
               };
-            })
+            }),
+            {
+              headerText: 'Edit',
+              display: (item) =>
+                <a href={'/admin/edit_document/' + item.docNodeId}>Edit</a>
+            }, {
+              headerText: 'View Live',
+              display: (item) => <a href={'/page/' +
+                  (this.props.config.useSlug ? item.slug :
+                    item.docNodeId)}>Edit</a>
+            }].flat()
           } />]
     else return null;
   }

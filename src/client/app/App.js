@@ -6,7 +6,6 @@ import HomePage from '../views/HomePage';
 import MainPage from '../views/MainPage';
 import SignupPage from '../views/SignupPage';
 import LoginPage from '../views/LoginPage';
-import AdminDashboard from '../views/AdminDashboard';
 import ConfigPage from '../views/ConfigPage';
 import RegisterDocType from '../views/RegisterDocType';
 import DocumentEditPage from '../views/DocumentEditPage';
@@ -14,6 +13,8 @@ import DocumentUpdatePage from '../views/DocumentUpdatePage';
 import EditDocumentLanding from '../views/EditDocumentLanding';
 import EditDisplayTemplate from '../views/EditDisplayTemplate';
 import FrontDocumentDisplay from '../views/FrontDocumentDisplay';
+import UpdateDocType from '../views/UpdateDocType';
+import NotFound from '../views/NotFound';
 import Footer from '../reusables/Footer';
 import axios from 'axios';
 
@@ -81,9 +82,6 @@ class App extends Component {
           <Route exact path='/' component={() =>
             <HomePage user={this.state.user || null}
               config={this.state.config || null} /> } />
-          <Route path="/page/:docNode" component={({ match }) =>
-            <FrontDocumentDisplay config={this.state.config}
-              match={match} />} />
           <Route exact path="/admin"
             component={() => <MainPage user=
               {this.state.user || null} config={this.state.config || null}
@@ -93,19 +91,21 @@ class App extends Component {
               [
                 <Route exact path="/admin/config" component={() =>
                   <ConfigPage config={this.state.config} />} />,
-                <Route exact path="/admin/dashboard"
-                  component={AdminDashboard} />,
                 <Route exact path="/admin/register_type"
                   component={RegisterDocType} />,
                 this.state.docTypes !== undefined ?
                   [<Route path='/admin/new/:docType'
                     component={DocumentEditPage} />,
                   <Route path={'/admin/edit/:docType'}
-                    component={EditDocumentLanding} />,
+                    component={({ match }) => (
+                      <EditDocumentLanding match={match}
+                        config={this.state.config} />)} />,
                   <Route path='/admin/edit_document/:docNode'
                     component={DocumentUpdatePage}/>,
                   <Route path='/admin/edit_template/:docTypeId'
-                    component={EditDisplayTemplate}/>, ] :
+                    component={EditDisplayTemplate}/>,
+                  <Route path='/admin/edit_type/:docTypeId'
+                    component={UpdateDocType}/>, ] :
                   null
               ] :
               <Route path="/admin/"
@@ -115,7 +115,12 @@ class App extends Component {
               <RedirectToIndex url="/admin"/> : <SignupPage />} />
           <Route path="/login" component=
             {() => this.state.user ?
-              <RedirectToIndex url="/admin"/> : <LoginPage />} />
+              <RedirectToIndex url="/admin"/> : <LoginPage />} />,
+          {!!this.state.config ?
+            <Route path="/page/:docNode" component={({ match }) =>
+              <FrontDocumentDisplay config={this.state.config}
+                match={match} />} /> : null}
+          <Route path="*" component={NotFound} />
         </Switch>
       </Router>,
       <Footer user={this.state.user || null} />

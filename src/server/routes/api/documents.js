@@ -2,31 +2,38 @@ import express from 'express';
 import DocumentDisplayTemplate from '../../models/DocumentDisplayTemplate';
 import DocumentType from '../../models/DocumentType';
 import Document from '../../models/Document';
+import slug from 'limax';
 
 var router = express.Router();
 
 router.get('/get_types', function(req, res) {
   DocumentType.find({ }).then(types => {
     res.status(200).json(types);
-  });
+  }).catch(() => res.status(500));
 });
 
 router.get('/get_type/:id', function(req, res) {
   DocumentType.findOne({ docTypeId: req.params.id }).then(doc => {
     res.status(200).json(doc);
-  });
+  }).catch(() => res.status(500));
 });
 
 router.get('/get_document/:id', function(req, res) {
   Document.findOne({ docNodeId: req.params.id }).then(doc => {
     res.status(200).json(doc);
-  })
+  }).catch(() => res.status(500));
+});
+
+router.get('/get_document_by_slug/:slug', function(req, res) {
+  Document.findOne({ slug: req.params.slug }).then(doc => {
+    res.status(200).json(doc);
+  }).catch(() => res.status(500));
 });
 
 router.get('/get_documents/:id', function(req, res) {
   Document.find({ docTypeId: req.params.id }).then(docs => {
     res.status(200).json(docs);
-  })
+  }).catch(() => res.status(500));
 });
 
 router.get('/get_template/:id', function(req, res) {
@@ -96,11 +103,22 @@ router.post('/new_document/:type_id', function(req, res) {
     }
     newDoc.set('content.' + attr, req.body[attr]);
   }
-  newDoc.save(function (err) {
-    if (err) res.status(500);
-    else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-  (process.env.PORT || 3000)) + '/admin/');
-  });
+  DocumentType.findOne({ docTypeId: newDoc.docTypeId }).then(docType => {
+    var propSlug = slug(newDoc.content[docType.slugFrom]);
+    Document.find({ docNodeId: { $ne: req.params.node_id }, slug: {
+      $regex: new RegExp('^' + propSlug)
+    } }).sort({ slug: -1 }).then(documents => {
+      if (documents.length > 0) {
+        propSlug = slug + '-' + documents.length;
+      }
+      newDoc.set('slug', propSlug);
+      newDoc.save(function(err) {
+        if (err) res.status(500);
+        else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
+      (process.env.PORT || 3000)) + '/admin/');
+      });
+    });
+  }).catch(() => { res.status(500); });
 });
 
 router.post('/update_document/:node_id', function(req, res) {
@@ -109,7 +127,6 @@ router.post('/update_document/:node_id', function(req, res) {
     doc.set('editorId', req.user.userId);
     var reset = [];
     for (var attr in req.body) {
-      console.log(attr);
       if (attr.indexOf('.') > -1) {
         var mainKey = attr.split('.')[0];
         if (!reset.includes(mainKey)) {
@@ -119,11 +136,24 @@ router.post('/update_document/:node_id', function(req, res) {
       }
       doc.set('content.' + attr, req.body[attr]);
     }
-    doc.save(function(err) {
-      if (err) res.status(500);
-      else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-    (process.env.PORT || 3000)) + '/admin/');
+    DocumentType.findOne({ docTypeId: doc.docTypeId }).then(docType => {
+      var propSlug = slug(doc.content[docType.slugFrom]);
+      Document.find({ docNodeId: { $ne: req.params.node_id }, slug: {
+        $regex: new RegExp('^' + propSlug)
+      } }).sort({ slug: -1 }).then(documents => {
+        if (documents.length > 0) {
+          propSlug = slug + '-' + documents.length;
+        }
+        doc.set('slug', propSlug);
+        doc.save(function(err) {
+          if (err) res.status(500);
+          else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
+        (process.env.PORT || 3000)) + '/admin/');
+        });
+      });
     });
+  }).catch(() => {
+    res.status(500);
   });
 });
 

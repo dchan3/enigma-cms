@@ -36,6 +36,11 @@ const SiteConfigSchema = new mongoose.Schema({
       linkText: 'Register',
       linkUrl: '/signup'
     }]
+  },
+  useSlug: {
+    type: Boolean,
+    required: false,
+    default: false
   }
 });
 

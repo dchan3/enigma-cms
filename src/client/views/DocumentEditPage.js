@@ -32,13 +32,14 @@ class DocumentEditPage extends Component {
   render() {
     var params = {};
 
-    if (this.state.docType !== null)
+    if (this.state.docType !== null) {
       this.state.docType.attributes.forEach(attr => {
         params[attr.attrName] = {
           label: attr.attrName,
           type: attr.attrType
         }
       });
+    }
 
     if (this.state.canDisplay)
       return <GeneratedForm title={'New ' + this.state.docType.docTypeName}

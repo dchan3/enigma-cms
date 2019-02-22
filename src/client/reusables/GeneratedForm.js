@@ -73,7 +73,12 @@ class GeneratedForm extends Component {
       }))
     })).isRequired,
     method: PropTypes.string.isRequired,
-    formAction: PropTypes.string.isRequired
+    formAction: PropTypes.string.isRequired,
+    parentCallback: PropTypes.func
+  }
+
+  static defaultProps = {
+    parentCallback: undefined
   }
 
   constructor(props) {
@@ -128,6 +133,8 @@ class GeneratedForm extends Component {
       }
       else { newState.values[param] = event.target.value; }
       self.setState(newState);
+      if (self.props.parentCallback !== undefined)
+        self.props.parentCallback(newState.values);
     }
   }
 
@@ -193,10 +200,9 @@ class GeneratedForm extends Component {
                       <FormLabel htmlFor={param}>
                         {params[param].label}</FormLabel>,
                       <br />,
-                      <FormInput id={param} name={param}
-                        type={params[param].type} value={values[param]}
-                        onChange={(e) => handleChange(param)(e)} />,<br />,
-                      <FormEnumInput id={param} name={param}>
+                      <FormEnumInput id={param} name={param}
+                        value={values[param]} onChange={(e) => {
+                          handleChange(param)(e); }}>
                         {params[param].enumList.map(
                           (node) => {
                             return <option value={node.value}>
@@ -221,7 +227,11 @@ class GeneratedForm extends Component {
                     </FormDiv> : <FormDiv>
                       <FormLabel htmlFor={param + '.' + key}>
                         {params[param].shape[key].label}</FormLabel>
-                      <FormEnumInput id={param} name={param}>
+                      <FormEnumInput id={param + '.' + key}
+                        name={param + '.' + key} onChange={(e) => {
+                          handleChange(param + '.' + key)(e)
+                        }}
+                        value={params[param].shape[key].value}>
                         {params[param].shape[key].enumList.map(
                           (node) => {
                             return <option value={node.value}>
@@ -241,7 +251,7 @@ class GeneratedForm extends Component {
                     <br />,
                     <FormInput id={param + '_0'} name={param + '.0'}
                       value={values[param][0]}
-                      onChange={(e) => handleChange(param + '.0')(e)} />,
+                      onChange={(e) => { handleChange(param + '.0')(e); }} />,
                     <button onClick={(e) =>
                       handleArrayRemove(param, 0)(e)}>{'Remove'}</button>,
                     values[param].length > 0 ?
@@ -283,7 +293,9 @@ class GeneratedForm extends Component {
                               {params[param].shape[key].label}</FormLabel>
                             <br />
                             <FormEnumInput id={param + '.0.' + key}
-                              name={param + '.0.' + key}>
+                              name={param + '.0.' + key} onChange={(e) => {
+                                handleChange(param + '.0.' + key)(e)
+                              }}>
                               {params[param].shape[key].enumList.map(
                                 (node) => {
                                   return <option value={node.value}>

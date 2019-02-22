@@ -32,6 +32,9 @@ const DocumentSchema = new Schema({
   },
   content: {
     type: Object
+  },
+  slug: {
+    type: String
   }
 });
 

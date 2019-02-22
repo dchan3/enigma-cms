@@ -48,6 +48,16 @@ class ConfigPage extends Component {
             linkUrl: ''
           }
         ]
+      },
+      useSlug: {
+        type: 'enum',
+        label: 'Use Slug',
+        enumList: [{
+          text: 'Yes', value: true }, {
+          text: 'No', value: false
+        }],
+        value: this.props.config !== undefined ?
+          this.props.config.useSlug : false
       }
     }} method="post"
     formAction={
