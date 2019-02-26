@@ -27,6 +27,7 @@ class ConfigPage extends Component {
       stylesheet: {
         type: 'text',
         label: 'Stylesheet',
+        grammar: 'css',
         value: this.props.config ? this.props.config.stylesheet : ''
       },
       menuLinks: {
