@@ -26,7 +26,10 @@ class UpdateDocType extends Component {
       .then((res) => res.data)
       .then(data => { this.setState({ docType: data, optionParams:
         data.attributes ?
-          data.attributes.map(attr => attr.attrName) : null }); })
+          data.attributes.map(attr => ({
+            attrName: attr.attrName,
+            attrType: attr.attrType
+          })) : null }); })
       .catch((err) => {
         console.log(err);
         console.log('Could not get document type.');
@@ -35,7 +38,11 @@ class UpdateDocType extends Component {
 
   updateParams(values) {
     this.setState({
-      optionParams: values.attributes.map(attr => attr.attrName) });
+      optionParams: values.attributes.map(attr => ({
+        attrName: attr.attrName,
+        attrType: attr.attrType
+      }))
+    });
   }
 
   render() {
@@ -62,6 +69,19 @@ class UpdateDocType extends Component {
                 { 'text': 'Datetime', 'value': 'date' },
                 { 'text': 'Number', 'value': 'number' }
               ]
+            },
+            minimum: {
+              label: 'Minimum',
+              type: (value) => {
+                console.log(value);
+                return (value && value.attrType === 'date') ?
+                  'date' : 'number'
+              }
+            },
+            maximum: {
+              label: 'Maximum',
+              type: (value) => (value && value.attrType === 'date') ?
+                'date' : 'number',
             }
           },
           value: this.state.docType.attributes || []
@@ -72,7 +92,7 @@ class UpdateDocType extends Component {
           enumList: !!this.state.optionParams ?
             [{ text: '(None)', value: '' },
               this.state.optionParams.map(param => ({
-                text: param, value: param
+                text: param.attrName, value: param.attrName
               }))].flat() : [
               { text: '(None)', value: '' }
             ],

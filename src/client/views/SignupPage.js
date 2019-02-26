@@ -6,7 +6,8 @@ class SignupPage extends Component {
     return [<GeneratedForm title="Sign Up" params={{
       username: {
         label: 'Username',
-        type: 'text'
+        type: 'text',
+        maximum: 20
       },
       email: {
         label: 'Email',

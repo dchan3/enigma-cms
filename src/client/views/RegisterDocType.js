@@ -8,13 +8,17 @@ class RegisterDocType extends Component {
     this.updateParams = this.updateParams.bind(this);
 
     this.state = {
-      optionParams: null
+      optionParams: ['']
     }
   }
 
   updateParams(values) {
     this.setState({
-      optionParams: values.attributes.map(attr => attr.attrName) })
+      optionParams: values.attributes.map(attr => ({
+        attrName: attr.attrName,
+        attrType: attr.attrType
+      }))
+    });
   }
 
   render() {
@@ -29,7 +33,7 @@ class RegisterDocType extends Component {
         shape: {
           attrName: {
             label: 'Attribute Name',
-            type: 'text'
+            type: 'text',
           },
           attrType: {
             label: 'Attribute Type',
@@ -39,6 +43,19 @@ class RegisterDocType extends Component {
               { 'text': 'Datetime', 'value': 'date' },
               { 'text': 'Number', 'value': 'number' }
             ]
+          },
+          minimum: {
+            label: 'Minimum',
+            type: (value) => {
+              console.log(value);
+              return (value && value.attrType === 'date') ?
+                'date' : 'number'
+            }
+          },
+          maximum: {
+            label: 'Maximum',
+            type: (value) => (value && value.attrType === 'date') ?
+              'date' : 'number'
           }
         }
       },
@@ -47,7 +64,7 @@ class RegisterDocType extends Component {
         type: 'enum',
         enumList: [{ text: '(None)', value: '' },
           this.state.optionParams.map(param => ({
-            text: param, value: param
+            text: param.attrName, value: param.attrName
           }))].flat() || [
           { text: '(None)', value: '' }
         ]
