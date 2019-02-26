@@ -5,6 +5,7 @@ import Enzyme, { render } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 Enzyme.configure({ adapter: new Adapter() });
 import GeneratedForm from '../src/client/reusables/GeneratedForm';
+import CodeEditor from '../src/client/reusables/CodeEditor';
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 
@@ -45,6 +46,15 @@ describe('Reusable UI Components - Generated Form', function() {
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
     expect(wrapper.find('label[for="username"]')).to.have.lengthOf(1);
     expect(wrapper.find('label[for="username"]').text()).to.equal('Username');
+    done();
+  });
+})
+
+describe('Reusable UI Components - Code Editor', function() {
+  it('renders correctly with existing value', function(done) {
+    const wrapper = render(<CodeEditor grammar="html" name="post-body"
+      id="post-body" value="<h1>Hello World!</h1>" />);
+    expect(wrapper.find('textarea').text()).to.equal('<h1>Hello World!</h1>');
     done();
   });
 })
