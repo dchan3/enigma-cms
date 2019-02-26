@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import CodeEditor from './CodeEditor';
 
 var isNotEmptyValue = (value) => value !== undefined && value !== null &&
   typeof value === 'object' && Object.keys(value).length > 0;
@@ -67,6 +68,7 @@ class GeneratedForm extends Component {
       label: PropTypes.string.isRequired,
       type: PropTypes.oneOfType(
         [PropTypes.string, PropTypes.func]).isRequired,
+      grammar: PropTypes.string,
       shape: PropTypes.oneOfType(
         [PropTypes.object, PropTypes.func]),
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.object,
@@ -245,14 +247,16 @@ class GeneratedForm extends Component {
           }
         }
         else if (paramObj.maximum && paramObj.maximum !== '') {
-          console.log(paramObj);
           comp = <FormInput id={param} name={param}
             type={paramType} value={valueObj}
             maxLength={paramObj.maximum.toString()}
             onChange={(e) => { handleChange(param)(e); } }/>;
         }
+        else if (paramObj.grammar) {
+          comp = <CodeEditor id={param} name={param}
+            grammar={paramObj.grammar} value={valueObj} />;
+        }
         else {
-          console.log(paramObj);
           comp = <FormInput id={param} name={param}
             type={paramType} value={valueObj}
             onChange={(e) => { handleChange(param)(e); } }/>;

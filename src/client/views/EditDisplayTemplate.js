@@ -34,7 +34,7 @@ class EditDisplayTemplate extends Component {
       .then(data => { this.setState({ template: data }); })
       .catch((err) => {
         console.log(err);
-        console.log('Could not get document type.');
+        console.log('Could not get template data.');
       });
   }
 
@@ -45,6 +45,7 @@ class EditDisplayTemplate extends Component {
         templateBody: {
           type: 'text',
           label: 'Template Body',
+          grammar: 'html',
           value: this.state.template !== null ?
             this.state.template.templateBody : ''
         }
