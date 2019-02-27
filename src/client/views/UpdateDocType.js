@@ -72,16 +72,22 @@ class UpdateDocType extends Component {
             },
             minimum: {
               label: 'Minimum',
-              type: (value) => {
-                console.log(value);
-                return (value && value.attrType === 'date') ?
-                  'date' : 'number'
-              }
+              type: (value) => (value && value.attrType === 'date') ?
+                'date' : 'number'
             },
             maximum: {
               label: 'Maximum',
               type: (value) => (value && value.attrType === 'date') ?
                 'date' : 'number',
+            },
+            grammar: {
+              label: 'Grammar',
+              type: 'enum',
+              enumList: [
+                { text: '(None)', value: '' },
+                { text: 'HTML', value: 'html' },
+                { text: 'CSS', value: 'css' }
+              ]
             }
           },
           value: this.state.docType.attributes || []

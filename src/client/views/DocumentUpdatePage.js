@@ -50,6 +50,10 @@ class DocumentUpdatePage extends Component {
           type: attr.attrType,
           value: this.state.document.content[attr.attrName],
         }
+
+        if (attr.grammar) {
+          params[attr.attrName].grammar = attr.grammar;
+        }
       });
 
       return <GeneratedForm title='Edit Document'

@@ -36,7 +36,11 @@ class DocumentEditPage extends Component {
       this.state.docType.attributes.forEach(attr => {
         params[attr.attrName] = {
           label: attr.attrName,
-          type: attr.attrType
+          type: attr.attrType,
+        }
+
+        if (attr.grammar) {
+          params[attr.attrName].grammar = attr.grammar;
         }
       });
     }
