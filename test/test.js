@@ -48,6 +48,48 @@ describe('Reusable UI Components - Generated Form', function() {
     expect(wrapper.find('label[for="username"]').text()).to.equal('Username');
     done();
   });
+
+  it('renders recursively without error', function(done) {
+    var parameters = {
+      guestList: {
+        label: 'Guest List',
+        type: '[object]',
+        shape: {
+          firstName: {
+            label: 'First Name',
+            type: 'text'
+          },
+          age: {
+            label: 'Age',
+            type: 'number'
+          },
+          contactInformation: {
+            label: 'Contact Information',
+            type: 'object',
+            shape: {
+              phone: {
+                label: 'Phone Number',
+                type: 'text'
+              },
+              email: {
+                label: 'Email Address',
+                type: 'text'
+              }
+            }
+          }
+        }
+      }
+    };
+    const wrapper = render(<GeneratedForm params={parameters}
+      title="Event Summary" method="post" formAction="" />);
+    expect(wrapper.text().indexOf('Contact Information'))
+      .to.be.greaterThan(-1);
+    expect(wrapper.text().indexOf('Phone'))
+      .to.be.greaterThan(-1);
+    expect(wrapper.find('input[type="text"]')).to.have.lengthOf(3);
+    expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    done();
+  });
 })
 
 describe('Reusable UI Components - Code Editor', function() {

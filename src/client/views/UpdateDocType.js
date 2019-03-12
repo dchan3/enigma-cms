@@ -88,6 +88,10 @@ class UpdateDocType extends Component {
                 { text: 'HTML', value: 'html' },
                 { text: 'CSS', value: 'css' }
               ]
+            },
+            enumList: {
+              label: 'Options',
+              type: '[text]',
             }
           },
           value: this.state.docType.attributes || []

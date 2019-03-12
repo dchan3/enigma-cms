@@ -72,7 +72,7 @@ class EditDocumentLanding extends Component {
               headerText: 'View Live',
               display: (item) => <a href={'/page/' +
                   (this.props.config.useSlug ? item.slug :
-                    item.docNodeId)}>Edit</a>
+                    item.docNodeId)}>View Live</a>
             }].flat()
           } />]
     else return null;

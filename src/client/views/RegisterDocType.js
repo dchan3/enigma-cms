@@ -44,6 +44,10 @@ class RegisterDocType extends Component {
               { 'text': 'Number', 'value': 'number' }
             ]
           },
+          enumList: {
+            label: 'Options',
+            type: '[text]',
+          },
           minimum: {
             label: 'Minimum',
             type: (value) => (value && value.attrType === 'date') ?

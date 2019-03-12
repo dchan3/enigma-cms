@@ -29,7 +29,7 @@ var EditorContainer = styled.div`
   top: 0;
   left: 0;
   font-size: 16px;
-  background-color: saddlebrown;
+  background-color: cornflowerblue;
   font-family: "Monaco", "Courier New", monospace;
   padding: 5px;
   overflow-y: scroll;
