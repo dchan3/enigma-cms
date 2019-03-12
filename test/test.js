@@ -6,6 +6,8 @@ import Adapter from 'enzyme-adapter-react-16';
 Enzyme.configure({ adapter: new Adapter() });
 import GeneratedForm from '../src/client/reusables/GeneratedForm';
 import CodeEditor from '../src/client/reusables/CodeEditor';
+import { default as urlUtilsClient } from '../src/client/utils';
+import { default as urlUtilsServer } from '../src/server/utils';
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 
@@ -48,7 +50,7 @@ describe('Reusable UI Components - Generated Form', function() {
     expect(wrapper.find('label[for="username"]').text()).to.equal('Username');
     done();
   });
-})
+});
 
 describe('Reusable UI Components - Code Editor', function() {
   it('renders correctly with existing value', function(done) {
@@ -57,4 +59,30 @@ describe('Reusable UI Components - Code Editor', function() {
     expect(wrapper.find('textarea').text()).to.equal('<h1>Hello World!</h1>');
     done();
   });
-})
+});
+
+// WARNING: Do not run URL Utils tests with environment variables set, or else
+// tests will fail!
+describe('URL Utils', function() {
+  it('server url info works as expected', function(done) {
+    expect(urlUtilsClient.serverInfo.url).to.equal('http://localhost:8080');
+    done();
+  });
+
+  it('server path function works as expected', function(done) {
+    expect(urlUtilsClient.serverInfo.path('/api'))
+      .to.equal('http://localhost:8080/api');
+    done();
+  });
+
+  it('client url info works as expected', function(done) {
+    expect(urlUtilsServer.clientInfo.url).to.equal('http://localhost:3000');
+    done();
+  });
+
+  it('client path function works as expected', function(done) {
+    expect(urlUtilsServer.clientInfo.path('/index'))
+      .to.equal('http://localhost:3000/index');
+    done();
+  });
+});

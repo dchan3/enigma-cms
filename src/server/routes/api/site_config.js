@@ -1,5 +1,6 @@
 import express from 'express';
 import SiteConfig from '../../models/SiteConfig';
+import { default as urlUtils } from '../../utils';
 
 var router = express.Router();
 
@@ -24,8 +25,7 @@ router.post('/update', function(req, res) {
     }
     config.save(function (err) {
       if (err) res.status(500);
-      else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-    (process.env.PORT || 3000)) + '/admin');
+      else res.redirect(urlUtils.clientInfo.path('/admin/'));
     });
   });
 });

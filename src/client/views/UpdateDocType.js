@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../reusables/GeneratedForm';
 import axios from 'axios';
+import { default as urlUtils } from '../utils';
 
 class UpdateDocType extends Component {
   static propTypes = {
@@ -20,9 +21,8 @@ class UpdateDocType extends Component {
   }
 
   componentDidMount() {
-    axios.get((process.env.SERVER_URL || 'http://localhost:' +
-    (process.env.SERVER_PORT || 8080)) + '/api/documents/get_type/' +
-      this.props.match.params.docTypeId, { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
+      this.props.match.params.docTypeId), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ docType: data, optionParams:
         data.attributes ?
@@ -105,9 +105,8 @@ class UpdateDocType extends Component {
           value: this.state.docType.slugFrom || ''
         }
       }} method="post" parentCallback={this.updateParams}
-      formAction={(process.env.SERVER_URL || 'http://localhost:' +
-      (process.env.SERVER_PORT || 8080)) + '/api/documents/update_type/' +
-        this.props.match.params.docTypeId} />;
+      formAction={urlUtils.serverInfo.path('/api/documents/update_type/' +
+        this.props.match.params.docTypeId)} />;
     else return null;
   }
 }

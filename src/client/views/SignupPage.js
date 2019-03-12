@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import GeneratedForm from '../reusables/GeneratedForm';
+import { default as urlUtils } from '../utils';
 
 class SignupPage extends Component {
   render() {
@@ -17,9 +18,8 @@ class SignupPage extends Component {
         label: 'Password',
         type: 'password'
       }
-    }} method="post" formAction={(process.env.SERVER_URL ||
-    'http://localhost:' + (process.env.SERVER_PORT || 8080)) +
-    '/api/users/register'} />,
+    }} method="post"
+    formAction={urlUtils.serverInfo.path('/api/users/register')} />,
     <div style={{ fontFamily: 'sans-serif', textAlign: 'center' }}>
       <p>Have an account? Sign in <a href="/login">here</a>.</p>
     </div>];

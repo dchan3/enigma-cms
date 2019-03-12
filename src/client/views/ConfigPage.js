@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../reusables/GeneratedForm';
+import { default as urlUtils } from '../utils';
 
 class ConfigPage extends Component {
   static propTypes = {
@@ -61,9 +62,7 @@ class ConfigPage extends Component {
           this.props.config.useSlug : false
       }
     }} method="post"
-    formAction={
-      (process.env.SERVER_URL || 'http://localhost:' +
-      (process.env.SERVER_PORT || 8080)) + '/api/site_config/update'} />
+    formAction={urlUtils.serverInfo.path('/api/site_config/update')} />
   }
 }
 
