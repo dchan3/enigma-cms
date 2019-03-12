@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../reusables/GeneratedForm';
 import axios from 'axios';
+import { default as urlUtils } from '../utils';
 
 class EditDisplayTemplate extends Component {
   static propTypes = {
@@ -17,9 +18,8 @@ class EditDisplayTemplate extends Component {
   }
 
   componentDidMount() {
-    axios.get((process.env.SERVER_URL || 'http://localhost:' +
-    (process.env.SERVER_PORT || 8080)) + '/api/documents/get_type/' +
-      this.props.match.params.docTypeId, { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
+      this.props.match.params.docTypeId), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ docType: data }); })
       .catch((err) => {
@@ -27,9 +27,8 @@ class EditDisplayTemplate extends Component {
         console.log('Could not get document type.');
       });
 
-    axios.get((process.env.SERVER_URL || 'http://localhost:' +
-    (process.env.SERVER_PORT || 8080)) + '/api/documents/get_template/' +
-      this.props.match.params.docTypeId, { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path('/api/documents/get_template/' +
+      this.props.match.params.docTypeId), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ template: data }); })
       .catch((err) => {
@@ -50,9 +49,8 @@ class EditDisplayTemplate extends Component {
             this.state.template.templateBody : ''
         }
       }} method="post"
-      formAction={(process.env.SERVER_URL || 'http://localhost:' +
-      (process.env.SERVER_PORT || 8080)) + '/api/documents/update_template/' +
-      this.props.match.params.docTypeId} />;
+      formAction={urlUtils.serverInfo.path('/api/documents/update_template/' +
+      this.props.match.params.docTypeId)} />;
     else return null;
   }
 }

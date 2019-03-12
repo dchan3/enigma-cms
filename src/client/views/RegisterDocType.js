@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import GeneratedForm from '../reusables/GeneratedForm';
+import { default as urlUtils } from '../utils';
 
 class RegisterDocType extends Component {
   constructor(props) {
@@ -44,6 +45,10 @@ class RegisterDocType extends Component {
               { 'text': 'Number', 'value': 'number' }
             ]
           },
+          enumList: {
+            label: 'Options',
+            type: '[text]',
+          },
           minimum: {
             label: 'Minimum',
             type: (value) => (value && value.attrType === 'date') ?
@@ -76,8 +81,7 @@ class RegisterDocType extends Component {
         ]
       }
     }} method="post" parentCallback={this.updateParams}
-    formAction={(process.env.SERVER_URL || 'http://localhost:' +
-    (process.env.SERVER_PORT || 8080)) + '/api/documents/register_type'} />;
+    formAction={urlUtils.serverInfo.path('/api/documents/register_type')} />;
   }
 }
 

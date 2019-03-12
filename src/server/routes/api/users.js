@@ -1,6 +1,7 @@
 import passport from 'passport';
 import express from 'express';
 import User from '../../models/User';
+import { default as urlUtils } from '../../utils';
 
 var router = express.Router();
 
@@ -13,27 +14,22 @@ router.get('/get', function(req, res) {
 });
 
 router.post('/register', passport.authenticate('local-signup', {
-  successRedirect: (process.env.CLIENT_URL || 'http://localhost:' +
-(process.env.PORT || 3000)) + '/admin',
-  failureRedirect: (process.env.CLIENT_URL || 'http://localhost:' +
-(process.env.PORT || 3000)) + '/signup',
+  successRedirect: urlUtils.clientInfo.path('/admin'),
+  failureRedirect: urlUtils.clientInfo.path('/signup'),
 }));
 
 router.post('/login',
   passport.authenticate('local-login', {
-    successRedirect: (process.env.CLIENT_URL || 'http://localhost:' +
-  (process.env.PORT || 3000)) + '/admin',
-    failureRedirect: (process.env.CLIENT_URL || 'http://localhost:' +
-  (process.env.PORT || 3000)) + '/login?error=' +
-      encodeURIComponent('An error occurred'),
+    successRedirect: urlUtils.clientInfo.path('/admin'),
+    failureRedirect: urlUtils.clientInfo.path('/login?error=' +
+      encodeURIComponent('An error occurred')),
     session: true
   })
 );
 
 router.get('/logout', function(req, res) {
   req.logout();
-  res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-(process.env.PORT || 3000)));
+  res.redirect(urlUtils.clientInfo.url);
 });
 
 router.put('/update', function(req, res) {
@@ -43,8 +39,7 @@ router.put('/update', function(req, res) {
     }
     user.save(function (err) {
       if (err) res.status(500);
-      else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-    (process.env.PORT || 3000)));
+      else res.redirect(urlUtils.clientInfo.url);
     });
   });
 });

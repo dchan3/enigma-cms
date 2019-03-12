@@ -21,6 +21,7 @@
     "object-curly-spacing": ["error", "always"],
     "quotes": ["error", "single"],
     "no-console": "off",
-    "no-extra-boolean-cast": "off"
+    "no-extra-boolean-cast": "off",
+    "react/no-unescaped-entities": "off"
   }
 }

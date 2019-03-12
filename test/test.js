@@ -6,6 +6,8 @@ import Adapter from 'enzyme-adapter-react-16';
 Enzyme.configure({ adapter: new Adapter() });
 import GeneratedForm from '../src/client/reusables/GeneratedForm';
 import CodeEditor from '../src/client/reusables/CodeEditor';
+import { default as urlUtilsClient } from '../src/client/utils';
+import { default as urlUtilsServer } from '../src/server/utils';
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 
@@ -48,6 +50,48 @@ describe('Reusable UI Components - Generated Form', function() {
     expect(wrapper.find('label[for="username"]').text()).to.equal('Username');
     done();
   });
+
+  it('renders recursively without error', function(done) {
+    var parameters = {
+      guestList: {
+        label: 'Guest List',
+        type: '[object]',
+        shape: {
+          firstName: {
+            label: 'First Name',
+            type: 'text'
+          },
+          age: {
+            label: 'Age',
+            type: 'number'
+          },
+          contactInformation: {
+            label: 'Contact Information',
+            type: 'object',
+            shape: {
+              phone: {
+                label: 'Phone Number',
+                type: 'text'
+              },
+              email: {
+                label: 'Email Address',
+                type: 'text'
+              }
+            }
+          }
+        }
+      }
+    };
+    const wrapper = render(<GeneratedForm params={parameters}
+      title="Event Summary" method="post" formAction="" />);
+    expect(wrapper.text().indexOf('Contact Information'))
+      .to.be.greaterThan(-1);
+    expect(wrapper.text().indexOf('Phone'))
+      .to.be.greaterThan(-1);
+    expect(wrapper.find('input[type="text"]')).to.have.lengthOf(3);
+    expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    done();
+  });
 })
 
 describe('Reusable UI Components - Code Editor', function() {
@@ -57,4 +101,30 @@ describe('Reusable UI Components - Code Editor', function() {
     expect(wrapper.find('textarea').text()).to.equal('<h1>Hello World!</h1>');
     done();
   });
-})
+});
+
+// WARNING: Do not run URL Utils tests with environment variables set, or else
+// tests will fail!
+describe('URL Utils', function() {
+  it('server url info works as expected', function(done) {
+    expect(urlUtilsClient.serverInfo.url).to.equal('http://localhost:8080');
+    done();
+  });
+
+  it('server path function works as expected', function(done) {
+    expect(urlUtilsClient.serverInfo.path('/api'))
+      .to.equal('http://localhost:8080/api');
+    done();
+  });
+
+  it('client url info works as expected', function(done) {
+    expect(urlUtilsServer.clientInfo.url).to.equal('http://localhost:3000');
+    done();
+  });
+
+  it('client path function works as expected', function(done) {
+    expect(urlUtilsServer.clientInfo.path('/index'))
+      .to.equal('http://localhost:3000/index');
+    done();
+  });
+});
