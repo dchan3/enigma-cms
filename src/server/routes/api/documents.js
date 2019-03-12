@@ -3,6 +3,7 @@ import DocumentDisplayTemplate from '../../models/DocumentDisplayTemplate';
 import DocumentType from '../../models/DocumentType';
 import Document from '../../models/Document';
 import slug from 'limax';
+import { default as urlUtils } from '../../utils';
 
 var router = express.Router();
 
@@ -57,8 +58,7 @@ router.post('/register_type', function(req, res) {
   }
   newType.save(function (err) {
     if (err) res.status(500);
-    else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-  (process.env.PORT || 3000)) + '/admin/');
+    else res.redirect(urlUtils.clientInfo.path('/admin/'));
   });
 });
 
@@ -77,8 +77,7 @@ router.post('/update_type/:id', function(req, res) {
     }
     newType.save(function (err) {
       if (err) res.status(500);
-      else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-    (process.env.PORT || 3000)) + '/admin/');
+      else res.redirect(urlUtils.clientInfo.path('/admin/'));
     })
   })
 });
@@ -114,8 +113,7 @@ router.post('/new_document/:type_id', function(req, res) {
       newDoc.set('slug', propSlug);
       newDoc.save(function(err) {
         if (err) res.status(500);
-        else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-      (process.env.PORT || 3000)) + '/admin/');
+        else res.redirect(urlUtils.clientInfo.path('/admin/'));
       });
     });
   }).catch(() => { res.status(500); });
@@ -147,8 +145,7 @@ router.post('/update_document/:node_id', function(req, res) {
         doc.set('slug', propSlug);
         doc.save(function(err) {
           if (err) res.status(500);
-          else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-        (process.env.PORT || 3000)) + '/admin/');
+          else res.redirect(urlUtils.clientInfo.path('/admin/'));
         });
       });
     });
@@ -164,8 +161,7 @@ router.post('/update_template/:type_id', (req, res) => {
         doc.set('templateBody', req.body.templateBody);
         doc.save(function(err) {
           if (err) res.status(500);
-          else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-        (process.env.PORT || 3000)) + '/admin/');
+          else res.redirect(urlUtils.clientInfo.path('/admin/'));
         });
       }
       else {
@@ -175,8 +171,7 @@ router.post('/update_template/:type_id', (req, res) => {
         });
         newDoc.save(function(err) {
           if (err) res.status(500);
-          else res.redirect((process.env.CLIENT_URL || 'http://localhost:' +
-        (process.env.PORT || 3000)) + '/admin/');
+          else res.redirect(urlUtils.clientInfo.path('/admin/'));
         });
       }
     });

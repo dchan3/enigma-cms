@@ -9,6 +9,7 @@ import { default as configRoutes } from './routes/api/site_config';
 import { default as documentRoutes } from './routes/api/documents';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
+import { default as urlUtils } from './utils';
 
 mongoose.Promise = global.Promise;
 
@@ -42,9 +43,7 @@ passport.use('local-signup', SignupStrategy);
 passport.use('local-login', LoginStrategy);
 
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin',
-    (process.env.CLIENT_URL || 'http://localhost:' +
-  (process.env.PORT || 3000)));
+  res.header('Access-Control-Allow-Origin', urlUtils.clientInfo.url);
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept');

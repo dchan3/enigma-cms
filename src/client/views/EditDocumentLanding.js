@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import EverAfter from 'react-everafter';
 import styled from 'styled-components';
+import { default as urlUtils } from '../utils';
 
 var TextHeader = styled.h1`
   text-align: center;
@@ -30,9 +31,8 @@ class EditDocumentLanding extends Component {
   }
 
   componentDidMount() {
-    axios.get((process.env.SERVER_URL || 'http://localhost:' +
-    (process.env.SERVER_PORT || 8080)) + '/api/documents/get_type/' +
-      this.props.match.params.docType, { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
+      this.props.match.params.docType), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ docType: data }) })
       .catch((err) => {
@@ -40,9 +40,8 @@ class EditDocumentLanding extends Component {
         console.log('Could not get document type');
       });
 
-    axios.get((process.env.SERVER_URL || 'http://localhost:' +
-    (process.env.SERVER_PORT || 8080)) + '/api/documents/get_documents/' +
-      this.props.match.params.docType, { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path('/api/documents/get_documents/' +
+      this.props.match.params.docType), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ documents: data }) })
       .catch((err) => {

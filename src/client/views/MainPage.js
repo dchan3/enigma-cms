@@ -3,6 +3,7 @@ import SEOHeader from '../reusables/SEOHeader';
 import DropdownMenu from '../reusables/DropdownMenu';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { default as urlUtils } from '../utils';
 
 var TextHeader = styled.h1`
   text-align: center;
@@ -56,12 +57,10 @@ class MainPage extends Component {
                     text: docType.docTypeName };
                 })
               },
-              { url: (process.env.SERVER_URL || 'http://localhost:' +
-                (process.env.SERVER_PORT || 8080)) + '/api/users/logout',
-              text: 'Logout' }] : [
-              { url: (process.env.SERVER_URL || 'http://localhost:' +
-              (process.env.SERVER_PORT || 8080)) + '/api/users/logout',
-              text: 'Logout' }] } /> : null}
+              { url: urlUtils.serverInfo.path('/api/users/logout'),
+                text: 'Logout' }] : [
+              { url: urlUtils.serverInfo.path('/api/users/logout'),
+                text: 'Logout' }] } /> : null}
       </div>
     </div>;
   }

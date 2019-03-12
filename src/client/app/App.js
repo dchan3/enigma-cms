@@ -17,6 +17,7 @@ import UpdateDocType from '../views/UpdateDocType';
 import NotFound from '../views/NotFound';
 import Footer from '../reusables/Footer';
 import axios from 'axios';
+import { default as urlUtils } from '../utils';
 
 class RedirectToIndex extends Component {
   static propTypes = {
@@ -36,9 +37,7 @@ class App extends Component {
 
   componentDidMount() {
     axios.get(
-      (process.env.SERVER_URL || 'http://localhost:' +
-      (process.env.SERVER_PORT || 8080)) +
-        '/api/users/get', { withCredentials: true })
+      urlUtils.serverInfo.path('/api/users/get'), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ user: data, canDisplay: true }); })
       .catch((err) => {
@@ -48,9 +47,8 @@ class App extends Component {
       });
 
     axios.get(
-      (process.env.SERVER_URL || 'http://localhost:' +
-      (process.env.SERVER_PORT || 8080)) +
-        '/api/site_config/get', { withCredentials: true })
+      urlUtils.serverInfo.path('/api/site_config/get'),
+      { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ config: data }); })
       .catch((err) => {
@@ -60,9 +58,8 @@ class App extends Component {
       });
 
     axios.get(
-      (process.env.SERVER_URL || 'http://localhost:' +
-      (process.env.SERVER_PORT || 8080)) +
-      '/api/documents/get_types', { withCredentials: true
+      urlUtils.serverInfo.path('/api/documents/get_types'),
+      { withCredentials: true
       }).then((res) => res.data).then(data => {
       console.log(data);
       this.setState({ docTypes: data, canDisplay: true });

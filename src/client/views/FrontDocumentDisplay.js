@@ -4,6 +4,7 @@ import Handlebars from 'handlebars';
 import FrontMenu from '../reusables/FrontMenu';
 import { Redirect } from 'react-router';
 import axios from 'axios';
+import { default as urlUtils } from '../utils';
 
 class FrontDocumentDisplay extends Component {
   static propTypes = {
@@ -22,17 +23,15 @@ class FrontDocumentDisplay extends Component {
   }
 
   componentDidMount() {
-    axios.get((process.env.SERVER_URL || 'http://localhost:' +
-    (process.env.SERVER_PORT || 8080)) +
+    axios.get(urlUtils.serverInfo.path(
       (this.props.config.useSlug ?
         '/api/documents/get_document_by_slug/' :
         '/api/documents/get_document/') +
-      this.props.match.params.docNode, { withCredentials: true })
+      this.props.match.params.docNode), { withCredentials: true })
       .then((res) => res.data)
       .then(data => {
-        axios.get((process.env.SERVER_URL || 'http://localhost:' +
-        (process.env.SERVER_PORT || 8080)) + '/api/documents/get_template/' +
-          data.docTypeId, { withCredentials: true }).then((resp) => resp.data)
+        axios.get(urlUtils.serverInfo.path('/api/documents/get_template/' +
+          data.docTypeId), { withCredentials: true }).then((resp) => resp.data)
           .then(typeInfo => {
             this.setState({
               document: data, template: typeInfo, ready: true });
