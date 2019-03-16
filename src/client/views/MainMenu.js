@@ -11,7 +11,7 @@ var TextHeader = styled.h1`
   font-family: sans-serif;
 `;
 
-class MainPage extends Component {
+class MainMenu extends Component {
   static propTypes = {
     user: PropTypes.object,
     config: PropTypes.object,
@@ -66,4 +66,4 @@ class MainPage extends Component {
   }
 }
 
-export default MainPage;
+export default MainMenu;

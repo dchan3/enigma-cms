@@ -13,14 +13,14 @@ var TopLevelList = styled.ul`
   text-transform: uppercase;
   font-family: sans-serif;
   padding-left: 0;
+  @media (min-width: 767px) {
+    display: inline-flex;
+  }
   background-color: cadetblue;
 `;
 
 var ListItem = styled.li`
-  padding: 8px 8px 0 8px;
-  &:last-child {
-    padding: 8px;
-  }
+  padding: 8px;
 `;
 
 var SubList = styled.ul`
@@ -28,7 +28,12 @@ var SubList = styled.ul`
   text-transform: uppercase;
   font-family: sans-serif;
   padding-left: 0;
-  display: ${props => props.open ? 'initial' : 'none' }
+  opacity: ${props => props.open ? '1' : '0' }
+  visibility: ${props => props.open ? 'visible' : 'hidden' }
+  -webkit-transition: opacity .5s;
+  -moz-transition: opacity .5s;
+  -o-transition: opacity .5s;
+  transition: opacity .5s;
 `;
 
 var SubListItem = styled.li`
@@ -45,7 +50,6 @@ var HoverLink = styled.a`
   &:hover {
     text-decoration: underline;
     font-size: 1.2em;
-
   }
 `;
 
@@ -111,7 +115,7 @@ class SubMenu extends Component {
 
   render() {
     return <ListItem>
-      <NodeLinkText url={this.props.url} text={this.props.text} />
+      <NodeLinkText text={this.props.text} />
       <WhiteSpan onClick={this.handleClick}>{'▼'}</WhiteSpan>
       <SubList open={this.state.open}>
         {this.props.childNodes.map(child => <SubLinkNode url={child.url}

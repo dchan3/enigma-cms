@@ -12,6 +12,7 @@ var FormBackground = styled.form`
 
 var FormDiv = styled.div`
   padding: 8px;
+  display: ${props => props.hidden ? 'none' : 'block'}
 `;
 
 var FormInput = styled.input`
@@ -22,6 +23,7 @@ var FormInput = styled.input`
   font-family: sans-serif;
   font-size: 16px;
   padding: 5px;
+  display: ${props => props.hidden ? 'none' : 'block'}
 `;
 
 var FormHeader = styled.h2`
@@ -34,6 +36,7 @@ var FormLabel = styled.label`
   padding-right: 4px;
   font-family: sans-serif;
   text-transform: uppercase;
+  display: ${props => props.hidden ? 'none' : 'block'}
 `;
 
 var FormEnumInput = styled.select`
@@ -47,6 +50,7 @@ var FormObjectInputLabel = styled.p`
   font-family: sans-serif;
   text-transform: uppercase;
   margin: 8px;
+  display: ${props => props.hidden ? 'none' : 'block'}
 `;
 
 var FormSubmit = styled.input`
@@ -60,6 +64,7 @@ var FormSubmit = styled.input`
 var FormErrorMessage = styled.p`
   font-family: sans-serif;
   text-transform: uppercase;
+  text-align: center;
 `;
 
 var FormSubmitButton = styled.button`
@@ -106,7 +111,11 @@ class GeneratedForm extends Component {
       values[n] = this.props.params[n].value;
     }
     this.state = {
-      values: values
+      values: values,
+      errorMessage: window.location.search &&
+        window.location.search.startsWith('?error=') ?
+        decodeURIComponent(window.location.search
+          .replace('?error=', '')) : ''
     }
 
     this.handleChange = this.handleChange.bind(this);
@@ -173,7 +182,8 @@ class GeneratedForm extends Component {
       overallObj = paramSplit.length > 1 ?
         params[paramSplit[0]][paramSplit[1]] : params[param];
 
-    var paramType = paramObj && paramObj.type || undefined;
+    var paramType = paramObj && paramObj.type || undefined, isHidden =
+      paramObj.hidden || false;
 
     if (typeof paramType === 'string') {
       var comp;
@@ -246,67 +256,67 @@ class GeneratedForm extends Component {
       else if (paramType.match(/number/) || paramType.match(/date/)) {
         if (paramObj.maximum && paramObj.maximum !== '' &&
           paramObj.minimum && paramObj.minimum !== '') {
-          comp = [<FormLabel htmlFor={param}>
+          comp = [<FormLabel htmlFor={param} hidden={isHidden}>
             {paramObj.label + (iteration !== undefined ?
               (' ' + (iteration + 1)) : '')}
           </FormLabel>,
           <br />,
-          <FormInput id={param} name={param}
+          <FormInput id={param} name={param} hidden={isHidden}
             type={paramType.match(/[a-z]+/)[0]} value={valueObj}
             max={paramObj.maximum} min={paramObj.minimum}
             onChange={(e) => { handleChange(param)(e); } } />];
         }
 
         else if (paramObj.maximum && paramObj.maximum !== '') {
-          comp = [<FormLabel htmlFor={param}>
+          comp = [<FormLabel htmlFor={param} hidden={isHidden}>
             {paramObj.label +
                 (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
           </FormLabel>,
           <br />,
-          <FormInput id={param} name={param}
+          <FormInput id={param} name={param} hidden={isHidden}
             type={paramType.match(/[a-z]+/)[0]} value={valueObj}
             max={paramObj.maximum}
             onChange={(e) => { handleChange(param)(e); } } />];
         }
 
         else if (paramObj.minimum && paramObj.minimum !== '') {
-          comp = [<FormLabel htmlFor={param}>
+          comp = [<FormLabel htmlFor={param}> hidden={isHidden}
             {paramObj.label +
                 (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
           </FormLabel>,
           <br />,
-          <FormInput id={param} name={param}
+          <FormInput id={param} name={param} hidden={isHidden}
             type={paramType.match(/[a-z]+/)[0]} value={valueObj}
             min={paramObj.minimum}
             onChange={(e) => { handleChange(param)(e); } }/>];
         }
 
         else {
-          comp = [<FormLabel htmlFor={param}>
+          comp = [<FormLabel htmlFor={param} hidden={isHidden}>
             {paramObj.label +
                 (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
           </FormLabel>,
           <br />,
-          <FormInput id={param} name={param}
+          <FormInput id={param} name={param} hidden={isHidden}
             type={paramType.match(/[a-z]+/)[0]} value={valueObj}
             onChange={(e) => { handleChange(param)(e); } }/>];
         }
       }
 
       else if (paramObj.maximum && paramObj.maximum !== '') {
-        comp = [<FormLabel htmlFor={param}>
+        comp = [<FormLabel htmlFor={param} hidden={isHidden}>
           {paramObj.label +
               (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
         </FormLabel>,
         <br />,
-        <FormInput id={param} name={param}
+        <FormInput id={param} name={param} hidden={isHidden}
           type={paramType.match(/[a-z]+/)[0]} value={valueObj}
           maxLength={paramObj.maximum.toString()}
           onChange={(e) => { handleChange(param)(e); } }/>];
       }
 
       else if (paramObj.grammar) {
-        comp = [<FormLabel htmlFor={param}>
+        comp = [<FormLabel htmlFor={param} hidden={isHidden}>
           {paramObj.label +
               (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
         </FormLabel>,
@@ -315,12 +325,12 @@ class GeneratedForm extends Component {
           grammar={paramObj.grammar} value={valueObj} />];
       }
       else if (paramObj !== undefined) {
-        comp = [<FormLabel htmlFor={param}>
+        comp = [<FormLabel htmlFor={param} hidden={isHidden}>
           {paramObj.label +
               (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
         </FormLabel>,
         <br />,
-        <FormInput id={param} name={param}
+        <FormInput id={param} name={param} hidden={isHidden}
           type={paramType.match(/[a-z]+/)[0]} value={valueObj}
           onChange={(e) => { handleChange(param)(e); } }/>];
       }
@@ -348,7 +358,7 @@ class GeneratedForm extends Component {
         {window.location.search &&
           window.location.search.startsWith('?error=') ?
           <FormErrorMessage>
-            {decodeURIComponent(window.location.search.replace('?error=', ''))}
+            {this.state.errorMessage}
           </FormErrorMessage> : null}
         <FormBackground action={this.props.formAction}
           method={this.props.method}>

@@ -31,6 +31,17 @@ router.get('/get_document_by_slug/:slug', function(req, res) {
   }).catch(() => res.status(500));
 });
 
+router.get('/get_document_by_type_and_slug/:type/:slug', function(req, res) {
+  DocumentType.findOne({
+    docTypeName: req.params.type
+  }).then(docType => {
+    Document.findOne({ docTypeId: docType.docTypeId, slug: req.params.slug })
+      .then(doc => {
+        res.status(200).json(doc);
+      })
+  }).catch(() => res.status(500));
+});
+
 router.get('/get_documents/:id', function(req, res) {
   Document.find({ docTypeId: req.params.id }).then(docs => {
     res.status(200).json(docs);

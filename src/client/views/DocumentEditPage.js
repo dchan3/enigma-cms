@@ -18,6 +18,8 @@ class DocumentEditPage extends Component {
   }
 
   componentDidMount() {
+    console.log(urlUtils.serverInfo.path('/api/documents/get_type/') +
+      this.props.match.params.docTypeId);
     axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
       this.props.match.params.docTypeId), { withCredentials: true })
       .then((res) => res.data)

@@ -24,9 +24,8 @@ class FrontDocumentDisplay extends Component {
 
   componentDidMount() {
     axios.get(urlUtils.serverInfo.path(
-      (this.props.config.useSlug ?
-        '/api/documents/get_document_by_slug/' :
-        '/api/documents/get_document/') +
+      '/api/documents/get_document_by_type_and_slug/' +
+      this.props.match.params.docType + '/' +
       this.props.match.params.docNode), { withCredentials: true })
       .then((res) => res.data)
       .then(data => {

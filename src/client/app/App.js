@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Switch, Route, Redirect } from 'react-router';
 import { BrowserRouter as Router } from 'react-router-dom';
 import HomePage from '../views/HomePage';
-import MainPage from '../views/MainPage';
+import MainMenu from '../views/MainMenu';
 import SignupPage from '../views/SignupPage';
 import LoginPage from '../views/LoginPage';
 import ConfigPage from '../views/ConfigPage';
@@ -15,6 +15,7 @@ import EditDisplayTemplate from '../views/EditDisplayTemplate';
 import FrontDocumentDisplay from '../views/FrontDocumentDisplay';
 import UpdateDocType from '../views/UpdateDocType';
 import NotFound from '../views/NotFound';
+import ProfileEditPage from '../views/ProfileEditPage';
 import Footer from '../reusables/Footer';
 import axios from 'axios';
 import { default as urlUtils } from '../utils';
@@ -72,6 +73,9 @@ class App extends Component {
 
   render() {
     if (this.state.canDisplay) return [
+      (!!this.state.config && !!this.state.docTypes && !!this.state.user) ?
+        <MainMenu config={this.state.config}
+          user={this.state.user} docTypes={this.state.docTypes} /> : null,
       !!this.state.config ?
         <style>{this.state.config.stylesheet}</style> : null,
       <Router>
@@ -79,19 +83,17 @@ class App extends Component {
           <Route exact path='/' component={() =>
             <HomePage user={this.state.user || null}
               config={this.state.config || null} /> } />
-          <Route exact path="/admin"
-            component={() => <MainPage user=
-              {this.state.user || null} config={this.state.config || null}
-            docTypes={this.state.docTypes || []} />} />
           {this.state.user !== undefined ?
             (this.state.user !== null && this.state.user.roleId === 0) ?
               [
+                <Route exact path="/admin/edit_profile" component={() =>
+                  <ProfileEditPage user={this.state.user} />} />,
                 <Route exact path="/admin/config" component={() =>
                   <ConfigPage config={this.state.config} />} />,
                 <Route exact path="/admin/register_type"
                   component={RegisterDocType} />,
                 this.state.docTypes !== undefined ?
-                  [<Route path='/admin/new/:docType'
+                  [<Route path='/admin/new/:docTypeId'
                     component={DocumentEditPage} />,
                   <Route path={'/admin/edit/:docType'}
                     component={({ match }) => (
@@ -114,7 +116,7 @@ class App extends Component {
             {() => this.state.user ?
               <RedirectToIndex url="/admin"/> : <LoginPage />} />,
           {!!this.state.config ?
-            <Route path="/page/:docNode" component={({ match }) =>
+            <Route path="/:docType/:docNode" component={({ match }) =>
               <FrontDocumentDisplay config={this.state.config}
                 match={match} />} /> : null}
           <Route path="*" component={NotFound} />

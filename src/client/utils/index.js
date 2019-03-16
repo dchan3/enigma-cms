@@ -5,5 +5,12 @@ export default {
     path: function(path) {
       return this.url + path;
     }
+  },
+  clientInfo: {
+    url: (process.env.CLIENT_URL ||
+      'http://localhost:' + (process.env.PORT || 3000)),
+    path: function(path) {
+      return this.url + path;
+    }
   }
 }
