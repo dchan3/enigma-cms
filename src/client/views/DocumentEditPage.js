@@ -44,6 +44,14 @@ class DocumentEditPage extends Component {
         if (attr.grammar) {
           params[attr.attrName].grammar = attr.grammar;
         }
+
+        if (attr.maximum) {
+          params[attr.attrName].maximum = attr.maximum;
+        }
+
+        if (attr.minimum) {
+          params[attr.attrName].minimum = attr.minimum;
+        }
       });
     }
 

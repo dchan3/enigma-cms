@@ -254,64 +254,21 @@ class GeneratedForm extends Component {
       }
 
       else if (paramType.match(/number/) || paramType.match(/date/)) {
-        if (paramObj.maximum && paramObj.maximum !== '' &&
-          paramObj.minimum && paramObj.minimum !== '') {
-          comp = [<FormLabel htmlFor={param} hidden={isHidden}>
-            {paramObj.label + (iteration !== undefined ?
-              (' ' + (iteration + 1)) : '')}
-          </FormLabel>,
-          <br />,
-          <FormInput id={param} name={param} hidden={isHidden}
-            type={paramType.match(/[a-z]+/)[0]} value={valueObj}
-            max={paramObj.maximum} min={paramObj.minimum}
-            onChange={(e) => { handleChange(param)(e); } } />];
+        var inputBounds = {};
+        for (var ke in paramObj) {
+          if (['maximum', 'minimum'].includes(ke)) {
+            if (paramObj[ke] !== '')
+              inputBounds[ke.substring(0,3)] = paramObj[ke];
+          }
         }
 
-        else if (paramObj.maximum && paramObj.maximum !== '') {
-          comp = [<FormLabel htmlFor={param} hidden={isHidden}>
-            {paramObj.label +
-                (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
-          </FormLabel>,
-          <br />,
-          <FormInput id={param} name={param} hidden={isHidden}
-            type={paramType.match(/[a-z]+/)[0]} value={valueObj}
-            max={paramObj.maximum}
-            onChange={(e) => { handleChange(param)(e); } } />];
-        }
-
-        else if (paramObj.minimum && paramObj.minimum !== '') {
-          comp = [<FormLabel htmlFor={param}> hidden={isHidden}
-            {paramObj.label +
-                (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
-          </FormLabel>,
-          <br />,
-          <FormInput id={param} name={param} hidden={isHidden}
-            type={paramType.match(/[a-z]+/)[0]} value={valueObj}
-            min={paramObj.minimum}
-            onChange={(e) => { handleChange(param)(e); } }/>];
-        }
-
-        else {
-          comp = [<FormLabel htmlFor={param} hidden={isHidden}>
-            {paramObj.label +
-                (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
-          </FormLabel>,
-          <br />,
-          <FormInput id={param} name={param} hidden={isHidden}
-            type={paramType.match(/[a-z]+/)[0]} value={valueObj}
-            onChange={(e) => { handleChange(param)(e); } }/>];
-        }
-      }
-
-      else if (paramObj.maximum && paramObj.maximum !== '') {
         comp = [<FormLabel htmlFor={param} hidden={isHidden}>
           {paramObj.label +
               (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
         </FormLabel>,
         <br />,
-        <FormInput id={param} name={param} hidden={isHidden}
+        <FormInput {...paramObj} id={param} name={param} hidden={isHidden}
           type={paramType.match(/[a-z]+/)[0]} value={valueObj}
-          maxLength={paramObj.maximum.toString()}
           onChange={(e) => { handleChange(param)(e); } }/>];
       }
 
@@ -325,19 +282,21 @@ class GeneratedForm extends Component {
           grammar={paramObj.grammar} value={valueObj} />];
       }
       else if (paramObj !== undefined) {
+        var bounds = {};
+        if (paramObj.maximum && paramObj.maximum !== '')
+          bounds.maxLength = paramObj.maximum
         comp = [<FormLabel htmlFor={param} hidden={isHidden}>
           {paramObj.label +
               (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
         </FormLabel>,
         <br />,
-        <FormInput id={param} name={param} hidden={isHidden}
+        <FormInput {...bounds} id={param} name={param} hidden={isHidden}
           type={paramType.match(/[a-z]+/)[0]} value={valueObj}
           onChange={(e) => { handleChange(param)(e); } }/>];
       }
 
       return comp;
     }
-
     else if (paramType !== undefined) {
       return [<FormLabel htmlFor={param}>
         {paramObj.label}</FormLabel>,
