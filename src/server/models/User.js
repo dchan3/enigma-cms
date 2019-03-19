@@ -22,6 +22,11 @@ var UserSchema = new mongoose.Schema({
       message: 'Username must be alphanumeric.'
     }
   },
+  pictureSrc: {
+    type: String,
+    required: false,
+    default: ''
+  },
   password: {
     type: String
   },

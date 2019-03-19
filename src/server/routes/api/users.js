@@ -3,6 +3,7 @@ import express from 'express';
 import User from '../../models/User';
 import { default as urlUtils } from '../../utils';
 import { ObjectId } from 'mongodb';
+import icongen from '../../utils/icongen';
 
 var router = express.Router();
 
@@ -12,6 +13,12 @@ router.get('/get', function(req, res) {
     res.status(200).end();
   }
   else res.json();
+});
+
+router.get('/generate_icon/:username', function(req, res) {
+  icongen(req.params.username, function(result) {
+    res.send(result);
+  });
 });
 
 router.get('/get_user_by_username/:username', function(req, res) {
@@ -54,10 +61,21 @@ router.post('/update', function(req, res) {
           if (!['currentPassword', 'userId'].includes(attr))
             user.set(attr, req.body[attr]);
         }
-        user.save(function (err) {
-          if (err) res.status(500);
-          else res.redirect(urlUtils.clientInfo.url);
-        });
+        if (user.get('pictureSrc') === undefined ||
+            user.get('pictureSrc') === null || user.get('pictureSrc') === '') {
+          icongen(user.username, function(result) {
+            user.set('pictureSrc', result);
+            user.save(function (err) {
+              if (err) res.status(500);
+              else res.redirect(urlUtils.clientInfo.url);
+            });
+          });
+        }
+        else
+          user.save(function (err) {
+            if (err) res.status(500);
+            else res.redirect(urlUtils.clientInfo.url);
+          });
       }
     }
     else res.status(500).
