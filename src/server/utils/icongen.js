@@ -12,7 +12,6 @@ export default function(username, cb) {
 
   for (var letter in first36) {
     var row = Math.floor(letter / 6), column = letter % 6;
-    console.log(row, column, color1, color2);
     image
       .stroke(first36[letter] ? color1 : color2, 10, 0)
       .fill(first36[letter] ? color1 : color2, 10)

@@ -8,6 +8,7 @@ import GeneratedForm from '../src/client/reusables/GeneratedForm';
 import CodeEditor from '../src/client/reusables/CodeEditor';
 import { default as urlUtilsClient } from '../src/client/utils';
 import { default as urlUtilsServer } from '../src/server/utils';
+import icongen from '../src/server/utils/icongen';
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 
@@ -126,5 +127,15 @@ describe('URL Utils', function() {
     expect(urlUtilsServer.clientInfo.path('/index'))
       .to.equal('http://localhost:3000/index');
     done();
+  });
+});
+
+describe('Profile Picture Generation', function() {
+  it('pretty much works', function(done) {
+    icongen('d_dog_tha_man', function(result) {
+      expect(result).to.not.be.null;
+      expect(result).to.match(/^data:image\/png;base64,/);
+      done();
+    });
   });
 });
