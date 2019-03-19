@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Switch, Route, Redirect } from 'react-router';
 import { BrowserRouter as Router } from 'react-router-dom';
 import HomePage from '../views/HomePage';
@@ -13,6 +12,7 @@ import DocumentUpdatePage from '../views/DocumentUpdatePage';
 import EditDocumentLanding from '../views/EditDocumentLanding';
 import EditDisplayTemplate from '../views/EditDisplayTemplate';
 import FrontDocumentDisplay from '../views/FrontDocumentDisplay';
+import FrontProfileDisplay from '../views/FrontProfileDisplay';
 import UpdateDocType from '../views/UpdateDocType';
 import NotFound from '../views/NotFound';
 import ProfileEditPage from '../views/ProfileEditPage';
@@ -20,14 +20,26 @@ import Footer from '../reusables/Footer';
 import axios from 'axios';
 import { default as urlUtils } from '../utils';
 
-class RedirectToIndex extends Component {
-  static propTypes = {
-    url: PropTypes.string
-  }
+const ProtectedRoute = function({ component: Component, user, isAdmin,
+  ...rest }) {
+  return <Route {...rest} render={(props) => {
+    if (!!user) {
+      if ((isAdmin && user.roleId === 0) || !isAdmin) {
+        return  <Component {...props} />
+      }
+      else return <Redirect to="/login" />
+    }
+    else return <Redirect to="/login" />
+  }} />
+};
 
-  render() {
-    return <Redirect to={this.props.url || '/'} />;
-  }
+const LoggedOutRoute = function({ component: Component, user, ...rest }) {
+  return <Route {...rest} render={(props) => {
+    if (user) {
+      return <Redirect to="/admin" />
+    }
+    else return <Component {...props} />
+  }} />
 }
 
 class App extends Component {
@@ -83,38 +95,38 @@ class App extends Component {
           <Route exact path='/' component={() =>
             <HomePage user={this.state.user || null}
               config={this.state.config || null} /> } />
-          {this.state.user !== undefined ?
-            (this.state.user !== null && this.state.user.roleId === 0) ?
-              [
-                <Route exact path="/admin/edit_profile" component={() =>
-                  <ProfileEditPage user={this.state.user} />} />,
-                <Route exact path="/admin/config" component={() =>
-                  <ConfigPage config={this.state.config} />} />,
-                <Route exact path="/admin/register_type"
-                  component={RegisterDocType} />,
-                this.state.docTypes !== undefined ?
-                  [<Route path='/admin/new/:docTypeId'
-                    component={DocumentEditPage} />,
-                  <Route path={'/admin/edit/:docType'}
-                    component={({ match }) => (
-                      <EditDocumentLanding match={match}
-                        config={this.state.config} />)} />,
-                  <Route path='/admin/edit_document/:docNode'
-                    component={DocumentUpdatePage}/>,
-                  <Route path='/admin/edit_template/:docTypeId'
-                    component={EditDisplayTemplate}/>,
-                  <Route path='/admin/edit_type/:docTypeId'
-                    component={UpdateDocType}/>, ] :
-                  null
-              ] :
-              <Route path="/admin/"
-                component={() => <RedirectToIndex url="/login" />}/> : null}
-          <Route path="/signup" component=
-            {() => this.state.user ?
-              <RedirectToIndex url="/admin"/> : <SignupPage />} />
-          <Route path="/login" component=
-            {() => this.state.user ?
-              <RedirectToIndex url="/admin"/> : <LoginPage />} />,
+          <ProtectedRoute exact path="/admin/edit_profile"
+            user={this.state.user} isAdmin={false}
+            component={() => <ProfileEditPage user={this.state.user} />} />
+          <ProtectedRoute exact path="/admin/config" isAdmin={true}
+            user={this.state.user} component={() =>
+              <ConfigPage config={this.state.config} />} />,
+          <ProtectedRoute exact path="/admin/register_type" isAdmin={true}
+            user={this.state.user} component={RegisterDocType} />
+          <ProtectedRoute exact path='/admin/new/:docTypeId' isAdmin={false}
+            user={this.state.user} component={DocumentEditPage} />
+          <ProtectedRoute exact path='/admin/edit/:docType'
+            user={this.state.user}
+            component={({ match }) => (<EditDocumentLanding match={match}
+              config={this.state.config} />)} />
+          <ProtectedRoute exact path='/admin/edit_document/:docNode'
+            isAdmin={false} user={this.state.user}
+            component={DocumentUpdatePage}/>
+          <ProtectedRoute exact path='/admin/edit_template/:docTypeId'
+            isAdmin={false} user={this.state.user}
+            component={EditDisplayTemplate}/>
+          <ProtectedRoute exact path='/admin/edit_type/:docTypeId'
+            isAdmin={false} user={this.state.user} component={UpdateDocType}/>
+          <ProtectedRoute exact path="/admin/" isAdmin={false}
+            user={this.state.user} component={() => <div />}/>
+          <LoggedOutRoute path="/signup" component={SignupPage}
+            user={this.state.user} />
+          <LoggedOutRoute user={this.state.user} path="/login"
+            component={LoginPage} />,
+          {!!this.state.config ?
+            <Route exact path="/profile/:username" component={({ match }) =>
+              <FrontProfileDisplay config={this.state.config}
+                match={match} />} /> : null}
           {!!this.state.config ?
             <Route path="/:docType/:docNode" component={({ match }) =>
               <FrontDocumentDisplay config={this.state.config}

@@ -31,6 +31,12 @@ class ConfigPage extends Component {
         grammar: 'css',
         value: this.props.config ? this.props.config.stylesheet : ''
       },
+      profileTemplate: {
+        type: 'text',
+        label: 'Profile Template',
+        grammar: 'html',
+        value: this.props.config ? this.props.config.profileTemplate : ''
+      },
       menuLinks: {
         type: '[object]',
         label: 'Menu Links',
@@ -60,6 +66,30 @@ class ConfigPage extends Component {
         }],
         value: this.props.config !== undefined ?
           this.props.config.useSlug : false
+      },
+      shortcodes: {
+        type: '[object]',
+        label: 'Shortcodes',
+        shape: {
+          name: {
+            type: 'text',
+            label: 'Name'
+          },
+          args: {
+            type: 'text',
+            label: 'Args (comma-separated)'
+          },
+          code: {
+            type: 'text',
+            label: 'Body',
+            grammar: 'js'
+          }
+        },
+        value: this.props.config && this.props.config.shortcodes || [{
+          name: '',
+          args: '',
+          code: ''
+        }]
       }
     }} method="post"
     formAction={urlUtils.serverInfo.path('/api/site_config/update')} />

@@ -14,6 +14,14 @@ router.get('/get', function(req, res) {
   else res.json();
 });
 
+router.get('/get_user_by_username/:username', function(req, res) {
+  User.findOne({ username: req.params.username }).then(user => {
+    res.json(user);
+  }).catch(() => {
+    res.status(500);
+  });
+});
+
 router.post('/register', passport.authenticate('local-signup', {
   successRedirect: urlUtils.clientInfo.path('/admin'),
   failureRedirect: urlUtils.clientInfo.path('/signup'),

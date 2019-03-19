@@ -53,6 +53,14 @@ class FrontDocumentDisplay extends Component {
 
   render() {
     if (this.state.template !== null && this.state.document !== null) {
+      this.props.config.shortcodes.forEach(
+        function(shortcode) {
+          console.log(shortcode);
+          Handlebars.registerHelper(shortcode.name,
+            new Function(shortcode.args, shortcode.code));
+        });
+
+      var template = Handlebars.compile(this.state.template.templateBody);
       return <div>
         <div>
           <h1 className="front-header">
@@ -61,8 +69,11 @@ class FrontDocumentDisplay extends Component {
         </div>
         <FrontMenu config={this.props.config} />
         <div dangerouslySetInnerHTML=
-          {{ __html:  Handlebars.compile(
-            this.state.template.templateBody)(this.state.document.content) }}>
+          {{ __html: template(
+            { ...this.state.document.content,
+              createdAt: this.state.document.createdAt,
+              editedAt: this.state.document.editedAt
+            }) }}>
         </div>
       </div>;
     }
