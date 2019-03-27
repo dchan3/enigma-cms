@@ -2,14 +2,7 @@ import React, { Component } from 'react';
 import SEOHeader from '../reusables/SEOHeader';
 import DropdownMenu from '../reusables/DropdownMenu';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { default as urlUtils } from '../utils';
-
-var TextHeader = styled.h1`
-  text-align: center;
-  text-transform: uppercase;
-  font-family: sans-serif;
-`;
+import { TextHeader } from '../reusables/styled';
 
 class MainMenu extends Component {
   static propTypes = {
@@ -56,11 +49,17 @@ class MainMenu extends Component {
                   return { url: '/admin/edit_template/' + docType.docTypeId,
                     text: docType.docTypeName };
                 })
-              },
-              { url: urlUtils.serverInfo.path('/api/users/logout'),
-                text: 'Logout' }] : [
-              { url: urlUtils.serverInfo.path('/api/users/logout'),
-                text: 'Logout' }] } /> : null}
+              }] : [{ url: '', text: 'New...', childNodes:
+                this.props.docTypes.map((docType) => {
+                  return { url: '/admin/new/' + docType.docTypeId,
+                    text: docType.docTypeName };
+                })
+            },{ url: '', text: 'Edit Existing...', childNodes:
+                this.props.docTypes.map((docType) => {
+                  return { url: '/admin/edit/' + docType.docTypeId,
+                    text: docType.docTypeName };
+                })
+            }] } /> : null}
       </div>
     </div>;
   }

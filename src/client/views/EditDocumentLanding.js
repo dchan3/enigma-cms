@@ -4,12 +4,7 @@ import axios from 'axios';
 import EverAfter from 'react-everafter';
 import styled from 'styled-components';
 import { default as urlUtils } from '../utils';
-
-var TextHeader = styled.h1`
-  text-align: center;
-  text-transform: uppercase;
-  font-family: sans-serif;
-`;
+import { TextHeader } from '../reusables/styled';
 
 var TableText = styled.p`
   text-align: center;

@@ -9,6 +9,8 @@ import CodeEditor from '../src/client/reusables/CodeEditor';
 import { default as urlUtilsClient } from '../src/client/utils';
 import { default as urlUtilsServer } from '../src/server/utils';
 import icongen from '../src/server/utils/icongen';
+import { default as camelcaseConvert }
+  from '../src/client/utils/camelcase_convert';
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 
@@ -55,27 +57,21 @@ describe('Reusable UI Components - Generated Form', function() {
   it('renders recursively without error', function(done) {
     var parameters = {
       guestList: {
-        label: 'Guest List',
         type: '[object]',
         shape: {
           firstName: {
-            label: 'First Name',
             type: 'text'
           },
           age: {
-            label: 'Age',
             type: 'number'
           },
           contactInformation: {
-            label: 'Contact Information',
             type: 'object',
             shape: {
               phone: {
-                label: 'Phone Number',
                 type: 'text'
               },
               email: {
-                label: 'Email Address',
                 type: 'text'
               }
             }
@@ -93,7 +89,7 @@ describe('Reusable UI Components - Generated Form', function() {
     expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
     done();
   });
-})
+});
 
 describe('Reusable UI Components - Code Editor', function() {
   it('renders correctly with existing value', function(done) {
@@ -137,5 +133,23 @@ describe('Profile Picture Generation', function() {
       expect(result).to.match(/^data:image\/png;base64,/);
       done();
     });
+  });
+});
+
+describe('Camel Case String Conversion', function() {
+  it('one word', function(done) {
+    expect(camelcaseConvert('monkey')).to.equal('Monkey');
+    done();
+  });
+
+  it('two words', function(done) {
+    expect(camelcaseConvert('codeMonkey')).to.equal('Code Monkey');
+    done();
+  });
+
+  it('three words', function(done) {
+    expect(camelcaseConvert('threeLeggedDog'))
+      .to.equal('Three Legged Dog');
+    done();
   });
 });

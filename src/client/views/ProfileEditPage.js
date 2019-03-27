@@ -6,6 +6,10 @@ import { default as urlUtils } from '../utils';
 class ProfileEditPage extends Component {
   static propTypes = {
     user: PropTypes.object
+  };
+
+  redirect() {
+    window.location.href = "/admin";
   }
 
   render() {
@@ -18,20 +22,21 @@ class ProfileEditPage extends Component {
           hidden: true
         },
         username: {
-          label: 'Username',
           type: 'text',
           value: this.props.user.username
         },
+        displayName: {
+          type: 'text',
+          value: this.props.user.displayName || ''
+        },
         email: {
-          label: 'Email',
           type: 'email',
           value: this.props.user.email
         },
         currentPassword: {
-          label: 'Enter Current Password',
           type: 'password'
         }
-      }} method="post"
+      }} method="post" successCallback={this.redirect}
       formAction={urlUtils.serverInfo.path('/api/users/update')} />;
   }
 }

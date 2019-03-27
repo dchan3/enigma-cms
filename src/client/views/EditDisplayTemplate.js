@@ -17,6 +17,10 @@ class EditDisplayTemplate extends Component {
     }
   }
 
+  redirect() {
+    window.location.href = '/admin';
+  }
+
   componentDidMount() {
     axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
       this.props.match.params.docTypeId), { withCredentials: true })
@@ -48,7 +52,7 @@ class EditDisplayTemplate extends Component {
           value: this.state.template !== null ?
             this.state.template.templateBody : ''
         }
-      }} method="post"
+      }} method="post" successCallback={this.redirect}
       formAction={urlUtils.serverInfo.path('/api/documents/update_template/' +
       this.props.match.params.docTypeId)} />;
     else return null;

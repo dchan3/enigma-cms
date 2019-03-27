@@ -22,6 +22,14 @@ mongoose.connect(require('../../config/db.js').url, {}, (err) => {
 
 app.use(expressSession);
 
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', urlUtils.clientInfo.url);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 app.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -41,14 +49,6 @@ passport.deserializeUser((username, done) => {
 passport.use('local-signup', SignupStrategy);
 
 passport.use('local-login', LoginStrategy);
-
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', urlUtils.clientInfo.url);
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
 
 app.use('/api/users', userRoutes);
 app.use('/api/site_config', configRoutes);

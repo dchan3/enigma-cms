@@ -6,6 +6,10 @@ import { default as urlUtils } from '../utils';
 class ConfigPage extends Component {
   static propTypes = {
     config: PropTypes.object
+  };
+
+  redirect() {
+    window.location.href = '/admin';
   }
 
   render() {
@@ -69,7 +73,6 @@ class ConfigPage extends Component {
       },
       shortcodes: {
         type: '[object]',
-        label: 'Shortcodes',
         shape: {
           name: {
             type: 'text',
@@ -91,7 +94,7 @@ class ConfigPage extends Component {
           code: ''
         }]
       }
-    }} method="post"
+    }} method="post" successCallback={this.redirect}
     formAction={urlUtils.serverInfo.path('/api/site_config/update')} />
   }
 }

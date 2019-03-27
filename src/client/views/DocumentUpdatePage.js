@@ -39,6 +39,11 @@ class DocumentUpdatePage extends Component {
       });
   }
 
+  redirect() {
+    window.location.href = this.state.docType ?
+       ('/admin/edit/' + this.state.docType) : '/admin';
+  }
+
   render() {
     var params = {};
     if (this.state.document !== null && this.state.docType !== null &&
@@ -48,7 +53,7 @@ class DocumentUpdatePage extends Component {
           label: attr.attrName,
           type: attr.attrType,
           value: this.state.document.content[attr.attrName],
-        }
+        };
 
         if (attr.grammar) {
           params[attr.attrName].grammar = attr.grammar;
@@ -56,7 +61,7 @@ class DocumentUpdatePage extends Component {
       });
 
       return <GeneratedForm title='Edit Document'
-        params={params} method="post"
+        params={params} method="post" successCallback={this.redirect}
         formAction={urlUtils.serverInfo.path('/api/documents/update_document/' +
           this.props.match.params.docNode)}
       />;

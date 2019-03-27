@@ -13,6 +13,10 @@ class RegisterDocType extends Component {
     }
   }
 
+  redirect() {
+    window.location.href = '/admin';
+  }
+
   updateParams(values) {
     this.setState({
       optionParams: values.attributes.map(attr => ({
@@ -81,6 +85,7 @@ class RegisterDocType extends Component {
         ]
       }
     }} method="post" parentCallback={this.updateParams}
+    successCallback={this.redirect}
     formAction={urlUtils.serverInfo.path('/api/documents/register_type')} />;
   }
 }

@@ -16,6 +16,7 @@ import FrontProfileDisplay from '../views/FrontProfileDisplay';
 import UpdateDocType from '../views/UpdateDocType';
 import NotFound from '../views/NotFound';
 import ProfileEditPage from '../views/ProfileEditPage';
+import ChangePasswordPage from '../views/ChangePasswordPage';
 import Footer from '../reusables/Footer';
 import axios from 'axios';
 import { default as urlUtils } from '../utils';
@@ -117,8 +118,11 @@ class App extends Component {
             component={EditDisplayTemplate}/>
           <ProtectedRoute exact path='/admin/edit_type/:docTypeId'
             isAdmin={false} user={this.state.user} component={UpdateDocType}/>
+          <ProtectedRoute exact path='/change_password' user={this.state.user}
+            isAdmin={false}
+            component={() => <ChangePasswordPage user={this.state.user} />} />
           <ProtectedRoute exact path="/admin/" isAdmin={false}
-            user={this.state.user} component={() => <div />}/>
+            user={this.state.user} component={() => <div />} />
           <LoggedOutRoute path="/signup" component={SignupPage}
             user={this.state.user} />
           <LoggedOutRoute user={this.state.user} path="/login"

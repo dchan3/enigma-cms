@@ -2,7 +2,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import User from '../models/User';
 
 var LoginStrategy = new LocalStrategy({
-  usernameField: 'user'
+  usernameField: 'username'
 }, function(username, password, done) {
   User.findOne({ $or: [
     { username: username },
@@ -23,6 +23,6 @@ var LoginStrategy = new LocalStrategy({
 
     return done(null, user);
   });
-})
+});
 
 export default LoginStrategy;

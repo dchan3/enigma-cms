@@ -7,7 +7,7 @@ import { default as urlUtils } from '../utils';
 class UpdateDocType extends Component {
   static propTypes = {
     match: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -43,6 +43,10 @@ class UpdateDocType extends Component {
         attrType: attr.attrType
       }))
     });
+  }
+
+  redirect() {
+    window.location.href = '/admin';
   }
 
   render() {
@@ -109,6 +113,7 @@ class UpdateDocType extends Component {
           value: this.state.docType.slugFrom || ''
         }
       }} method="post" parentCallback={this.updateParams}
+      successCallback={this.redirect}
       formAction={urlUtils.serverInfo.path('/api/documents/update_type/' +
         this.props.match.params.docTypeId)} />;
     else return null;

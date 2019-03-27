@@ -1,6 +1,5 @@
 import express from 'express';
 import SiteConfig from '../../models/SiteConfig';
-import { default as urlUtils } from '../../utils';
 
 var router = express.Router();
 
@@ -10,7 +9,7 @@ router.get('/get', function(req, res) {
   });
 });
 
-router.post('/update', function(req, res) {
+router.post('/update', function(req, res, next) {
   SiteConfig.findOne({ }).then(config => {
     var reset = [];
     for (var attr in req.body) {
@@ -24,8 +23,8 @@ router.post('/update', function(req, res) {
       config.set(attr, req.body[attr]);
     }
     config.save(function (err) {
-      if (err) res.status(500);
-      else res.redirect(urlUtils.clientInfo.path('/admin/'));
+      if (err) next(err);
+      else res.status(200).end();
     });
   });
 });

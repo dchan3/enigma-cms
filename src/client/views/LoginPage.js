@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import GeneratedForm from '../reusables/GeneratedForm';
+import { StyledDiv } from '../reusables/styled';
 import { default as urlUtils } from '../utils';
 
 class LoginPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.redirectToAdmin = this.redirectToAdmin.bind(this);
+  }
+
+  redirectToAdmin() {
+    window.location.href = '/admin';
+  }
+
   render() {
     return [<GeneratedForm title="Sign In" params={{
-      user: {
+      username: {
         label: 'Username or Email',
         type: 'text'
       },
@@ -14,10 +25,12 @@ class LoginPage extends Component {
         type: 'password'
       }
     }}
-    method="post" formAction={urlUtils.serverInfo.path('/api/users/login')} />,
-    <div style={{ fontFamily: 'sans-serif', textAlign: 'center' }}>
+    method="post"
+    formAction={urlUtils.serverInfo.path('/api/users/login')}
+    successCallback={this.redirectToAdmin} />,
+    <StyledDiv>
       <p>Don't have an account? Sign up <a href="/signup">here</a>.</p>
-    </div>];
+    </StyledDiv>];
   }
 }
 

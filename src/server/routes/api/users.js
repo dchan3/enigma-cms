@@ -34,27 +34,42 @@ router.post('/register', passport.authenticate('local-signup', {
   failureRedirect: urlUtils.clientInfo.path('/signup'),
 }));
 
-router.post('/login',
-  passport.authenticate('local-login', {
-    successRedirect: urlUtils.clientInfo.path('/admin'),
-    failureRedirect: urlUtils.clientInfo.path('/login?error=' +
-      encodeURIComponent('An error occurred.')),
-    session: true
-  })
-);
+router.post('/login', function(req, res, next) {
+  passport.authenticate('local-login', function(err, user) {
+    if (err) return next(err);
+    if (!user) return next({ error: 'Invalid Credentials.' });
+    req.logIn(user, function(er) {
+      if (er) { return next(er); }
+      return res.status(200).end();
+    });
+  })(req, res, next);
+});
 
 router.get('/logout', function(req, res) {
   req.logout();
   res.redirect(urlUtils.clientInfo.url);
 });
 
-router.post('/update', function(req, res) {
+router.post('/change_password', function(req, res, next) {
+  User.findOne({ _id: ObjectId(req.body.userId) }).then(user => {
+    if (!user.comparePassword(req.body.currentPassword)) {
+      return next({ error: 'Wrong password.' });
+    }
+    else {
+      user.set('password', req.body.newPassword);
+      user.save(function (err) {
+        if (err) return next({ error: err.message });
+        else return res.status(200).end();
+      });
+    }
+  })
+});
+
+router.post('/update', function(req, res, next) {
   User.findOne({ _id: ObjectId(req.body.userId) }).then(user => {
     if (user !== null) {
       if (!user.comparePassword(req.body.currentPassword)) {
-        res.status(500).redirect(
-          urlUtils.clientInfo.path('/admin/edit_profile?error=' +
-          encodeURIComponent('Wrong password.')));
+        return next({ error: 'Wrong password.' });
       }
       else {
         for (var attr in req.body) {
@@ -66,15 +81,15 @@ router.post('/update', function(req, res) {
           icongen(user.username, function(result) {
             user.set('pictureSrc', result);
             user.save(function (err) {
-              if (err) res.status(500);
-              else res.redirect(urlUtils.clientInfo.url);
+              if (err) return next({ error: err.message });
+              else return res.status(200).end();
             });
           });
         }
         else
           user.save(function (err) {
-            if (err) res.status(500);
-            else res.redirect(urlUtils.clientInfo.url);
+            if (err) return next({ error: err.message });
+            else return res.status(200).end();
           });
       }
     }

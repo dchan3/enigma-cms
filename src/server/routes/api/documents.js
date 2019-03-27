@@ -54,7 +54,7 @@ router.get('/get_template/:id', function(req, res) {
   })
 });
 
-router.post('/register_type', function(req, res) {
+router.post('/register_type', function(req, res, next) {
   var newType = new DocumentType();
   var reset = [];
   for (var attr in req.body) {
@@ -68,12 +68,12 @@ router.post('/register_type', function(req, res) {
     newType.set(attr, req.body[attr]);
   }
   newType.save(function (err) {
-    if (err) res.status(500);
+    if (err) return next(err);
     else res.redirect(urlUtils.clientInfo.path('/admin/'));
   });
 });
 
-router.post('/update_type/:id', function(req, res) {
+router.post('/update_type/:id', function(req, res, next) {
   DocumentType.findOne({ docTypeId: req.params.id }).then(newType => {
     var reset = [];
     for (var attr in req.body) {
@@ -87,7 +87,7 @@ router.post('/update_type/:id', function(req, res) {
       newType.set(attr, req.body[attr]);
     }
     newType.save(function (err) {
-      if (err) res.status(500);
+      if (err) return next(err);
       else res.redirect(urlUtils.clientInfo.path('/admin/'));
     })
   })
@@ -103,7 +103,6 @@ router.post('/new_document/:type_id', function(req, res) {
   });
   var reset = [];
   for (var attr in req.body) {
-    console.log(attr);
     if (attr.indexOf('.') > -1) {
       var mainKey = attr.split('.')[0];
       if (!reset.includes(mainKey)) {
@@ -165,13 +164,13 @@ router.post('/update_document/:node_id', function(req, res) {
   });
 });
 
-router.post('/update_template/:type_id', (req, res) => {
+router.post('/update_template/:type_id', (req, res, next) => {
   DocumentDisplayTemplate.findOne({ docTypeId: req.params.type_id }).then(
     doc => {
       if (doc) {
         doc.set('templateBody', req.body.templateBody);
         doc.save(function(err) {
-          if (err) res.status(500);
+          if (err) return next(err);
           else res.redirect(urlUtils.clientInfo.path('/admin/'));
         });
       }
@@ -181,7 +180,7 @@ router.post('/update_template/:type_id', (req, res) => {
           templateBody: req.body.templateBody
         });
         newDoc.save(function(err) {
-          if (err) res.status(500);
+          if (err) return next(err);
           else res.redirect(urlUtils.clientInfo.path('/admin/'));
         });
       }

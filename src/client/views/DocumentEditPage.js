@@ -31,6 +31,10 @@ class DocumentEditPage extends Component {
       });
   }
 
+  redirect() {
+    window.location.href = '/admin/edit/' + this.props.match.params.docTypeId;
+  }
+
   render() {
     var params = {};
 
@@ -39,7 +43,7 @@ class DocumentEditPage extends Component {
         params[attr.attrName] = {
           label: attr.attrName,
           type: attr.attrType,
-        }
+        };
 
         if (attr.grammar) {
           params[attr.attrName].grammar = attr.grammar;
@@ -59,7 +63,7 @@ class DocumentEditPage extends Component {
       return <GeneratedForm title={'New ' + this.state.docType.docTypeName}
         params={params} method="post"
         formAction={urlUtils.serverInfo.path('/api/documents/new_document/') +
-          this.props.match.params.docTypeId}
+          this.props.match.params.docTypeId} successCallback={this.redirect}
       />;
     else return null;
   }
