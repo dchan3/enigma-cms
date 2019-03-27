@@ -1,8 +1,13 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import GeneratedForm from '../reusables/GeneratedForm';
 import { default as urlUtils } from '../utils';
 
 class ChangePasswordPage extends Component {
+  static propTypes = {
+    user: PropTypes.object
+  };
+
   redirectToAdmin() {
     window.location.href = '/admin';
   }

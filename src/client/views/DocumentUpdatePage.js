@@ -41,7 +41,7 @@ class DocumentUpdatePage extends Component {
 
   redirect() {
     window.location.href = this.state.docType ?
-       ('/admin/edit/' + this.state.docType) : '/admin';
+      ('/admin/edit/' + this.state.docType) : '/admin';
   }
 
   render() {

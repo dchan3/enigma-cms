@@ -9,7 +9,7 @@ class ProfileEditPage extends Component {
   };
 
   redirect() {
-    window.location.href = "/admin";
+    window.location.href = '/admin';
   }
 
   render() {

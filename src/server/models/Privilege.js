@@ -1,6 +1,6 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 
-const PrivilegeSchema = new Schema({
+const PrivilegeSchema = new mongoose.Schema({
   docTypeId: {
     type: Number
   },
@@ -14,4 +14,4 @@ const PrivilegeSchema = new Schema({
   }
 });
 
-export default model('Privilege', PrivilegeSchema);
+export default mongoose.model('Privilege', PrivilegeSchema);

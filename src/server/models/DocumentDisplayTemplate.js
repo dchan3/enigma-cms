@@ -1,6 +1,6 @@
-import mongoose, { model, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
-const DocumentDisplayTemplateSchema = new Schema({
+const DocumentDisplayTemplateSchema = new mongoose.Schema({
   docTypeId: {
     type: Number
   },
@@ -9,4 +9,5 @@ const DocumentDisplayTemplateSchema = new Schema({
   }
 });
 
-export default model('DocumentDisplayTemplate', DocumentDisplayTemplateSchema);
+export default
+mongoose.model('DocumentDisplayTemplate', DocumentDisplayTemplateSchema);
