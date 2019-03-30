@@ -4,19 +4,21 @@ import DocumentType from '../../models/DocumentType';
 import Document from '../../models/Document';
 import slug from 'limax';
 import { default as urlUtils } from '../../utils';
+import { default as verifyMiddleware } from '../middleware';
 
 var router = express.Router();
 
-router.get('/get_types', function(req, res) {
+// GET Requests
+router.get('/get_types', (req, res) => {
   DocumentType.find({ }).then(types => {
     res.status(200).json(types);
   }).catch(() => res.status(500));
 });
 
-router.get('/get_type/:id', function(req, res) {
+router.get('/get_type/:id', function(req, res, next) {
   DocumentType.findOne({ docTypeId: req.params.id }).then(doc => {
     res.status(200).json(doc);
-  }).catch(() => res.status(500));
+  }).catch((err) => next(err));
 });
 
 router.get('/get_document/:id', function(req, res) {
@@ -54,7 +56,9 @@ router.get('/get_template/:id', function(req, res) {
   })
 });
 
-router.post('/register_type', function(req, res, next) {
+
+// POST Requests
+router.post('/register_type', verifyMiddleware, (req, res, next) => {
   var newType = new DocumentType();
   var reset = [];
   for (var attr in req.body) {
@@ -73,7 +77,7 @@ router.post('/register_type', function(req, res, next) {
   });
 });
 
-router.post('/update_type/:id', function(req, res, next) {
+router.post('/update_type/:id', verifyMiddleware, (req, res, next) => {
   DocumentType.findOne({ docTypeId: req.params.id }).then(newType => {
     var reset = [];
     for (var attr in req.body) {
@@ -93,7 +97,7 @@ router.post('/update_type/:id', function(req, res, next) {
   })
 });
 
-router.post('/new_document/:type_id', function(req, res) {
+router.post('/new_document/:type_id', verifyMiddleware, (req, res) => {
   var newDoc = new Document({
     docTypeId: req.params.type_id,
     createdAt: new Date(),
@@ -129,7 +133,7 @@ router.post('/new_document/:type_id', function(req, res) {
   }).catch(() => { res.status(500); });
 });
 
-router.post('/update_document/:node_id', function(req, res) {
+router.post('/update_document/:node_id', verifyMiddleware, (req, res, next) => {
   Document.findOne({ docNodeId: req.params.node_id }).then(doc => {
     doc.set('editedAt', new Date());
     doc.set('editorId', req.user.userId);
@@ -159,19 +163,19 @@ router.post('/update_document/:node_id', function(req, res) {
         });
       });
     });
-  }).catch(() => {
-    res.status(500);
+  }).catch((err) => {
+    next(err);
   });
 });
 
-router.post('/update_template/:type_id', (req, res, next) => {
+router.post('/update_template/:type_id', verifyMiddleware, (req, res, next) => {
   DocumentDisplayTemplate.findOne({ docTypeId: req.params.type_id }).then(
     doc => {
       if (doc) {
         doc.set('templateBody', req.body.templateBody);
         doc.save(function(err) {
           if (err) return next(err);
-          else res.redirect(urlUtils.clientInfo.path('/admin/'));
+          else return res.status(200).end();
         });
       }
       else {
@@ -181,7 +185,7 @@ router.post('/update_template/:type_id', (req, res, next) => {
         });
         newDoc.save(function(err) {
           if (err) return next(err);
-          else res.redirect(urlUtils.clientInfo.path('/admin/'));
+          else return res.status(200).end();
         });
       }
     });

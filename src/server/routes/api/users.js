@@ -4,10 +4,12 @@ import User from '../../models/User';
 import { default as urlUtils } from '../../utils';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
+import { default as verifyMiddleware } from '../middleware';
 
 var router = express.Router();
 
-router.get('/get', function(req, res) {
+// GET Requests
+router.get('/get', (req, res)  => {
   if (req.user !== undefined) {
     res.send(JSON.stringify(req.user));
     res.status(200).end();
@@ -29,12 +31,20 @@ router.get('/get_user_by_username/:username', function(req, res) {
   });
 });
 
-router.post('/register', passport.authenticate('local-signup', {
-  successRedirect: urlUtils.clientInfo.path('/admin'),
-  failureRedirect: urlUtils.clientInfo.path('/signup'),
-}));
 
-router.post('/login', function(req, res, next) {
+router.get('/logout', function(req, res) {
+  req.logout();
+  res.redirect(urlUtils.clientInfo.url);
+});
+
+// POST Requests
+router.post('/register', verifyMiddleware,
+  passport.authenticate('local-signup', {
+    successRedirect: urlUtils.clientInfo.path('/admin'),
+    failureRedirect: urlUtils.clientInfo.path('/signup'),
+  }));
+
+router.post('/login', verifyMiddleware, function(req, res, next) {
   passport.authenticate('local-login', function(err, user) {
     if (err) return next(err);
     if (!user) return next({ error: 'Invalid Credentials.' });
@@ -45,12 +55,7 @@ router.post('/login', function(req, res, next) {
   })(req, res, next);
 });
 
-router.get('/logout', function(req, res) {
-  req.logout();
-  res.redirect(urlUtils.clientInfo.url);
-});
-
-router.post('/change_password', function(req, res, next) {
+router.post('/change_password', verifyMiddleware, function(req, res, next) {
   User.findOne({ _id: ObjectId(req.body.userId) }).then(user => {
     if (!user.comparePassword(req.body.currentPassword)) {
       return next({ error: 'Wrong password.' });
@@ -65,7 +70,7 @@ router.post('/change_password', function(req, res, next) {
   })
 });
 
-router.post('/update', function(req, res, next) {
+router.post('/update', verifyMiddleware, function(req, res, next) {
   User.findOne({ _id: ObjectId(req.body.userId) }).then(user => {
     if (user !== null) {
       if (!user.comparePassword(req.body.currentPassword)) {
@@ -93,14 +98,9 @@ router.post('/update', function(req, res, next) {
           });
       }
     }
-    else res.status(500).
-      redirect(urlUtils.clientInfo.path('/admin/edit_profile?error=' +
-      encodeURIComponent('An error occurred.')));
+    else res.status(500);
   }).catch((err) => {
-    console.log(err);
-    res.status(500).
-      redirect(urlUtils.clientInfo.path('/admin/edit_profile?error=' +
-      encodeURIComponent('An error occurred.')));
+    return next(err);
   });
 });
 

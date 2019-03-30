@@ -5,6 +5,7 @@ import CodeEditor from './CodeEditor';
 import _ from 'lodash';
 import axios from 'axios';
 import { default as fromCamelCase } from '../utils/camelcase_convert';
+import { default as gensig } from '../utils/gensig';
 
 var FormBackground = styled.form`
   background-color: cadetblue;
@@ -318,12 +319,14 @@ class GeneratedForm extends Component {
     event.preventDefault();
     Array.prototype.slice.call(event.target.elements, 0 , -1).forEach(
       (node) => { requestBody[node.id] = node.value; });
+    var sig = gensig(requestBody);
+    console.log({ ...requestBody, sig: sig });
     axios({ method: self.props.method,
       headers: {
         'Content-Type': 'application/json'
       },
       url: self.props.formAction,
-      data: requestBody,
+      data: { ...requestBody, sig: sig },
       withCredentials: true
     }).then(function(response) {
       self.props.successCallback(response);
