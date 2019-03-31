@@ -17,6 +17,7 @@
   "rules": {
     "react/jsx-key": "off",
     "indent": ["error", 2],
+    "prefer-template":  "error",
     "max-len": ["error", 80, 2],
     "object-curly-spacing": ["error", "always"],
     "quotes": ["error", "single"],

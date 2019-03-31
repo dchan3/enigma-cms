@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 class FrontMenu extends Component {
   static propTypes = {
     config: PropTypes.object
-  }
+  };
 
   render() {
     return this.props.config ? <div className="front-menu__container">

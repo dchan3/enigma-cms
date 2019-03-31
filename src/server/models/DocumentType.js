@@ -4,7 +4,7 @@ import autoIncrement, { plugin as autoIncrementPlugin } from
 
 var conn = mongoose.createConnection(
   require('../../../config/db.js').url, {}, (err) => {
-    if (!err) console.log('connection succesful');
+    if (!err) console.log('connection successful');
     else console.error(err);
   }
 );

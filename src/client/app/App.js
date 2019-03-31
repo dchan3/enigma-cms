@@ -41,7 +41,7 @@ const LoggedOutRoute = function({ component: Component, user, ...rest }) {
     }
     else return <Component {...props} />
   }} />
-}
+};
 
 class App extends Component {
   constructor(props) {

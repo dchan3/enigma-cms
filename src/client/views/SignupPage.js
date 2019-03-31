@@ -17,16 +17,13 @@ class SignupPage extends Component {
   render() {
     return [<GeneratedForm title="Sign Up" params={{
       username: {
-        label: 'Username',
         type: 'text',
         maximum: 20
       },
       email: {
-        label: 'Email',
         type: 'email'
       },
       password: {
-        label: 'Password',
         type: 'password'
       }
     }} method="post"

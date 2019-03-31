@@ -102,11 +102,11 @@ class GeneratedForm extends Component {
     method: PropTypes.string.isRequired,
     formAction: PropTypes.string.isRequired,
     parentCallback: PropTypes.func
-  }
+  };
 
   static defaultProps = {
     parentCallback: undefined
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -120,7 +120,7 @@ class GeneratedForm extends Component {
         window.location.search.startsWith('?error=') ?
         decodeURIComponent(window.location.search
           .replace('?error=', '')) : ''
-    }
+    };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleArrayRemove = this.handleArrayRemove.bind(this);
@@ -223,7 +223,7 @@ class GeneratedForm extends Component {
         return [
           <FormLabel htmlFor={param}>
             {label +
-              (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
+              (iteration !== undefined ? (` ${  iteration + 1}`) : '')}
           </FormLabel>,
           <br />,
           <FormEnumInput id={param} name={param}
@@ -253,7 +253,7 @@ class GeneratedForm extends Component {
         comp = <div>
           <FormObjectInputLabel>
             {label +
-              (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
+              (iteration !== undefined ? (` ${  iteration + 1}`) : '')}
           </FormObjectInputLabel>
           <FormDiv>
             {innards}
@@ -271,7 +271,7 @@ class GeneratedForm extends Component {
 
         comp = [<FormLabel htmlFor={param} hidden={isHidden}>
           {label +
-              (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
+              (iteration !== undefined ? (` ${iteration + 1}`) : '')}
         </FormLabel>,
         <br />,
         <FormInput {...paramObj} id={param} name={param} hidden={isHidden}
@@ -282,7 +282,7 @@ class GeneratedForm extends Component {
       else if (paramObj.grammar) {
         comp = [<FormLabel htmlFor={param} hidden={isHidden}>
           {label +
-              (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
+              (iteration !== undefined ? (` ${iteration + 1}`) : '')}
         </FormLabel>,
         <br />,
         <CodeEditor id={param} name={param}
@@ -294,7 +294,7 @@ class GeneratedForm extends Component {
           bounds.maxLength = paramObj.maximum
         comp = [<FormLabel htmlFor={param} hidden={isHidden}>
           {label +
-              (iteration !== undefined ? (' ' + (iteration + 1)) : '')}
+              (iteration !== undefined ? (` ${iteration + 1}`) : '')}
         </FormLabel>,
         <br />,
         <FormInput {...bounds} id={param} name={param} hidden={isHidden}
@@ -320,7 +320,6 @@ class GeneratedForm extends Component {
     Array.prototype.slice.call(event.target.elements, 0 , -1).forEach(
       (node) => { requestBody[node.id] = node.value; });
     var sig = gensig(requestBody);
-    console.log({ ...requestBody, sig: sig });
     axios({ method: self.props.method,
       headers: {
         'Content-Type': 'application/json'

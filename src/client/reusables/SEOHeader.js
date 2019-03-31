@@ -6,14 +6,14 @@ class SEOHeader extends Component {
   static defaultProps = {
     keywords: 'my website',
     image: null
-  }
+  };
 
   static propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     keywords: PropTypes.string,
     image: PropTypes.string
-  }
+  };
 
   render() {
     return (

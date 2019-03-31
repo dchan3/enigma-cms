@@ -16,7 +16,7 @@ mongoose.Promise = global.Promise;
 var app = express(), port = process.env.SERVER_PORT || 8080;
 
 mongoose.connect(require('../../config/db.js').url, {}, (err) => {
-  if (!err) console.log('connection succesful');
+  if (!err) console.log('connection successful');
   else console.error(err);
 });
 
@@ -55,5 +55,5 @@ app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 
 app.listen(port, () => {
-  console.log('Running on port ' + port);
+  console.log(`Running on port ${port}`);
 });

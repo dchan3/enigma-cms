@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { default as urlUtils } from '../utils';
 import { TextHeader } from '../reusables/styled';
 
-var TableText = styled.p`
+let TableText = styled.p`
   text-align: center;
   font-family: sans-serif;
 `;
@@ -26,8 +26,9 @@ class EditDocumentLanding extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
-      this.props.match.params.docType), { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path(
+      `/api/documents/get_type/${this.props.match.params.docType}`),
+    { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ docType: data }) })
       .catch((err) => {
@@ -35,8 +36,9 @@ class EditDocumentLanding extends Component {
         console.log('Could not get document type');
       });
 
-    axios.get(urlUtils.serverInfo.path('/api/documents/get_documents/' +
-      this.props.match.params.docType), { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path(
+      `/api/documents/get_documents/${ 
+        this.props.match.params.docType}`), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ documents: data }) })
       .catch((err) => {
@@ -48,7 +50,7 @@ class EditDocumentLanding extends Component {
   render() {
     if (this.state.docType !== null && this.state.documents.length > 0)
       return [
-        <TextHeader>{'Edit ' + this.state.docType.docTypeName}</TextHeader>,
+        <TextHeader>{`Edit ${this.state.docType.docTypeName}`}</TextHeader>,
         <EverAfter.TablePaginator perPage={10}
           items={this.state.documents} truncate={true} columns={
             [this.state.docType.attributes.map(function(attr) {
@@ -61,14 +63,14 @@ class EditDocumentLanding extends Component {
             {
               headerText: 'Edit',
               display: (item) =>
-                <a href={'/admin/edit_document/' + item.docNodeId}>Edit</a>
+                <a href={`/admin/edit_document/${item.docNodeId}`}>Edit</a>
             }, {
               headerText: 'View Live',
-              display: (item) => <a href={'/page/' +
-                  (this.props.config.useSlug ? item.slug :
-                    item.docNodeId)}>View Live</a>
+              display: (item) => <a href={`/page/${
+                this.props.config.useSlug ? item.slug :
+                  item.docNodeId}`}>View Live</a>
             }].flat()
-          } />]
+          } />];
     else return null;
   }
 }

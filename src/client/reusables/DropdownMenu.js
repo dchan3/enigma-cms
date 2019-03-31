@@ -61,7 +61,7 @@ class NodeLinkText extends Component {
   static propTypes = {
     url: PropTypes.string,
     text: PropTypes.string
-  }
+  };
 
   render() {
     return <HoverLink href={this.props.url}>
@@ -73,7 +73,7 @@ class LinkNode extends Component {
   static propTypes = {
     url: PropTypes.string,
     text: PropTypes.string
-  }
+  };
 
   render() {
     return <ListItem>
@@ -85,7 +85,7 @@ class SubLinkNode extends Component {
   static propTypes = {
     url: PropTypes.string,
     text: PropTypes.string
-  }
+  };
 
   render() {
     return <SubListItem>
@@ -99,7 +99,7 @@ class SubMenu extends Component {
     childNodes: PropTypes.array,
     url: PropTypes.string,
     text: PropTypes.string
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -125,27 +125,34 @@ class SubMenu extends Component {
   }
 }
 
-var renderMenuLinkNode = function(node) {
-  return <LinkNode url={node.url} text={node.text} />
-}
-
-var renderMenuListNode = function(node) {
-  return  (
-    <SubMenu url={node.url} text={node.text} childNodes={node.childNodes} />
-  );
-}
-
-var renderNode = function(node) {
-  if (node.childNodes) return renderMenuListNode(node);
-  else if (node.url) return renderMenuLinkNode(node);
-}
-
 class DropdownMenu extends Component {
   static propTypes = {
     menuNodes: PropTypes.array
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.renderNode = this.renderNode.bind(this);
+  }
+
+  renderMenuLinkNode(node) {
+    return <LinkNode url={node.url} text={node.text} />
+  }
+
+  renderMenuListNode(node) {
+    return  (
+      <SubMenu url={node.url} text={node.text} childNodes={node.childNodes} />
+    );
+  }
+
+  renderNode(node) {
+    if (node.childNodes) return this.renderMenuListNode(node);
+    else if (node.url) return this.renderMenuLinkNode(node);
   }
 
   render() {
+    var renderNode = this.renderNode;
     return <ContainerDiv>
       <TopLevelList>
         {this.props.menuNodes.map(node =>

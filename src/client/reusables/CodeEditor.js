@@ -46,7 +46,7 @@ class CodeEditor extends Component {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     value: PropTypes.string
-  }
+  };
 
   constructor(props) {
     super(props);

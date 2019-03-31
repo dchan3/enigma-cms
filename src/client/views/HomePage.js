@@ -7,7 +7,7 @@ class HomePage extends Component {
   static propTypes = {
     user: PropTypes.object,
     config: PropTypes.object
-  }
+  };
 
   render() {
     return <div>

@@ -10,7 +10,7 @@ class FrontProfileDisplay extends Component {
   static propTypes = {
     match: PropTypes.object,
     config: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -23,8 +23,9 @@ class FrontProfileDisplay extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path('/api/users/get_user_by_username/' +
-      this.props.match.params.username), { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path(
+      `/api/users/get_user_by_username/${this.props.match.params.username}`
+    ), { withCredentials: true })
       .then((res) => res.data)
       .then(data => {
         this.setState({ user: data, ready: true });
@@ -35,8 +36,7 @@ class FrontProfileDisplay extends Component {
 
   render() {
     if (this.state.user !== null) {
-      console.log(this.state.user);
-      var template = Handlebars.compile(this.props.config.profileTemplate);
+      let template = Handlebars.compile(this.props.config.profileTemplate);
       return <div>
         <div>
           <h1 className="front-header">
@@ -48,7 +48,7 @@ class FrontProfileDisplay extends Component {
       </div>;
     }
     else if (this.state.ready && !this.state.user)
-      return <Redirect to='/not_found' />
+      return <Redirect to='/not_found' />;
     else return null;
   }
 }

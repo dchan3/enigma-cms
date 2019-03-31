@@ -7,7 +7,7 @@ import { default as urlUtils } from '../utils';
 class DocumentUpdatePage extends Component {
   static propTypes = {
     match: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -19,12 +19,13 @@ class DocumentUpdatePage extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path('/api/documents/get_document/' +
-      this.props.match.params.docNode), { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path(`/api/documents/get_document/${ 
+      this.props.match.params.docNode}`), { withCredentials: true })
       .then((res) => res.data)
       .then(data => {
-        axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
-          data.docTypeId), { withCredentials: true }).then((resp) => resp.data)
+        axios.get(urlUtils.serverInfo.path(
+          `/api/documents/get_type/${data.docTypeId}`),
+        { withCredentials: true }).then((resp) => resp.data)
           .then(typeInfo => {
             this.setState({
               document: data, docType: typeInfo, canDisplay: true });
@@ -41,7 +42,7 @@ class DocumentUpdatePage extends Component {
 
   redirect() {
     window.location.href = this.state.docType ?
-      ('/admin/edit/' + this.state.docType) : '/admin';
+      `/admin/edit/${this.state.docType}` : '/admin';
   }
 
   render() {
@@ -62,8 +63,8 @@ class DocumentUpdatePage extends Component {
 
       return <GeneratedForm title='Edit Document'
         params={params} method="post" successCallback={this.redirect}
-        formAction={urlUtils.serverInfo.path('/api/documents/update_document/' +
-          this.props.match.params.docNode)}
+        formAction={urlUtils.serverInfo.path(`/api/documents/update_document/${ 
+          this.props.match.params.docNode}`)}
       />;
     }
     else return null;

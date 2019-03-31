@@ -16,7 +16,6 @@ class ConfigPage extends Component {
     return <GeneratedForm title="Site Settings" params={{
       siteName: {
         type: 'text',
-        label: 'Site Name',
         value: this.props.config ? this.props.config.siteName : ''
       },
       description: {
@@ -26,32 +25,26 @@ class ConfigPage extends Component {
       },
       aboutBody: {
         type: 'text',
-        label: 'About Body',
         value: this.props.config ? this.props.config.aboutBody : ''
       },
       stylesheet: {
         type: 'text',
-        label: 'Stylesheet',
         grammar: 'css',
         value: this.props.config ? this.props.config.stylesheet : ''
       },
       profileTemplate: {
         type: 'text',
-        label: 'Profile Template',
         grammar: 'html',
         value: this.props.config ? this.props.config.profileTemplate : ''
       },
       menuLinks: {
         type: '[object]',
-        label: 'Menu Links',
         shape: {
           linkText: {
-            type: 'text',
-            label: 'Link Text'
+            type: 'text'
           },
           linkUrl: {
-            type: 'text',
-            label: 'Link URL'
+            type: 'text'
           }
         },
         value: this.props.config && this.props.config.menuLinks || [

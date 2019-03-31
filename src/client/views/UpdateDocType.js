@@ -21,8 +21,8 @@ class UpdateDocType extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
-      this.props.match.params.docTypeId), { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path(`/api/documents/get_type/${ 
+      this.props.match.params.docTypeId}`), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ docType: data, optionParams:
         data.attributes ?
@@ -114,8 +114,8 @@ class UpdateDocType extends Component {
         }
       }} method="post" parentCallback={this.updateParams}
       successCallback={this.redirect}
-      formAction={urlUtils.serverInfo.path('/api/documents/update_type/' +
-        this.props.match.params.docTypeId)} />;
+      formAction={urlUtils.serverInfo.path(`/api/documents/update_type/${ 
+        this.props.match.params.docTypeId}`)} />;
     else return null;
   }
 }

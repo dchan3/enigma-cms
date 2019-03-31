@@ -10,7 +10,7 @@ class FrontDocumentDisplay extends Component {
   static propTypes = {
     match: PropTypes.object,
     config: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -24,13 +24,14 @@ class FrontDocumentDisplay extends Component {
 
   componentDidMount() {
     axios.get(urlUtils.serverInfo.path(
-      '/api/documents/get_document_by_type_and_slug/' +
-      this.props.match.params.docType + '/' +
-      this.props.match.params.docNode), { withCredentials: true })
+      `/api/documents/get_document_by_type_and_slug/${ 
+        this.props.match.params.docType}/${
+        this.props.match.params.docNode}`), { withCredentials: true })
       .then((res) => res.data)
       .then(data => {
-        axios.get(urlUtils.serverInfo.path('/api/documents/get_template/' +
-          data.docTypeId), { withCredentials: true }).then((resp) => resp.data)
+        axios.get(urlUtils.serverInfo.path(
+          `/api/documents/get_template/${ data.docTypeId}`),
+        { withCredentials: true }).then((resp) => resp.data)
           .then(typeInfo => {
             this.setState({
               document: data, template: typeInfo, ready: true });

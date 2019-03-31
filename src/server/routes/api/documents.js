@@ -79,7 +79,7 @@ router.post('/register_type', verifyMiddleware, (req, res, next) => {
 
 router.post('/update_type/:id', verifyMiddleware, (req, res, next) => {
   DocumentType.findOne({ docTypeId: req.params.id }).then(newType => {
-    var reset = [];
+    let reset = [];
     for (var attr in req.body) {
       if (attr.indexOf('.') > -1) {
         var mainKey = attr.split('.')[0];
@@ -110,19 +110,19 @@ router.post('/new_document/:type_id', verifyMiddleware, (req, res) => {
     if (attr.indexOf('.') > -1) {
       var mainKey = attr.split('.')[0];
       if (!reset.includes(mainKey)) {
-        newDoc.set('content.' + mainKey, {});
+        newDoc.set(`content.${  mainKey}`, {});
         reset.push(mainKey);
       }
     }
-    newDoc.set('content.' + attr, req.body[attr]);
+    newDoc.set(`content.${attr}`, req.body[attr]);
   }
   DocumentType.findOne({ docTypeId: newDoc.docTypeId }).then(docType => {
-    var propSlug = slug(newDoc.content[docType.slugFrom]);
+    let propSlug = slug(newDoc.content[docType.slugFrom]);
     Document.find({ docNodeId: { $ne: req.params.node_id }, slug: {
-      $regex: new RegExp('^' + propSlug)
+      $regex: new RegExp(`^${propSlug}`)
     } }).sort({ slug: -1 }).then(documents => {
       if (documents.length > 0) {
-        propSlug = slug + '-' + documents.length;
+        propSlug = `${slug}-${documents.length}`;
       }
       newDoc.set('slug', propSlug);
       newDoc.save(function(err) {
@@ -142,19 +142,19 @@ router.post('/update_document/:node_id', verifyMiddleware, (req, res, next) => {
       if (attr.indexOf('.') > -1) {
         var mainKey = attr.split('.')[0];
         if (!reset.includes(mainKey)) {
-          doc.set('content.' + mainKey, {});
+          doc.set(`content.${mainKey}`, {});
           reset.push(mainKey);
         }
       }
-      doc.set('content.' + attr, req.body[attr]);
+      doc.set(`content.${attr}`, req.body[attr]);
     }
     DocumentType.findOne({ docTypeId: doc.docTypeId }).then(docType => {
       var propSlug = slug(doc.content[docType.slugFrom]);
       Document.find({ docNodeId: { $ne: req.params.node_id }, slug: {
-        $regex: new RegExp('^' + propSlug)
+        $regex: new RegExp(`^${propSlug}`)
       } }).sort({ slug: -1 }).then(documents => {
         if (documents.length > 0) {
-          propSlug = slug + '-' + documents.length;
+          propSlug = `${slug}-${documents.length}`;
         }
         doc.set('slug', propSlug);
         doc.save(function(err) {

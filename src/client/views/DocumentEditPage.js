@@ -7,7 +7,7 @@ import { default as urlUtils } from '../utils';
 class DocumentEditPage extends Component {
   static propTypes = {
     match: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
@@ -18,10 +18,9 @@ class DocumentEditPage extends Component {
   }
 
   componentDidMount() {
-    console.log(urlUtils.serverInfo.path('/api/documents/get_type/') +
-      this.props.match.params.docTypeId);
-    axios.get(urlUtils.serverInfo.path('/api/documents/get_type/' +
-      this.props.match.params.docTypeId), { withCredentials: true })
+    axios.get(urlUtils.serverInfo.path(
+      `/api/documents/get_type/${this.props.match.params.docTypeId}`),
+    { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ docType: data, canDisplay: true }); })
       .catch((err) => {
@@ -32,11 +31,11 @@ class DocumentEditPage extends Component {
   }
 
   redirect() {
-    window.location.href = '/admin/edit/' + this.props.match.params.docTypeId;
+    window.location.href = `/admin/edit/${this.props.match.params.docTypeId}`;
   }
 
   render() {
-    var params = {};
+    let params = {};
 
     if (this.state.docType !== null) {
       this.state.docType.attributes.forEach(attr => {
@@ -60,10 +59,11 @@ class DocumentEditPage extends Component {
     }
 
     if (this.state.canDisplay)
-      return <GeneratedForm title={'New ' + this.state.docType.docTypeName}
+      return <GeneratedForm title={`New ${this.state.docType.docTypeName}`}
         params={params} method="post"
-        formAction={urlUtils.serverInfo.path('/api/documents/new_document/') +
-          this.props.match.params.docTypeId} successCallback={this.redirect}
+        formAction={urlUtils.serverInfo.path(
+          `/api/documents/new_document/${this.props.match.params.docTypeId}`)}
+        successCallback={this.redirect}
       />;
     else return null;
   }

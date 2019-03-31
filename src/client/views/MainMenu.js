@@ -9,7 +9,7 @@ class MainMenu extends Component {
     user: PropTypes.object,
     config: PropTypes.object,
     docTypes: PropTypes.array
-  }
+  };
 
   render() {
     return <div>
@@ -28,35 +28,35 @@ class MainMenu extends Component {
               { url: '/admin/register_type', text: 'Register Document Type' },
               { url: '', text: 'Edit Document Type...', childNodes:
                 this.props.docTypes.map((docType) => {
-                  return { url: '/admin/edit_type/' + docType.docTypeId,
+                  return { url: `/admin/edit_type/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
               },
               { url: '', text: 'New...', childNodes:
                 this.props.docTypes.map((docType) => {
-                  return { url: '/admin/new/' + docType.docTypeId,
+                  return { url: `/admin/new/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
               },
               { url: '', text: 'Edit Existing...', childNodes:
                 this.props.docTypes.map((docType) => {
-                  return { url: '/admin/edit/' + docType.docTypeId,
+                  return { url: `/admin/edit/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
               },
               { url: '', text: 'Edit Display Template For...',  childNodes:
                 this.props.docTypes.map((docType) => {
-                  return { url: '/admin/edit_template/' + docType.docTypeId,
+                  return { url: `/admin/edit_template/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
               }] : [{ url: '', text: 'New...', childNodes:
                 this.props.docTypes.map((docType) => {
-                  return { url: '/admin/new/' + docType.docTypeId,
+                  return { url: `/admin/new/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
             },{ url: '', text: 'Edit Existing...', childNodes:
                 this.props.docTypes.map((docType) => {
-                  return { url: '/admin/edit/' + docType.docTypeId,
+                  return { url: `/admin/edit/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
             }] } /> : null}

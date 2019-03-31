@@ -14,7 +14,7 @@ var FooterContainer = styled.div`
 class Footer extends Component {
   static propTypes  = {
     user: PropTypes.object
-  }
+  };
 
   render() {
     return <FooterContainer>
