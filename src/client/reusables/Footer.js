@@ -27,7 +27,7 @@ class Footer extends Component {
         {' '}
         <a href={urlUtils.serverInfo.path('/api/users/logout')}>Logout</a>.
         {' '}
-        <a href='/change_password'>Change password.</a>.
+        <a href='/change_password'>Change password</a>.
       </FooterText> : <FooterText>
         <a href="/login">Login</a>
         {' | '}

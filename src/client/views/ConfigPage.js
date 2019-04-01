@@ -8,6 +8,11 @@ class ConfigPage extends Component {
     config: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+    this.redirect = this.redirect.bind(this);
+  }
+
   redirect() {
     window.location.href = '/admin';
   }

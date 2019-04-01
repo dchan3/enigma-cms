@@ -3,7 +3,6 @@ import SiteConfig from '../../models/SiteConfig';
 import { default as verifyMiddleware } from '../middleware';
 
 var router = express.Router();
-router.use(verifyMiddleware);
 
 // GET Requests
 router.get('/get', function(req, res) {
