@@ -5,7 +5,7 @@ import CodeEditor from './CodeEditor';
 import _ from 'lodash';
 import axios from 'axios';
 import { default as fromCamelCase } from '../utils/camelcase_convert';
-import { default as gensig } from '../utils/gensig';
+import { default as gensig } from '../../lib/utils/gensig';
 
 var FormBackground = styled.form`
   background-color: cadetblue;

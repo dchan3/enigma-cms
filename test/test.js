@@ -10,8 +10,7 @@ import { default as urlUtils } from '../src/lib/utils';
 import icongen from '../src/server/utils/icongen';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
-import { default as gensigClient } from '../src/client/utils/gensig';
-import { default as gensigServer } from '../src/server/utils/gensig';
+import { default as gensig } from '../src/lib/utils/gensig';
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 
@@ -147,9 +146,7 @@ describe('Camel Case String Conversion', function() {
 describe('Signature Generator', function () {
   it('generates signatures correctly', function (done) {
     var obj = { a: 5, b: 4 }, regex = /#[\da-f]{6} #[\da-f]{6}/;
-    expect(gensigClient(obj)).to.match(regex);
-    expect(gensigServer(obj)).to.match(regex);
-    expect(gensigClient(obj) === gensigServer(obj)).to.be.true;
+    expect(gensig(obj)).to.match(regex);
     done();
   });
 });

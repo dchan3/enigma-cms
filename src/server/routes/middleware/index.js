@@ -1,4 +1,4 @@
-import { default as gensig } from '../../utils/gensig';
+import { default as gensig } from '../../../lib/utils/gensig';
 
 export default function(req, res, next) {
   if (req.method === 'GET') return next();
