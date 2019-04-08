@@ -3,10 +3,10 @@
   "private": true,
   "scripts": {
     "lint": "eslint .",
+    "build": "webpack --progress",
     "test": "mocha --require @babel/register test/test.js",
-    "start": "concurrently \"npm run-script client\" \"npm run-script server\"",
-    "client": "react-scripts build && react-scripts start",
-    "server": "nodemon --exec babel-node app.js"
+    "fire-up": "nodemon --exec babel-node app.js",
+    "start": "npm run-script build && npm run-script fire-up"
   },
   "dependencies": {
     "@babel/node": "^7.2.2",
@@ -20,6 +20,7 @@
     "express-session": "^1.15.6",
     "gm": "^1.23.1",
     "handlebars": "^4.1.1",
+    "isomorphic-fetch": "^2.2.1",
     "limax": "^1.7.0",
     "lodash": "^4.17.11",
     "mongoose": "^5.4.20",

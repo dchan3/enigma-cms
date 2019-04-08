@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Switch, Route, Redirect } from 'react-router';
 import { BrowserRouter as Router } from 'react-router-dom';
 import HomePage from '../views/HomePage';
@@ -19,7 +20,8 @@ import ProfileEditPage from '../views/ProfileEditPage';
 import ChangePasswordPage from '../views/ChangePasswordPage';
 import Footer from '../reusables/Footer';
 import axios from 'axios';
-import { default as urlUtils } from '../utils';
+import fetch from 'isomorphic-fetch';
+import { default as urlUtils } from '../../lib/utils';
 
 const ProtectedRoute = function({ component: Component, user, isAdmin,
   ...rest }) {
@@ -44,44 +46,40 @@ const LoggedOutRoute = function({ component: Component, user, ...rest }) {
 };
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { user: undefined, config: undefined, canDisplay: false };
+  static propTypes = {
+    user: PropTypes.any,
+    config: PropTypes.object,
+    types: PropTypes.array
   }
 
-  componentDidMount() {
-    axios.get(
-      urlUtils.serverInfo.path('/api/users/get'), { withCredentials: true })
-      .then((res) => res.data)
-      .then(data => { this.setState({ user: data, canDisplay: true }); })
-      .catch((err) => {
-        console.log(err);
-        console.log('User not logged in.');
-        this.setState({ user: null, canDisplay: true });
-      });
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: undefined,
+      config: this.props.config || undefined,
+      types: this.props.types || undefined,
+      canDisplay: false };
+  }
 
-    axios.get(
-      urlUtils.serverInfo.path('/api/site_config/get'),
-      { withCredentials: true })
-      .then((res) => res.data)
-      .then(data => { this.setState({ config: data }); })
-      .catch((err) => {
-        console.log(err);
-        console.log('Couldn\'t get site config.');
-        this.setState({ config: null, canDisplay: true });
-      });
+  async componentDidMount() {
+    var self = this;
+    if (!this.props.config && !this.props.types) {
+      var config =
+        await fetch(urlUtils.info.path('/api/site_config/get'));
+      var configData = await config.json();
 
-    axios.get(
-      urlUtils.serverInfo.path('/api/documents/get_types'),
-      { withCredentials: true
-      }).then((res) => res.data).then(data => {
-      console.log(data);
-      this.setState({ docTypes: data, canDisplay: true });
-    }).catch((err) => {
-      console.log(err);
-      console.log('Couldn\'t get document types.');
-      this.setState({ docTypes: [], canDisplay: true });
-    });
+      var types =
+        await fetch(urlUtils.info.path('/api/documents/get_types'));
+      var typesData = await types.json();
+
+      var user =
+        await fetch(urlUtils.info.path('/api/users/get'));
+      var userData = await user.json();
+
+      self.setState({ user: userData, types: typesData, config: configData,
+        canDisplay: true });
+    }
+    else self.setState({ canDisplay: true });
   }
 
   render() {

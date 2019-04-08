@@ -3,7 +3,7 @@ import DocumentDisplayTemplate from '../../models/DocumentDisplayTemplate';
 import DocumentType from '../../models/DocumentType';
 import Document from '../../models/Document';
 import slug from 'limax';
-import { default as urlUtils } from '../../utils';
+import { default as urlUtils } from '../../../lib/utils';
 import { default as verifyMiddleware } from '../middleware';
 
 var router = express.Router();
@@ -73,7 +73,7 @@ router.post('/register_type', verifyMiddleware, (req, res, next) => {
   }
   newType.save(function (err) {
     if (err) return next(err);
-    else res.redirect(urlUtils.clientInfo.path('/admin/'));
+    else res.redirect(urlUtils.info.path('/admin/'));
   });
 });
 
@@ -92,7 +92,7 @@ router.post('/update_type/:id', verifyMiddleware, (req, res, next) => {
     }
     newType.save(function (err) {
       if (err) return next(err);
-      else res.redirect(urlUtils.clientInfo.path('/admin/'));
+      else res.redirect(urlUtils.info.path('/admin/'));
     })
   })
 });
@@ -127,7 +127,7 @@ router.post('/new_document/:type_id', verifyMiddleware, (req, res) => {
       newDoc.set('slug', propSlug);
       newDoc.save(function(err) {
         if (err) res.status(500);
-        else res.redirect(urlUtils.clientInfo.path('/admin/'));
+        else res.redirect(urlUtils.info.path('/admin/'));
       });
     });
   }).catch(() => { res.status(500); });
@@ -159,7 +159,7 @@ router.post('/update_document/:node_id', verifyMiddleware, (req, res, next) => {
         doc.set('slug', propSlug);
         doc.save(function(err) {
           if (err) res.status(500);
-          else res.redirect(urlUtils.clientInfo.path('/admin/'));
+          else res.redirect(urlUtils.info.path('/admin/'));
         });
       });
     });

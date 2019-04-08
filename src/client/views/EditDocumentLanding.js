@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import EverAfter from 'react-everafter';
 import styled from 'styled-components';
-import { default as urlUtils } from '../utils';
+import { default as urlUtils } from '../../lib/utils';
 import { TextHeader } from '../reusables/styled';
 
 let TableText = styled.p`
@@ -26,7 +26,7 @@ class EditDocumentLanding extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path(
+    axios.get(urlUtils.info.path(
       `/api/documents/get_type/${this.props.match.params.docType}`),
     { withCredentials: true })
       .then((res) => res.data)
@@ -36,7 +36,7 @@ class EditDocumentLanding extends Component {
         console.log('Could not get document type');
       });
 
-    axios.get(urlUtils.serverInfo.path(
+    axios.get(urlUtils.info.path(
       `/api/documents/get_documents/${ 
         this.props.match.params.docType}`), { withCredentials: true })
       .then((res) => res.data)

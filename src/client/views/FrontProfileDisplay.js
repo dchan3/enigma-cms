@@ -4,7 +4,7 @@ import Handlebars from 'handlebars';
 import FrontMenu from '../reusables/FrontMenu';
 import { Redirect } from 'react-router';
 import axios from 'axios';
-import { default as urlUtils } from '../utils';
+import { default as urlUtils } from '../../lib/utils';
 
 class FrontProfileDisplay extends Component {
   static propTypes = {
@@ -23,7 +23,7 @@ class FrontProfileDisplay extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path(
+    axios.get(urlUtils.info.path(
       `/api/users/get_user_by_username/${this.props.match.params.username}`
     ), { withCredentials: true })
       .then((res) => res.data)

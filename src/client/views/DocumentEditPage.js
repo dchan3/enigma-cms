@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../reusables/GeneratedForm';
 import axios from 'axios';
-import { default as urlUtils } from '../utils';
+import { default as urlUtils } from '../../lib/utils';
 
 class DocumentEditPage extends Component {
   static propTypes = {
@@ -18,7 +18,7 @@ class DocumentEditPage extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path(
+    axios.get(urlUtils.info.path(
       `/api/documents/get_type/${this.props.match.params.docTypeId}`),
     { withCredentials: true })
       .then((res) => res.data)
@@ -61,7 +61,7 @@ class DocumentEditPage extends Component {
     if (this.state.canDisplay)
       return <GeneratedForm title={`New ${this.state.docType.docTypeName}`}
         params={params} method="post"
-        formAction={urlUtils.serverInfo.path(
+        formAction={urlUtils.info.path(
           `/api/documents/new_document/${this.props.match.params.docTypeId}`)}
         successCallback={this.redirect}
       />;

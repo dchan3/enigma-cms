@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../reusables/GeneratedForm';
 import axios from 'axios';
-import { default as urlUtils } from '../utils';
+import { default as urlUtils } from '../../lib/utils';
 
 class EditDisplayTemplate extends Component {
   static propTypes = {
@@ -22,7 +22,7 @@ class EditDisplayTemplate extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path(
+    axios.get(urlUtils.info.path(
       `/api/documents/get_type/${this.props.match.params.docTypeId}`),
     { withCredentials: true })
       .then((res) => res.data)
@@ -32,7 +32,7 @@ class EditDisplayTemplate extends Component {
         console.log('Could not get document type.');
       });
 
-    axios.get(urlUtils.serverInfo.path(
+    axios.get(urlUtils.info.path(
       `/api/documents/get_template/${this.props.match.params.docTypeId}`),
     { withCredentials: true })
       .then((res) => res.data)
@@ -55,7 +55,7 @@ class EditDisplayTemplate extends Component {
             this.state.template.templateBody : ''
         }
       }} method="post" successCallback={this.redirect}
-      formAction={urlUtils.serverInfo.path(
+      formAction={urlUtils.info.path(
         `/api/documents/update_template/${this.props.match.params.docTypeId}`)}
       />;
     else return null;

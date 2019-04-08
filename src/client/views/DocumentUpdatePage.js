@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../reusables/GeneratedForm';
 import axios from 'axios';
-import { default as urlUtils } from '../utils';
+import { default as urlUtils } from '../../lib/utils';
 
 class DocumentUpdatePage extends Component {
   static propTypes = {
@@ -19,11 +19,11 @@ class DocumentUpdatePage extends Component {
   }
 
   componentDidMount() {
-    axios.get(urlUtils.serverInfo.path(`/api/documents/get_document/${ 
+    axios.get(urlUtils.info.path(`/api/documents/get_document/${ 
       this.props.match.params.docNode}`), { withCredentials: true })
       .then((res) => res.data)
       .then(data => {
-        axios.get(urlUtils.serverInfo.path(
+        axios.get(urlUtils.info.path(
           `/api/documents/get_type/${data.docTypeId}`),
         { withCredentials: true }).then((resp) => resp.data)
           .then(typeInfo => {
@@ -63,7 +63,7 @@ class DocumentUpdatePage extends Component {
 
       return <GeneratedForm title='Edit Document'
         params={params} method="post" successCallback={this.redirect}
-        formAction={urlUtils.serverInfo.path(`/api/documents/update_document/${ 
+        formAction={urlUtils.info.path(`/api/documents/update_document/${ 
           this.props.match.params.docNode}`)}
       />;
     }

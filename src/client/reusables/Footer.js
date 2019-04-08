@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { default as urlUtils } from '../utils';
+import { default as urlUtils } from '../../lib/utils';
 
 var FooterContainer = styled.div`
   text-align: center;
@@ -23,9 +23,9 @@ class Footer extends Component {
       {!!this.props.user ? <FooterText>
         Logged in as {this.props.user.username}.{' '}
         <a href=
-          {urlUtils.clientInfo.path('/admin/edit_profile')}>Edit profile</a>.
+          {urlUtils.info.path('/admin/edit_profile')}>Edit profile</a>.
         {' '}
-        <a href={urlUtils.serverInfo.path('/api/users/logout')}>Logout</a>.
+        <a href={urlUtils.info.path('/api/users/logout')}>Logout</a>.
         {' '}
         <a href='/change_password'>Change password</a>.
       </FooterText> : <FooterText>

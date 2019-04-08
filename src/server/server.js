@@ -9,7 +9,8 @@ import { default as configRoutes } from './routes/api/site_config';
 import { default as documentRoutes } from './routes/api/documents';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
-import { default as urlUtils } from './utils';
+import { default as urlUtils } from '../lib/utils';
+import { default as ssrRoutes } from './routes/ssr';
 
 mongoose.Promise = global.Promise;
 
@@ -23,7 +24,7 @@ mongoose.connect(require('../../config/db.js').url, {}, (err) => {
 app.use(expressSession);
 
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', urlUtils.clientInfo.url);
+  res.header('Access-Control-Allow-Origin', urlUtils.info.url);
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept');
@@ -36,6 +37,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.static('public'));
 
 passport.serializeUser((user, done) => {
   done(null, user.username);
@@ -53,6 +55,8 @@ passport.use('local-login', LoginStrategy);
 app.use('/api/users', userRoutes);
 app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
+
+app.get('/*', ssrRoutes);
 
 app.listen(port, () => {
   console.log(`Running on port ${port}`);
