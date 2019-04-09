@@ -116,10 +116,7 @@ class GeneratedForm extends Component {
     }
     this.state = {
       values: values,
-      errorMessage: window.location.search &&
-        window.location.search.startsWith('?error=') ?
-        decodeURIComponent(window.location.search
-          .replace('?error=', '')) : ''
+      errorMessage: ''
     };
 
     this.handleChange = this.handleChange.bind(this);

@@ -5,26 +5,30 @@ import FrontMenu from '../reusables/FrontMenu';
 
 class HomePage extends Component {
   static propTypes = {
-    user: PropTypes.object,
-    config: PropTypes.object
+    staticContext: PropTypes.object
   };
 
   render() {
     return <div>
       <style>
-        {this.props.config ? this.props.config.stylesheet : ''}
+        {this.props.staticContext.config ?
+          this.props.staticContext.config.stylesheet : ''}
       </style>
-      <SEOHeader title={this.props.config ? this.props.config.siteName :
+      <SEOHeader title={this.props.staticContext.config ?
+        this.props.staticContext.config.siteName :
         'My Website'}
-      description={this.props.config ? this.props.config.description :
+      description={this.props.staticContext.config ?
+        this.props.staticContext.config.description :
         'Welcome to my website!'}
-      image={this.props.config ? this.props.config.image : ''}/>
+      image={this.props.staticContext.config ?
+        this.props.staticContext.config.image : ''}/>
       <div>
         <h1 className="front-header">
-          {this.props.config ? this.props.config.siteName :
+          {this.props.staticContext.config ?
+            this.props.staticContext.config.siteName :
             'My Website'}</h1>
       </div>
-      <FrontMenu config={this.props.config} />
+      <FrontMenu config={this.props.staticContext.config} />
     </div>;
   }
 }

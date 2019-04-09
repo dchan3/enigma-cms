@@ -1,5 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { hydrate } from 'react-dom';
 import App from './App';
+import { BrowserRouter } from 'react-router-dom';
 
-ReactDOM.hydrate(<App />, document.getElementById('root'));
+hydrate(
+  <BrowserRouter>
+    <App staticContext={window.__INITIAL_DATA__} />
+  </BrowserRouter>,
+  document.getElementById('root'));

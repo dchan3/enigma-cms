@@ -14,7 +14,6 @@ let TableText = styled.p`
 class EditDocumentLanding extends Component {
   static propTypes = {
     match: PropTypes.object,
-    config: PropTypes.object
   }
 
   constructor(props) {
@@ -37,7 +36,7 @@ class EditDocumentLanding extends Component {
       });
 
     axios.get(urlUtils.info.path(
-      `/api/documents/get_documents/${ 
+      `/api/documents/get_documents/${
         this.props.match.params.docType}`), { withCredentials: true })
       .then((res) => res.data)
       .then(data => { this.setState({ documents: data }) })
@@ -67,7 +66,7 @@ class EditDocumentLanding extends Component {
             }, {
               headerText: 'View Live',
               display: (item) => <a href={`/page/${
-                this.props.config.useSlug ? item.slug :
+                this.props.staticContext.config.useSlug ? item.slug :
                   item.docNodeId}`}>View Live</a>
             }].flat()
           } />];

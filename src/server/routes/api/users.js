@@ -14,7 +14,7 @@ router.get('/get', (req, res)  => {
     res.send(JSON.stringify(req.user));
     res.status(200).end();
   }
-  else res.json();
+  else res.send(JSON.stringify(null)).status(200).end();
 });
 
 router.get('/generate_icon/:username', function(req, res) {

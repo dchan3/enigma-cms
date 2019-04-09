@@ -3,51 +3,38 @@ import PropTypes from 'prop-types';
 import Handlebars from 'handlebars';
 import FrontMenu from '../reusables/FrontMenu';
 import { Redirect } from 'react-router';
-import axios from 'axios';
-import { default as urlUtils } from '../../lib/utils';
 
 class FrontProfileDisplay extends Component {
   static propTypes = {
     match: PropTypes.object,
-    config: PropTypes.object
+    staticContext: PropTypes.object
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      template: this.props.config.profileTemplate,
-      user: null,
-      ready: false
+      template: this.props.staticContext.config.profileTemplate
     };
   }
 
-  componentDidMount() {
-    axios.get(urlUtils.info.path(
-      `/api/users/get_user_by_username/${this.props.match.params.username}`
-    ), { withCredentials: true })
-      .then((res) => res.data)
-      .then(data => {
-        this.setState({ user: data, ready: true });
-      }).catch(() => {
-        this.setState({ ready: true });
-      });
-  }
-
   render() {
-    if (this.state.user !== null) {
-      let template = Handlebars.compile(this.props.config.profileTemplate);
+    if (this.props.staticContext.profileUser !== null) {
+      let template =
+        Handlebars.compile(this.props.staticContext.config.profileTemplate);
       return <div>
         <div>
           <h1 className="front-header">
-            {this.props.config ? this.props.config.siteName :
+            {this.props.staticContext.config ?
+              this.props.staticContext.config.siteName :
               'My Website'}</h1>
         </div>
-        <FrontMenu config={this.props.config} />
-        <div dangerouslySetInnerHTML={{ __html: template(this.state.user) }} />
+        <FrontMenu config={this.props.staticContext.config} />
+        <div dangerouslySetInnerHTML={{ __html:
+          template(this.props.staticContext.profileUser) }} />
       </div>;
     }
-    else if (this.state.ready && !this.state.user)
+    else if (!this.props.staticContext.profileUser)
       return <Redirect to='/not_found' />;
     else return null;
   }

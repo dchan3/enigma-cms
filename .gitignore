@@ -3,3 +3,4 @@ build/
 .idea/
 dist/
 public/*.js
+server.bundle.js

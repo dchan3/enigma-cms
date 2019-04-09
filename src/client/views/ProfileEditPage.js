@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import GeneratedForm from '../reusables/GeneratedForm';
 import { default as urlUtils } from '../../lib/utils';
 
 class ProfileEditPage extends Component {
-  static propTypes = {
-    user: PropTypes.object
-  };
-
   redirect() {
     window.location.href = '/admin';
   }
@@ -18,20 +13,20 @@ class ProfileEditPage extends Component {
         userId: {
           label: 'User ID',
           type: 'text',
-          value: this.props.user._id,
+          value: global.user._id,
           hidden: true
         },
         username: {
           type: 'text',
-          value: this.props.user.username
+          value: global.user.username
         },
         displayName: {
           type: 'text',
-          value: this.props.user.displayName || ''
+          value: global.user.displayName || ''
         },
         email: {
           type: 'email',
-          value: this.props.user.email
+          value: global.user.email
         },
         currentPassword: {
           type: 'password'

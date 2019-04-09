@@ -16,6 +16,7 @@
   },
   "rules": {
     "react/jsx-key": "off",
+    "react/display-name": "off",
     "indent": ["error", 2],
     "prefer-template":  "error",
     "max-len": ["error", 80, 2],

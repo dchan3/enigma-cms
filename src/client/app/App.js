@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, Redirect } from 'react-router';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { Route, Redirect } from 'react-router';
 import HomePage from '../views/HomePage';
 import MainMenu from '../views/MainMenu';
 import SignupPage from '../views/SignupPage';
@@ -19,15 +18,12 @@ import NotFound from '../views/NotFound';
 import ProfileEditPage from '../views/ProfileEditPage';
 import ChangePasswordPage from '../views/ChangePasswordPage';
 import Footer from '../reusables/Footer';
-import axios from 'axios';
-import fetch from 'isomorphic-fetch';
-import { default as urlUtils } from '../../lib/utils';
 
-const ProtectedRoute = function({ component: Component, user, isAdmin,
+const ProtectedRoute = function({ component: Component, isAdmin, staticContext,
   ...rest }) {
   return <Route {...rest} render={(props) => {
-    if (!!user) {
-      if ((isAdmin && user.roleId === 0) || !isAdmin) {
+    if (staticContext.user) {
+      if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
         return  <Component {...props} />
       }
       else return <Redirect to="/login" />
@@ -36,9 +32,10 @@ const ProtectedRoute = function({ component: Component, user, isAdmin,
   }} />
 };
 
-const LoggedOutRoute = function({ component: Component, user, ...rest }) {
+const LoggedOutRoute = function({ component: Component, staticContext,
+  ...rest }) {
   return <Route {...rest} render={(props) => {
-    if (user) {
+    if (staticContext.user) {
       return <Redirect to="/admin" />
     }
     else return <Component {...props} />
@@ -47,98 +44,66 @@ const LoggedOutRoute = function({ component: Component, user, ...rest }) {
 
 class App extends Component {
   static propTypes = {
-    user: PropTypes.any,
-    config: PropTypes.object,
-    types: PropTypes.array
+    staticContext: PropTypes.object
   }
 
   constructor(props) {
     super(props);
-    this.state = {
-      user: undefined,
-      config: this.props.config || undefined,
-      types: this.props.types || undefined,
-      canDisplay: false };
+
+    this.returnComp = this.returnComp.bind(this);
   }
 
-  async componentDidMount() {
-    var self = this;
-    if (!this.props.config && !this.props.types) {
-      var config =
-        await fetch(urlUtils.info.path('/api/site_config/get'));
-      var configData = await config.json();
-
-      var types =
-        await fetch(urlUtils.info.path('/api/documents/get_types'));
-      var typesData = await types.json();
-
-      var user =
-        await fetch(urlUtils.info.path('/api/users/get'));
-      var userData = await user.json();
-
-      self.setState({ user: userData, types: typesData, config: configData,
-        canDisplay: true });
-    }
-    else self.setState({ canDisplay: true });
+  returnComp(Comp) {
+    var staticComp = this.props.staticContext || window.__INITIAL_DATA__;
+    return class extends Component {
+      render() {
+        return <Comp staticContext={staticComp} />
+      }
+    };
   }
 
   render() {
-    if (this.state.canDisplay) return [
-      (!!this.state.config && !!this.state.docTypes && !!this.state.user) ?
-        <MainMenu config={this.state.config}
-          user={this.state.user} docTypes={this.state.docTypes} /> : null,
-      !!this.state.config ?
-        <style>{this.state.config.stylesheet}</style> : null,
-      <Router>
-        <Switch>
-          <Route exact path='/' component={() =>
-            <HomePage user={this.state.user || null}
-              config={this.state.config || null} /> } />
-          <ProtectedRoute exact path="/admin/edit_profile"
-            user={this.state.user} isAdmin={false}
-            component={() => <ProfileEditPage user={this.state.user} />} />
-          <ProtectedRoute exact path="/admin/config" isAdmin={true}
-            user={this.state.user} component={() =>
-              <ConfigPage config={this.state.config} />} />,
-          <ProtectedRoute exact path="/admin/register_type" isAdmin={true}
-            user={this.state.user} component={RegisterDocType} />
-          <ProtectedRoute exact path='/admin/new/:docTypeId' isAdmin={false}
-            user={this.state.user} component={DocumentEditPage} />
-          <ProtectedRoute exact path='/admin/edit/:docType'
-            user={this.state.user}
-            component={({ match }) => (<EditDocumentLanding match={match}
-              config={this.state.config} />)} />
-          <ProtectedRoute exact path='/admin/edit_document/:docNode'
-            isAdmin={false} user={this.state.user}
-            component={DocumentUpdatePage}/>
-          <ProtectedRoute exact path='/admin/edit_template/:docTypeId'
-            isAdmin={false} user={this.state.user}
-            component={EditDisplayTemplate}/>
-          <ProtectedRoute exact path='/admin/edit_type/:docTypeId'
-            isAdmin={false} user={this.state.user} component={UpdateDocType}/>
-          <ProtectedRoute exact path='/change_password' user={this.state.user}
-            isAdmin={false}
-            component={() => <ChangePasswordPage user={this.state.user} />} />
-          <ProtectedRoute exact path="/admin/" isAdmin={false}
-            user={this.state.user} component={() => <div />} />
-          <LoggedOutRoute path="/signup" component={SignupPage}
-            user={this.state.user} />
-          <LoggedOutRoute user={this.state.user} path="/login"
-            component={LoginPage} />,
-          {!!this.state.config ?
-            <Route exact path="/profile/:username" component={({ match }) =>
-              <FrontProfileDisplay config={this.state.config}
-                match={match} />} /> : null}
-          {!!this.state.config ?
-            <Route path="/:docType/:docNode" component={({ match }) =>
-              <FrontDocumentDisplay config={this.state.config}
-                match={match} />} /> : null}
-          <Route path="*" component={NotFound} />
-        </Switch>
-      </Router>,
-      <Footer user={this.state.user || null} />
+    var staticContext = this.props.staticContext || window.__INITIAL_DATA__;
+    console.log(staticContext);
+    return [
+      (staticContext.config && staticContext.docTypes && staticContext.user) ?
+        <MainMenu /> : null,
+      staticContext.config ?
+        <style>{staticContext.config.stylesheet}</style> : null,
+      <Route exact path='/' component={this.returnComp(HomePage)} />,
+      <ProtectedRoute exact path="/admin/edit_profile" isAdmin={false}
+        staticContext={staticContext} component={ProfileEditPage} />,
+      <ProtectedRoute exact path="/admin/config" isAdmin={true}
+        staticContext={staticContext}  component={ConfigPage} />,
+      <ProtectedRoute exact path="/admin/register_type" isAdmin={true}
+        staticContext={staticContext}  component={RegisterDocType} />,
+      <ProtectedRoute exact path='/admin/new/:docTypeId' isAdmin={false}
+        staticContext={staticContext}  component={DocumentEditPage} />,
+      <ProtectedRoute exact path='/admin/edit/:docType'
+        staticContext={staticContext}  component={EditDocumentLanding} />,
+      <ProtectedRoute exact path='/admin/edit_document/:docNode'
+        staticContext={staticContext} isAdmin={false}
+        component={DocumentUpdatePage}/>,
+      <ProtectedRoute exact path='/admin/edit_template/:docTypeId'
+        staticContext={staticContext} isAdmin={false}
+        component={EditDisplayTemplate}/>,
+      <ProtectedRoute exact path='/admin/edit_type/:docTypeId'
+        staticContext={staticContext} isAdmin={false}
+        component={UpdateDocType}/>,
+      <ProtectedRoute exact path='/admin/change_password' isAdmin={false}
+        staticContext={staticContext} component={ChangePasswordPage} />,
+      <ProtectedRoute exact path="/admin/" isAdmin={false}
+        staticContext={staticContext} component={() => <div />} />,
+      <LoggedOutRoute path="/signup" staticContext={staticContext}
+        component={SignupPage} />,
+      <LoggedOutRoute path="/login" staticContext={staticContext}
+        component={LoginPage} />,
+      <Route exact path="/profile/:username"
+        component={this.returnComp(FrontProfileDisplay)} />,
+      <Route path="/:docType/:docNode" component={FrontDocumentDisplay} />,
+      <Route path="/not-found" component={NotFound} />,
+      <Footer user={staticContext.user || null} />
     ];
-    else return null;
   }
 }
 

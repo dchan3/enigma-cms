@@ -5,7 +5,7 @@ import { default as urlUtils } from '../../lib/utils';
 
 class ConfigPage extends Component {
   static propTypes = {
-    config: PropTypes.object
+    staticContext: PropTypes.object
   };
 
   constructor(props) {
@@ -18,29 +18,35 @@ class ConfigPage extends Component {
   }
 
   render() {
+    var staticContext = this.props.staticContext;
+
     return <GeneratedForm title="Site Settings" params={{
       siteName: {
         type: 'text',
-        value: this.props.config ? this.props.config.siteName : ''
+        value: staticContext.config ? staticContext.config.siteName : ''
       },
       description: {
         type: 'text',
         label: 'Site Description',
-        value: this.props.config ? this.props.config.description : ''
+        value: this.props.staticContext.config ?
+          this.props.staticContext.config.description : ''
       },
       aboutBody: {
         type: 'text',
-        value: this.props.config ? this.props.config.aboutBody : ''
+        value: this.props.staticContext.config ?
+          this.props.staticContext.config.aboutBody : ''
       },
       stylesheet: {
         type: 'text',
         grammar: 'css',
-        value: this.props.config ? this.props.config.stylesheet : ''
+        value: this.props.staticContext.config ?
+          this.props.staticContext.config.stylesheet : ''
       },
       profileTemplate: {
         type: 'text',
         grammar: 'html',
-        value: this.props.config ? this.props.config.profileTemplate : ''
+        value: this.props.staticContext.config ?
+          this.props.staticContext.config.profileTemplate : ''
       },
       menuLinks: {
         type: '[object]',
@@ -52,7 +58,8 @@ class ConfigPage extends Component {
             type: 'text'
           }
         },
-        value: this.props.config && this.props.config.menuLinks || [
+        value: this.props.staticContext.config &&
+          this.props.staticContext.config.menuLinks || [
           {
             linkText: '',
             linkUrl: ''
@@ -66,8 +73,8 @@ class ConfigPage extends Component {
           text: 'Yes', value: true }, {
           text: 'No', value: false
         }],
-        value: this.props.config !== undefined ?
-          this.props.config.useSlug : false
+        value: this.props.staticContext.config !== undefined ?
+          this.props.staticContext.config.useSlug : false
       },
       shortcodes: {
         type: '[object]',
@@ -86,7 +93,8 @@ class ConfigPage extends Component {
             grammar: 'js'
           }
         },
-        value: this.props.config && this.props.config.shortcodes || [{
+        value: this.props.staticContext.config &&
+          this.props.staticContext.config.shortcodes || [{
           name: '',
           args: '',
           code: ''

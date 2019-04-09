@@ -5,7 +5,7 @@
     "lint": "eslint .",
     "build": "webpack --progress",
     "test": "mocha --require @babel/register test/test.js",
-    "fire-up": "nodemon --exec babel-node app.js",
+    "fire-up": "nodemon server.bundle.js",
     "start": "npm run-script build && npm run-script fire-up"
   },
   "dependencies": {
@@ -37,10 +37,12 @@
     "react-metamorph": "^0.1.1",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",
+    "serialize-javascript": "^1.6.1",
     "sha1": "^1.1.1",
     "typescript": "^3.4.1",
     "underscore": "^1.9.1",
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.4.0",
