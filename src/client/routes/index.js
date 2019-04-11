@@ -40,8 +40,33 @@ export default [
     component: LoginPage,
   },
   {
-    path: '/admin',
+    path: '/signup',
     exact: true,
-    component: () => <div />
+    component: SignupPage,
+  },
+  {
+    path: '/admin',
+    exact: false,
+    component: MainMenu
+  },
+  {
+    path: '/admin/config',
+    exact: true,
+    component: ConfigPage
+  },
+  {
+    path: '/admin/register_type',
+    exact: true,
+    component: RegisterDocType
+  },
+  {
+    path: '/admin/change_password',
+    exact: true,
+    component: ChangePasswordPage
+  },
+  {
+    path: '/not-found',
+    exact: true,
+    component: NotFound
   }
 ];

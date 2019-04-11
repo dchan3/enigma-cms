@@ -64,13 +64,15 @@ class App extends Component {
 
   render() {
     var staticContext = this.props.staticContext || window.__INITIAL_DATA__;
-    console.log(staticContext);
     return [
       (staticContext.config && staticContext.docTypes && staticContext.user) ?
-        <MainMenu /> : null,
+        <MainMenu staticContext={staticContext} /> : null,
       staticContext.config ?
         <style>{staticContext.config.stylesheet}</style> : null,
       <Route exact path='/' component={this.returnComp(HomePage)} />,
+      <ProtectedRoute path="/admin/" isAdmin={false}
+        staticContext={staticContext} component={() =>
+          <MainMenu staticContext={staticContext} /> } />,
       <ProtectedRoute exact path="/admin/edit_profile" isAdmin={false}
         staticContext={staticContext} component={ProfileEditPage} />,
       <ProtectedRoute exact path="/admin/config" isAdmin={true}
@@ -92,8 +94,6 @@ class App extends Component {
         component={UpdateDocType}/>,
       <ProtectedRoute exact path='/admin/change_password' isAdmin={false}
         staticContext={staticContext} component={ChangePasswordPage} />,
-      <ProtectedRoute exact path="/admin/" isAdmin={false}
-        staticContext={staticContext} component={() => <div />} />,
       <LoggedOutRoute path="/signup" staticContext={staticContext}
         component={SignupPage} />,
       <LoggedOutRoute path="/login" staticContext={staticContext}

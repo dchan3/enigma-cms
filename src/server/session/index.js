@@ -8,5 +8,6 @@ export default session({
   },
   secret: secret,
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false,
+  cookie: { secure: false }
 });

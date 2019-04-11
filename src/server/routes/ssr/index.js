@@ -29,10 +29,6 @@ var htmlTemplate = (dom, data) => `<!DOCTYPE html>
       await fetch(urlUtils.info.path('/api/documents/get_types'));
     var typesData = await types.json();
 
-    var user =
-      await fetch(urlUtils.info.path('/api/users/get'));
-    var userData = await user.json();
-
     const activeRoute =
       routeData.find((route) => matchPath(req.url, route)) || {}
 
@@ -41,9 +37,8 @@ var htmlTemplate = (dom, data) => `<!DOCTYPE html>
       : Promise.resolve();
 
     var context = {
-      user: userData,
       config: configData,
-      types: typesData,
+      types: typesData
     }
 
     promise.then((data) => {

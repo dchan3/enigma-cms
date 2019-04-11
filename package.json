@@ -3,10 +3,10 @@
   "private": true,
   "scripts": {
     "lint": "eslint .",
-    "build": "webpack --progress",
+    "build": "webpack --progress -w",
     "test": "mocha --require @babel/register test/test.js",
     "fire-up": "nodemon server.bundle.js",
-    "start": "npm run-script build && npm run-script fire-up"
+    "start": "npm run-script fire-up"
   },
   "dependencies": {
     "@babel/node": "^7.2.2",
@@ -15,6 +15,7 @@
     "bcrypt": "^3.0.5",
     "body-parser": "^1.18.3",
     "concurrently": "^4.1.0",
+    "cookie-parser": "^1.4.4",
     "crypto-js": "^3.1.9-1",
     "express": "^4.16.4",
     "express-session": "^1.15.6",

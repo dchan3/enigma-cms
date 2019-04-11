@@ -11,10 +11,9 @@ var router = express.Router();
 // GET Requests
 router.get('/get', (req, res)  => {
   if (req.user !== undefined) {
-    res.send(JSON.stringify(req.user));
-    res.status(200).end();
+    res.send(JSON.stringify(req.user)).status(200).end();
   }
-  else res.send(JSON.stringify(null)).status(200).end();
+  else res.send(JSON.stringify(null)).end();
 });
 
 router.get('/generate_icon/:username', function(req, res) {

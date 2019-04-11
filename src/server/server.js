@@ -30,20 +30,19 @@ app.use(function(req, res, next) {
     'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
-
 app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
+
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static('public'));
 
 passport.serializeUser((user, done) => {
-  done(null, user.username);
+  done(null, user._id);
 });
-passport.deserializeUser((username, done) => {
-  User.findOne({ username: username }, function(err, user) {
+passport.deserializeUser((_id, done) => {
+  User.findById(_id, function(err, user) {
     done(err, user);
   });
 });
@@ -52,10 +51,10 @@ passport.use('local-signup', SignupStrategy);
 
 passport.use('local-login', LoginStrategy);
 
+app.use(express.static('public'));
 app.use('/api/users', userRoutes);
 app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
-
 app.get('/*', ssrRoutes);
 
 app.listen(port, () => {
