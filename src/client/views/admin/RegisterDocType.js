@@ -7,7 +7,7 @@ class RegisterDocType extends Component {
     super(props);
 
     this.updateParams = this.updateParams.bind(this);
-
+    this.minMax = this.minMax.bind(this);
     this.state = {
       optionParams: ['']
     }
@@ -26,14 +26,21 @@ class RegisterDocType extends Component {
     });
   }
 
+  minMax(value) {
+    console.log(value);
+    return (value.attrType === 'date') ?
+      'date' : 'number';
+  }
+
   render() {
+    let minMax = this.minMax;
+
     return <GeneratedForm title="Register Document Type" params={{
       docTypeName: {
         label: 'Document Type Name',
         type: 'text'
       },
       attributes: {
-        label: 'Attributes',
         type: '[object]',
         shape: {
           attrName: {
@@ -54,17 +61,12 @@ class RegisterDocType extends Component {
             type: '[text]',
           },
           minimum: {
-            label: 'Minimum',
-            type: (value) => (value && value.attrType === 'date') ?
-              'date' : 'number'
+            type: minMax
           },
           maximum: {
-            label: 'Maximum',
-            type: (value) => (value && value.attrType === 'date') ?
-              'date' : 'number'
+            type: minMax
           },
           grammar: {
-            label: 'Grammar',
             type: 'enum',
             enumList: [
               { text: '(None)', value: '' },

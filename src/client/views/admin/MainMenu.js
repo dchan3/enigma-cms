@@ -7,10 +7,11 @@ import { TextHeader } from '../../reusables/styled';
 class MainMenu extends Component {
   static propTypes = {
     staticContext: PropTypes.object
-  }
+  };
 
   render() {
-    var staticContext = this.props.staticContext || window.__INITIAL_DATA__;
+    let staticContext = this.props.staticContext || window.__INITIAL_DATA__,
+      isAdmin = staticContext.user.roleId === 0;
 
     return <div>
       <SEOHeader title={staticContext.config ?
@@ -26,16 +27,18 @@ class MainMenu extends Component {
           staticContext.config.siteName :
           'My Website'}</TextHeader>
         {staticContext.user ?
-          <DropdownMenu menuNodes={staticContext.user.roleId === 0 ?
-            [{ url: '/admin/config', text: 'Site Settings' },
+          <DropdownMenu menuNodes={
+            [
+              isAdmin ? { url: '/admin/config', text: 'Site Settings' } : null,
               { url: '/', text: 'View Front End' },
-              { url: '/admin/register-type', text: 'Register Document Type' },
-              { url: '', text: 'Edit Document Type...', childNodes:
+              isAdmin ? { url: '/admin/register-type',
+                text: 'Register Document Type' } : null,
+              isAdmin ? { url: '', text: 'Edit Document Type...', childNodes:
                 staticContext.types.map((docType) => {
                   return { url: `/admin/edit_type/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
-              },
+              } : null,
               { url: '', text: 'New...', childNodes:
                 staticContext.types.map((docType) => {
                   return { url: `/admin/new/${docType.docTypeId}`,
@@ -53,17 +56,7 @@ class MainMenu extends Component {
                   return { url: `/admin/edit-template/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
-              }] : [{ url: '', text: 'New...', childNodes:
-                staticContext.types.map((docType) => {
-                  return { url: `/admin/new/${docType.docTypeId}`,
-                    text: docType.docTypeName };
-                })
-            },{ url: '', text: 'Edit Existing...', childNodes:
-                staticContext.types.map((docType) => {
-                  return { url: `/admin/edit/${docType.docTypeId}`,
-                    text: docType.docTypeName };
-                })
-            }] } /> : null}
+              }] } /> : null}
       </div>
     </div>;
   }
