@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import GeneratedForm from '../reusables/GeneratedForm';
-import axios from 'axios';
-import { default as urlUtils } from '../../lib/utils';
+import GeneratedForm from '../../reusables/GeneratedForm';
+import axios from 'axios/index';
+import { default as urlUtils } from '../../../lib/utils';
 
 class DocumentUpdatePage extends Component {
   static propTypes = {

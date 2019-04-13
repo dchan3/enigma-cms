@@ -1,30 +1,30 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router';
-import HomePage from '../views/HomePage';
-import MainMenu from '../views/MainMenu';
-import SignupPage from '../views/SignupPage';
-import LoginPage from '../views/LoginPage';
-import ConfigPage from '../views/ConfigPage';
-import RegisterDocType from '../views/RegisterDocType';
-import DocumentEditPage from '../views/DocumentEditPage';
-import DocumentUpdatePage from '../views/DocumentUpdatePage';
-import EditDocumentLanding from '../views/EditDocumentLanding';
-import EditDisplayTemplate from '../views/EditDisplayTemplate';
-import FrontDocumentDisplay from '../views/FrontDocumentDisplay';
-import FrontProfileDisplay from '../views/FrontProfileDisplay';
-import UpdateDocType from '../views/UpdateDocType';
-import NotFound from '../views/NotFound';
-import ProfileEditPage from '../views/ProfileEditPage';
-import ChangePasswordPage from '../views/ChangePasswordPage';
+import HomePage from '../views/front/HomePage';
+import MainMenu from '../views/admin/MainMenu';
+import SignupPage from '../views/admin/SignupPage';
+import LoginPage from '../views/front/LoginPage';
+import ConfigPage from '../views/admin/ConfigPage';
+import RegisterDocType from '../views/admin/RegisterDocType';
+import DocumentEditPage from '../views/admin/DocumentEditPage';
+import DocumentUpdatePage from '../views/admin/DocumentUpdatePage';
+import EditDocumentLanding from '../views/admin/EditDocumentLanding';
+import EditDisplayTemplate from '../views/admin/EditDisplayTemplate';
+import FrontDocumentDisplay from '../views/front/FrontDocumentDisplay';
+import FrontProfileDisplay from '../views/front/FrontProfileDisplay';
+import UpdateDocType from '../views/admin/UpdateDocType';
+import NotFound from '../views/front/NotFound';
+import ProfileEditPage from '../views/admin/ProfileEditPage';
+import ChangePasswordPage from '../views/admin/ChangePasswordPage';
 import Footer from '../reusables/Footer';
 
-const ProtectedRoute = function({ component: Component, isAdmin, staticContext,
+var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
   ...rest }) {
   return <Route {...rest} render={(props) => {
     if (staticContext.user) {
       if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
-        return  <Component {...props} />
+        return <Component {...props} staticContext={staticContext} />
       }
       else return <Redirect to="/login" />
     }
@@ -32,7 +32,13 @@ const ProtectedRoute = function({ component: Component, isAdmin, staticContext,
   }} />
 };
 
-const LoggedOutRoute = function({ component: Component, staticContext,
+ProtectedRoute.propTypes = {
+  isAdmin: PropTypes.bool,
+  staticContext: PropTypes.object,
+  component: PropTypes.func
+};
+
+var LoggedOutRoute = function({ component: Component, staticContext,
   ...rest }) {
   return <Route {...rest} render={(props) => {
     if (staticContext.user) {
@@ -41,6 +47,11 @@ const LoggedOutRoute = function({ component: Component, staticContext,
     else return <Component {...props} />
   }} />
 };
+
+LoggedOutRoute.propTypes = {
+  staticContext: PropTypes.object,
+  component: PropTypes.func
+}
 
 class App extends Component {
   static propTypes = {
@@ -70,29 +81,28 @@ class App extends Component {
       staticContext.config ?
         <style>{staticContext.config.stylesheet}</style> : null,
       <Route exact path='/' component={this.returnComp(HomePage)} />,
-      <ProtectedRoute path="/admin/" isAdmin={false}
-        staticContext={staticContext} component={() =>
-          <MainMenu staticContext={staticContext} /> } />,
-      <ProtectedRoute exact path="/admin/edit_profile" isAdmin={false}
+      <ProtectedRoute path="/admin" isAdmin={false}
+        staticContext={staticContext} component={MainMenu} />,
+      <ProtectedRoute exact path="/admin/edit-profile" isAdmin={false}
         staticContext={staticContext} component={ProfileEditPage} />,
       <ProtectedRoute exact path="/admin/config" isAdmin={true}
         staticContext={staticContext}  component={ConfigPage} />,
-      <ProtectedRoute exact path="/admin/register_type" isAdmin={true}
+      <ProtectedRoute exact path="/admin/register-type" isAdmin={true}
         staticContext={staticContext}  component={RegisterDocType} />,
       <ProtectedRoute exact path='/admin/new/:docTypeId' isAdmin={false}
         staticContext={staticContext}  component={DocumentEditPage} />,
       <ProtectedRoute exact path='/admin/edit/:docType'
         staticContext={staticContext}  component={EditDocumentLanding} />,
-      <ProtectedRoute exact path='/admin/edit_document/:docNode'
+      <ProtectedRoute exact path='/admin/edit-document/:docNode'
         staticContext={staticContext} isAdmin={false}
         component={DocumentUpdatePage}/>,
-      <ProtectedRoute exact path='/admin/edit_template/:docTypeId'
+      <ProtectedRoute exact path='/admin/edit-template/:docTypeId'
         staticContext={staticContext} isAdmin={false}
         component={EditDisplayTemplate}/>,
-      <ProtectedRoute exact path='/admin/edit_type/:docTypeId'
+      <ProtectedRoute exact path='/admin/edit-type/:docTypeId'
         staticContext={staticContext} isAdmin={false}
         component={UpdateDocType}/>,
-      <ProtectedRoute exact path='/admin/change_password' isAdmin={false}
+      <ProtectedRoute exact path='/admin/change-password' isAdmin={false}
         staticContext={staticContext} component={ChangePasswordPage} />,
       <LoggedOutRoute path="/signup" staticContext={staticContext}
         component={SignupPage} />,

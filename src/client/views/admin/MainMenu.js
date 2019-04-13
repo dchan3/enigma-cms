@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import SEOHeader from '../reusables/SEOHeader';
-import DropdownMenu from '../reusables/DropdownMenu';
-import { TextHeader } from '../reusables/styled';
+import SEOHeader from '../../reusables/SEOHeader';
+import DropdownMenu from '../../reusables/DropdownMenu';
+import { TextHeader } from '../../reusables/styled';
 
 class MainMenu extends Component {
   static propTypes = {
@@ -10,7 +10,6 @@ class MainMenu extends Component {
   }
 
   render() {
-    console.log(this.props.staticContext);
     var staticContext = this.props.staticContext || window.__INITIAL_DATA__;
 
     return <div>
@@ -30,7 +29,7 @@ class MainMenu extends Component {
           <DropdownMenu menuNodes={staticContext.user.roleId === 0 ?
             [{ url: '/admin/config', text: 'Site Settings' },
               { url: '/', text: 'View Front End' },
-              { url: '/admin/register_type', text: 'Register Document Type' },
+              { url: '/admin/register-type', text: 'Register Document Type' },
               { url: '', text: 'Edit Document Type...', childNodes:
                 staticContext.types.map((docType) => {
                   return { url: `/admin/edit_type/${docType.docTypeId}`,
@@ -51,7 +50,7 @@ class MainMenu extends Component {
               },
               { url: '', text: 'Edit Display Template For...',  childNodes:
                 staticContext.types.map((docType) => {
-                  return { url: `/admin/edit_template/${docType.docTypeId}`,
+                  return { url: `/admin/edit-template/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
               }] : [{ url: '', text: 'New...', childNodes:

@@ -1,20 +1,19 @@
-import React, { Component } from 'react';
-import HomePage from '../views/HomePage';
-import MainMenu from '../views/MainMenu';
-import SignupPage from '../views/SignupPage';
-import LoginPage from '../views/LoginPage';
-import ConfigPage from '../views/ConfigPage';
-import RegisterDocType from '../views/RegisterDocType';
-import DocumentEditPage from '../views/DocumentEditPage';
-import DocumentUpdatePage from '../views/DocumentUpdatePage';
-import EditDocumentLanding from '../views/EditDocumentLanding';
-import EditDisplayTemplate from '../views/EditDisplayTemplate';
-import FrontDocumentDisplay from '../views/FrontDocumentDisplay';
-import FrontProfileDisplay from '../views/FrontProfileDisplay';
-import UpdateDocType from '../views/UpdateDocType';
-import NotFound from '../views/NotFound';
-import ProfileEditPage from '../views/ProfileEditPage';
-import ChangePasswordPage from '../views/ChangePasswordPage';
+import HomePage from '../views/front/HomePage';
+import MainMenu from '../views/admin/MainMenu';
+import SignupPage from '../views/admin/SignupPage';
+import LoginPage from '../views/front/LoginPage';
+import ConfigPage from '../views/admin/ConfigPage';
+import RegisterDocType from '../views/admin/RegisterDocType';
+import DocumentEditPage from '../views/admin/DocumentEditPage';
+import DocumentUpdatePage from '../views/admin/DocumentUpdatePage';
+import EditDocumentLanding from '../views/admin/EditDocumentLanding';
+import EditDisplayTemplate from '../views/admin/EditDisplayTemplate';
+import FrontDocumentDisplay from '../views/front/FrontDocumentDisplay';
+import FrontProfileDisplay from '../views/front/FrontProfileDisplay';
+import UpdateDocType from '../views/admin/UpdateDocType';
+import NotFound from '../views/front/NotFound';
+import ProfileEditPage from '../views/admin/ProfileEditPage';
+import ChangePasswordPage from '../views/admin/ChangePasswordPage';
 
 import fetch from 'isomorphic-fetch';
 import { default as urlUtils } from '../../lib/utils';
@@ -55,12 +54,12 @@ export default [
     component: ConfigPage
   },
   {
-    path: '/admin/register_type',
+    path: '/admin/register-type',
     exact: true,
     component: RegisterDocType
   },
   {
-    path: '/admin/change_password',
+    path: '/admin/change-password',
     exact: true,
     component: ChangePasswordPage
   },
@@ -68,5 +67,45 @@ export default [
     path: '/not-found',
     exact: true,
     component: NotFound
+  },
+  {
+    path: '/admin/register-type',
+    exact: 'true',
+    component: RegisterDocType
+  },
+  {
+    path: '/admin/new/:docTypeId',
+    exact: 'true',
+    component: DocumentEditPage
+  },
+  {
+    path: '/admin/edit-document/:docNode',
+    exact: 'true',
+    component: DocumentUpdatePage
+  },
+  {
+    path: '/admin/edit/:docType',
+    exact: true,
+    component: EditDocumentLanding
+  },
+  {
+    path: '/:docType/:docNode',
+    exact: true,
+    component: FrontDocumentDisplay
+  },
+  {
+    path: '/admin/edit-template/:docTypeId',
+    exact: true,
+    component: EditDisplayTemplate
+  },
+  {
+    path: '/admin/edit-type/:docTypeId',
+    exact: true,
+    component: UpdateDocType
+  },
+  {
+    path: '/admin/edit-profile',
+    exact: true,
+    component: ProfileEditPage
   }
 ];

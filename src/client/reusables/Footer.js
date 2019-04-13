@@ -23,11 +23,11 @@ class Footer extends Component {
       {!!this.props.user ? <FooterText>
         Logged in as {this.props.user.username}.{' '}
         <a href=
-          {urlUtils.info.path('/admin/edit_profile')}>Edit profile</a>.
+          {urlUtils.info.path('/admin/edit-profile')}>Edit profile</a>.
         {' '}
         <a href={urlUtils.info.path('/api/users/logout')}>Logout</a>.
         {' '}
-        <a href='/change_password'>Change password</a>.
+        <a href='/change-password'>Change password</a>.
       </FooterText> : <FooterText>
         <a href="/login">Login</a>
         {' | '}

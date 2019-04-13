@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
+import axios from 'axios/index';
 import EverAfter from 'react-everafter';
 import styled from 'styled-components';
-import { default as urlUtils } from '../../lib/utils';
-import { TextHeader } from '../reusables/styled';
+import { default as urlUtils } from '../../../lib/utils';
+import { TextHeader } from '../../reusables/styled';
 
 let TableText = styled.p`
   text-align: center;
@@ -14,6 +14,7 @@ let TableText = styled.p`
 class EditDocumentLanding extends Component {
   static propTypes = {
     match: PropTypes.object,
+    staticContext: PropTypes.object
   }
 
   constructor(props) {

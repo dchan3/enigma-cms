@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import GeneratedForm from '../reusables/GeneratedForm';
-import { default as urlUtils } from '../../lib/utils';
+import GeneratedForm from '../../reusables/GeneratedForm';
+import { default as urlUtils } from '../../../lib/utils';
 
 class RegisterDocType extends Component {
   constructor(props) {

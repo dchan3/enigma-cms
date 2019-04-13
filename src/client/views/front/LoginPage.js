@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import GeneratedForm from '../reusables/GeneratedForm';
-import { StyledDiv } from '../reusables/styled';
-import { default as urlUtils } from '../../lib/utils';
+import GeneratedForm from '../../reusables/GeneratedForm';
+import { StyledDiv } from '../../reusables/styled';
+import { default as urlUtils } from '../../../lib/utils';
 
 class LoginPage extends Component {
   constructor(props) {

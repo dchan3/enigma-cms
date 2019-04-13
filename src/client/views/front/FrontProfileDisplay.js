@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Handlebars from 'handlebars';
-import FrontMenu from '../reusables/FrontMenu';
+import FrontMenu from '../../reusables/FrontMenu';
 import { Redirect } from 'react-router';
 
 class FrontProfileDisplay extends Component {
@@ -35,7 +35,7 @@ class FrontProfileDisplay extends Component {
       </div>;
     }
     else if (!this.props.staticContext.profileUser)
-      return <Redirect to='/not_found' />;
+      return <Redirect to='/not-found' />;
     else return null;
   }
 }

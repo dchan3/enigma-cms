@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import SEOHeader from '../reusables/SEOHeader';
-import FrontMenu from '../reusables/FrontMenu';
+import SEOHeader from '../../reusables/SEOHeader';
+import FrontMenu from '../../reusables/FrontMenu';
 
 class HomePage extends Component {
   static propTypes = {
