@@ -1,13 +1,15 @@
 import React from 'react';
 import App from '../../../client/app/App';
-import { default as routeData } from '../../../client/routes';
+import { frontEndRoutes, backEndRoutes } from '../../../client/routes';
 import fetch from 'isomorphic-fetch';
-import { StaticRouter, matchPath } from 'react-router-dom';
+import { matchPath, Router } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
 import { default as urlUtils } from '../../../lib/utils';
 import serialize from 'serialize-javascript';
+import { createMemoryHistory } from 'history';
 
-var htmlTemplate = (dom, data) => `<!DOCTYPE html>
+var history = createMemoryHistory(),
+  htmlTemplate = (dom, data) => `<!DOCTYPE html>
    <html>
     <head>
     <title></title>
@@ -29,24 +31,27 @@ var htmlTemplate = (dom, data) => `<!DOCTYPE html>
       await fetch(urlUtils.info.path('/api/documents/get_types'));
     var typesData = await types.json();
 
+    var path = req.path, routes = path.startsWith('/admin') ?
+      backEndRoutes : frontEndRoutes;
+
     const activeRoute =
-      routeData.find((route) => matchPath(req.url, route)) || {}
+      routes.find(route => matchPath(path, route)) || {};
 
     const promise = activeRoute.fetchInitialData
-      ? activeRoute.fetchInitialData(req.path).then(d => d.json())
+      ? activeRoute.fetchInitialData(path).then(d => d.json())
       : Promise.resolve();
 
     var context = {
       config: configData,
       types: typesData
-    }
+    };
 
     promise.then((data) => {
       if (activeRoute.key && data) context[activeRoute.key] = data;
       const jsx = (
-          <StaticRouter location={req.url} context={context}>
+          <Router history={history}>
             <App staticContext={context} />
-          </StaticRouter>), markup = renderToString(jsx);
+          </Router>), markup = renderToString(jsx);
       res.writeHead(200, { 'Content-Type': 'text/html' } );
       res.end(htmlTemplate(markup, context));
     }).catch(next)

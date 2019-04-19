@@ -5,6 +5,7 @@ import { default as urlUtils } from '../../../lib/utils';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
+import { findTheOne } from './utils';
 
 var router = express.Router();
 
@@ -22,13 +23,8 @@ router.get('/generate_icon/:username', function(req, res) {
   });
 });
 
-router.get('/get_user_by_username/:username', function(req, res) {
-  User.findOne({ username: req.params.username }).then(user => {
-    res.json(user);
-  }).catch(() => {
-    res.status(500);
-  });
-});
+router.get('/get_user_by_username/:username',
+  findTheOne(User,{ username: 'username' }));
 
 
 router.get('/logout', function(req, res) {
@@ -76,7 +72,7 @@ router.post('/update', verifyMiddleware, function(req, res, next) {
         return next({ error: 'Wrong password.' });
       }
       else {
-        for (var attr in req.body) {
+        for (let attr in req.body) {
           if (!['currentPassword', 'userId'].includes(attr))
             user.set(attr, req.body[attr]);
         }

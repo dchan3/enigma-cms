@@ -10,8 +10,8 @@ class MainMenu extends Component {
   };
 
   render() {
-    let staticContext = this.props.staticContext || window.__INITIAL_DATA__,
-      isAdmin = staticContext.user.roleId === 0;
+    let staticContext = this.props.staticContext,
+      isAdmin = staticContext.user && staticContext.user.roleId === 0 || false;
 
     return <div>
       <SEOHeader title={staticContext.config ?
@@ -29,13 +29,14 @@ class MainMenu extends Component {
         {staticContext.user ?
           <DropdownMenu menuNodes={
             [
-              isAdmin ? { url: '/admin/config', text: 'Site Settings' } : null,
+              isAdmin ? { url: '/admin/edit-config',
+                text: 'Site Settings' } : null,
               { url: '/', text: 'View Front End' },
               isAdmin ? { url: '/admin/register-type',
                 text: 'Register Document Type' } : null,
               isAdmin ? { url: '', text: 'Edit Document Type...', childNodes:
                 staticContext.types.map((docType) => {
-                  return { url: `/admin/edit_type/${docType.docTypeId}`,
+                  return { url: `/admin/edit-type/${docType.docTypeId}`,
                     text: docType.docTypeName };
                 })
               } : null,

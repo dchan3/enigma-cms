@@ -293,7 +293,6 @@ class GeneratedForm extends Component {
       return comp;
     }
     else if (typeof paramType === 'function') {
-      console.log(paramObj, valueObj, paramType(paramObj));
       return [<FormLabel htmlFor={param}>
         {label}</FormLabel>,
       <br />,
@@ -319,7 +318,6 @@ class GeneratedForm extends Component {
     }).then(function(response) {
       self.props.successCallback(response);
     }).catch(function (error) {
-      console.log(error);
       self.setState({ errorMessage: error.message });
     });
   }

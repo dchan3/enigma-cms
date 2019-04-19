@@ -18,20 +18,11 @@ import ChangePasswordPage from '../views/admin/ChangePasswordPage';
 import fetch from 'isomorphic-fetch';
 import { default as urlUtils } from '../../lib/utils';
 
-export default [
+export const frontEndRoutes = [
   {
     path: '/',
     exact: true,
     component: HomePage
-  },
-  {
-    path: '/profile/:username',
-    exact: true,
-    component: FrontProfileDisplay,
-    fetchInitialData: (path) => fetch(
-      urlUtils.info.path(
-        `/api/users/get_user_by_username/${path.split('/').pop()}`)),
-    key: 'profileUser'
   },
   {
     path: '/login',
@@ -44,12 +35,85 @@ export default [
     component: SignupPage,
   },
   {
+    path: '/profile/:username',
+    exact: true,
+    component: FrontProfileDisplay,
+    fetchInitialData: (path) => fetch(
+      urlUtils.info.path(
+        `/api/users/get_user_by_username/${path.split('/').pop()}`)),
+    key: 'profileUser'
+  },
+  {
+    path: '/:docType/:docNode',
+    exact: true,
+    component: FrontDocumentDisplay,
+    fetchInitialData: (path) => fetch(
+      urlUtils.info.path(
+        `/api/documents/get_document_by_type_and_slug/${
+          path.split('/').slice(-2).join('/')}`)
+    ),
+    key: 'dataObj'
+  },
+  {
+    path: '/not-found',
+    exact: true,
+    component: NotFound
+  }];
+
+export const backEndRoutes = [
+  {
     path: '/admin',
     exact: false,
     component: MainMenu
   },
   {
-    path: '/admin/config',
+    path: '/admin/new/:docTypeId',
+    exact: true,
+    component: DocumentEditPage,
+    fetchInitialData: path => fetch(
+      urlUtils.info.path(
+        `/api/documents/get_type/${path.split('/').pop()}`)),
+    key: 'docType'
+  },
+  {
+    path: '/admin/edit-document/:docNode',
+    exact: true,
+    component: DocumentUpdatePage,
+    fetchInitialData: path => fetch(
+      urlUtils.info.path(
+        `/api/documents/get_document/${path.split('/').pop()}`)),
+    key: 'dataObj'
+  },
+  {
+    path: '/admin/edit/:docType',
+    exact: true,
+    component: EditDocumentLanding,
+    fetchInitialData: path => fetch(
+      urlUtils.info.path(
+        `/api/documents/get_documents/${path.split('/').pop()}`)),
+    key: 'dataObj'
+  },
+  {
+    path: '/admin/edit-template/:docTypeId',
+    exact: true,
+    component: EditDisplayTemplate,
+    fetchInitialData: path => fetch(
+      urlUtils.info.path(
+        `/api/documents/get_template/${path.split('/').pop()}`)),
+    key: 'dataObj'
+  },
+  {
+    path: '/admin/edit-type/:docTypeId',
+    exact: true,
+    component: UpdateDocType
+  },
+  {
+    path: '/admin/edit-profile',
+    exact: true,
+    component: ProfileEditPage
+  },
+  {
+    path: '/admin/edit-config',
     exact: true,
     component: ConfigPage
   },
@@ -64,44 +128,9 @@ export default [
     component: ChangePasswordPage
   },
   {
-    path: '/not-found',
-    exact: true,
-    component: NotFound
-  },
-  {
     path: '/admin/register-type',
-    exact: 'true',
+    exact: true,
     component: RegisterDocType
-  },
-  {
-    path: '/admin/new/:docTypeId',
-    exact: 'true',
-    component: DocumentEditPage
-  },
-  {
-    path: '/admin/edit-document/:docNode',
-    exact: 'true',
-    component: DocumentUpdatePage
-  },
-  {
-    path: '/admin/edit/:docType',
-    exact: true,
-    component: EditDocumentLanding
-  },
-  {
-    path: '/:docType/:docNode',
-    exact: true,
-    component: FrontDocumentDisplay
-  },
-  {
-    path: '/admin/edit-template/:docTypeId',
-    exact: true,
-    component: EditDisplayTemplate
-  },
-  {
-    path: '/admin/edit-type/:docTypeId',
-    exact: true,
-    component: UpdateDocType
   },
   {
     path: '/admin/edit-profile',

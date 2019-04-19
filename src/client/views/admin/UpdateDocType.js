@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import axios from 'axios/index';
 import { default as urlUtils } from '../../../lib/utils';
 
 class UpdateDocType extends Component {
   static propTypes = {
-    match: PropTypes.object
+    match: PropTypes.object,
+    staticContext: PropTypes.object
   };
 
   constructor(props) {
@@ -15,25 +15,8 @@ class UpdateDocType extends Component {
     this.updateParams = this.updateParams.bind(this);
 
     this.state = {
-      docType: null,
-      optionParams: null
+      optionParams: []
     }
-  }
-
-  componentDidMount() {
-    axios.get(urlUtils.info.path(`/api/documents/get_type/${ 
-      this.props.match.params.docTypeId}`), { withCredentials: true })
-      .then((res) => res.data)
-      .then(data => { this.setState({ docType: data, optionParams:
-        data.attributes ?
-          data.attributes.map(attr => ({
-            attrName: attr.attrName,
-            attrType: attr.attrType
-          })) : null }); })
-      .catch((err) => {
-        console.log(err);
-        console.log('Could not get document type.');
-      });
   }
 
   updateParams(values) {
@@ -50,12 +33,13 @@ class UpdateDocType extends Component {
   }
 
   render() {
-    if (this.state.docType !== null)
+    var docType = this.props.staticContext.docType;
+    if (docType !== null)
       return <GeneratedForm title="Update Document Type" params={{
         docTypeName: {
           label: 'Document Type Name',
           type: 'text',
-          value: this.state.docType.docTypeName
+          value: docType.docTypeName
         },
         attributes: {
           label: 'Attributes',
@@ -98,7 +82,7 @@ class UpdateDocType extends Component {
               type: '[text]',
             }
           },
-          value: this.state.docType.attributes || []
+          value: docType.attributes || []
         },
         slugFrom: {
           label: 'Generate Slug From',
@@ -110,7 +94,7 @@ class UpdateDocType extends Component {
               }))].flat() : [
               { text: '(None)', value: '' }
             ],
-          value: this.state.docType.slugFrom || ''
+          value: docType.slugFrom || ''
         }
       }} method="post" parentCallback={this.updateParams}
       successCallback={this.redirect}
