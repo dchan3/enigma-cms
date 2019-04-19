@@ -15,7 +15,7 @@ class FrontDocumentDisplay extends Component {
   }
 
   render() {
-    let { config, dataObj, ...rest } = this.props.staticContext,
+    let { config, dataObj } = this.props.staticContext,
       { templateBody, document } = dataObj;
 
     if (templateBody !== null && document !== null) {

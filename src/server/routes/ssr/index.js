@@ -2,7 +2,7 @@ import React from 'react';
 import App from '../../../client/app/App';
 import { frontEndRoutes, backEndRoutes } from '../../../client/routes';
 import fetch from 'isomorphic-fetch';
-import { StaticRouter, matchPath, Router, Route } from 'react-router-dom';
+import { matchPath, Router } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
 import { default as urlUtils } from '../../../lib/utils';
 import serialize from 'serialize-javascript';

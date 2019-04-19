@@ -17,7 +17,7 @@ router.get('/get_types', (req, res) => {
 });
 
 router.get('/get_type/:id',
-  findTheOne(DocumentType, { docTypeId: 'id'}));
+  findTheOne(DocumentType, { docTypeId: 'id' }));
 
 router.get('/get_document/:id',
   findTheOne(Document, { docNodeId: 'id' }));

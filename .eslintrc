@@ -24,5 +24,8 @@
     "quotes": ["error", "single"],
     "no-extra-boolean-cast": "off",
     "react/no-unescaped-entities": "off"
+  },
+  "globals": {
+    "__dirname__": "readonly"
   }
 }
