@@ -1,7 +1,8 @@
 const path = require('path'), webpack = require('webpack'),
-  nodeExternals = require('webpack-node-externals')
+  nodeExternals = require('webpack-node-externals');
 
 module.exports = [{
+  mode: process.env.MODE ? process.env.MODE : 'development',
   entry:  './src/client/app/index.js',
   module: {
     rules: [
@@ -26,8 +27,10 @@ module.exports = [{
     alias: {
       handlebars: 'handlebars/dist/handlebars.min.js'
     }
-  }
+  },
+  devtool: 'eval-source-map'
 }, {
+  mode: process.env.MODE ? process.env.MODE : 'development',
   entry: './src/server/server.js',
   target: 'node',
   externals: [nodeExternals()],
@@ -49,5 +52,6 @@ module.exports = [{
     path: __dirname,
     filename: 'server.bundle.js',
     publicPath: '/'
-  }
+  },
+  devtool: 'eval-source-map'
 }];

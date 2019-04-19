@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import axios from 'axios/index';
 import { default as urlUtils } from '../../../lib/utils';
 
 class DocumentUpdatePage extends Component {
   static propTypes = {
-    match: PropTypes.object
+    match: PropTypes.object,
+    staticContext: PropTypes.object
   };
 
   constructor(props) {
@@ -16,28 +16,6 @@ class DocumentUpdatePage extends Component {
       docType: null,
       canDisplay: false
     }
-  }
-
-  componentDidMount() {
-    axios.get(urlUtils.info.path(`/api/documents/get_document/${ 
-      this.props.match.params.docNode}`), { withCredentials: true })
-      .then((res) => res.data)
-      .then(data => {
-        axios.get(urlUtils.info.path(
-          `/api/documents/get_type/${data.docTypeId}`),
-        { withCredentials: true }).then((resp) => resp.data)
-          .then(typeInfo => {
-            this.setState({
-              document: data, docType: typeInfo, canDisplay: true });
-          }).catch((err) => {
-            console.log(err);
-            console.log('Could not get document.');
-          });
-      })
-      .catch((err) => {
-        console.log(err);
-        console.log('Could not get document.');
-      });
   }
 
   redirect() {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Route, Redirect } from 'react-router';
+import { Route, Redirect, Switch } from 'react-router-dom';
 import HomePage from '../views/front/HomePage';
 import MainMenu from '../views/admin/MainMenu';
 import SignupPage from '../views/admin/SignupPage';
@@ -26,7 +26,7 @@ var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
       if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
         return <Component {...props} staticContext={staticContext} />
       }
-      else return <Redirect to="/login" />
+      else return <Redirect to="/admin" />
     }
     else return <Redirect to="/login" />
   }} />
@@ -44,76 +44,77 @@ var LoggedOutRoute = function({ component: Component, staticContext,
     if (staticContext.user) {
       return <Redirect to="/admin" />
     }
-    else return <Component {...props} />
+    else return <Component {...props} staticContext={staticContext} />
   }} />
 };
 
 LoggedOutRoute.propTypes = {
   staticContext: PropTypes.object,
   component: PropTypes.func
-}
+};
+
+var FrontEndRoute = function({ component: Component, staticContext, ...rest }) {
+  return <Route {...rest} render={(props) => {
+    return <Component {...props} staticContext={staticContext} />
+  }} />
+};
+
+FrontEndRoute.propTypes = {
+  staticContext: PropTypes.object,
+  component: PropTypes.func
+};
 
 class App extends Component {
   static propTypes = {
     staticContext: PropTypes.object
-  }
+  };
 
   constructor(props) {
     super(props);
-
-    this.returnComp = this.returnComp.bind(this);
-  }
-
-  returnComp(Comp) {
-    var staticComp = this.props.staticContext || window.__INITIAL_DATA__;
-    return class extends Component {
-      render() {
-        return <Comp staticContext={staticComp} />
-      }
-    };
   }
 
   render() {
-    var staticContext = this.props.staticContext || window.__INITIAL_DATA__;
-    return [
-      (staticContext.config && staticContext.docTypes && staticContext.user) ?
-        <MainMenu staticContext={staticContext} /> : null,
-      staticContext.config ?
-        <style>{staticContext.config.stylesheet}</style> : null,
-      <Route exact path='/' component={this.returnComp(HomePage)} />,
-      <ProtectedRoute path="/admin" isAdmin={false}
-        staticContext={staticContext} component={MainMenu} />,
-      <ProtectedRoute exact path="/admin/edit-profile" isAdmin={false}
-        staticContext={staticContext} component={ProfileEditPage} />,
-      <ProtectedRoute exact path="/admin/config" isAdmin={true}
-        staticContext={staticContext}  component={ConfigPage} />,
-      <ProtectedRoute exact path="/admin/register-type" isAdmin={true}
-        staticContext={staticContext}  component={RegisterDocType} />,
-      <ProtectedRoute exact path='/admin/new/:docTypeId' isAdmin={false}
-        staticContext={staticContext}  component={DocumentEditPage} />,
-      <ProtectedRoute exact path='/admin/edit/:docType'
-        staticContext={staticContext}  component={EditDocumentLanding} />,
-      <ProtectedRoute exact path='/admin/edit-document/:docNode'
-        staticContext={staticContext} isAdmin={false}
-        component={DocumentUpdatePage}/>,
-      <ProtectedRoute exact path='/admin/edit-template/:docTypeId'
-        staticContext={staticContext} isAdmin={false}
-        component={EditDisplayTemplate}/>,
-      <ProtectedRoute exact path='/admin/edit-type/:docTypeId'
-        staticContext={staticContext} isAdmin={false}
-        component={UpdateDocType}/>,
-      <ProtectedRoute exact path='/admin/change-password' isAdmin={false}
-        staticContext={staticContext} component={ChangePasswordPage} />,
-      <LoggedOutRoute path="/signup" staticContext={staticContext}
-        component={SignupPage} />,
-      <LoggedOutRoute path="/login" staticContext={staticContext}
-        component={LoginPage} />,
-      <Route exact path="/profile/:username"
-        component={this.returnComp(FrontProfileDisplay)} />,
-      <Route path="/:docType/:docNode" component={FrontDocumentDisplay} />,
-      <Route path="/not-found" component={NotFound} />,
+    let staticContext = this.props.staticContext || window.__INITIAL_DATA__;
+    return <div>
+      <style>{staticContext.config.stylesheet}</style>
+      <Switch>
+        <FrontEndRoute exact path='/' staticContext={staticContext}
+          component={HomePage} />
+        <ProtectedRoute exact path="/admin" isAdmin={false}
+          staticContext={staticContext} component={MainMenu} />
+        <ProtectedRoute exact path='/admin/new/:docTypeId' isAdmin={false}
+          staticContext={staticContext}  component={DocumentEditPage} />
+        <ProtectedRoute exact path='/admin/edit/:docType' isAdmin={true}
+          staticContext={staticContext} component={EditDocumentLanding} />
+        <ProtectedRoute exact path='/admin/edit-document/:docNode'
+          isAdmin={false}
+          staticContext={staticContext} component={DocumentUpdatePage}/>
+        <ProtectedRoute exact path='/admin/edit-template/:docTypeId'
+          staticContext={staticContext} isAdmin={false}
+          component={EditDisplayTemplate}/>,
+        <ProtectedRoute exact path='/admin/edit-type/:docTypeId' isAdmin={false}
+          staticContext={staticContext} component={UpdateDocType}/>
+        <LoggedOutRoute path="/signup" staticContext={staticContext}
+          component={SignupPage} />
+        <LoggedOutRoute path="/login" staticContext={staticContext}
+          component={LoginPage} />
+        <ProtectedRoute exact path="/admin/edit-profile" isAdmin={false}
+          staticContext={staticContext} component={ProfileEditPage} />
+        <ProtectedRoute exact path="/admin/edit-config" isAdmin={true}
+          staticContext={staticContext} component={ConfigPage} />
+        <ProtectedRoute exact path="/admin/register-type" isAdmin={true}
+          staticContext={staticContext} component={RegisterDocType} />
+        <ProtectedRoute exact path='/admin/change-password' isAdmin={false}
+          staticContext={staticContext} component={ChangePasswordPage} />
+        <FrontEndRoute path="/not-found" component={NotFound}
+          staticContext={staticContext} />
+        <FrontEndRoute exact path="/profile/:username"
+          component={FrontProfileDisplay} staticContext={staticContext} />
+        <FrontEndRoute exact path="/:docType/:docNode"
+          component={FrontDocumentDisplay} staticContext={staticContext} />,
+      </Switch>
       <Footer user={staticContext.user || null} />
-    ];
+    </div>;
   }
 }
 

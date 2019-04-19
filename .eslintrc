@@ -22,7 +22,6 @@
     "max-len": ["error", 80, 2],
     "object-curly-spacing": ["error", "always"],
     "quotes": ["error", "single"],
-    "no-console": "off",
     "no-extra-boolean-cast": "off",
     "react/no-unescaped-entities": "off"
   }

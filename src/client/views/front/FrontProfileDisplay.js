@@ -12,10 +12,6 @@ class FrontProfileDisplay extends Component {
 
   constructor(props) {
     super(props);
-
-    this.state = {
-      template: this.props.staticContext.config.profileTemplate
-    };
   }
 
   render() {

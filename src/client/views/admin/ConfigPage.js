@@ -18,35 +18,31 @@ class ConfigPage extends Component {
   }
 
   render() {
-    var staticContext = this.props.staticContext || window.__INITIAL_DATA__;
+    let config = this.props.staticContext.config;
 
     return <GeneratedForm title="Site Settings" params={{
       siteName: {
         type: 'text',
-        value: staticContext.config ? staticContext.config.siteName : ''
+        value: config ? config.siteName : ''
       },
       description: {
         type: 'text',
         label: 'Site Description',
-        value: staticContext.config ?
-          staticContext.config.description : ''
+        value: config ? config.description : ''
       },
       aboutBody: {
         type: 'text',
-        value: staticContext.config ?
-          staticContext.config.aboutBody : ''
+        value: config ? config.aboutBody : ''
       },
       stylesheet: {
         type: 'text',
         grammar: 'css',
-        value: staticContext.config ?
-          staticContext.config.stylesheet : ''
+        value: config ? config.stylesheet : ''
       },
       profileTemplate: {
         type: 'text',
         grammar: 'html',
-        value: staticContext.config ?
-          staticContext.config.profileTemplate : ''
+        value: config ? config.profileTemplate : ''
       },
       menuLinks: {
         type: '[object]',
@@ -58,8 +54,7 @@ class ConfigPage extends Component {
             type: 'text'
           }
         },
-        value: staticContext.config &&
-          staticContext.config.menuLinks || [
+        value: config ? config.menuLinks : [
           {
             linkText: '',
             linkUrl: ''
@@ -73,8 +68,7 @@ class ConfigPage extends Component {
           text: 'Yes', value: true }, {
           text: 'No', value: false
         }],
-        value: staticContext.config !== undefined ?
-          staticContext.config.useSlug : false
+        value: config ? config.useSlug : false
       },
       shortcodes: {
         type: '[object]',
@@ -93,8 +87,7 @@ class ConfigPage extends Component {
             grammar: 'js'
           }
         },
-        value: staticContext.config &&
-          staticContext.config.shortcodes || [{
+        value: config ? config.shortcodes : [{
           name: '',
           args: '',
           code: ''

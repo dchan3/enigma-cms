@@ -16,8 +16,7 @@ class HomePage extends Component {
       </style>
       <SEOHeader title={this.props.staticContext.config ?
         this.props.staticContext.config.siteName :
-        'My Website'}
-      description={this.props.staticContext.config ?
+        'My Website'} description={this.props.staticContext.config ?
         this.props.staticContext.config.description :
         'Welcome to my website!'}
       image={this.props.staticContext.config ?
@@ -28,7 +27,7 @@ class HomePage extends Component {
             this.props.staticContext.config.siteName :
             'My Website'}</h1>
       </div>
-      <FrontMenu config={this.props.staticContext.config} />
+      <FrontMenu config={this.props.staticContext.config}/>
     </div>;
   }
 }

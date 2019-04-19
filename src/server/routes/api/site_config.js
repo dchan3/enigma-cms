@@ -1,15 +1,12 @@
 import express from 'express';
 import SiteConfig from '../../models/SiteConfig';
 import { default as verifyMiddleware } from '../middleware';
+import { findTheOne } from './utils';
 
 var router = express.Router();
 
 // GET Requests
-router.get('/get', function(req, res) {
-  SiteConfig.findOne({ }).then(doc => {
-    res.status(200).json(doc);
-  });
-});
+router.get('/get', findTheOne(SiteConfig, {}));
 
 // POST Requests
 router.post('/update', verifyMiddleware, function(req, res, next) {

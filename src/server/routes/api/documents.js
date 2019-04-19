@@ -5,6 +5,7 @@ import Document from '../../models/Document';
 import slug from 'limax';
 import { default as urlUtils } from '../../../lib/utils';
 import { default as verifyMiddleware } from '../middleware';
+import { findTheOne } from './utils';
 
 var router = express.Router();
 
@@ -15,55 +16,69 @@ router.get('/get_types', (req, res) => {
   }).catch(() => res.status(500));
 });
 
-router.get('/get_type/:id', function(req, res, next) {
-  DocumentType.findOne({ docTypeId: req.params.id }).then(doc => {
-    res.status(200).json(doc);
-  }).catch((err) => next(err));
-});
+router.get('/get_type/:id',
+  findTheOne(DocumentType, { docTypeId: 'id'}));
 
-router.get('/get_document/:id', function(req, res) {
-  Document.findOne({ docNodeId: req.params.id }).then(doc => {
-    res.status(200).json(doc);
-  }).catch(() => res.status(500));
-});
+router.get('/get_document/:id',
+  findTheOne(Document, { docNodeId: 'id' }));
 
-router.get('/get_document_by_slug/:slug', function(req, res) {
-  Document.findOne({ slug: req.params.slug }).then(doc => {
-    res.status(200).json(doc);
-  }).catch(() => res.status(500));
-});
+router.get('/get_document_by_slug/:slug',
+  findTheOne(Document, { slug: 'slug' }));
 
 router.get('/get_document_by_type_and_slug/:type/:slug', function(req, res) {
   DocumentType.findOne({
     docTypeName: req.params.type
   }).then(docType => {
-    Document.findOne({ docTypeId: docType.docTypeId, slug: req.params.slug })
-      .then(doc => {
-        res.status(200).json(doc);
+    DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId })
+      .then(template => {
+        Document.findOne({
+          docTypeId: docType.docTypeId,
+          slug: req.params.slug })
+          .then(doc => {
+            res.status(200).json({
+              templateBody: template.templateBody,
+              document: doc
+            });
+          })
+      });
+  }).catch(() => res.status(500));
+});
+
+router.get('/get_documents/:id', (req, res, next) => {
+  DocumentType.findOne({
+    docTypeId: parseInt(req.params.id)
+  }).then(docType => {
+    Document.find({ docTypeId: docType.docTypeId }).then(docs => {
+      res.status(200).json({
+        docType: docType,
+        documents: docs
       })
-  }).catch(() => res.status(500));
+    })
+  }).catch(err => next(err))
 });
 
-router.get('/get_documents/:id', function(req, res) {
-  Document.find({ docTypeId: req.params.id }).then(docs => {
-    res.status(200).json(docs);
-  }).catch(() => res.status(500));
-});
-
-router.get('/get_template/:id', function(req, res) {
-  DocumentDisplayTemplate.findOne({ docTypeId: req.params.id }).then(doc => {
-    res.status(200).json(doc);
-  })
+router.get('/get_template/:id', (req, res, next) => {
+  DocumentType.findOne({
+    docTypeId: req.params.id
+  }).then(docType => {
+    DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId })
+      .then(template => {
+        res.status(200).json({
+          templateBody: template ? template.templateBody : '',
+          docType: docType
+        });
+      })
+  }).catch(err => next(err));
 });
 
 
 // POST Requests
 router.post('/register_type', verifyMiddleware, (req, res, next) => {
-  var newType = new DocumentType();
-  var reset = [];
-  for (var attr in req.body) {
+  let newType = new DocumentType();
+  let reset = [];
+  for (let attr in req.body) {
     if (attr.indexOf('.') > -1) {
-      var mainKey = attr.split('.')[0];
+      let mainKey = attr.split('.')[0];
       if (!reset.includes(mainKey)) {
         newType.set(mainKey, {});
         reset.push(mainKey);

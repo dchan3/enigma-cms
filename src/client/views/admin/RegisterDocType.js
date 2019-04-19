@@ -27,7 +27,6 @@ class RegisterDocType extends Component {
   }
 
   minMax(value) {
-    console.log(value);
     return (value.attrType === 'date') ?
       'date' : 'number';
   }
