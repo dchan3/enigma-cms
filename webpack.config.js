@@ -53,5 +53,8 @@ module.exports = [{
     filename: 'server.bundle.js',
     publicPath: '/'
   },
-  devtool: 'eval-source-map'
+  devtool: 'eval-source-map',
+  node: {
+    __dirname: false
+  }
 }];

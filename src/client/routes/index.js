@@ -14,6 +14,8 @@ import UpdateDocType from '../views/admin/UpdateDocType';
 import NotFound from '../views/front/NotFound';
 import ProfileEditPage from '../views/admin/ProfileEditPage';
 import ChangePasswordPage from '../views/admin/ChangePasswordPage';
+import FileMgmtLanding from '../views/admin/FileMgmtLanding';
+import UploadFilePage from '../views/admin/UploadFilePage';
 
 import fetch from 'isomorphic-fetch';
 import { default as urlUtils } from '../../lib/utils';
@@ -61,11 +63,6 @@ export const frontEndRoutes = [
   }];
 
 export const backEndRoutes = [
-  {
-    path: '/admin',
-    exact: false,
-    component: MainMenu
-  },
   {
     path: '/admin/new/:docTypeId',
     exact: true,
@@ -133,8 +130,21 @@ export const backEndRoutes = [
     component: RegisterDocType
   },
   {
-    path: '/admin/edit-profile',
+    path: '/admin/file-mgmt',
     exact: true,
-    component: ProfileEditPage
-  }
+    component: FileMgmtLanding,
+    fetchInitialData: () => fetch(
+      urlUtils.info.path('/api/files/get')),
+    key: 'files'
+  },
+  {
+    path: '/admin/upload-file',
+    exact: true,
+    component: UploadFilePage
+  },
+  {
+    path: '/admin',
+    exact: false,
+    component: MainMenu
+  },
 ];

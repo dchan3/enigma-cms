@@ -101,11 +101,13 @@ class GeneratedForm extends Component {
     successCallback: PropTypes.func,
     method: PropTypes.string.isRequired,
     formAction: PropTypes.string.isRequired,
-    parentCallback: PropTypes.func
+    parentCallback: PropTypes.func,
+    fileContent: PropTypes.string
   };
 
   static defaultProps = {
-    parentCallback: undefined
+    parentCallback: undefined,
+    fileContent: 'fileContent'
   };
 
   constructor(props) {
@@ -126,15 +128,30 @@ class GeneratedForm extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  readFile(file) {
+    let rdr = new FileReader();
+    return new Promise((resolve, reject) => {
+      rdr.onload = event => resolve(event.target.result);
+      rdr.onerror = error => reject(error);
+      rdr.readAsArrayBuffer(file);
+    });
+  }
+
   handleChange(param) {
     var self = this;
-    return function(event) {
+    return async function(event) {
       event.preventDefault();
       var newState = {
         values: self.state.values
       };
 
       _.set(newState.values, param, event.target.value);
+
+      if (event.target.type === 'file') {
+        var contents = await self.readFile(event.target.files[0]);
+        var sixfour = Buffer.from(contents).toString('base64');
+        _.set(newState.values, self.props.fileContent, sixfour);
+      }
 
       self.setState(newState);
       if (self.props.parentCallback !== undefined)

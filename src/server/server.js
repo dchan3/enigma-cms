@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import { default as userRoutes } from './routes/api/users';
 import { default as configRoutes } from './routes/api/site_config';
 import { default as documentRoutes } from './routes/api/documents';
+import { default as fileRoutes } from './routes/api/file_mgmt';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as urlUtils } from '../lib/utils';
@@ -33,7 +34,7 @@ app.use(function(req, res, next) {
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -55,6 +56,7 @@ app.use(express.static('public'));
 app.use('/api/users', userRoutes);
 app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
+app.use('/api/files', fileRoutes);
 app.get('/*', ssrRoutes);
 
 app.listen(port, () => {

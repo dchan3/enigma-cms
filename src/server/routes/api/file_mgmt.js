@@ -15,22 +15,25 @@ router.get('/get', (req, res, next) => {
 
 // POST Requests
 router.post('/upload_file', verifyMiddleware, (req, res, next) => {
+  var fn = req.body.fileToUpload.split('\\').pop()
   let newFile = new File({
-    fileName: req.params.fileName,
-    fileType: req.params.fileType,
-    additionalInfo: req.params.additionalInfo,
+    fileName: fn,
+    fileType: req.body.fileType,
     createdDate: new Date(),
-    modifiedDate: new Date()
+    modifiedDate: new Date(),
+    uploadedBy: req.user.userId
   });
+  var filepath = path.resolve(__dirname, './public/uploads/', fn);
   fs.writeFile(
-    path.resolve(__dirname__, 'public/uploads/', req.params.fileName,
-      req.body.contents, (err) => {
-        if (err) next(err);
-        else newFile.save(function (error) {
-          if (error) return next(error);
-          else res.status(200).end();
-        });
-      }));
+    filepath,
+    Buffer.from(req.body.fileContent, 'base64'), { flag: 'a+' }, (err) => {
+      if (err) next(err);
+      else newFile.save(function (error) {
+        if (error) return next(error);
+        else res.status(200).end();
+      });
+    }
+  );
 });
 
 export default router;
