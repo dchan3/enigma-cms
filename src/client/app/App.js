@@ -17,6 +17,8 @@ import UpdateDocType from '../views/admin/UpdateDocType';
 import NotFound from '../views/front/NotFound';
 import ProfileEditPage from '../views/admin/ProfileEditPage';
 import ChangePasswordPage from '../views/admin/ChangePasswordPage';
+import FileMgmtLanding from '../views/admin/FileMgmtLanding';
+import UploadFilePage from '../views/admin/UploadFilePage';
 import Footer from '../reusables/Footer';
 
 var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
@@ -106,6 +108,10 @@ class App extends Component {
           staticContext={staticContext} component={RegisterDocType} />
         <ProtectedRoute exact path='/admin/change-password' isAdmin={false}
           staticContext={staticContext} component={ChangePasswordPage} />
+        <ProtectedRoute exact path='/admin/file-mgmt' isAdmin={false}
+          staticContext={staticContext} component={FileMgmtLanding} />
+        <ProtectedRoute exact path='/admin/upload-file' isAdmin={false}
+          staticContext={staticContext} component={UploadFilePage} />
         <FrontEndRoute path="/not-found" component={NotFound}
           staticContext={staticContext} />
         <FrontEndRoute exact path="/profile/:username"

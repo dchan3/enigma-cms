@@ -26,6 +26,6 @@
     "react/no-unescaped-entities": "off"
   },
   "globals": {
-    "__dirname__": "readonly"
+    "__dirname": "readonly"
   }
 }
