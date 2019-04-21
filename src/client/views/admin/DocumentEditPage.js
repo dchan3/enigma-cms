@@ -45,7 +45,7 @@ class DocumentEditPage extends Component {
       title={`New ${this.props.staticContext.docType.docTypeName}`}
       params={params} method="post"
       formAction={`/api/documents/new_document/${
-          this.props.staticContext.docType.docTypeId}`}
+        this.props.staticContext.docType.docTypeId}`}
       successCallback={this.redirect}
     />;
   }

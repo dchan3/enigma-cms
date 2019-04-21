@@ -1,8 +1,6 @@
 import React from 'react';
 import App from '../../../client/app/App';
 import { frontEndRoutes, backEndRoutes } from './route_data';
-import fetch from 'isomorphic-fetch';
-import axios from 'axios';
 import SiteConfig from '../../models/SiteConfig';
 import DocumentType from '../../models/DocumentType';
 import { matchPath, Router } from 'react-router-dom';
