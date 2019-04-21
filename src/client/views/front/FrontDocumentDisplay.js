@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Handlebars from 'handlebars';
-import FrontMenu from '../../reusables/FrontMenu';
 import { Redirect } from 'react-router';
 
 class FrontDocumentDisplay extends Component {
@@ -26,19 +25,12 @@ class FrontDocumentDisplay extends Component {
         });
 
       let template = Handlebars.compile(templateBody);
-      return <div>
-        <div>
-          <h1 className="front-header">
-            {config ? config.siteName : 'My Website'}</h1>
-        </div>
-        <FrontMenu config={config} />
-        <div dangerouslySetInnerHTML=
-          {{ __html: template(
-            { ...doc.content,
-              createdAt: doc.createdAt,
-              editedAt: doc.editedAt
-            }) }}>
-        </div>
+      return <div dangerouslySetInnerHTML=
+        {{ __html: template(
+          { ...doc.content,
+            createdAt: doc.createdAt,
+            editedAt: doc.editedAt
+          }) }}>
       </div>;
     }
     else

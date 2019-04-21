@@ -19,6 +19,7 @@ import ProfileEditPage from '../views/admin/ProfileEditPage';
 import ChangePasswordPage from '../views/admin/ChangePasswordPage';
 import FileMgmtLanding from '../views/admin/FileMgmtLanding';
 import UploadFilePage from '../views/admin/UploadFilePage';
+import FrontHeader from '../views/front/FrontHeader';
 import Footer from '../reusables/Footer';
 
 var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
@@ -78,6 +79,7 @@ class App extends Component {
   render() {
     let staticContext = this.props.staticContext || window.__INITIAL_DATA__;
     return <div>
+      <FrontHeader staticContext={staticContext} />
       <style>{staticContext.config.stylesheet}</style>
       <Switch>
         <FrontEndRoute exact path='/' staticContext={staticContext}

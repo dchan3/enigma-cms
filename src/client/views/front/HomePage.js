@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import SEOHeader from '../../reusables/SEOHeader';
-import FrontMenu from '../../reusables/FrontMenu';
 
 class HomePage extends Component {
   static propTypes = {
@@ -21,13 +20,6 @@ class HomePage extends Component {
         'Welcome to my website!'}
       image={this.props.staticContext.config ?
         this.props.staticContext.config.image : ''}/>
-      <div>
-        <h1 className="front-header">
-          {this.props.staticContext.config ?
-            this.props.staticContext.config.siteName :
-            'My Website'}</h1>
-      </div>
-      <FrontMenu config={this.props.staticContext.config}/>
     </div>;
   }
 }

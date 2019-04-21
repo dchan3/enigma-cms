@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 var EditorContainer = styled.div`
   height: 250px;
   position: relative;
+  text-align: left;
 `, TextInputArea = styled.textarea`
   background-color: transparent;
   overflow-wrap: break-word;

@@ -99,16 +99,6 @@ describe('Reusable UI Components - Code Editor', function() {
   });
 });
 
-describe('Profile Picture Generation', function() {
-  it('pretty much works', function(done) {
-    icongen('d_dog_tha_man', function(result) {
-      expect(result).to.not.be.null;
-      expect(result).to.match(/^data:image\/png;base64,/);
-      done();
-    });
-  });
-});
-
 describe('Camel Case String Conversion', function() {
   it('one word', function(done) {
     expect(camelcaseConvert('monkey')).to.equal('Monkey');
