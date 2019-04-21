@@ -3,13 +3,11 @@ import App from '../../../client/app/App';
 import { frontEndRoutes, backEndRoutes } from './route_data';
 import SiteConfig from '../../models/SiteConfig';
 import DocumentType from '../../models/DocumentType';
-import { matchPath, Router } from 'react-router-dom';
+import { matchPath, StaticRouter } from 'react-router';
 import { renderToString } from 'react-dom/server';
 import serialize from 'serialize-javascript';
-import { createMemoryHistory } from 'history';
 
-var history = createMemoryHistory(),
-  htmlTemplate = (dom, data) => `<!DOCTYPE html>
+var htmlTemplate = (dom, data) => `<!DOCTYPE html>
    <html>
     <head>
     <title></title>
@@ -24,28 +22,22 @@ var history = createMemoryHistory(),
       <script src='/app.bundle.js' defer></script>
      </body>
 </html>`, ssrRenderer = async (req, res, next) => {
-    var config = await SiteConfig.findOne({});
-
-    var types = await DocumentType.find({});
-
-    var path = req.path, routes = path.startsWith('/admin') ?
-      backEndRoutes : frontEndRoutes;
-
-    const activeRoute =
-      routes.find(route => matchPath(path, route)) || {};
-
-    const promise = activeRoute.fetchInitialData
-      ? activeRoute.fetchInitialData(path).then(d => d)
-      : Promise.resolve();
-
-    var context = { config, types };
+    let config = await SiteConfig.findOne({}),
+      types = await DocumentType.find({}),
+      path = req.path, routes = path.startsWith('/admin') ?
+        backEndRoutes : frontEndRoutes, context = { config, types },
+      activeRoute =
+        routes.find(route => matchPath(path, route)) || {},
+      promise = activeRoute.fetchInitialData
+        ? activeRoute.fetchInitialData(path).then(d => d)
+        : Promise.resolve();
 
     promise.then((data) => {
       if (activeRoute.key && data) context[activeRoute.key] = data;
       const jsx = (
-          <Router history={history}>
+          <StaticRouter location={req.url} context={context}>
             <App staticContext={context} />
-          </Router>), markup = renderToString(jsx);
+          </StaticRouter>), markup = renderToString(jsx);
       res.writeHead(200, { 'Content-Type': 'text/html' } );
       res.end(htmlTemplate(markup, context));
     }).catch(next)
