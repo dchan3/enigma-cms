@@ -29,6 +29,13 @@ class ProfileEditPage extends Component {
           type: 'text',
           value: user.displayName || ''
         },
+        profilePhoto: {
+          type: 'file'
+        },
+        fileContent: {
+          type: 'string',
+          hidden: true
+        },
         email: {
           type: 'email',
           value: user.email

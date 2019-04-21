@@ -4,7 +4,8 @@ import User from '../../models/User';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
-import { findTheOne } from './utils';
+import fs from 'fs';
+import path from 'path';
 
 var router = express.Router();
 
@@ -15,16 +16,6 @@ router.get('/get', (req, res)  => {
   }
   else res.send(JSON.stringify(null)).end();
 });
-
-router.get('/generate_icon/:username', function(req, res) {
-  icongen(req.params.username, function(result) {
-    res.send(result);
-  });
-});
-
-router.get('/get_user_by_username/:username',
-  findTheOne(User,{ username: 'username' }));
-
 
 router.get('/logout', function(req, res) {
   req.logout();
@@ -64,32 +55,38 @@ router.post('/change_password', verifyMiddleware, function(req, res, next) {
   })
 });
 
-router.post('/update', verifyMiddleware, function(req, res, next) {
-  User.findOne({ _id: ObjectId(req.body.userId) }).then(user => {
+router.post('/update', verifyMiddleware,  function(req, res, next) {
+  User.findOne({ _id: ObjectId(req.body.userId) }).then(async user => {
     if (user !== null) {
       if (!user.comparePassword(req.body.currentPassword)) {
         return next({ error: 'Wrong password.' });
       }
       else {
         for (let attr in req.body) {
-          if (!['currentPassword', 'userId'].includes(attr))
+          if (!['currentPassword', 'userId',
+            'profilePhoto', 'fileContent'].includes(attr))
             user.set(attr, req.body[attr]);
         }
-        if (user.get('pictureSrc') === undefined ||
-            user.get('pictureSrc') === null || user.get('pictureSrc') === '') {
-          icongen(user.username, function(result) {
-            user.set('pictureSrc', result);
-            user.save(function (err) {
-              if (err) return next({ error: err.message });
-              else return res.status(200).end();
-            });
-          });
+
+        if (req.body.profilePhoto && req.body.fileContent) {
+          let fmt = req.body.profilePhoto.split('.').pop(),
+            filepath = path.resolve(__dirname,
+              `./public/profile-pix/${req.body.username}.${fmt}`);
+          fs.writeFileSync(
+            filepath,
+            Buffer.from(req.body.fileContent, 'base64'), { flag: 'a+' });
+          user.set('pictureSrc', `/profile-pix/${req.body.username}.${fmt}`);
         }
-        else
-          user.save(function (err) {
-            if (err) return next({ error: err.message });
-            else return res.status(200).end();
-          });
+        else if (user.get('pictureSrc') === undefined ||
+            user.get('pictureSrc') === null || user.get('pictureSrc') === '' ||
+            user.get('pictureSrc').startsWith('data:image/png;base64,')) {
+          var icon = await icongen(user.username);
+          user.set('pictureSrc', icon);
+        }
+        user.save(function (err) {
+          if (err) return next({ error: err.message });
+          else return res.status(200).end();
+        });
       }
     }
     else res.status(500);

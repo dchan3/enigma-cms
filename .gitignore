@@ -4,5 +4,6 @@ build/
 dist/
 public/*.js
 public/uploads/
+public/profile-pix/
 server.bundle.js
 /**/.DS_Store

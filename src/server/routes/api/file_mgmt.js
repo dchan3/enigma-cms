@@ -6,24 +6,15 @@ import path from 'path';
 
 var router = express.Router();
 
-// GET Requests
-router.get('/get', (req, res, next) => {
-  File.find({ }).then(files => {
-    res.status(200).json(files);
-  }).catch(err => next(err));
-});
-
-// POST Requests
 router.post('/upload_file', verifyMiddleware, (req, res, next) => {
-  var fn = req.body.fileToUpload.split('\\').pop()
-  let newFile = new File({
-    fileName: fn,
-    fileType: req.body.fileType,
-    createdDate: new Date(),
-    modifiedDate: new Date(),
-    uploadedBy: req.user.userId
-  });
-  var filepath = path.resolve(__dirname, './public/uploads/', fn);
+  let fn = req.body.fileToUpload.split('\\').pop(), newFile = new File({
+      fileName: fn,
+      fileType: req.body.fileType,
+      createdDate: new Date(),
+      modifiedDate: new Date(),
+      uploadedBy: req.user.userId
+    }), filepath = path.resolve(__dirname,
+      `./public/uploads/${req.body.fileType}`, fn);
   fs.writeFile(
     filepath,
     Buffer.from(req.body.fileContent, 'base64'), { flag: 'a+' }, (err) => {

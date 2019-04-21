@@ -1,5 +1,6 @@
 import sha1 from 'sha1';
 import gm from 'gm';
+import path from 'path';
 
 export default function(username, cb) {
   let hash = sha1(username),
@@ -20,10 +21,9 @@ export default function(username, cb) {
 
   image.resize(256, 256);
 
-  image.toBuffer('PNG', function(err, buffer) {
-    if (err) throw new Error;
-    else {
-      cb(`data:image/png;base64,${  Buffer.from(buffer).toString('base64')}`);
-    }
+  let filename = `/profile-pix/${username}.png`;
+
+  image.write(path.resolve(__dirname, `./public/${filename}`), function(err) {
+    if (!err) cb(filename);
   });
 }

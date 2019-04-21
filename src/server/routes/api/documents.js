@@ -4,74 +4,9 @@ import DocumentType from '../../models/DocumentType';
 import Document from '../../models/Document';
 import slug from 'limax';
 import { default as verifyMiddleware } from '../middleware';
-import { findTheOne } from './utils';
 
 var router = express.Router();
 
-// GET Requests
-router.get('/get_types', (req, res) => {
-  DocumentType.find({ }).then(types => {
-    res.status(200).json(types);
-  }).catch(() => res.status(500));
-});
-
-router.get('/get_type/:id',
-  findTheOne(DocumentType, { docTypeId: 'id' }));
-
-router.get('/get_document/:id',
-  findTheOne(Document, { docNodeId: 'id' }));
-
-router.get('/get_document_by_slug/:slug',
-  findTheOne(Document, { slug: 'slug' }));
-
-router.get('/get_document_by_type_and_slug/:type/:slug', function(req, res) {
-  DocumentType.findOne({
-    docTypeName: req.params.type
-  }).then(docType => {
-    DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId })
-      .then(template => {
-        Document.findOne({
-          docTypeId: docType.docTypeId,
-          slug: req.params.slug })
-          .then(doc => {
-            res.status(200).json({
-              templateBody: template.templateBody,
-              document: doc
-            });
-          })
-      });
-  }).catch(() => res.status(500));
-});
-
-router.get('/get_documents/:id', (req, res, next) => {
-  DocumentType.findOne({
-    docTypeId: parseInt(req.params.id)
-  }).then(docType => {
-    Document.find({ docTypeId: docType.docTypeId }).then(docs => {
-      res.status(200).json({
-        docType: docType,
-        documents: docs
-      })
-    })
-  }).catch(err => next(err))
-});
-
-router.get('/get_template/:id', (req, res, next) => {
-  DocumentType.findOne({
-    docTypeId: req.params.id
-  }).then(docType => {
-    DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId })
-      .then(template => {
-        res.status(200).json({
-          templateBody: template ? template.templateBody : '',
-          docType: docType
-        });
-      })
-  }).catch(err => next(err));
-});
-
-
-// POST Requests
 router.post('/register_type', verifyMiddleware, (req, res, next) => {
   let newType = new DocumentType();
   let reset = [];
