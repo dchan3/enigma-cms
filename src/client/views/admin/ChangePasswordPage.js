@@ -7,10 +7,6 @@ class ChangePasswordPage extends Component {
     user: PropTypes.object
   };
 
-  redirectToAdmin() {
-    window.location.href = '/admin';
-  }
-
   render() {
     return <GeneratedForm title="Change Password" params={{
       userId: {
@@ -26,7 +22,7 @@ class ChangePasswordPage extends Component {
         type: 'password'
       }
     }} method="post" formAction='/api/users/change_password'
-    successCallback={this.redirectToAdmin} />;
+    redirectUrl='/admin' />;
   }
 }
 

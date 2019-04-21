@@ -12,13 +12,8 @@ class DocumentUpdatePage extends Component {
     super(props);
   }
 
-  redirect() {
-    window.location.href = this.props.staticContext.dataObj.docType ?
-      `/admin/edit/${this.props.staticContext.dataObj.docType}` : '/admin';
-  }
-
   render() {
-    var params = {}, { doc, docType } = this.props.staticContext.dataObj;
+    let params = {}, { doc, docType } = this.props.staticContext.dataObj;
     if (doc && docType) {
       docType.attributes.forEach(attr => {
         params[attr.attrName] = {
@@ -33,7 +28,8 @@ class DocumentUpdatePage extends Component {
       });
 
       return <GeneratedForm title='Edit Document'
-        params={params} method="post" successCallback={this.redirect}
+        params={params} method="post"
+        redirectUrl={docType ? `/admin/edit/${docType}` : '/admin'}
         formAction={`/api/documents/update_document/${ 
           this.props.match.params.docNode}`}
       />;

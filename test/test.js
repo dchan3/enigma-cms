@@ -6,7 +6,6 @@ import Adapter from 'enzyme-adapter-react-16';
 Enzyme.configure({ adapter: new Adapter() });
 import GeneratedForm from '../src/client/reusables/GeneratedForm';
 import CodeEditor from '../src/client/reusables/CodeEditor';
-import icongen from '../src/server/utils/icongen';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as gensig } from '../src/lib/utils/gensig';

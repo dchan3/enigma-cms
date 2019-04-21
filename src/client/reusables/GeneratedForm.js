@@ -102,7 +102,8 @@ class GeneratedForm extends Component {
     method: PropTypes.string.isRequired,
     formAction: PropTypes.string.isRequired,
     parentCallback: PropTypes.func,
-    fileContent: PropTypes.string
+    fileContent: PropTypes.string,
+    redirectUrl: PropTypes.string
   };
 
   static defaultProps = {
@@ -333,7 +334,10 @@ class GeneratedForm extends Component {
       data: { ...requestBody, sig: sig },
       withCredentials: true
     }).then(function(response) {
-      self.props.successCallback(response);
+      if (self.props.successCallback)
+        self.props.successCallback(response);
+      else if (self.props.redirectUrl)
+        window.location.href = self.props.redirectUrl;
     }).catch(function (error) {
       self.setState({ errorMessage: error.message });
     });

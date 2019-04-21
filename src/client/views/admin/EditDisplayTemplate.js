@@ -12,10 +12,6 @@ class EditDisplayTemplate extends Component {
     super(props);
   }
 
-  redirect() {
-    window.location.href = '/admin';
-  }
-
   render() {
     let { docType, templateBody } = this.props.staticContext.dataObj;
     if (docType !== null && templateBody !== null)
@@ -27,7 +23,7 @@ class EditDisplayTemplate extends Component {
           grammar: 'html',
           value: templateBody
         }
-      }} method="post" successCallback={this.redirect}
+      }} method="post" redirectUrl='/admin'
       formAction={
         `/api/documents/update_template/${this.props.match.params.docTypeId}`}
       />;

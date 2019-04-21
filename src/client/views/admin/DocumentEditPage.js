@@ -11,11 +11,6 @@ class DocumentEditPage extends Component {
     super(props);
   }
 
-  redirect() {
-    window.location.href =
-      `/admin/edit/${this.props.staticContext.docType.docTypeId}`;
-  }
-
   render() {
     let params = {};
 
@@ -46,7 +41,7 @@ class DocumentEditPage extends Component {
       params={params} method="post"
       formAction={`/api/documents/new_document/${
         this.props.staticContext.docType.docTypeId}`}
-      successCallback={this.redirect}
+      redirectUrl={`/admin/edit/${this.props.staticContext.docType.docTypeId}`}
     />;
   }
 }

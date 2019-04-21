@@ -9,11 +9,6 @@ class ConfigPage extends Component {
 
   constructor(props) {
     super(props);
-    this.redirect = this.redirect.bind(this);
-  }
-
-  redirect() {
-    window.location.href = '/admin';
   }
 
   render() {
@@ -92,8 +87,8 @@ class ConfigPage extends Component {
           code: ''
         }]
       }
-    }} method="post" successCallback={this.redirect}
-    formAction='/api/site_config/update' />
+    }}
+    method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
   }
 }
 

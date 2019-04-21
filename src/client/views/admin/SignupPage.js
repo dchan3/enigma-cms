@@ -5,12 +5,6 @@ import { StyledDiv } from '../../reusables/styled';
 class SignupPage extends Component {
   constructor(props) {
     super(props);
-
-    this.redirectToAdmin = this.redirectToAdmin.bind(this);
-  }
-
-  redirectToAdmin() {
-    window.location.href = '/admin';
   }
 
   render() {
@@ -26,8 +20,7 @@ class SignupPage extends Component {
         type: 'password'
       }
     }} method="post"
-    formAction='/api/users/register'
-    successCallback={this.redirectToAdmin} />,
+    formAction='/api/users/register' redirectUrl='/admin' />,
     <StyledDiv>
       <p>Have an account? Sign in <a href="/login">here</a>.</p>
     </StyledDiv>];

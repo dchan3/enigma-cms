@@ -17,8 +17,7 @@ class UploadFilePage extends Component {
 
   render() {
     return <GeneratedForm
-      title={'Upload File'}
-      params={
+      title={'Upload File'} params={
         {
           fileToUpload: {
             type: 'file'
@@ -37,7 +36,7 @@ class UploadFilePage extends Component {
           }
         }
       } method="post" formAction='/api/files/upload_file'
-      successCallback={this.redirect}
+      redirectUrl="/admin/file-mgmt"
     />;
   }
 }

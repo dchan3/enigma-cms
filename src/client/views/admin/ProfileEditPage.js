@@ -7,10 +7,6 @@ class ProfileEditPage extends Component {
     staticContext: PropTypes.object
   };
 
-  redirect() {
-    window.location.href = '/admin';
-  }
-
   render() {
     let user = this.props.staticContext.user;
     return <GeneratedForm title='Edit Profile'
@@ -43,8 +39,7 @@ class ProfileEditPage extends Component {
         currentPassword: {
           type: 'password'
         }
-      }} method="post" successCallback={this.redirect}
-      formAction='/api/users/update' />;
+      }} method="post" redirectUrl='/admin' formAction='/api/users/update' />;
   }
 }
 

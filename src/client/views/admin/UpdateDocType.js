@@ -27,10 +27,6 @@ class UpdateDocType extends Component {
     });
   }
 
-  redirect() {
-    window.location.href = '/admin';
-  }
-
   render() {
     var docType = this.props.staticContext.docType;
     if (docType !== null)
@@ -96,7 +92,7 @@ class UpdateDocType extends Component {
           value: docType.slugFrom || ''
         }
       }} method="post" parentCallback={this.updateParams}
-      successCallback={this.redirect}
+      redirectUrl='/admin'
       formAction={`/api/documents/update_type/${ 
         this.props.match.params.docTypeId}`} />;
     else return null;
