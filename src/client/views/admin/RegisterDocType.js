@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class RegisterDocType extends Component {
   constructor(props) {
@@ -87,7 +86,7 @@ class RegisterDocType extends Component {
       }
     }} method="post" parentCallback={this.updateParams}
     successCallback={this.redirect}
-    formAction={urlUtils.info.path('/api/documents/register_type')} />;
+    formAction='/api/documents/register_type' />;
   }
 }
 

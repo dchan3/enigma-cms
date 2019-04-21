@@ -6,7 +6,6 @@ import Adapter from 'enzyme-adapter-react-16';
 Enzyme.configure({ adapter: new Adapter() });
 import GeneratedForm from '../src/client/reusables/GeneratedForm';
 import CodeEditor from '../src/client/reusables/CodeEditor';
-import { default as urlUtils } from '../src/lib/utils';
 import icongen from '../src/server/utils/icongen';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
@@ -96,21 +95,6 @@ describe('Reusable UI Components - Code Editor', function() {
     const wrapper = render(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
     expect(wrapper.find('textarea').text()).to.equal('<h1>Hello World!</h1>');
-    done();
-  });
-});
-
-// WARNING: Do not run URL Utils tests with environment variables set, or else
-// tests will fail!
-describe('URL Utils', function() {
-  it('url info works as expected', function(done) {
-    expect(urlUtils.info.url).to.equal('http://localhost:8080');
-    done();
-  });
-
-  it('path function works as expected', function(done) {
-    expect(urlUtils.info.path('/api'))
-      .to.equal('http://localhost:8080/api');
     done();
   });
 });

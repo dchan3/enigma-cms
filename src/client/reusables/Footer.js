@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { default as urlUtils } from '../../lib/utils';
 
 var FooterContainer = styled.div`
   text-align: center;
@@ -22,10 +21,9 @@ class Footer extends Component {
         Enigma CMS</a>.</FooterText>
       {!!this.props.user ? <FooterText>
         Logged in as {this.props.user.username}.{' '}
-        <a href=
-          {urlUtils.info.path('/admin/edit-profile')}>Edit profile</a>.
+        <a href='/admin/edit-profile'>Edit profile</a>.
         {' '}
-        <a href={urlUtils.info.path('/api/users/logout')}>Logout</a>.
+        <a href='/api/users/logout'>Logout</a>.
         {' '}
         <a href='/change-password'>Change password</a>.
       </FooterText> : <FooterText>

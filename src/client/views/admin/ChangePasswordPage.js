@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class ChangePasswordPage extends Component {
   static propTypes = {
@@ -26,8 +25,7 @@ class ChangePasswordPage extends Component {
       newPassword: {
         type: 'password'
       }
-    }} method="post"
-    formAction={urlUtils.info.path('/api/users/change_password')}
+    }} method="post" formAction='/api/users/change_password'
     successCallback={this.redirectToAdmin} />;
   }
 }

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class UpdateDocType extends Component {
   static propTypes = {
@@ -98,8 +97,8 @@ class UpdateDocType extends Component {
         }
       }} method="post" parentCallback={this.updateParams}
       successCallback={this.redirect}
-      formAction={urlUtils.info.path(`/api/documents/update_type/${ 
-        this.props.match.params.docTypeId}`)} />;
+      formAction={`/api/documents/update_type/${ 
+        this.props.match.params.docTypeId}`} />;
     else return null;
   }
 }

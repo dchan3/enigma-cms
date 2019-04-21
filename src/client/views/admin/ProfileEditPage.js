@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class ProfileEditPage extends Component {
   static propTypes = {
@@ -38,7 +37,7 @@ class ProfileEditPage extends Component {
           type: 'password'
         }
       }} method="post" successCallback={this.redirect}
-      formAction={urlUtils.info.path('/api/users/update')} />;
+      formAction='/api/users/update' />;
   }
 }
 

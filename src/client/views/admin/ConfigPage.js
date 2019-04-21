@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class ConfigPage extends Component {
   static propTypes = {
@@ -94,7 +93,7 @@ class ConfigPage extends Component {
         }]
       }
     }} method="post" successCallback={this.redirect}
-    formAction={urlUtils.info.path('/api/site_config/update')} />
+    formAction='/api/site_config/update' />
   }
 }
 

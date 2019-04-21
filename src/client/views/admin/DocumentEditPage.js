@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class DocumentEditPage extends Component {
   static propTypes = {
@@ -45,9 +44,8 @@ class DocumentEditPage extends Component {
     return <GeneratedForm
       title={`New ${this.props.staticContext.docType.docTypeName}`}
       params={params} method="post"
-      formAction={urlUtils.info.path(
-        `/api/documents/new_document/${
-          this.props.staticContext.docType.docTypeId}`)}
+      formAction={`/api/documents/new_document/${
+          this.props.staticContext.docType.docTypeId}`}
       successCallback={this.redirect}
     />;
   }

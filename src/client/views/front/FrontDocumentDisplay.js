@@ -16,9 +16,9 @@ class FrontDocumentDisplay extends Component {
 
   render() {
     let { config, dataObj } = this.props.staticContext,
-      { templateBody, document } = dataObj;
+      { templateBody, doc } = dataObj;
 
-    if (templateBody !== null && document !== null) {
+    if (templateBody && doc) {
       config.shortcodes.forEach(
         function(shortcode) {
           Handlebars.registerHelper(shortcode.name,
@@ -34,9 +34,9 @@ class FrontDocumentDisplay extends Component {
         <FrontMenu config={config} />
         <div dangerouslySetInnerHTML=
           {{ __html: template(
-            { ...document.content,
-              createdAt: document.createdAt,
-              editedAt: document.editedAt
+            { ...doc.content,
+              createdAt: doc.createdAt,
+              editedAt: doc.editedAt
             }) }}>
         </div>
       </div>;

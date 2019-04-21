@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import GeneratedForm from '../../reusables/GeneratedForm';
 import { StyledDiv } from '../../reusables/styled';
-import { default as urlUtils } from '../../../lib/utils';
 
 class LoginPage extends Component {
   constructor(props) {
@@ -26,8 +25,7 @@ class LoginPage extends Component {
       }
     }}
     method="post"
-    formAction={urlUtils.info.path('/api/users/login')}
-    successCallback={this.redirectToAdmin} />,
+    formAction='/api/users/login' successCallback={this.redirectToAdmin} />,
     <StyledDiv>
       <p>Don't have an account? Sign up <a href="/signup">here</a>.</p>
     </StyledDiv>];

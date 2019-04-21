@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class UploadFilePage extends Component {
   static propTypes = {
@@ -37,7 +36,7 @@ class UploadFilePage extends Component {
               text: 'Other', value: 'other' }],
           }
         }
-      } method="post" formAction={urlUtils.info.path('/api/files/upload_file')}
+      } method="post" formAction='/api/files/upload_file'
       successCallback={this.redirect}
     />;
   }

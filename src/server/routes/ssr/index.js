@@ -1,10 +1,12 @@
 import React from 'react';
 import App from '../../../client/app/App';
-import { frontEndRoutes, backEndRoutes } from '../../../client/routes';
+import { frontEndRoutes, backEndRoutes } from './route_data';
 import fetch from 'isomorphic-fetch';
+import axios from 'axios';
+import SiteConfig from '../../models/SiteConfig';
+import DocumentType from '../../models/DocumentType';
 import { matchPath, Router } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
-import { default as urlUtils } from '../../../lib/utils';
 import serialize from 'serialize-javascript';
 import { createMemoryHistory } from 'history';
 
@@ -16,20 +18,17 @@ var history = createMemoryHistory(),
     <script>
       window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
     </script>
-    <link rel="stylesheet" href="${urlUtils.info.path('/prism.css')}" />
+    <link rel="stylesheet" href='/prism.css' />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
       <div id="root">${dom}</div>
-      <script src="${urlUtils.info.path('/app.bundle.js')}" defer></script>
+      <script src='/app.bundle.js' defer></script>
      </body>
 </html>`, ssrRenderer = async (req, res, next) => {
-    var config = await fetch(urlUtils.info.path('/api/site_config/get'));
-    var configData = await config.json();
+    var config = await SiteConfig.findOne({});
 
-    var types =
-      await fetch(urlUtils.info.path('/api/documents/get_types'));
-    var typesData = await types.json();
+    var types = await DocumentType.find({});
 
     var path = req.path, routes = path.startsWith('/admin') ?
       backEndRoutes : frontEndRoutes;
@@ -38,13 +37,10 @@ var history = createMemoryHistory(),
       routes.find(route => matchPath(path, route)) || {};
 
     const promise = activeRoute.fetchInitialData
-      ? activeRoute.fetchInitialData(path).then(d => d.json())
+      ? activeRoute.fetchInitialData(path).then(d => d)
       : Promise.resolve();
 
-    var context = {
-      config: configData,
-      types: typesData
-    };
+    var context = { config, types };
 
     promise.then((data) => {
       if (activeRoute.key && data) context[activeRoute.key] = data;

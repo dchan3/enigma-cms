@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class DocumentUpdatePage extends Component {
   static propTypes = {
@@ -11,27 +10,21 @@ class DocumentUpdatePage extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      document: null,
-      docType: null,
-      canDisplay: false
-    }
   }
 
   redirect() {
-    window.location.href = this.state.docType ?
-      `/admin/edit/${this.state.docType}` : '/admin';
+    window.location.href = this.props.staticContext.dataObj.docType ?
+      `/admin/edit/${this.props.staticContext.dataObj.docType}` : '/admin';
   }
 
   render() {
-    var params = {};
-    if (this.state.document !== null && this.state.docType !== null &&
-      this.state.canDisplay) {
-      this.state.docType.attributes.forEach(attr => {
+    var params = {}, { doc, docType } = this.props.staticContext.dataObj;
+    if (doc && docType) {
+      docType.attributes.forEach(attr => {
         params[attr.attrName] = {
           label: attr.attrName,
           type: attr.attrType,
-          value: this.state.document.content[attr.attrName],
+          value: document.content[attr.attrName],
         };
 
         if (attr.grammar) {
@@ -41,8 +34,8 @@ class DocumentUpdatePage extends Component {
 
       return <GeneratedForm title='Edit Document'
         params={params} method="post" successCallback={this.redirect}
-        formAction={urlUtils.info.path(`/api/documents/update_document/${ 
-          this.props.match.params.docNode}`)}
+        formAction={`/api/documents/update_document/${ 
+          this.props.match.params.docNode}`}
       />;
     }
     else return null;

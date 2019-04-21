@@ -10,22 +10,17 @@ import { default as documentRoutes } from './routes/api/documents';
 import { default as fileRoutes } from './routes/api/file_mgmt';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
-import { default as urlUtils } from '../lib/utils';
 import { default as ssrRoutes } from './routes/ssr';
 
 mongoose.Promise = global.Promise;
 
 var app = express(), port = process.env.SERVER_PORT || 8080;
 
-mongoose.connect(require('../../config/db.js').url, {}, (err) => {
-  if (!err) console.log('connection successful');
-  else console.error(err);
-});
+mongoose.connect(require('../../config/db.js').url, {}, () => { });
 
 app.use(expressSession);
 
 app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', urlUtils.info.url);
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept');
@@ -59,6 +54,4 @@ app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
 app.get('/*', ssrRoutes);
 
-app.listen(port, () => {
-  console.log(`Running on port ${port}`);
-});
+app.listen(port);

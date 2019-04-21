@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import { default as urlUtils } from '../../../lib/utils';
 
 class EditDisplayTemplate extends Component {
   static propTypes = {
@@ -29,8 +28,8 @@ class EditDisplayTemplate extends Component {
           value: templateBody
         }
       }} method="post" successCallback={this.redirect}
-      formAction={urlUtils.info.path(
-        `/api/documents/update_template/${this.props.match.params.docTypeId}`)}
+      formAction={
+        `/api/documents/update_template/${this.props.match.params.docTypeId}`}
       />;
     else return null;
   }

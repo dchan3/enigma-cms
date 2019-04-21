@@ -2,11 +2,8 @@ import mongoose from 'mongoose';
 import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 
-var conn = mongoose.createConnection(require('../../../config/db.js').url, {
-}, (err) => {
-  if (!err) console.log('connection successful');
-  else console.error(err);
-});
+var conn =
+  mongoose.createConnection(require('../../../config/db.js').url, {}, () => {});
 
 autoIncrement.initialize(conn);
 

@@ -1,7 +1,6 @@
 import passport from 'passport';
 import express from 'express';
 import User from '../../models/User';
-import { default as urlUtils } from '../../../lib/utils';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
@@ -29,14 +28,14 @@ router.get('/get_user_by_username/:username',
 
 router.get('/logout', function(req, res) {
   req.logout();
-  res.redirect(urlUtils.info.url);
+  res.redirect('/');
 });
 
 // POST Requests
 router.post('/register', verifyMiddleware,
   passport.authenticate('local-signup', {
-    successRedirect: urlUtils.info.path('/admin'),
-    failureRedirect: urlUtils.info.path('/signup'),
+    successRedirect: '/admin',
+    failureRedirect: '/signup',
   }));
 
 router.post('/login', verifyMiddleware, function(req, res, next) {
