@@ -20,17 +20,16 @@ class EditDocumentLanding extends Component {
   }
 
   render() {
-    let staticContext = this.props.staticContext;
-    if (staticContext.dataObj !== undefined &&
-      staticContext.dataObj.docType !== null &&
-      staticContext.dataObj.documents.length > 0)
+    let { dataObj, config } = this.props.staticContext,
+      { docType, documents } = dataObj;
+    if (docType && documents.length > 0)
       return [
         <TextHeader>
-          {`Edit ${staticContext.dataObj.docType.docTypeName}`}
+          {`Edit ${docType.docTypeName}`}
         </TextHeader>,
         <EverAfter.TablePaginator perPage={10}
-          items={staticContext.dataObj.documents} truncate={true} columns={
-            [staticContext.dataObj.docType.attributes.map(function(attr) {
+          items={documents} truncate={true} columns={
+            [docType.attributes.map(function(attr) {
               return {
                 headerText: attr.attrName,
                 display: (item) => (
@@ -44,9 +43,8 @@ class EditDocumentLanding extends Component {
             }, {
               headerText: 'View Live',
               display: (item) => <a href={
-                `/${staticContext.dataObj.docType.docTypeName}/${
-                  staticContext.config.useSlug ? item.slug :
-                    item.docNodeId}`}>View Live</a>
+                `/${docType.docTypeName}/${
+                  config.useSlug ? item.slug : item.docNodeId}`}>View Live</a>
             }].flat()
           } />];
     else return null;

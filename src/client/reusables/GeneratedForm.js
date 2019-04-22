@@ -11,6 +11,7 @@ var FormBackground = styled.form`
   background-color: cadetblue;
   width: fit-content;
   margin: auto;
+  text-align: left;
 `;
 
 var FormDiv = styled.div`

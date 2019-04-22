@@ -29,8 +29,7 @@ var htmlTemplate = (dom, data) => `<!DOCTYPE html>
       activeRoute =
         routes.find(route => matchPath(path, route)) || {},
       promise = activeRoute.fetchInitialData
-        ? activeRoute.fetchInitialData(path).then(d => d)
-        : Promise.resolve();
+        ? activeRoute.fetchInitialData(path) : Promise.resolve();
 
     promise.then((data) => {
       if (activeRoute.key && data) context[activeRoute.key] = data;

@@ -112,7 +112,10 @@ export const backEndRoutes = [
   {
     path: '/admin/edit-type/:docTypeId',
     exact: true,
-    component: UpdateDocType
+    component: UpdateDocType,
+    fetchInitialData: path =>
+      DocumentType.find({ docTypeId: path.split('/').pop() }),
+    key: 'docType'
   },
   {
     path: '/admin/edit-profile',
@@ -143,7 +146,10 @@ export const backEndRoutes = [
     path: '/admin/file-mgmt',
     exact: true,
     component: FileMgmtLanding,
-    fetchInitialData: () => File.find({}),
+    fetchInitialData: async () => {
+      var retval = await File.find({});
+      return retval && retval.length > 0 && retval || [];
+    },
     key: 'files'
   },
   {
@@ -155,5 +161,5 @@ export const backEndRoutes = [
     path: '/admin',
     exact: false,
     component: MainMenu
-  },
+  }
 ];

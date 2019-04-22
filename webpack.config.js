@@ -25,7 +25,9 @@ module.exports = [{
   },
   resolve: {
     alias: {
-      handlebars: 'handlebars/dist/handlebars.min.js'
+      handlebars: 'handlebars/dist/handlebars.min.js',
+      'styled-components':
+        path.resolve(__dirname, 'node_modules', 'styled-components'),
     }
   },
   devtool: 'eval-source-map'

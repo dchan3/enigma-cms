@@ -11,10 +11,6 @@ class UploadFilePage extends Component {
     super(props);
   }
 
-  redirect() {
-    window.location.href = '/admin/file-mgmt';
-  }
-
   render() {
     return <GeneratedForm
       title={'Upload File'} params={
