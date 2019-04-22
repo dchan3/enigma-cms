@@ -64,7 +64,6 @@
     "enzyme-adapter-react-16": "^1.12.1",
     "eslint": "^5.16.0",
     "eslint-plugin-react": "^7.12.4",
-    "jsdoc": "^3.5.5",
     "jsdom": "^15.0.0",
     "mocha": "^6.1.4",
     "nodemon": "^1.18.11",
