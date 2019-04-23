@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import EverAfter from 'react-everafter';
 import styled from 'styled-components';
 import { TextHeader } from '../../reusables/styled';
+import axios from 'axios';
 
 let TableText = styled.p`
   text-align: center;
@@ -17,11 +18,20 @@ class EditDocumentLanding extends Component {
 
   constructor(props) {
     super(props);
+
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+  }
+
+  handleDeleteClick(event) {
+    return function(url) {
+      axios.delete(url);
+    }
   }
 
   render() {
     let { dataObj, config } = this.props.staticContext,
-      { docType, documents } = dataObj;
+      { docType, documents } = dataObj,
+      handleDeleteClick = this.handleDeleteClick;
     if (docType && documents.length > 0)
       return [
         <TextHeader>
@@ -40,6 +50,12 @@ class EditDocumentLanding extends Component {
               headerText: 'Edit',
               display: (item) =>
                 <a href={`/admin/edit-document/${item.docNodeId}`}>Edit</a>
+            }, {
+              headerText: 'Delete',
+              display: (item) =>
+                <button onClick={(e) => handleDeleteClick(e)(
+                  `/api/documents/delete_document/${item.docTypeId}/${item._id}`
+                )}>Delete</button>
             }, {
               headerText: 'View Live',
               display: (item) => <a href={

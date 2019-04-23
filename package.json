@@ -5,8 +5,7 @@
     "lint": "eslint .",
     "build": "webpack --progress -w",
     "test": "mocha --require @babel/register test/test.js",
-    "fire-up": "nodemon server.bundle.js",
-    "start": "npm run-script fire-up"
+    "start": "nodemon server.bundle.js"
   },
   "dependencies": {
     "@babel/node": "^7.2.2",

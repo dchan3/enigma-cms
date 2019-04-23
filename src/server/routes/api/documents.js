@@ -4,6 +4,7 @@ import DocumentType from '../../models/DocumentType';
 import Document from '../../models/Document';
 import slug from 'limax';
 import { default as verifyMiddleware } from '../middleware';
+import { ObjectId } from 'mongodb';
 
 var router = express.Router();
 
@@ -115,6 +116,16 @@ router.post('/update_document/:node_id', verifyMiddleware, (req, res, next) => {
   }).catch((err) => {
     next(err);
   });
+});
+
+router.delete('/delete_document/:docType/:id', (req, res, next) => {
+  if (req.user) return Document.findOneAndDelete({
+    _id: ObjectId(req.params.id), docTypeId: req.params.docType
+  }).then(
+    () => res.redirect(`/admin/edit/${req.params.docType}`))
+    .catch(err => next(err));
+  else
+    return res.status(500).redirect('/login').end();
 });
 
 router.post('/update_template/:type_id', verifyMiddleware, (req, res, next) => {

@@ -78,7 +78,7 @@ export const backEndRoutes = [
     exact: true,
     component: DocumentEditPage,
     fetchInitialData: path =>
-      DocumentType.find({ docTypeId: path.split('/').pop() }),
+      DocumentType.findOne({ docTypeId: path.split('/').pop() }),
     key: 'docType'
   },
   {
@@ -86,9 +86,9 @@ export const backEndRoutes = [
     exact: true,
     component: DocumentUpdatePage,
     fetchInitialData: async (path) => {
-      var [ typeId, slug ] = path.split('/').slice(-2);
-      var docType = await DocumentType.findOne({ docTypeId: typeId });
-      var doc = await Document.findOne({ slug: slug });
+      let [ typeId, slug ] = path.split('/').slice(-2),
+        docType = await DocumentType.findOne({ docTypeId: typeId }),
+        doc = await Document.findOne({ slug: slug });
       return { docType, doc };
     },
     key: 'dataObj'
@@ -97,8 +97,12 @@ export const backEndRoutes = [
     path: '/admin/edit/:docType',
     exact: true,
     component: EditDocumentLanding,
-    fetchInitialData: path =>
-      Document.find({ docTypeId: path.split('/').pop() }),
+    fetchInitialData: async path => {
+      let typeId = path.split('/').pop(),
+        documents = await Document.find({ docTypeId: typeId  }),
+        docType = await DocumentType.findOne({ docTypeId: typeId });
+      return { documents, docType };
+    },
     key: 'dataObj'
   },
   {
