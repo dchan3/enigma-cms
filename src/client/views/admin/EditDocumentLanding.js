@@ -22,7 +22,7 @@ class EditDocumentLanding extends Component {
     this.handleDeleteClick = this.handleDeleteClick.bind(this);
   }
 
-  handleDeleteClick(event) {
+  handleDeleteClick() {
     return function(url) {
       axios.delete(url);
     }
@@ -53,7 +53,7 @@ class EditDocumentLanding extends Component {
             }, {
               headerText: 'Delete',
               display: (item) =>
-                <button onClick={(e) => handleDeleteClick(e)(
+                <button onClick={() => handleDeleteClick()(
                   `/api/documents/delete_document/${item.docTypeId}/${item._id}`
                 )}>Delete</button>
             }, {
