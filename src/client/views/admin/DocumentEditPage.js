@@ -12,10 +12,9 @@ class DocumentEditPage extends Component {
   }
 
   render() {
-    let params = {};
-
-    if (this.props.staticContext.docType !== null) {
-      this.props.staticContext.docType.attributes.forEach(attr => {
+    let params = {}, { docType } = this.props.staticContext;
+    if (docType) {
+      docType.attributes.forEach(attr => {
         params[attr.attrName] = {
           label: attr.attrName,
           type: attr.attrType,

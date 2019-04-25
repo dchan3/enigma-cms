@@ -2,14 +2,28 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TextHeader } from '../../reusables/styled';
 import Everafter from 'react-everafter';
+import axios from 'axios';
 
 class FileMgmtLanding extends Component {
   static propTypes = {
     staticContext: PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
+  }
+
+  handleDeleteClick() {
+    return function(url) {
+      axios.delete(url);
+    }
+  }
+
   render() {
-    let staticContext = this.props.staticContext;
+    let staticContext = this.props.staticContext,
+      handleDeleteClick = this.handleDeleteClick;
 
     return [
       <TextHeader>Manage Files</TextHeader>,
@@ -41,6 +55,13 @@ class FileMgmtLanding extends Component {
               return <a href= {`/uploads/${item.fileType}/${item.fileName}`}>
                 Download</a>;
             }
+          },
+          {
+            headerText: 'Delete',
+            display: (item) =>
+              <button onClick={() => handleDeleteClick()(
+                `/api/files/delete_file/${item.fileType}/${item._id}`
+              )}>Delete</button>
           },
           {
             headerText: 'Date Created',
