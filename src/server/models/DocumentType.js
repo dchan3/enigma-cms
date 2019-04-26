@@ -14,6 +14,9 @@ const DocumentTypeSchema = new Schema({
   docTypeName: {
     type: String
   },
+  docTypeNamePlural: {
+    type: String
+  },
   attributes: {
     type: [Object]
   },

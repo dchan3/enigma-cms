@@ -6,6 +6,9 @@ const DocumentDisplayTemplateSchema = new mongoose.Schema({
   },
   templateBody: {
     type: String
+  },
+  categoryTemplateBody: {
+    type: String
   }
 });
 

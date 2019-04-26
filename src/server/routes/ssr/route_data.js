@@ -10,6 +10,8 @@ import EditDocumentLanding from
   '../../../client/views/admin/EditDocumentLanding';
 import EditDisplayTemplate from
   '../../../client/views/admin/EditDisplayTemplate';
+import FrontCategoryDisplay from
+  '../../../client/views/front/FrontCategoryDisplay';
 import FrontDocumentDisplay from
   '../../../client/views/front/FrontDocumentDisplay';
 import FrontProfileDisplay from
@@ -53,12 +55,26 @@ export const frontEndRoutes = [
     key: 'profileUser'
   },
   {
+    path: '/:docType',
+    exact: true,
+    component: FrontCategoryDisplay,
+    fetchInitialData: async (path) => {
+      let typeName = path.split('/').pop(),
+        docType = await DocumentType.findOne({ docTypeNamePlural: typeName }),
+        { categoryTemplateBody } =
+        await DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId }),
+        items = await Document.find({ docTypeId: docType.docTypeId });
+      return { categoryTemplateBody, items };
+    },
+    key: 'dataObj'
+  },
+  {
     path: '/:docType/:docNode',
     exact: true,
     component: FrontDocumentDisplay,
     fetchInitialData: async (path) => {
       var [ typeName, slug ] = path.split('/').slice(-2);
-      var docType = await DocumentType.findOne({ docTypeName: typeName });
+      var docType = await DocumentType.findOne({ docTypeNamePlural: typeName });
       var template =
         await DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId });
       var doc = await Document.findOne({ slug: slug });
@@ -109,8 +125,15 @@ export const backEndRoutes = [
     path: '/admin/edit-template/:docTypeId',
     exact: true,
     component: EditDisplayTemplate,
-    fetchInitialData: path =>
-      DocumentType.find({ docTypeId: path.split('/').pop() }),
+    fetchInitialData: async path => {
+      var id =  path.split('/').pop();
+      var docType = await
+        DocumentType.findOne({ docTypeId: id }),
+        { templateBody, categoryTemplateBody } =
+          await DocumentDisplayTemplate.findOne({ docTypeId: id });
+      return { docType, templateBody,
+        categoryTemplateBody: categoryTemplateBody || '' };
+    },
     key: 'dataObj'
   },
   {
@@ -118,7 +141,7 @@ export const backEndRoutes = [
     exact: true,
     component: UpdateDocType,
     fetchInitialData: path =>
-      DocumentType.find({ docTypeId: path.split('/').pop() }),
+      DocumentType.findOne({ docTypeId: path.split('/').pop() }),
     key: 'docType'
   },
   {

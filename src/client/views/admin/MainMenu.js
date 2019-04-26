@@ -43,6 +43,10 @@ class MainMenu extends Component {
                 return { url: `/admin/edit-template/${docType.docTypeId}`,
                   text: docType.docTypeName };
               })
+            }, {
+              url: '/admin/file-mgmt', text: 'Manage Files'
+            }, {
+              url: '/admin/upload-file', text: 'Upload File'
             }] } /> : null}
     </div>;
   }

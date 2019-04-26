@@ -13,15 +13,22 @@ class EditDisplayTemplate extends Component {
   }
 
   render() {
-    let { docType, templateBody } = this.props.staticContext.dataObj;
+    let { docType, templateBody } =
+      this.props.staticContext.dataObj,
+      categoryTemplateBody =
+        this.props.staticContext.dataObj.categoryTemplateBody || '';
     if (docType !== null && templateBody !== null)
       return <GeneratedForm title=
         {`Edit ${docType.docTypeName} Display Template`} params={{
         templateBody: {
           type: 'text',
-          label: 'Template Body',
           grammar: 'html',
           value: templateBody
+        },
+        categoryTemplateBody: {
+          type: 'text',
+          grammar: 'html',
+          value: categoryTemplateBody
         }
       }} method="post" redirectUrl='/admin'
       formAction={

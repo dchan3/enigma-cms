@@ -28,13 +28,19 @@ class UpdateDocType extends Component {
   }
 
   render() {
-    var docType = this.props.staticContext.docType;
+    let { docType } = this.props.staticContext;
+    console.log(docType);
     if (docType !== null)
       return <GeneratedForm title="Update Document Type" params={{
         docTypeName: {
           label: 'Document Type Name',
           type: 'text',
           value: docType.docTypeName
+        },
+        docTypeNamePlural: {
+          label: 'Document Type Name Plural',
+          type: 'text',
+          value: docType.docTypeNamePlural || ''
         },
         attributes: {
           label: 'Attributes',

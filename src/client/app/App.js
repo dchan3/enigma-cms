@@ -13,6 +13,7 @@ import EditDocumentLanding from '../views/admin/EditDocumentLanding';
 import EditDisplayTemplate from '../views/admin/EditDisplayTemplate';
 import FrontDocumentDisplay from '../views/front/FrontDocumentDisplay';
 import FrontProfileDisplay from '../views/front/FrontProfileDisplay';
+import FrontCategoryDisplay from '../views/front/FrontCategoryDisplay';
 import UpdateDocType from '../views/admin/UpdateDocType';
 import NotFound from '../views/front/NotFound';
 import ProfileEditPage from '../views/admin/ProfileEditPage';
@@ -27,7 +28,8 @@ var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
   return <Route {...rest} render={(props) => {
     if (staticContext.user) {
       if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
-        return <Component {...props} staticContext={staticContext} />
+        return [<MainMenu staticContext={staticContext} />,
+          <Component {...props} staticContext={staticContext} />];
       }
       else return <Redirect to="/admin" />
     }
@@ -47,7 +49,7 @@ var LoggedOutRoute = function({ component: Component, staticContext,
     if (staticContext.user) {
       return <Redirect to="/admin" />
     }
-    else return <Component {...props} staticContext={staticContext} />
+    else return  <Component {...props} staticContext={staticContext} />;
   }} />
 };
 
@@ -84,8 +86,8 @@ class App extends Component {
       <Switch>
         <FrontEndRoute exact path='/' staticContext={staticContext}
           component={HomePage} />
-        <ProtectedRoute exact path="/admin" isAdmin={false}
-          staticContext={staticContext} component={MainMenu} />
+        <ProtectedRoute exact path='/admin' isAdmin={false}
+          staticContext={staticContext} component={() => <div />}/>
         <ProtectedRoute exact path='/admin/new/:docTypeId' isAdmin={false}
           staticContext={staticContext}  component={DocumentEditPage} />
         <ProtectedRoute exact path='/admin/edit/:docType' isAdmin={true}
@@ -118,8 +120,10 @@ class App extends Component {
           staticContext={staticContext} />
         <FrontEndRoute exact path="/profile/:username"
           component={FrontProfileDisplay} staticContext={staticContext} />
+        <FrontEndRoute exact path="/:docType"
+          component={FrontCategoryDisplay} staticContext={staticContext} />
         <FrontEndRoute exact path="/:docType/:docNode"
-          component={FrontDocumentDisplay} staticContext={staticContext} />,
+          component={FrontDocumentDisplay} staticContext={staticContext} />
       </Switch>
       <Footer user={staticContext.user || null} />
     </div>;

@@ -133,6 +133,7 @@ router.post('/update_template/:type_id', verifyMiddleware, (req, res, next) => {
     doc => {
       if (doc) {
         doc.set('templateBody', req.body.templateBody);
+        doc.set('categoryTemplateBody', req.body.categoryTemplateBody);
         doc.save(function(err) {
           if (err) return next(err);
           else return res.status(200).end();
@@ -141,7 +142,8 @@ router.post('/update_template/:type_id', verifyMiddleware, (req, res, next) => {
       else {
         var newDoc = new DocumentDisplayTemplate({
           docTypeId: req.params.type_id,
-          templateBody: req.body.templateBody
+          templateBody: req.body.templateBody,
+          categoryTemplateBody: req.body.categoryTemplateBody
         });
         newDoc.save(function(err) {
           if (err) return next(err);

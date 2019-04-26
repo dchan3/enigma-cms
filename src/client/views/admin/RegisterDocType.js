@@ -34,6 +34,10 @@ class RegisterDocType extends Component {
         label: 'Document Type Name',
         type: 'text'
       },
+      docTypeNamePlural: {
+        label: 'Document Type Name Plural',
+        type: 'text'
+      },
       attributes: {
         type: '[object]',
         shape: {
