@@ -9,45 +9,44 @@ class MainMenu extends Component {
 
   render() {
     let staticContext = this.props.staticContext,
-      isAdmin = staticContext.user && staticContext.user.roleId === 0 || false;
+      isAdmin = staticContext.user && staticContext.user.roleId === 0 || false,
+      menuNodes = [];
+    if (isAdmin) menuNodes.push({ url: '/admin/edit-config',
+      text: 'Site Settings' }, { url: '/admin/register-type',
+      text: 'Register Document Type' }, {
+      url: '', text: 'Edit Document Type...', childNodes:
+          staticContext.types.map((docType) => {
+            return { url: `/admin/edit-type/${docType.docTypeId}`,
+              text: docType.docTypeName };
+          })
+    });
+
+    menuNodes.push({ url: '', text: 'New...', childNodes:
+          staticContext.types.map((docType) => {
+            return { url: `/admin/new/${docType.docTypeId}`,
+              text: docType.docTypeName };
+          })
+    },
+    { url: '', text: 'Edit Existing...', childNodes:
+          staticContext.types.map((docType) => {
+            return { url: `/admin/edit/${docType.docTypeId}`,
+              text: docType.docTypeName };
+          })
+    },
+    { url: '', text: 'Edit Display Template For...',  childNodes:
+          staticContext.types.map((docType) => {
+            return { url: `/admin/edit-template/${docType.docTypeId}`,
+              text: docType.docTypeName };
+          })
+    }, {
+      url: '/admin/file-mgmt', text: 'Manage Files'
+    }, {
+      url: '/admin/upload-file', text: 'Upload File'
+    });
 
     return <div>
       {staticContext.user ?
-        <DropdownMenu menuNodes={
-          [
-            isAdmin ? { url: '/admin/edit-config',
-              text: 'Site Settings' } : null,
-            { url: '/', text: 'View Front End' },
-            isAdmin ? { url: '/admin/register-type',
-              text: 'Register Document Type' } : null,
-            isAdmin ? { url: '', text: 'Edit Document Type...', childNodes:
-              staticContext.types.map((docType) => {
-                return { url: `/admin/edit-type/${docType.docTypeId}`,
-                  text: docType.docTypeName };
-              })
-            } : null,
-            { url: '', text: 'New...', childNodes:
-              staticContext.types.map((docType) => {
-                return { url: `/admin/new/${docType.docTypeId}`,
-                  text: docType.docTypeName };
-              })
-            },
-            { url: '', text: 'Edit Existing...', childNodes:
-              staticContext.types.map((docType) => {
-                return { url: `/admin/edit/${docType.docTypeId}`,
-                  text: docType.docTypeName };
-              })
-            },
-            { url: '', text: 'Edit Display Template For...',  childNodes:
-              staticContext.types.map((docType) => {
-                return { url: `/admin/edit-template/${docType.docTypeId}`,
-                  text: docType.docTypeName };
-              })
-            }, {
-              url: '/admin/file-mgmt', text: 'Manage Files'
-            }, {
-              url: '/admin/upload-file', text: 'Upload File'
-            }] } /> : null}
+        <DropdownMenu menuNodes={menuNodes} /> : null}
     </div>;
   }
 }

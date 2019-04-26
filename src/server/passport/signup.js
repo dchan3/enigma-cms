@@ -5,6 +5,8 @@ import SiteConfig from '../models/SiteConfig';
 import icongen from '../utils/icongen';
 
 var SignupStrategy = new LocalStrategy({
+  usernameField : 'username',
+  passwordField : 'password',
   passReqToCallback: true
 }, (req, username, password, done) => {
   User.findOne({}, function(erra, u) {

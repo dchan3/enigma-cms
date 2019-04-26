@@ -23,11 +23,16 @@ router.get('/logout', function(req, res) {
 });
 
 // POST Requests
-router.post('/register', verifyMiddleware,
-  passport.authenticate('local-signup', {
-    successRedirect: '/admin',
-    failureRedirect: '/signup',
-  }));
+router.post('/register', verifyMiddleware, function(req, res, next) {
+  passport.authenticate('local-signup',  function(err, user) {
+    if (err) return next(err);
+    if (!user) return next({ error: 'Invalid Credentials.' });
+    req.logIn(user, function(er) {
+      if (er) { return next(er); }
+      return res.status(200).end();
+    });
+  })(req, res, next);
+});
 
 router.post('/login', verifyMiddleware, function(req, res, next) {
   passport.authenticate('local-login', function(err, user) {
