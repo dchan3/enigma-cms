@@ -11,12 +11,18 @@ import { default as fileRoutes } from './routes/api/file_mgmt';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
+import { createProxyServer } from 'http-proxy';
 
 mongoose.Promise = global.Promise;
 
-var app = express(), port = process.env.SERVER_PORT || 8080;
+var app = express(), port = process.env.SERVER_PORT || 8080,
+  apiProxy = createProxyServer();
 
 mongoose.connect(require('../../config/db.js').url, {}, () => { });
+
+app.post('/api', function(req, res) {
+  apiProxy.web(req, res, { target: 'http://localhost:8080/api' })
+});
 
 app.use(expressSession);
 
