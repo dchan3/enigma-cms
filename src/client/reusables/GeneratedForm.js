@@ -109,7 +109,8 @@ class GeneratedForm extends Component {
 
   static defaultProps = {
     parentCallback: undefined,
-    fileContent: 'fileContent'
+    fileContent: 'fileContent',
+    method: "post"
   };
 
   constructor(props) {
