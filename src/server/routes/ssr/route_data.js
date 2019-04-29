@@ -102,9 +102,9 @@ export const backEndRoutes = [
     exact: true,
     component: DocumentUpdatePage,
     fetchInitialData: async (path) => {
-      let [ typeId, slug ] = path.split('/').slice(-2),
-        docType = await DocumentType.findOne({ docTypeId: typeId }),
-        doc = await Document.findOne({ slug: slug });
+      let nodeId = path.split('/').pop(),
+        doc = await Document.findOne({ docNodeId: nodeId }),
+        docType = await DocumentType.findOne({ docTypeId: doc.docTypeId });
       return { docType, doc };
     },
     key: 'dataObj'
