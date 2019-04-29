@@ -19,7 +19,7 @@ class DocumentUpdatePage extends Component {
         params[attr.attrName] = {
           label: attr.attrName,
           type: attr.attrType,
-          value: document.content[attr.attrName],
+          value: doc.content[attr.attrName],
         };
 
         if (attr.grammar) {
