@@ -12,6 +12,8 @@ import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
 import { createProxyServer } from 'http-proxy';
+import fs from 'fs';
+import path from 'path';
 
 mongoose.Promise = global.Promise;
 
@@ -58,6 +60,15 @@ app.use('/api/users', userRoutes);
 app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
+app.get('/app.bundle.js', (req, res) => {
+  res.send(fs.readFileSync(path.resolve(__dirname, 'public/app.bundle.js')))
+});
+app.get('/prism.css', (req, res) => {
+  res.send(fs.readFileSync(path.resolve(__dirname, 'public/prism.css')))
+});
+app.get('/favicon.ico', (req, res) => {
+  res.send(fs.readFileSync(path.resolve(__dirname, 'public/favicon.ico')))
+});
 app.get('/*', ssrRoutes);
 
 app.listen(port);

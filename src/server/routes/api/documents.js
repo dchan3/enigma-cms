@@ -23,7 +23,18 @@ router.post('/register_type', verifyMiddleware, (req, res, next) => {
   }
   newType.save(function (err) {
     if (err) return next(err);
-    else res.redirect('/admin/');
+    else {
+      let newTemplate = new
+      DocumentDisplayTemplate({
+        docTypeId: newType.get('docTypeId'),
+        templateBody: '',
+        categoryTemplateBody: ''
+      });
+      newTemplate.save(era => {
+        if (era) return next(era);
+        else return res.redirect('/admin/');
+      });
+    }
   });
 });
 

@@ -24,7 +24,6 @@ router.get('/logout', function(req, res) {
 
 // POST Requests
 router.post('/register', verifyMiddleware, function(req, res, next) {
-  console.log(req);
   passport.authenticate('local-signup',  function(err, user) {
     if (err) return next(err);
     if (!user) return next({ error: 'Invalid Credentials.' });

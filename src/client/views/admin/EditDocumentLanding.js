@@ -29,7 +29,7 @@ class EditDocumentLanding extends Component {
   }
 
   render() {
-    let { dataObj, config } = this.props.staticContext,
+    let { dataObj } = this.props.staticContext,
       { docType, documents } = dataObj,
       handleDeleteClick = this.handleDeleteClick;
     if (docType && documents.length > 0)
@@ -59,8 +59,7 @@ class EditDocumentLanding extends Component {
             }, {
               headerText: 'View Live',
               display: (item) => <a href={
-                `/${docType.docTypeName}/${
-                  config.useSlug ? item.slug : item.docNodeId}`}>View Live</a>
+                `/${docType.docTypeNamePlural}/${item.slug}`}>View Live</a>
             }].flat()
           } />];
     else return null;
