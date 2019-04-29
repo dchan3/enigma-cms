@@ -29,7 +29,6 @@ class UpdateDocType extends Component {
 
   render() {
     let { docType } = this.props.staticContext;
-    console.log(docType);
     if (docType !== null)
       return <GeneratedForm title="Update Document Type" params={{
         docTypeName: {

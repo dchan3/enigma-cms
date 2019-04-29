@@ -110,7 +110,7 @@ class GeneratedForm extends Component {
   static defaultProps = {
     parentCallback: undefined,
     fileContent: 'fileContent',
-    method: "post"
+    method: 'post'
   };
 
   constructor(props) {
@@ -324,7 +324,8 @@ class GeneratedForm extends Component {
 
   handleSubmit(event) {
     let self = this, requestBody = {};
-    Array.prototype.slice.call(event.target.parentElement.elements, 0 , -1).forEach(
+    Array.prototype.slice.call(
+      event.target.parentElement.elements, 0 , -1).forEach(
       (node) => { requestBody[node.id] = node.value; });
     let sig = gensig(requestBody);
     axios({ method: self.props.method,
