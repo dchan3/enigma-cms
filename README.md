@@ -20,9 +20,12 @@ copy, paste, and execute in your favorite shell:
 This is a **MERN** stack project, so I think it's quite obvious what you need:
 
 - **M**ongoDB
+
 - **N**odeJS
-  * **R**eact.js
-  * **E**xpress.js
+
+  - **R**eact.js
+  
+  - **E**xpress.js
   
 You will need to follow the installation instructions catered to your platform.
 
@@ -54,4 +57,4 @@ If you do get it figured out, congratulations, it should run as expected. You do
 I don't feel like opening this up to contributors yet. I might change my mind later.
 
 ## Authors
-* **Ya Boi** - *pretty much everything* - [dchan3](https://github.com/dchan3)
+- **Ya Boi** - *pretty much everything* - [dchan3](https://github.com/dchan3)
