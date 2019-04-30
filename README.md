@@ -19,14 +19,11 @@ copy, paste, and execute in your favorite shell:
 
 This is a **MERN** stack project, so I think it's quite obvious what you need:
 
-- **M**ongoDB
+-   **M**ongoDB
+-   **E**xpress.js
+-   **R**eact.js
+-   **N**odeJS
 
-- **N**odeJS
-
-  - **R**eact.js
-  
-  - **E**xpress.js
-  
 You will need to follow the installation instructions catered to your platform.
 
 ### Installation
@@ -40,8 +37,8 @@ Again, this is a **MERN** stack project. After you clone this repository,
 
 ### Firing Up
 
-- On your local machine in development mode: `npm start`
-- On some server: `node server.bundle.js`
+-   On your local machine in development mode: `npm start`
+-   On some server: `node server.bundle.js`
 
 ### Deployment
 
