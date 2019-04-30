@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import User from './models/User';
+import SiteConfig from './models/SiteConfig';
 import { default as SignupStrategy } from './passport/signup';
 import { default as LoginStrategy } from './passport/login';
 import mongoose from 'mongoose';
@@ -20,7 +21,15 @@ mongoose.Promise = global.Promise;
 var app = express(), port = process.env.SERVER_PORT || 8080,
   apiProxy = createProxyServer();
 
-mongoose.connect(require('../../config/db.js').url, {}, () => { });
+mongoose.connect(require('../../config/db.js').url, {}, () => {
+  SiteConfig.findOne({}).then(config => {
+    if (!config) {
+      let newConfig = new SiteConfig({});
+      newConfig.save();
+    }
+    else return;
+  });
+});
 
 app.post('/api', function(req, res) {
   apiProxy.web(req, res, { target: 'http://localhost:8080/api' })
