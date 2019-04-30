@@ -54,4 +54,4 @@ If you do get it figured out, congratulations, it should run as expected. You do
 I don't feel like opening this up to contributors yet. I might change my mind later.
 
 ## Authors
-- **Ya Boi** - *pretty much everything* - [dchan3](https://github.com/dchan3)
+-   **Ya Boi** - *pretty much everything* - [dchan3](https://github.com/dchan3)
