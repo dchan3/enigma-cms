@@ -5,12 +5,17 @@ import SiteConfig from '../../models/SiteConfig';
 import DocumentType from '../../models/DocumentType';
 import { matchPath, StaticRouter } from 'react-router';
 import { renderToString } from 'react-dom/server';
+import { ServerStyleSheet } from 'styled-components';
+import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
 
-var htmlTemplate = (dom, data) => `<!DOCTYPE html>
+var htmlTemplate = (stylesheet, helmetTags, dom, data) => `<!DOCTYPE html>
    <html>
     <head>
-    <title></title>
+        ${helmetTags.title.toString()}
+        ${helmetTags.meta.toString()}
+        ${helmetTags.link.toString()}
+        ${stylesheet}
     <script>
       window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
     </script>
@@ -32,13 +37,16 @@ var htmlTemplate = (dom, data) => `<!DOCTYPE html>
         ? activeRoute.fetchInitialData(path) : Promise.resolve();
 
     promise.then((data) => {
+      let sheet = new ServerStyleSheet();
       if (activeRoute.key && data) context[activeRoute.key] = data;
       const jsx = (
           <StaticRouter location={req.url} context={context}>
             <App staticContext={context} />
-          </StaticRouter>), markup = renderToString(jsx);
+          </StaticRouter>), markup = renderToString(sheet.collectStyles(jsx)),
+        helmet = Helmet.renderStatic(), styleTags = sheet.getStyleTags();
+      sheet.seal();
       res.writeHead(200, { 'Content-Type': 'text/html' } );
-      res.end(htmlTemplate(markup, context));
+      res.end(htmlTemplate(styleTags, helmet, markup, context));
     }).catch(next)
   };
 

@@ -8,10 +8,11 @@ router.post('/update', verifyMiddleware, function(req, res, next) {
   SiteConfig.findOne({ }).then(config => {
     var reset = [];
     for (var attr in req.body) {
+      console.log(attr);
       if (attr.indexOf('.') > -1) {
         var mainKey = attr.split('.')[0];
         if (!reset.includes(mainKey)) {
-          config.set(mainKey, {});
+          config.set(mainKey, attr.match(/\.\d+/) ? [] : {});
           reset.push(mainKey);
         }
       }

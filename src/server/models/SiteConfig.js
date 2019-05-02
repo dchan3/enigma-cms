@@ -76,6 +76,10 @@ const SiteConfigSchema = new mongoose.Schema({
   shortcodes: {
     type: [Object],
     required: false
+  },
+  keywords: {
+    type: [String],
+    required: false
   }
 });
 

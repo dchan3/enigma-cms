@@ -12,7 +12,7 @@ class ConfigPage extends Component {
   }
 
   render() {
-    let config = this.props.staticContext.config;
+    let { config } = this.props.staticContext;
 
     return <GeneratedForm title="Site Settings" params={{
       siteName: {
@@ -57,7 +57,6 @@ class ConfigPage extends Component {
       },
       useSlug: {
         type: 'enum',
-        label: 'Use Slug',
         enumList: [{
           text: 'Yes', value: true }, {
           text: 'No', value: false
@@ -68,8 +67,7 @@ class ConfigPage extends Component {
         type: '[object]',
         shape: {
           name: {
-            type: 'text',
-            label: 'Name'
+            type: 'text'
           },
           args: {
             type: 'text',
@@ -81,11 +79,17 @@ class ConfigPage extends Component {
             grammar: 'js'
           }
         },
-        value: config ? config.shortcodes : [{
-          name: '',
-          args: '',
-          code: ''
-        }]
+        value: (config && config.shortcodes && config.shortcodes.length > 0) ?
+          config.shortcodes : [{
+            name: '',
+            args: '',
+            code: ''
+          }]
+      },
+      keywords: {
+        type: '[text]',
+        value: (config && config.keywords && config.keywords.length > 0) ?
+          config.keywords : ['']
       }
     }}
     method="post" redirectUrl='/admin' formAction='/api/site_config/update' />

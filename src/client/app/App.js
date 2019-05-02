@@ -22,6 +22,7 @@ import FileMgmtLanding from '../views/admin/FileMgmtLanding';
 import UploadFilePage from '../views/admin/UploadFilePage';
 import FrontHeader from '../views/front/FrontHeader';
 import Footer from '../reusables/Footer';
+import { Metamorph } from 'react-metamorph';
 
 var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
   ...rest }) {
@@ -81,6 +82,13 @@ class App extends Component {
   render() {
     let staticContext = this.props.staticContext || window.__INITIAL_DATA__;
     return <div>
+      <Metamorph title={staticContext.config ? staticContext.config.siteName :
+        'My Website'} description={staticContext.config ?
+        staticContext.config.description :
+        'Welcome to my website!'} keywords={staticContext.config &&
+        staticContext.config.keywords &&
+        staticContext.config.keywords.join(',') || ''}
+      image={staticContext.config ? staticContext.config.image : ''}/>
       <FrontHeader staticContext={staticContext} />
       <style>{staticContext.config.stylesheet}</style>
       <Switch>
