@@ -142,7 +142,6 @@ class GeneratedForm extends Component {
 
   handleChange(param) {
     var self = this;
-    console.log(param);
     return async function(event) {
       event.preventDefault();
       var newState = {
@@ -150,8 +149,6 @@ class GeneratedForm extends Component {
       };
 
       _.set(newState.values, param, event.target.value);
-
-      console.log(newState.values);
 
       if (event.target.type === 'file') {
         var contents = await self.readFile(event.target.files[0]);
@@ -179,7 +176,6 @@ class GeneratedForm extends Component {
 
   handleArrayAdd(param) {
     var self = this;
-    console.log(param);
     return function(event) {
       event.preventDefault();
       var newState = {
@@ -217,8 +213,6 @@ class GeneratedForm extends Component {
             param.match(/\.[a-z]+$/) ? -1 : 0)[0] : param)),
       paramType = (paramObj && paramObj.type) || undefined,
       isHidden = (paramObj && paramObj.hidden) || false;
-
-      console.log(param, label);
 
     if (typeof paramType === 'string') {
       var comp;
@@ -271,8 +265,6 @@ class GeneratedForm extends Component {
         } else if (paramType.match(/object/) !== null) {
           var isArray = (paramType.match(/\[.+\]/)),
             innards = [];
-
-          console.log (paramObj);
 
           for (var k in (paramObj.shape)) {
             innards.push(
