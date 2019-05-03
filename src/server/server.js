@@ -70,8 +70,7 @@ app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
 app.get('/app.bundle.js', (req, res) => {
-  res.writeHead(200,
-    { 'Content-Type': 'application/javascript; charset=utf-8' });
+  res.setHeader('Content-Type', 'application/javascript; charset=utf-8' );
   res.send(fs.readFileSync(path.resolve(__dirname, 'public/app.bundle.js')))
 });
 app.get('/prism.css', (req, res) => {
