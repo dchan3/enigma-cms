@@ -68,14 +68,17 @@ router.post('/new_document/:type_id', verifyMiddleware, (req, res) => {
   });
   var reset = [];
   for (var attr in req.body) {
-    if (attr.indexOf('.') > -1) {
-      var mainKey = attr.split('.')[0];
-      if (!reset.includes(mainKey)) {
-        newDoc.set(`content.${  mainKey}`, {});
-        reset.push(mainKey);
+    if (attr !== 'draft') {
+      if (attr.indexOf('.') > -1) {
+        var mainKey = attr.split('.')[0];
+        if (!reset.includes(mainKey)) {
+          newDoc.set(`content.${  mainKey}`, {});
+          reset.push(mainKey);
+        }
       }
+      newDoc.set(`content.${attr}`, req.body[attr]);
     }
-    newDoc.set(`content.${attr}`, req.body[attr]);
+    else { newDoc.set(attr, req.body[attr]); }
   }
   DocumentType.findOne({ docTypeId: newDoc.docTypeId }).then(docType => {
     let propSlug = slug(newDoc.content[docType.slugFrom]);
@@ -100,14 +103,17 @@ router.post('/update_document/:node_id', verifyMiddleware, (req, res, next) => {
     doc.set('editorId', req.user.userId);
     var reset = [];
     for (var attr in req.body) {
-      if (attr.indexOf('.') > -1) {
-        var mainKey = attr.split('.')[0];
-        if (!reset.includes(mainKey)) {
-          doc.set(`content.${mainKey}`, {});
-          reset.push(mainKey);
+      if (attr !== 'draft') {
+        if (attr.indexOf('.') > -1) {
+          var mainKey = attr.split('.')[0];
+          if (!reset.includes(mainKey)) {
+            doc.set(`content.${mainKey}`, {});
+            reset.push(mainKey);
+          }
         }
+        doc.set(`content.${attr}`, req.body[attr]);
       }
-      doc.set(`content.${attr}`, req.body[attr]);
+      else { doc.set(attr, req.body[attr]); }
     }
     DocumentType.findOne({ docTypeId: doc.docTypeId }).then(docType => {
       var propSlug = slug(doc.content[docType.slugFrom]);

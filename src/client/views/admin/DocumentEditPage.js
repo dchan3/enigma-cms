@@ -32,6 +32,14 @@ class DocumentEditPage extends Component {
           params[attr.attrName].minimum = attr.minimum;
         }
       });
+
+      params.draft = {
+        type: 'enum',
+        enumList: [{
+          text: 'Yes', value: true }, {
+          text: 'No', value: false
+        }]
+      };
     }
     else return null;
 

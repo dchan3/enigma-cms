@@ -31,6 +31,9 @@ const DocumentSchema = new Schema({
   },
   slug: {
     type: String
+  },
+  draft: {
+    type: Boolean
   }
 });
 

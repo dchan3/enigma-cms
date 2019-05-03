@@ -27,9 +27,17 @@ class DocumentUpdatePage extends Component {
         }
       });
 
+      params.draft = {
+        type: 'enum',
+        enumList: [{
+          text: 'Yes', value: true }, {
+          text: 'No', value: false
+        }]
+      };
+
       return <GeneratedForm title='Edit Document'
         params={params} method="post"
-        redirectUrl={docType ? `/admin/edit/${docType}` : '/admin'}
+        redirectUrl={docType ? `/admin/edit/${docType.docTypeId}` : '/admin'}
         formAction={`/api/documents/update_document/${ 
           this.props.match.params.docNode}`}
       />;

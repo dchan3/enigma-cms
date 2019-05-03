@@ -197,8 +197,13 @@ class GeneratedForm extends Component {
       handleChange = this.handleChange,
       handleArrayRemove = this.handleArrayRemove,
       handleArrayAdd = this.handleArrayAdd,
-      paramObj = _.get(params,
-        param.replace(/\.\$\.(\$\.)?/, '.shape.').replace(/\.\$$/, '')),
+      paramKey = param
+        .replace(/\.\$\.(\$\.)?/, '.shape.').replace(/\.\d+\./, '.shape.')
+        .replace(/\.\$$/, '');
+    if (!paramKey.match(/\.shape\.[a-zA-Z]+$/))
+      paramKey = paramKey.replace(/\.[a-zA-Z]+$/, '.shape$&');
+
+    let paramObj = _.get(params, paramKey),
       valueParamKey = iteration !== undefined ?
         param.replace(/\.\$\.(\$\.)?/, `.${iteration.toString()}.`)
           .replace(/\.\$$/, `.${iteration.toString()}`) : param,
@@ -210,7 +215,7 @@ class GeneratedForm extends Component {
       label = (paramObj && paramObj.label ||
         fromCamelCase(param.indexOf('.') > -1 ?
           param.split('.') .slice(
-            param.match(/\.[a-z]+$/) ? -1 : 0)[0] : param)),
+            param.match(/\.[a-zA-Z]+$/) ? -1 : 0)[0] : param)),
       paramType = (paramObj && paramObj.type) || undefined,
       isHidden = (paramObj && paramObj.hidden) || false;
 

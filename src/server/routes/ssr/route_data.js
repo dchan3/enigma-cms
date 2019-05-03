@@ -63,7 +63,10 @@ export const frontEndRoutes = [
         docType = await DocumentType.findOne({ docTypeNamePlural: typeName }),
         { categoryTemplateBody } =
         await DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId }),
-        items = await Document.find({ docTypeId: docType.docTypeId });
+        items = await Document.find({
+          docTypeId: docType.docTypeId,
+          draft: false
+        });
       return { categoryTemplateBody, items };
     },
     key: 'dataObj'
@@ -77,8 +80,9 @@ export const frontEndRoutes = [
       var docType = await DocumentType.findOne({ docTypeNamePlural: typeName });
       var template =
         await DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId });
-      var doc = await Document.findOne({ slug: slug });
-      return { templateBody: template.templateBody, doc };
+      var doc = await Document.findOne({ slug: slug, draft: false });
+      if (doc) return { templateBody: template.templateBody, doc };
+      else return { };
     },
     key: 'dataObj'
   },
