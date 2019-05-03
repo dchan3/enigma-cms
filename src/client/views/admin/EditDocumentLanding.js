@@ -47,6 +47,10 @@ class EditDocumentLanding extends Component {
               };
             }),
             {
+              headerText: 'Draft',
+              display: (item) => <p>{item.draft ? 'Yes' : 'No'}</p>
+            },
+            {
               headerText: 'Edit',
               display: (item) =>
                 <a href={`/admin/edit-document/${item.docNodeId}`}>Edit</a>

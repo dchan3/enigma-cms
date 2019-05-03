@@ -45,7 +45,7 @@ var htmlTemplate = (stylesheet, helmetTags, dom, data) => `<!DOCTYPE html>
           </StaticRouter>), markup = renderToString(sheet.collectStyles(jsx)),
         helmet = Helmet.renderStatic(), styleTags = sheet.getStyleTags();
       sheet.seal();
-      res.writeHead(200, { 'Content-Type': 'text/html' } );
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
       res.end(htmlTemplate(styleTags, helmet, markup, context));
     }).catch(next)
   };
