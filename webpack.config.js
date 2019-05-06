@@ -4,13 +4,16 @@ const path = require('path'), webpack = require('webpack'),
 module.exports = [{
   mode: process.env.MODE ? process.env.MODE : 'development',
   entry:  './src/client/app/index.js',
-  externals: [nodeExternals()],
+  target: 'web',
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
       },
     ],
   },
@@ -26,9 +29,14 @@ module.exports = [{
   },
   resolve: {
     alias: {
-      handlebars: 'handlebars/dist/handlebars.min.js',
+      handlebars: path.resolve(__dirname, 'node_modules',
+        'handlebars/dist/handlebars.min.js'),
       'styled-components':
         path.resolve(__dirname, 'node_modules', 'styled-components'),
+      react: path.resolve(__dirname, 'node_modules', 'react'),
+      'react-dom': path.resolve(__dirname, 'node_modules', 'react-dom'),
+      '@babel': path.resolve(__dirname, 'node_modules', '@babel'),
+      'prop-types': path.resolve(__dirname, 'node_modules', 'prop-types'),
     }
   },
   devtool: 'eval-source-map'
