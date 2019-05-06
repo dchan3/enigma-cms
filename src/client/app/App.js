@@ -88,7 +88,7 @@ class App extends Component {
         'Welcome to my website!'} keywords={staticContext.config &&
         staticContext.config.keywords &&
         staticContext.config.keywords.join(',') || ''}
-      image={staticContext.config ? staticContext.config.image : ''}/>
+      image={staticContext.config ? staticContext.config.iconUrl : ''}/>
       <FrontHeader staticContext={staticContext} />
       <style>{staticContext.config.stylesheet}</style>
       <Switch>

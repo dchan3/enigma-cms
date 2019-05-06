@@ -9,24 +9,30 @@ import { ServerStyleSheet } from 'styled-components';
 import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
 
-var htmlTemplate = (stylesheet, helmetTags, dom, data) => `<!DOCTYPE html>
-   <html>
-    <head>
-        ${helmetTags.title.toString()}
-        ${helmetTags.meta.toString()}
-        ${helmetTags.link.toString()}
-        ${stylesheet}
+var htmlTemplate =
+ (stylesheet, moreStyles, helmetTags, dom, data) => `<!DOCTYPE html>
+<html>
+  <head>
+${[
+    helmetTags.title.toString(),
+    helmetTags.meta.toString(),
+    helmetTags.link.toString(),
+    stylesheet,
+    moreStyles.length ? `<style>${moreStyles}</style>` : ''
+  ].map(str => str.length ? (`    ${str}`) : '')
+    .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
     <script>
       window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
     </script>
+    <script src='/app.bundle.js' defer></script>
     <link rel="stylesheet" href='/prism.css' />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-      <div id="root">${dom}</div>
-      <script src='/app.bundle.js' defer></script>
-     </body>
-</html>`, ssrRenderer = async (req, res, next) => {
+  </head>
+  <body>
+    <div id="root">${dom}</div>
+  </body>
+</html>
+`, ssrRenderer = async (req, res, next) => {
     let config = await SiteConfig.findOne({}),
       types = await DocumentType.find({}),
       path = req.path, routes = path.startsWith('/admin') ?
@@ -46,7 +52,8 @@ var htmlTemplate = (stylesheet, helmetTags, dom, data) => `<!DOCTYPE html>
         helmet = Helmet.renderStatic(), styleTags = sheet.getStyleTags();
       sheet.seal();
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
-      res.end(htmlTemplate(styleTags, helmet, markup, context));
+      res.end(htmlTemplate(styleTags, config.stylesheet, helmet, markup,
+        context));
     }).catch(next)
   };
 
