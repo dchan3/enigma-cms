@@ -4,6 +4,7 @@ const path = require('path'), webpack = require('webpack'),
 module.exports = [{
   mode: process.env.MODE ? process.env.MODE : 'development',
   entry:  './src/client/app/index.js',
+  externals: [nodeExternals()],
   module: {
     rules: [
       {
