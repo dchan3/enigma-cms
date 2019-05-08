@@ -2,7 +2,7 @@ const path = require('path'), webpack = require('webpack'),
   nodeExternals = require('webpack-node-externals');
 
 module.exports = [{
-  mode: process.env.MODE ? process.env.MODE : 'development',
+  mode: 'production',
   entry:  './src/client/app/index.js',
   target: 'web',
   module: {
@@ -12,10 +12,10 @@ module.exports = [{
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-          presets: ['@babel/preset-env']
+          babelrc: true
         }
       },
-    ],
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -25,7 +25,7 @@ module.exports = [{
   output: {
     path: path.resolve( __dirname, 'public' ),
     publicPath: path.resolve( __dirname, 'public' ),
-    filename: 'app.bundle.js',
+    filename: 'app.bundle.js'
   },
   resolve: {
     alias: {
@@ -33,15 +33,13 @@ module.exports = [{
         'handlebars/dist/handlebars.min.js'),
       'styled-components':
         path.resolve(__dirname, 'node_modules', 'styled-components'),
-      react: path.resolve(__dirname, 'node_modules', 'react'),
-      'react-dom': path.resolve(__dirname, 'node_modules', 'react-dom'),
-      '@babel': path.resolve(__dirname, 'node_modules', '@babel'),
+      'react': path.resolve(__dirname, 'node_modules', 'react'),
       'prop-types': path.resolve(__dirname, 'node_modules', 'prop-types'),
     }
   },
-  devtool: 'eval-source-map'
+  devtool: 'source-map'
 }, {
-  mode: process.env.MODE ? process.env.MODE : 'development',
+  mode: 'production',
   entry: './src/server/server.js',
   target: 'node',
   externals: [nodeExternals()],
@@ -51,6 +49,9 @@ module.exports = [{
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
+        options: {
+          babelrc: true
+        }
       },
     ],
   },
@@ -64,7 +65,7 @@ module.exports = [{
     filename: 'server.bundle.js',
     publicPath: '/'
   },
-  devtool: 'eval-source-map',
+  devtool: 'source-map',
   node: {
     __dirname: false
   }

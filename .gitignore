@@ -2,8 +2,8 @@ node_modules/
 build/
 .idea/
 dist/
-public/*.js
+public/*.js*
 public/uploads/
 public/profile-pix/
-server.bundle.js
+server.bundle.js*
 /**/.DS_Store
