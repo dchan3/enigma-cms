@@ -19,6 +19,13 @@ class ConfigPage extends Component {
         type: 'text',
         value: config ? config.siteName : ''
       },
+      iconFile: {
+        type: 'file'
+      },
+      fileContent: {
+        type: 'string',
+        hidden: 'true'
+      },
       description: {
         type: 'text',
         label: 'Site Description',
