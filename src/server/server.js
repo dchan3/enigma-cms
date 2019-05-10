@@ -69,15 +69,31 @@ app.use('/api/users', userRoutes);
 app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
+
 app.get('/app.bundle.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8' );
   res.send(fs.readFileSync(path.resolve(__dirname, 'public/app.bundle.js')))
 });
 app.get('/prism.css', (req, res) => {
-  res.send(fs.readFileSync(path.resolve(__dirname, 'public/prism.css')))
+  res.send(fs.readFileSync(path.resolve(__dirname, 'public/prism.css')));
 });
 app.get('/favicon.ico', (req, res) => {
-  res.send(fs.readFileSync(path.resolve(__dirname, 'public/favicon.ico')))
+  res.send(fs.readFileSync(path.resolve(__dirname, 'public/favicon.ico')));
+});
+app.get('/uploads/:type/:filename', (req, res) => {
+  var { type, filename } = req.params;
+  res.send(fs.readFileSync(path.resolve(__dirname,
+    `public/${type}/${filename}`)));
+});
+app.get('/profile-pix/:filename', (req, res) => {
+  var { filename } = req.params;
+  res.send(fs.readFileSync(path.resolve(__dirname,
+    `public/profile-pix/${filename}`)));
+});
+app.get('/site-icon/:filename', (req, res) => {
+  var { filename } = req.params;
+  res.send(fs.readFileSync(path.resolve(__dirname,
+    `public/site-icon/${filename}`)));
 });
 app.get('/*', ssrRoutes);
 
