@@ -77,8 +77,8 @@ class ConfigPage extends Component {
             type: 'text'
           },
           args: {
-            type: 'text',
-            label: 'Args (comma-separated)'
+            type: '[text]',
+            label: 'Arguments'
           },
           code: {
             type: 'text',
@@ -89,7 +89,7 @@ class ConfigPage extends Component {
         value: (config && config.shortcodes && config.shortcodes.length > 0) ?
           config.shortcodes : [{
             name: '',
-            args: '',
+            args: [''],
             code: ''
           }]
       },

@@ -21,7 +21,7 @@ class FrontCategoryDisplay extends Component {
       config.shortcodes.forEach(
         function(shortcode) {
           Handlebars.registerHelper(shortcode.name,
-            new Function(shortcode.args, shortcode.code));
+            new Function(shortcode.args.join(','), shortcode.code));
         });
 
       let template = Handlebars.compile(categoryTemplateBody),

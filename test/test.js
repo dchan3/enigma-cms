@@ -9,6 +9,7 @@ import CodeEditor from '../src/client/reusables/CodeEditor';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as gensig } from '../src/lib/utils/gensig';
+import { default as formGenUtils } from '../src/client/utils/form_from_obj';
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 
@@ -60,6 +61,9 @@ describe('Reusable UI Components - Generated Form', function() {
           firstName: {
             type: 'text'
           },
+          lastName: {
+            type: 'text'
+          },
           age: {
             type: 'number'
           },
@@ -74,7 +78,16 @@ describe('Reusable UI Components - Generated Form', function() {
               }
             }
           }
-        }
+        },
+        value: [{
+          firstName: 'John',
+          lastName: 'Doe',
+          age: 50,
+          contactInformation: {
+            phone: '123-456-7890',
+            email: 'john@johndoe.net'
+          }
+        }]
       }
     };
     const wrapper = render(<GeneratedForm params={parameters}
@@ -83,7 +96,7 @@ describe('Reusable UI Components - Generated Form', function() {
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
       .to.be.greaterThan(-1);
-    expect(wrapper.find('input[type="text"]')).to.have.lengthOf(3);
+    expect(wrapper.find('input[type="text"]')).to.have.lengthOf(4);
     expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
     done();
   });
@@ -123,3 +136,166 @@ describe('Signature Generator', function () {
     done();
   });
 });
+
+describe('Form from Obj', function() {
+  it('Key Util Functions', function(done) {
+    var obj = {
+        'a': 2,
+        'b': {
+          'c': [1,3]
+        },
+        'd': ['e', { 'f': 'g' }]
+      }, expected =
+      ['a', 'b', 'b.c', 'b.c.0', 'b.c.1', 'd', 'd.0', 'd.1', 'd.1.f'], exp =
+      ['a', 'b.c.0', 'b.c.1', 'd.0', 'd.1.f'],
+      e = { 'a': 2, 'b.c.0': 1, 'b.c.1': 3, 'd.0': 'e', 'd.1.f': 'g' };
+    expect(formGenUtils.outputKeys(obj, true)).to.deep.equal(expected);
+    expect(formGenUtils.outputKeys(obj, false)).to.deep.equal(exp);
+    expect(formGenUtils.mapKeysToValues(obj)).to.deep.equal(e)
+    done();
+  });
+
+  it('Form from JSON gen fucntion', function(done) {
+    var parameters = {
+        guestList: {
+          type: '[object]',
+          shape: {
+            firstName: {
+              type: 'text'
+            },
+            lastName: {
+              type: 'text'
+            },
+            age: {
+              type: 'number'
+            },
+            contactInformation: {
+              type: 'object',
+              shape: {
+                phone: {
+                  type: 'text'
+                },
+                email: {
+                  type: 'text'
+                }
+              }
+            }
+          }
+        }
+      }, values = {
+        guestList: [{
+          firstName: 'John',
+          lastName: 'Doe',
+          age: 50,
+          contactInformation: {
+            phone: '123-456-7890',
+            email: 'john@johndoe.net'
+          }
+        }]
+      };
+    expect(formGenUtils.formFromObj(parameters, values)).to.deep.equal([
+      {
+        component: 'FormObjectInputLabel',
+        innerText: 'Guest List'
+      },
+      {
+        component: 'FormSubmitButton',
+        innerText: 'Add',
+        attributes: { onClick: 'handleArrayAdd guestList' }
+      },
+      {
+        component: 'FormLabel',
+        innerText: 'First Name',
+        attributes: { htmlFor: 'guestList.0.firstName' }
+      },
+      {
+        component: 'FormInput',
+        attributes: {
+          value: 'John',
+          id: 'guestList.0.firstName',
+          name: 'guestList.0.firstName',
+          onChange: 'handleChange guestList.0.firstName',
+          type: 'text'
+        }
+      },
+      {
+        component: 'FormLabel',
+        innerText: 'Last Name',
+        attributes: { htmlFor: 'guestList.0.lastName' }
+      },
+      {
+        component: 'FormInput',
+        attributes: {
+          value: 'Doe',
+          id: 'guestList.0.lastName',
+          name: 'guestList.0.lastName',
+          onChange: 'handleChange guestList.0.lastName',
+          type: 'text'
+        }
+      },
+      {
+        component: 'FormLabel',
+        innerText: 'Age',
+        attributes: {
+          htmlFor: 'guestList.0.age'
+        }
+      },
+      {
+        component: 'FormInput',
+        attributes: {
+          value: 50,
+          id: 'guestList.0.age',
+          name: 'guestList.0.age',
+          onChange: 'handleChange guestList.0.age',
+          type: 'number'
+        }
+      },
+      {
+        component: 'FormObjectInputLabel',
+        innerText: 'Contact Information'
+      },
+      {
+        component: 'FormLabel',
+        innerText: 'Phone',
+        attributes: {
+          htmlFor: 'guestList.0.contactInformation.phone'
+        }
+      },
+      {
+        component: 'FormInput',
+        attributes: {
+          value: '123-456-7890',
+          id: 'guestList.0.contactInformation.phone',
+          name: 'guestList.0.contactInformation.phone',
+          onChange: 'handleChange guestList.0.contactInformation.phone',
+          type: 'text'
+        }
+      },
+      {
+        component: 'FormLabel',
+        innerText: 'Email',
+        attributes: {
+          htmlFor: 'guestList.0.contactInformation.email'
+        }
+      },
+      {
+        component: 'FormInput',
+        attributes: {
+          value: 'john@johndoe.net',
+          id: 'guestList.0.contactInformation.email',
+          name: 'guestList.0.contactInformation.email',
+          onChange: 'handleChange guestList.0.contactInformation.email',
+          type: 'text'
+        }
+      },
+      {
+        component: 'FormSubmitButton',
+        attributes: {
+          onClick: 'handleArrayRemove guestList 0'
+        },
+        innerText: 'Remove'
+      }
+    ]);
+    done();
+  });
+})

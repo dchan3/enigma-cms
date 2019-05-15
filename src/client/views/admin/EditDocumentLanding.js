@@ -37,7 +37,7 @@ class EditDocumentLanding extends Component {
         <TextHeader>
           {`Edit ${docType.docTypeName}`}
         </TextHeader>,
-        <EverAfter.TablePaginator perPage={10}
+        <EverAfter.TablePaginator perPage={10} activeTabColor="cadetblue"
           items={documents} truncate={true} columns={
             [docType.attributes.map(function(attr) {
               return {
