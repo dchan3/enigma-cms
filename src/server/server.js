@@ -70,6 +70,7 @@ app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
 
+// STATIC FILES
 app.get('/app.bundle.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8' );
   res.send(fs.readFileSync(path.resolve(__dirname, 'public/app.bundle.js')))
@@ -94,6 +95,9 @@ app.get('/site-icon/:filename', (req, res) => {
   var { filename } = req.params;
   res.send(fs.readFileSync(path.resolve(__dirname,
     `public/site-icon/${filename}`)));
+});
+app.get('/robots.txt', (req, res) => {
+  res.send(fs.readFileSync(path.resolve(__dirname, 'public/robots.txt')));
 });
 app.get('/*', ssrRoutes);
 
