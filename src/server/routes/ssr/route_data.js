@@ -66,7 +66,7 @@ export const frontEndRoutes = [
         items = await Document.find({
           docTypeId: docType.docTypeId,
           draft: false
-        });
+        }).sort({ createdAt: -1 });
       return { categoryTemplateBody, items };
     },
     key: 'dataObj'
