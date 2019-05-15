@@ -243,36 +243,40 @@ class GeneratedForm extends Component {
         <FormBackground onSubmit={(e) => e.preventDefault()}>
           {formGenUtils.formFromObj(params, this.state.values).map(
             function(node) {
-              var NodeComponent = comps[node.component],
-                attrObj = Object.assign({}, node.attributes || {});
+              if (node) {
+                var NodeComponent = comps[node.component],
+                  attrObj = Object.assign({}, node.attributes || {});
 
-              if (attrObj.onChange) {
-                let attrSplit = attrObj.onChange.split(' ');
-                attrObj.onChange = (e) => {
-                  selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
+                if (attrObj.onChange) {
+                  let attrSplit = attrObj.onChange.split(' ');
+                  attrObj.onChange = (e) => {
+                    selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
+                  }
                 }
-              }
-              if (attrObj.onClick) {
-                let attrSplit = attrObj.onClick.split(' ');
-                attrObj.onClick = (e) => {
-                  selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
+                if (attrObj.onClick) {
+                  let attrSplit = attrObj.onClick.split(' ');
+                  attrObj.onClick = (e) => {
+                    selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
+                  }
                 }
+
+                if (node.innerText) {
+                  return <FormDiv><NodeComponent {...attrObj}>
+                    {node.innerText}
+                  </NodeComponent></FormDiv>;
+                } else if (node.children) {
+                  return <FormDiv><NodeComponent {...attrObj}>
+                    {node.children.map(child => {
+                      var ChildComponent = comps[child.component];
+                      return <ChildComponent {...child.attributes}>
+                        {child.innerText}
+                      </ChildComponent>;
+                    })}
+                  </NodeComponent></FormDiv>;
+                }
+                else return <FormDiv><NodeComponent {...attrObj} /></FormDiv>;
               }
-              if (node.innerText) {
-                return <FormDiv><NodeComponent {...attrObj}>
-                  {node.innerText}
-                </NodeComponent></FormDiv>;
-              } else if (node.children) {
-                return <FormDiv><NodeComponent {...attrObj}>
-                  {node.children.map(child => {
-                    var ChildComponent = comps[child.component];
-                    return <ChildComponent {...child.attributes}>
-                      {child.innerText}
-                    </ChildComponent>;
-                  })}
-                </NodeComponent></FormDiv>;
-              }
-              else return <FormDiv><NodeComponent {...attrObj} /></FormDiv>;
+              else return null;
             })
           }
           <FormSubmit type="submit" value="Submit"

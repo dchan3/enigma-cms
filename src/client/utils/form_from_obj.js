@@ -69,34 +69,57 @@ const genInputComponent = function(paramSpec, valueVar, keyToUse) {
         }
       };
     }
-    else return {
-      component: 'FormInput',
-      attributes: {
-        id: keyToUse,
-        name: keyToUse,
-        type: 'text',
-        onChange: `handleChange ${keyToUse}`,
-        value: valueVar
-      }
-    };
+    else if (paramSpec.hidden) {
+      return {
+        component: 'FormInput',
+        attributes: {
+          id: keyToUse,
+          name: keyToUse,
+          type: 'text',
+          onChange: `handleChange ${keyToUse}`,
+          value: valueVar,
+          hidden: true
+        }
+      };
+    }
+    else {
+      return {
+        component: 'FormInput',
+        attributes: {
+          id: keyToUse,
+          name: keyToUse,
+          type: 'text',
+          onChange: `handleChange ${keyToUse}`,
+          value: valueVar
+        }
+      };
+    }
   }
   else {
-    var extraAttrs = Object.assign({}, paramSpec);
-    delete extraAttrs.type;
-    if (extraAttrs.label) delete extraAttrs.label;
-    if (extraAttrs.value) delete extraAttrs.value;
-
-    return {
+    var retval = {
       component: 'FormInput',
       attributes: {
         id: keyToUse,
         name: keyToUse,
         type: typeVerify(paramSpec.type).match(/[a-z]+/)[0],
         onChange: `handleChange ${keyToUse}`,
-        value: valueVar,
-        ...extraAttrs
+        value: valueVar
       }
+    };
+
+    if (paramSpec.hidden) {
+      retval.attributes.hidden = paramSpec.hidden;
     }
+
+    if (paramSpec.minimum) {
+      retval.attributes.minimum = paramSpec.minimum;
+    }
+
+    if (paramSpec.maximum) {
+      retval.attributes.maximum = paramSpec.maximum;
+    }
+
+    return retval;
   }
 }
 
@@ -120,7 +143,7 @@ const formFromObj = function(paramsObj, valuesObj, extra) {
     var actualKey = keyConstruct.join('.');
     retval.push(
       isObj ? { component: 'FormObjectInputLabel', innerText: label } :
-        (realParamsObj.hidden ? null : { component: 'FormLabel',
+        (realParamsObj[key].hidden ? null : { component: 'FormLabel',
           attributes: { htmlFor: actualKey }, innerText: label
         }));
 
