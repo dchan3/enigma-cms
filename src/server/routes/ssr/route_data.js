@@ -51,7 +51,7 @@ export const frontEndRoutes = [
     component: FrontProfileDisplay,
     fetchInitialData: (path) => User.findOne({
       username: path.split('/').pop()
-    }),
+    }).select({ password: 0, _id: 0 }),
     key: 'profileUser'
   },
   {
