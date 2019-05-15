@@ -24,6 +24,7 @@ ${[
     <script>
       window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
     </script>
+    <script src='/prism.js' defer></script>
     <script src='/app.bundle.js' defer></script>
     <link rel="stylesheet" href='/prism.css' />
     <meta name="viewport" content="width=device-width, initial-scale=1">

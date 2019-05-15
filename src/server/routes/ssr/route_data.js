@@ -67,7 +67,7 @@ export const frontEndRoutes = [
           docTypeId: docType.docTypeId,
           draft: false
         }).sort({ createdAt: -1 });
-      return { categoryTemplateBody, items };
+      return { categoryTemplateBody, items, typeName };
     },
     key: 'dataObj'
   },

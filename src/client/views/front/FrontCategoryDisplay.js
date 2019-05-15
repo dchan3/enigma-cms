@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Handlebars from 'handlebars';
 import { Redirect } from 'react-router';
+import { Metamorph } from 'react-metamorph';
 
 class FrontCategoryDisplay extends Component {
   static propTypes = {
@@ -15,7 +16,7 @@ class FrontCategoryDisplay extends Component {
 
   render() {
     let { config, dataObj } = this.props.staticContext,
-      { categoryTemplateBody, items } = dataObj;
+      { categoryTemplateBody, items, typeName } = dataObj;
 
     if (categoryTemplateBody && items) {
       config.shortcodes.forEach(
@@ -31,9 +32,14 @@ class FrontCategoryDisplay extends Component {
           createdAt: item.createdAt,
           editedAt: item.editedAt
         }));
-      return <div dangerouslySetInnerHTML=
-        {{ __html: template({ items: newItems }) }}>
-      </div>;
+      return [<Metamorph title={
+        `${typeName.charAt(0).toUpperCase() +
+          typeName.slice(1)} | ${config.siteName}`}
+      description={
+        `${typeName.charAt(0).toUpperCase() +
+          typeName.slice(1)} on ${config.siteName}`} />,
+      <div dangerouslySetInnerHTML=
+        {{ __html: template({ items: newItems }) }} />];
     }
 
     return <Redirect to='/not-found' />;

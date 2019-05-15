@@ -78,6 +78,9 @@ app.get('/app.bundle.js', (req, res) => {
 app.get('/prism.css', (req, res) => {
   res.send(fs.readFileSync(path.resolve(__dirname, 'public/prism.css')));
 });
+app.get('/prism.js', (req, res) => {
+  res.send(fs.readFileSync(path.resolve(__dirname, 'public/prism.js')));
+});
 app.get('/favicon.ico', (req, res) => {
   res.send(fs.readFileSync(path.resolve(__dirname, 'public/favicon.ico')));
 });

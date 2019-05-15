@@ -2,7 +2,7 @@ node_modules/
 build/
 .idea/
 dist/
-public/*.js*
+public/app*.js*
 public/uploads/
 public/profile-pix/
 public/site-icon/
