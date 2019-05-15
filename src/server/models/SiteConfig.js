@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import ShortcodeSchema from './ShortcodeSchema';
 
 const SiteConfigSchema = new mongoose.Schema({
   siteName: {
@@ -74,7 +75,7 @@ const SiteConfigSchema = new mongoose.Schema({
     default: false
   },
   shortcodes: {
-    type: [Object],
+    type: [ShortcodeSchema],
     required: false
   },
   keywords: {
