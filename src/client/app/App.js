@@ -90,7 +90,6 @@ class App extends Component {
         staticContext.config.keywords.join(',') || ''}
       image={staticContext.config ? staticContext.config.iconUrl : ''}/>
       <FrontHeader staticContext={staticContext} />
-      <style>{staticContext.config.stylesheet}</style>
       <Switch>
         <FrontEndRoute exact path='/' staticContext={staticContext}
           component={HomePage} />
