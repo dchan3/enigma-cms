@@ -59,7 +59,7 @@ export const frontEndRoutes = [
     exact: true,
     component: FrontCategoryDisplay,
     fetchInitialData: async (path) => {
-      let typeName = path.split('/').pop(),
+      let typeName = path.replace(/\//g, ''),
         docType = await DocumentType.findOne({ docTypeNamePlural: typeName }),
         { categoryTemplateBody } =
         await DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId }),
