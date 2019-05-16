@@ -207,16 +207,17 @@ class GeneratedForm extends Component {
     Array.prototype.slice.call(
       event.target.parentElement.elements, 0 , -1).forEach(
       (node) => { requestBody[node.id] = node.value; });
-    let sig = gensig(requestBody);
-    (self.props.method.match(/^post$/i) ?
-      axpost : axget)({ method: self.props.method,
+    let sig = gensig(requestBody), config = {
       headers: {
         'Content-Type': 'application/json'
       },
-      url: self.props.formAction,
-      data: { ...requestBody, sig: sig },
       withCredentials: true
-    }).then(function(response) {
+    };
+    (self.props.method.match('/^get$/i') ?
+      axget(self.props.formAction, config) :
+      axpost(self.props.formAction, {
+        ...requestBody, sig: sig
+      }, config)).then(function(response) {
       if (self.props.successCallback)
         self.props.successCallback(response);
       else if (self.props.redirectUrl)

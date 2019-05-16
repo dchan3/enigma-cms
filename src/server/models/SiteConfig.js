@@ -81,6 +81,10 @@ const SiteConfigSchema = new mongoose.Schema({
   keywords: {
     type: [String],
     required: false
+  },
+  gaTrackingId: {
+    type: String,
+    required: false
   }
 });
 

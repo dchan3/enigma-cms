@@ -10,15 +10,27 @@ import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
 
 var htmlTemplate =
- (stylesheet, moreStyles, helmetTags, dom, data) => `<!DOCTYPE html>
+ (stylesheet, conf, helmetTags, dom, data) => `<!DOCTYPE html>
 <html>
   <head>
+  ${conf.gaTrackingId ?
+    `<!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=${
+  conf.gaTrackingId}">
+    </script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '${conf.gaTrackingId}');
+    </script>` : ''}
 ${[
     helmetTags.title.toString(),
     helmetTags.meta.toString(),
     helmetTags.link.toString(),
     stylesheet,
-    moreStyles.length ? `<style>${moreStyles}</style>` : ''
+    conf.stylesheet.length ? `<style>${conf.stylesheet}</style>` : ''
   ].map(str => str.length ? (`    ${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
     <script>
@@ -53,7 +65,7 @@ ${[
         helmet = Helmet.renderStatic(), styleTags = sheet.getStyleTags();
       sheet.seal();
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
-      res.end(htmlTemplate(styleTags, config.stylesheet, helmet, markup,
+      res.end(htmlTemplate(styleTags, config, helmet, markup,
         context));
     }).catch(next)
   };

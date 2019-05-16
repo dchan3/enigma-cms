@@ -97,6 +97,10 @@ class ConfigPage extends Component {
         type: '[text]',
         value: (config && config.keywords && config.keywords.length > 0) ?
           config.keywords : ['']
+      },
+      gaTrackingId: {
+        type: 'text',
+        value: config && config.gaTrackingId || ''
       }
     }}
     method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
