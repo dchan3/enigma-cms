@@ -2,6 +2,8 @@ import express from 'express';
 import passport from 'passport';
 import User from './models/User';
 import SiteConfig from './models/SiteConfig';
+import Document from './models/Document';
+import DocumentType from './models/DocumentType';
 import { default as SignupStrategy } from './passport/signup';
 import { default as LoginStrategy } from './passport/login';
 import mongoose from 'mongoose';
@@ -101,6 +103,25 @@ app.get('/site-icon/:filename', (req, res) => {
 });
 app.get('/robots.txt', (req, res) => {
   res.send(fs.readFileSync(path.resolve(__dirname, 'public/robots.txt')));
+});
+app.get('/sitemap.txt', async (req, res) => {
+  var { host } = req.headers, { protocol } = req,
+    docTypes = await DocumentType.find({}).select({
+      docTypeNamePlural: 1, docTypeId: 1
+    }),
+    documents = await Document.find({
+      draft: false
+    }).sort({ docType: 1, createdAt: -1 }).select({
+      slug: 1, docTypeId: 1, _id: -1
+    }), docTypeMap = {}, slugs = [`${protocol}://${host}/`];
+  docTypes.forEach(dt => {
+    slugs.push(`${protocol}://${host}/${dt.docTypeNamePlural}`);
+    docTypeMap[dt.docTypeId] = dt.docTypeNamePlural;
+  }), slugs.push(...documents.map(
+    doc =>
+      `${protocol}://${host}/${docTypeMap[doc.docTypeId]}/${doc.slug}`));
+  slugs.sort();
+  res.send(slugs.join('\n'));
 });
 app.get('/*', ssrRoutes);
 
