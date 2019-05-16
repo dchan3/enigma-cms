@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import EverAfter from 'react-everafter';
 import styled from 'styled-components';
 import { TextHeader } from '../../reusables/styled';
-import axios from 'axios';
+import { delete as axdel } from 'axios';
 
 let TableText = styled.p`
   text-align: center;
@@ -24,7 +24,7 @@ class EditDocumentLanding extends Component {
 
   handleDeleteClick() {
     return function(url) {
-      axios.delete(url);
+      axdel(url);
     }
   }
 

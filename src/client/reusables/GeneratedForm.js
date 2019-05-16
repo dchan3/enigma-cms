@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import CodeEditor from './CodeEditor';
-import _ from 'lodash';
-import axios from 'axios';
+import { get as loget, set as loset, concat as loconcat } from 'lodash';
+import { get as axget, post as axpost } from 'axios';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
 
@@ -127,7 +127,7 @@ class GeneratedForm extends Component {
     super(props);
     let values = {};
     for (let n in this.props.params) {
-      _.set(values, n, _.get(this.props.params, n).value);
+      loset(values, n, loget(this.props.params, n).value);
     }
     this.state = {
       values: values,
@@ -157,12 +157,12 @@ class GeneratedForm extends Component {
         values: self.state.values
       };
 
-      _.set(newState.values, param, event.target.value);
+      loset(newState.values, param, event.target.value);
 
       if (event.target.type === 'file') {
         var contents = await self.readFile(event.target.files[0]);
         var sixfour = Buffer.from(contents).toString('base64');
-        _.set(newState.values, self.props.fileContent, sixfour);
+        loset(newState.values, self.props.fileContent, sixfour);
       }
 
       self.setState(newState);
@@ -190,14 +190,14 @@ class GeneratedForm extends Component {
       var newState = {
           values: self.state.values
         }, toAdd = {}, actualParam = param.replace(/.\d./g, '.shape.');
-      if (_.get(self.props.params, actualParam).type === '[object]') {
-        for (var key in _.get(self.props.params, actualParam).shape) {
+      if (loget(self.props.params, actualParam).type === '[object]') {
+        for (var key in loget(self.props.params, actualParam).shape) {
           toAdd[key] = '';
         }
       }
       else toAdd = '';
-      _.set(newState.values, param,
-        _.concat(_.get(newState.values, param), toAdd));
+      loset(newState.values, param,
+        loconcat(loget(newState.values, param), toAdd));
       self.setState(newState);
     }
   }
@@ -208,7 +208,8 @@ class GeneratedForm extends Component {
       event.target.parentElement.elements, 0 , -1).forEach(
       (node) => { requestBody[node.id] = node.value; });
     let sig = gensig(requestBody);
-    axios({ method: self.props.method,
+    (self.props.method.match(/^post$/i) ?
+      axpost : axget)({ method: self.props.method,
       headers: {
         'Content-Type': 'application/json'
       },

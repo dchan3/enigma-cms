@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { get as loget } from 'lodash';
 import { default as camelcaseConvert } from './camelcase_convert';
 
 const outputKeys = function(obj, includeParents, parent) {
@@ -18,7 +18,7 @@ const outputKeys = function(obj, includeParents, parent) {
 const mapKeysToValues = function(obj) {
   var keys = outputKeys(obj, false), retval = {};
   for (var key in keys) {
-    retval[keys[key]] = _.get(obj, keys[key]);
+    retval[keys[key]] = loget(obj, keys[key]);
   }
   return retval;
 }
@@ -126,7 +126,7 @@ const genInputComponent = function(paramSpec, valueVar, keyToUse) {
 const formFromObj = function(paramsObj, valuesObj, extra) {
   var retval = [],
     realParamsObj = Object.assign({}, (extra && extra.parentKey) ?
-      _.get(paramsObj,
+      loget(paramsObj,
         `${extra.parentKey
           .replace(/([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
           .replace(/\.\d+\./g, '.shape.')
@@ -175,18 +175,18 @@ const formFromObj = function(paramsObj, valuesObj, extra) {
     }
     else  {
       if (!isArray) {
-        retval.push(genInputComponent(_.get(paramsObj,
+        retval.push(genInputComponent(loget(paramsObj,
           actualKey.replace(/([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
             .replace(/\.\d+\./g, '.shape.')),
-        _.get(valuesObj, actualKey), actualKey));
+        loget(valuesObj, actualKey), actualKey));
       }
       else {
-        for (let i in _.get(valuesObj, actualKey)) {
+        for (let i in loget(valuesObj, actualKey)) {
           retval.push(
-            genInputComponent(_.get(paramsObj,
+            genInputComponent(loget(paramsObj,
               actualKey.replace(/([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
                 .replace(/\.\d+\./g, '.shape.')),
-            _.get(valuesObj, `${actualKey}.${i}`), `${actualKey}.${i}`));
+            loget(valuesObj, `${actualKey}.${i}`), `${actualKey}.${i}`));
           retval.push({
             component: 'FormSubmitButton',
             innerText: 'Remove',

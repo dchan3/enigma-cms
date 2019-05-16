@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TextHeader } from '../../reusables/styled';
 import Everafter from 'react-everafter';
-import axios from 'axios';
+import { delete as axdel } from 'axios';
 
 class FileMgmtLanding extends Component {
   static propTypes = {
@@ -17,7 +17,7 @@ class FileMgmtLanding extends Component {
 
   handleDeleteClick() {
     return function(url) {
-      axios.delete(url);
+      axdel(url);
     }
   }
 

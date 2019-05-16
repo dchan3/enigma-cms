@@ -1,7 +1,11 @@
 const path = require('path'), webpack = require('webpack'),
-  nodeExternals = require('webpack-node-externals');
+  nodeExternals = require('webpack-node-externals'),
+  UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = [{
+  optimization: {
+    minimizer: [new UglifyJsPlugin()]
+  },
   mode: 'production',
   entry:  './src/client/app/index.js',
   target: 'web',
