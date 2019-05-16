@@ -31,7 +31,7 @@ class FrontDocumentDisplay extends Component {
         titleKey = ks.find(k => k.match(/title|name/i)),
         summaryKey = ks.find(k => k.match(/summary|description|synopsis/i)),
         pictureKey = ks.find(k => k.match(/image|img|picture|pic|photo/i)),
-        tagsKey = ks.find(k => k.match(/tags|keywords|buzzwords/));
+        tagsKey = ks.find(k => k.match(/tags|keywords|buzzwords/i));
 
       if (titleKey) attrs.title =
         `${doc.content[titleKey]} | ${config.siteName}`;
