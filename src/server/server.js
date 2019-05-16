@@ -121,6 +121,7 @@ app.get('/sitemap.txt', async (req, res) => {
     doc =>
       `${protocol}://${host}/${docTypeMap[doc.docTypeId]}/${doc.slug}`));
   slugs.sort();
+  res.header('Content-Type', 'text/plain');
   res.send(slugs.join('\n'));
 });
 app.get('/*', ssrRoutes);
