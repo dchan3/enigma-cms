@@ -3,7 +3,7 @@ import styled  from 'styled-components';
 import Prism from 'prismjs';
 import { string } from 'prop-types';
 
-var EditorContainer = styled.div`
+let EditorContainer = styled.div`
   height: 250px;
   position: relative;
   text-align: left;
@@ -73,7 +73,7 @@ class CodeEditor extends Component {
   }
 
   render() {
-    var handleChange = this.handleChange, handleScroll = this.handleScroll;
+    let handleChange = this.handleChange, handleScroll = this.handleScroll;
 
     return [
       <EditorContainer>

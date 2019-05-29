@@ -9,19 +9,15 @@ import { get as axget, post as axpost } from 'axios';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
 
-var FormBackground = styled.form`
+let FormBackground = styled.form`
   background-color: cadetblue;
   width: fit-content;
   margin: auto;
   text-align: left;
-`;
-
-var FormDiv = styled.div`
+`, FormDiv = styled.div`
   padding: 8px;
   display: ${props => props.hidden ? 'none' : 'block'}
-`;
-
-var FormInput = styled.input`
+`, FormInput = styled.input`
   border-radius: 8px;
   vertical-align: top;
   height: 16px;
@@ -29,68 +25,50 @@ var FormInput = styled.input`
   font-family: sans-serif;
   font-size: 16px;
   padding: 5px;
-  display: ${props => props.hidden ? 'none' : 'block'}
-`;
-
-var FormHeader = styled.h2`
+  display: ${({ hidden }) => hidden ? 'none' : 'block'}
+`, FormHeader = styled.h2`
   text-align: center;
   font-family: sans-serif;
-`;
-
-var FormLabel = styled.label`
+`, FormLabel = styled.label`
   color: white;
   padding-right: 4px;
   font-family: sans-serif;
   text-transform: uppercase;
-  display: ${props => props.hidden ? 'none' : 'block'}
-`;
-
-var FormEnumInput = styled.select`
+  display: ${({ hidden }) => hidden ? 'none' : 'block'}
+`, FormEnumInput = styled.select`
   font-family: sans-serif;
   font-size: 16px;
-`;
-
-var FormEnumInputOption = styled.option`
+`, FormEnumInputOption = styled.option`
   font-family: sans-serif;
   font-size: 16px;
-`;
-
-var FormObjectInputLabel = styled.p`
+`, FormObjectInputLabel = styled.p`
   color: white;
   padding-right: 4px;
   font-family: sans-serif;
   text-transform: uppercase;
   margin: 8px;
-  display: ${props => props.hidden ? 'none' : 'block'}
-`;
-
-var FormSubmit = styled.input`
+  display: ${({ hidden }) => hidden ? 'none' : 'block'}
+`, FormSubmit = styled.input`
   font-family: sans-serif;
   text-transform: uppercase;
   margin: 8px;
   border-radius: 8px;
   font-size: 14px;
-`;
-
-var FormErrorMessage = styled.p`
+`, FormErrorMessage = styled.p`
   font-family: sans-serif;
   text-transform: uppercase;
   text-align: center;
-`;
-
-var FormSubmitButton = styled.button`
+`, FormSubmitButton = styled.button`
   font-size: 16px;
   font-family: sans-serif;
   text-transform: uppercase;
   padding: 8px;
   border-radius: 8px;
   margin: 8px;
-`;
-
-var comps = {
-  FormInput, FormLabel, CodeEditor, FormSubmitButton,
-  FormEnumInput, FormEnumInputOption, FormObjectInputLabel
-};
+`, comps = {
+    FormInput, FormLabel, CodeEditor, FormSubmitButton,
+    FormEnumInput, FormEnumInputOption, FormObjectInputLabel
+  };
 
 class GeneratedForm extends Component {
   static propTypes = {
@@ -152,18 +130,18 @@ class GeneratedForm extends Component {
   }
 
   handleChange(param) {
-    var self = this;
+    let self = this;
     return async function(event) {
       event.preventDefault();
-      var newState = {
+      let newState = {
         values: self.state.values
       };
 
       loset(newState.values, param, event.target.value);
 
       if (event.target.type === 'file') {
-        var contents = await self.readFile(event.target.files[0]);
-        var sixfour = Buffer.from(contents).toString('base64');
+        let contents = await self.readFile(event.target.files[0]),
+          sixfour = Buffer.from(contents).toString('base64');
         loset(newState.values, self.props.fileContent, sixfour);
       }
 
@@ -174,10 +152,10 @@ class GeneratedForm extends Component {
   }
 
   handleArrayRemove(param, n) {
-    var self = this;
+    let self = this;
     return function(event) {
       event.preventDefault();
-      var newState = {
+      let newState = {
         values: self.state.values
       };
       newState.values[param].splice(n, 1);
@@ -186,14 +164,14 @@ class GeneratedForm extends Component {
   }
 
   handleArrayAdd(param) {
-    var self = this;
+    let self = this;
     return function(event) {
       event.preventDefault();
-      var newState = {
+      let newState = {
           values: self.state.values
         }, toAdd = {}, actualParam = param.replace(/.\d./g, '.shape.');
       if (loget(self.props.params, actualParam).type === '[object]') {
-        for (var key in loget(self.props.params, actualParam).shape) {
+        for (let key in loget(self.props.params, actualParam).shape) {
           toAdd[key] = '';
         }
       }
@@ -235,7 +213,7 @@ class GeneratedForm extends Component {
         handleArrayAdd: self.handleArrayAdd,
         handleArrayRemove: self.handleArrayRemove,
         handleChange: self.handleChange
-      }
+      };
 
     return (
       <div>
@@ -248,7 +226,7 @@ class GeneratedForm extends Component {
           {formGenUtils.formFromObj(params, this.state.values).map(
             function(node) {
               if (node) {
-                var NodeComponent = comps[node.component],
+                let NodeComponent = comps[node.component],
                   attrObj = Object.assign({}, node.attributes || {});
 
                 if (attrObj.onChange) {
@@ -271,7 +249,7 @@ class GeneratedForm extends Component {
                 } else if (node.children) {
                   return <FormDiv><NodeComponent {...attrObj}>
                     {node.children.map(child => {
-                      var ChildComponent = comps[child.component];
+                      let ChildComponent = comps[child.component];
                       return <ChildComponent {...child.attributes}>
                         {child.innerText}
                       </ChildComponent>;

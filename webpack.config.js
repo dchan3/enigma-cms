@@ -43,6 +43,9 @@ module.exports = [{
   },
   devtool: 'source-map'
 }, {
+  optimization: {
+    minimizer: [new UglifyJsPlugin()]
+  },
   mode: 'production',
   entry: './src/server/server.js',
   target: 'node',
