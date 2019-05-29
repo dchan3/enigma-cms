@@ -20,13 +20,8 @@ class RegisterDocType extends Component {
     });
   }
 
-  minMax(value) {
-    return (value.attrType === 'date') ?
-      'date' : 'number';
-  }
-
   render() {
-    let { minMax, updateParams } = this;
+    let { updateParams } = this;
 
     return <GeneratedForm title="Register Document Type" params={{
       docTypeName: {
