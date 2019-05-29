@@ -1,0 +1,13 @@
+export { default as ChangePasswordPage } from './ChangePasswordPage';
+export { default as ConfigPage } from './ConfigPage';
+export { default as DocumentEditPage } from './DocumentEditPage';
+export { default as DocumentUpdatePage } from './DocumentUpdatePage';
+export { default as EditDisplayTemplate } from './EditDisplayTemplate';
+export { default as EditDocumentLanding } from './EditDocumentLanding';
+export { default as FileMgmtLanding } from './FileMgmtLanding';
+export { default as MainMenu } from './MainMenu';
+export { default as ProfileEditPage } from './ProfileEditPage';
+export { default as RegisterDocType } from './RegisterDocType';
+export { default as SignupPage } from './SignupPage';
+export { default as UpdateDocType } from './UpdateDocType';
+export { default as UploadFilePage } from './UploadFilePage';

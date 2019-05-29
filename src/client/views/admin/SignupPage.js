@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import GeneratedForm from '../../reusables/GeneratedForm';
-import { StyledDiv } from '../../reusables/styled';
+import { GeneratedForm, StyledDiv } from '../../reusables';
 
 class SignupPage extends Component {
   constructor(props) {

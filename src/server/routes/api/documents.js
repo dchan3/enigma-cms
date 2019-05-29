@@ -1,17 +1,15 @@
-import express from 'express';
-import DocumentDisplayTemplate from '../../models/DocumentDisplayTemplate';
-import DocumentType from '../../models/DocumentType';
-import Document from '../../models/Document';
+import { Router } from 'express';
+import { DocumentDisplayTemplate, DocumentType, Document } from '../../models';
 import slug from 'limax';
 import { default as verifyMiddleware } from '../middleware';
 import { ObjectId } from 'mongodb';
 
-var router = express.Router();
+var router = Router();
 
-router.post('/register_type', verifyMiddleware, (req, res, next) => {
+router.post('/register_type', verifyMiddleware, ({ body }, res, next) => {
   let newType = new DocumentType();
   let reset = [];
-  for (let attr in req.body) {
+  for (let attr in body) {
     if (attr.indexOf('.') > -1) {
       let mainKey = attr.split('.')[0];
       if (!reset.includes(mainKey)) {
@@ -19,7 +17,7 @@ router.post('/register_type', verifyMiddleware, (req, res, next) => {
         reset.push(mainKey);
       }
     }
-    newType.set(attr, req.body[attr]);
+    newType.set(attr, body[attr]);
   }
   newType.save(function (err) {
     if (err) return next(err);

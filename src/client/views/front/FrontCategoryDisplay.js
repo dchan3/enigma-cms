@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Handlebars from 'handlebars';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 
 class FrontCategoryDisplay extends Component {

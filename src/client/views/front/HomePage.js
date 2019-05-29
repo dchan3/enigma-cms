@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 
 class HomePage extends Component {
   constructor(props) {
@@ -7,7 +7,7 @@ class HomePage extends Component {
   }
 
   static propTypes = {
-    staticContext: PropTypes.object
+    staticContext: object
   };
 
   render() {

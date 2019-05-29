@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import FrontMenu from '../../reusables/FrontMenu';
+import { object } from 'prop-types';
+import { FrontMenu } from '../../reusables';
 
 class FrontHeader extends Component {
   static propTypes = {
-    staticContext: PropTypes.object
+    staticContext: object
   };
 
   render() {

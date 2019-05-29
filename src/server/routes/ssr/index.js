@@ -3,7 +3,7 @@ import App from '../../../client/app/App';
 import { frontEndRoutes, backEndRoutes } from './route_data';
 import SiteConfig from '../../models/SiteConfig';
 import DocumentType from '../../models/DocumentType';
-import { matchPath, StaticRouter } from 'react-router';
+import { matchPath, StaticRouter } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
 import { Helmet } from 'react-helmet';

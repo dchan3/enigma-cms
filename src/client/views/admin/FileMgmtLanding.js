@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TextHeader } from '../../reusables/styled';
-import Everafter from 'react-everafter';
+import { TextHeader } from '../../reusables';
+import { TablePaginator } from 'react-everafter';
 import { delete as axdel } from 'axios';
 
 class FileMgmtLanding extends Component {
@@ -28,8 +28,9 @@ class FileMgmtLanding extends Component {
     return [
       <TextHeader>Manage Files</TextHeader>,
       <a href='/admin/upload-file'>Upload File</a>,
-      staticContext.files.length > 0 ? <Everafter.TablePaginator perPage={10}
-        items={staticContext.files} truncate={true} columns={[
+      staticContext.files.length > 0 ? <TablePaginator perPage={10}
+        activeTabColor="cadetblue" items={staticContext.files} truncate={true}
+        columns={[
           {
             headerText: 'File Name',
             display: (item) => <p>{item.fileName}</p>

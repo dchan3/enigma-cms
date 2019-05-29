@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import GeneratedForm from '../../reusables/GeneratedForm';
+import { GeneratedForm } from '../../reusables';
 
 class RegisterDocType extends Component {
   constructor(props) {
@@ -14,9 +14,8 @@ class RegisterDocType extends Component {
 
   updateParams(values) {
     this.setState({
-      optionParams: values.attributes.map(attr => ({
-        attrName: attr.attrName,
-        attrType: attr.attrType
+      optionParams: values.attributes.map(({ attrName, attrType }) => ({
+        attrName, attrType
       }))
     });
   }
@@ -27,7 +26,7 @@ class RegisterDocType extends Component {
   }
 
   render() {
-    let minMax = this.minMax;
+    let { minMax, updateParams } = this;
 
     return <GeneratedForm title="Register Document Type" params={{
       docTypeName: {
@@ -59,10 +58,16 @@ class RegisterDocType extends Component {
             type: '[text]',
           },
           minimum: {
-            type: minMax
+            type: (value) => (value === 'date') ? 'date' : 'number',
+            attrDepends: {
+              type: ['attributes.$.attrType']
+            }
           },
           maximum: {
-            type: minMax
+            type: (value) => (value === 'date') ? 'date' : 'number',
+            attrDepends: {
+              type: ['attributes.$.attrType']
+            }
           },
           grammar: {
             type: 'enum',
@@ -78,13 +83,13 @@ class RegisterDocType extends Component {
         label: 'Generate Slug From',
         type: 'enum',
         enumList: [{ text: '(None)', value: '' },
-          this.state.optionParams.map(param => ({
-            text: param.attrName, value: param.attrName
+          this.state.optionParams.map(({ attrName }) => ({
+            text: attrName, value: attrName
           }))].flat() || [
           { text: '(None)', value: '' }
         ]
       }
-    }} method="post" parentCallback={this.updateParams}
+    }} method="post" parentCallback={updateParams}
     redirectUrl='/admin' formAction='/api/documents/register_type' />;
   }
 }

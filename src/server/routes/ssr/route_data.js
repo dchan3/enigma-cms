@@ -1,33 +1,12 @@
-import HomePage from '../../../client/views/front/HomePage';
-import MainMenu from '../../../client/views/admin/MainMenu';
-import SignupPage from '../../../client/views/admin/SignupPage';
-import LoginPage from '../../../client/views/front/LoginPage';
-import ConfigPage from '../../../client/views/admin/ConfigPage';
-import RegisterDocType from '../../../client/views/admin/RegisterDocType';
-import DocumentEditPage from '../../../client/views/admin/DocumentEditPage';
-import DocumentUpdatePage from '../../../client/views/admin/DocumentUpdatePage';
-import EditDocumentLanding from
-  '../../../client/views/admin/EditDocumentLanding';
-import EditDisplayTemplate from
-  '../../../client/views/admin/EditDisplayTemplate';
-import FrontCategoryDisplay from
-  '../../../client/views/front/FrontCategoryDisplay';
-import FrontDocumentDisplay from
-  '../../../client/views/front/FrontDocumentDisplay';
-import FrontProfileDisplay from
-  '../../../client/views/front/FrontProfileDisplay';
-import UpdateDocType from '../../../client/views/admin/UpdateDocType';
-import NotFound from '../../../client/views/front/NotFound';
-import ProfileEditPage from '../../../client/views/admin/ProfileEditPage';
-import ChangePasswordPage from '../../../client/views/admin/ChangePasswordPage';
-import FileMgmtLanding from '../../../client/views/admin/FileMgmtLanding';
-import UploadFilePage from '../../../client/views/admin/UploadFilePage';
-
-import Document from '../../models/Document';
-import DocumentType from '../../models/DocumentType';
-import File from '../../models/File';
-import User from '../../models/User';
-import DocumentDisplayTemplate from '../../models/DocumentDisplayTemplate';
+import { HomePage, LoginPage, FrontCategoryDisplay, FrontDocumentDisplay,
+  FrontProfileDisplay, NotFound
+} from '../../../client/views/front';
+import { MainMenu, SignupPage, ConfigPage, RegisterDocType, DocumentEditPage,
+  DocumentUpdatePage, EditDocumentLanding, EditDisplayTemplate, UpdateDocType,
+  ProfileEditPage, ChangePasswordPage, FileMgmtLanding, UploadFilePage
+} from '../../../client/views/admin';
+import { Document, DocumentType, File, User, DocumentDisplayTemplate } from
+  '../../models';
 
 export const frontEndRoutes = [
   {
@@ -60,11 +39,12 @@ export const frontEndRoutes = [
     component: FrontCategoryDisplay,
     fetchInitialData: async (path) => {
       let typeName = path.replace(/\//g, ''),
-        docType = await DocumentType.findOne({ docTypeNamePlural: typeName }),
+        { docTypeId } =
+          await DocumentType.findOne({ docTypeNamePlural: typeName }),
         { categoryTemplateBody } =
-        await DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId }),
+        await DocumentDisplayTemplate.findOne({ docTypeId }),
         items = await Document.find({
-          docTypeId: docType.docTypeId,
+          docTypeId,
           draft: false
         }).sort({ createdAt: -1 });
       return { categoryTemplateBody, items, typeName };
@@ -77,11 +57,12 @@ export const frontEndRoutes = [
     component: FrontDocumentDisplay,
     fetchInitialData: async (path) => {
       var [ typeName, slug ] = path.split('/').slice(-2);
-      var docType = await DocumentType.findOne({ docTypeNamePlural: typeName });
-      var template =
-        await DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId });
+      var { docTypeId } =
+        await DocumentType.findOne({ docTypeNamePlural: typeName });
+      var { templateBody } =
+        await DocumentDisplayTemplate.findOne({ docTypeId });
       var doc = await Document.findOne({ slug: slug, draft: false });
-      if (doc) return { templateBody: template.templateBody, doc };
+      if (doc) return { templateBody, doc };
       else return { };
     },
     key: 'dataObj'
@@ -130,13 +111,12 @@ export const backEndRoutes = [
     exact: true,
     component: EditDisplayTemplate,
     fetchInitialData: async path => {
-      var id =  path.split('/').pop();
+      var docTypeId =  path.split('/').pop();
       var docType = await
-        DocumentType.findOne({ docTypeId: id }),
+        DocumentType.findOne({ docTypeId }),
         { templateBody, categoryTemplateBody } =
-          await DocumentDisplayTemplate.findOne({ docTypeId: id });
-      return { docType, templateBody,
-        categoryTemplateBody: categoryTemplateBody || '' };
+          await DocumentDisplayTemplate.findOne({ docTypeId });
+      return { docType, templateBody, categoryTemplateBody };
     },
     key: 'dataObj'
   },

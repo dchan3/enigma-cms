@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import styled from 'styled-components';
+import styled  from 'styled-components';
 import Prism from 'prismjs';
-import PropTypes from 'prop-types';
+import { string } from 'prop-types';
 
 var EditorContainer = styled.div`
   height: 250px;
@@ -43,10 +43,10 @@ var EditorContainer = styled.div`
 
 class CodeEditor extends Component {
   static propTypes = {
-    grammar: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string
+    grammar: string.isRequired,
+    id: string.isRequired,
+    name: string.isRequired,
+    value: string
   };
 
   constructor(props) {

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import GeneratedForm from '../../reusables/GeneratedForm';
+import { object } from 'prop-types';
+import { GeneratedForm } from '../../reusables';
 
 class UploadFilePage extends Component {
   static propTypes = {
-    staticContext: PropTypes.object
+    staticContext: object
   };
 
   constructor(props) {

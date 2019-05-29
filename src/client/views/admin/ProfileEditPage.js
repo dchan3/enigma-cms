@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
 
 class ProfileEditPage extends Component {
   static propTypes = {
-    staticContext: PropTypes.object
+    staticContext: object
   };
 
   render() {
-    let user = this.props.staticContext.user;
+    let { user } = this.props.staticContext;
     return <GeneratedForm title='Edit Profile'
       params={{
         userId: {

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
 
 class ChangePasswordPage extends Component {
   static propTypes = {
-    user: PropTypes.object
+    user: object
   };
 
   render() {

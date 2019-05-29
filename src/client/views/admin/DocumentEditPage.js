@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import GeneratedForm from '../../reusables/GeneratedForm';
+import { object } from 'prop-types';
+import { GeneratedForm } from '../../reusables';
 
 class DocumentEditPage extends Component {
   static propTypes = {
-    staticContext: PropTypes.object
+    staticContext: object
   };
 
   constructor(props) {
@@ -14,22 +14,23 @@ class DocumentEditPage extends Component {
   render() {
     let params = {}, { docType } = this.props.staticContext;
     if (docType) {
-      docType.attributes.forEach(attr => {
-        params[attr.attrName] = {
-          label: attr.attrName,
-          type: attr.attrType,
+      docType.attributes.forEach(({
+        attrName, attrType, grammar, maximum, minimum }) => {
+        params[attrName] = {
+          label: attrName,
+          type: attrType,
         };
 
-        if (attr.grammar) {
-          params[attr.attrName].grammar = attr.grammar;
+        if (grammar) {
+          params[attrName].grammar = grammar;
         }
 
-        if (attr.maximum) {
-          params[attr.attrName].maximum = attr.maximum;
+        if (maximum) {
+          params[attrName].maximum = maximum;
         }
 
-        if (attr.minimum) {
-          params[attr.attrName].minimum = attr.minimum;
+        if (minimum) {
+          params[attrName].minimum = minimum;
         }
       });
 
@@ -43,12 +44,12 @@ class DocumentEditPage extends Component {
     }
     else return null;
 
+    let { docTypeName, docTypeId } = docType
+
     return <GeneratedForm
-      title={`New ${this.props.staticContext.docType.docTypeName}`}
-      params={params} method="post"
-      formAction={`/api/documents/new_document/${
-        this.props.staticContext.docType.docTypeId}`}
-      redirectUrl={`/admin/edit/${this.props.staticContext.docType.docTypeId}`}
+      title={`New ${docTypeName}`} params={params} method="post"
+      formAction={`/api/documents/new_document/${docTypeId}`}
+      redirectUrl={`/admin/edit/${docTypeId}`}
     />;
   }
 }

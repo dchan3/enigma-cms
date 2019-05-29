@@ -14,32 +14,38 @@ class UpdateDocType extends Component {
     this.updateParams = this.updateParams.bind(this);
 
     this.state = {
-      optionParams: []
+      optionParams: this.props.staticContext.docType &&
+        this.props.staticContext.docType.attributes &&
+        this.props.staticContext.docType.attributes.length &&
+        this.props.staticContext.docType.attributes.map(
+          ({ attrName, attrType }) => ({
+            attrName, attrType
+          })) || []
     }
   }
 
   updateParams(values) {
     this.setState({
-      optionParams: values.attributes.map(attr => ({
-        attrName: attr.attrName,
-        attrType: attr.attrType
+      optionParams: values.attributes.map(({ attrName, attrType }) => ({
+        attrName, attrType
       }))
     });
   }
 
   render() {
     let { docType } = this.props.staticContext;
-    if (docType !== null)
+    if (docType !== null) {
+      let { docTypeName, docTypeNamePlural } = docType;
       return <GeneratedForm title="Update Document Type" params={{
         docTypeName: {
           label: 'Document Type Name',
           type: 'text',
-          value: docType.docTypeName
+          value: docTypeName
         },
         docTypeNamePlural: {
           label: 'Document Type Name Plural',
           type: 'text',
-          value: docType.docTypeNamePlural || ''
+          value: docTypeNamePlural || ''
         },
         attributes: {
           label: 'Attributes',
@@ -59,14 +65,16 @@ class UpdateDocType extends Component {
               ]
             },
             minimum: {
-              label: 'Minimum',
-              type: (value) => (value && value.attrType === 'date') ?
-                'date' : 'number'
+              type: (value) => (value === 'date') ? 'date' : 'number',
+              attrDepends: {
+                type: ['attributes.$.attrType']
+              }
             },
             maximum: {
-              label: 'Maximum',
-              type: (value) => (value && value.attrType === 'date') ?
-                'date' : 'number',
+              type: (value) => (value === 'date') ? 'date' : 'number',
+              attrDepends: {
+                type: ['attributes.$.attrType']
+              }
             },
             grammar: {
               label: 'Grammar',
@@ -98,8 +106,9 @@ class UpdateDocType extends Component {
         }
       }} method="post" parentCallback={this.updateParams}
       redirectUrl='/admin'
-      formAction={`/api/documents/update_type/${ 
+      formAction={`/api/documents/update_type/${
         this.props.match.params.docTypeId}`} />;
+    }
     else return null;
   }
 }

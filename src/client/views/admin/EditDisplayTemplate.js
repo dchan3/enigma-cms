@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import GeneratedForm from '../../reusables/GeneratedForm';
+import { object } from 'prop-types';
+import { GeneratedForm } from '../../reusables';
 
 class EditDisplayTemplate extends Component {
   static propTypes = {
-    match: PropTypes.object,
-    staticContext: PropTypes.object
+    match: object,
+    staticContext: object
   };
 
   constructor(props) {
@@ -13,10 +13,8 @@ class EditDisplayTemplate extends Component {
   }
 
   render() {
-    let { docType, templateBody } =
-      this.props.staticContext.dataObj,
-      categoryTemplateBody =
-        this.props.staticContext.dataObj.categoryTemplateBody || '';
+    let { docType, templateBody, categoryTemplateBody } =
+      this.props.staticContext.dataObj;
     if (docType !== null && templateBody !== null)
       return <GeneratedForm title=
         {`Edit ${docType.docTypeName} Display Template`} params={{

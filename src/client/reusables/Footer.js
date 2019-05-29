@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 import styled from 'styled-components';
 
 var FooterContainer = styled.div`
@@ -12,14 +12,14 @@ var FooterContainer = styled.div`
 
 class Footer extends Component {
   static propTypes  = {
-    user: PropTypes.object
+    user: object
   };
 
   render() {
     return <FooterContainer>
       <FooterText>Powered by <a href="https://github.com/dchan3/enigma-cms">
         Enigma CMS</a>.</FooterText>
-      {!!this.props.user ? <FooterText>
+      {this.props.user ? <FooterText>
         Logged in as {this.props.user.username}.{' '}
         <a href='/admin/edit-profile'>Edit profile</a>.
         {' '}

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
 
 class DocumentUpdatePage extends Component {
   static propTypes = {
-    match: PropTypes.object,
-    staticContext: PropTypes.object
+    match: object,
+    staticContext: object
   };
 
   constructor(props) {
@@ -15,15 +15,15 @@ class DocumentUpdatePage extends Component {
   render() {
     let params = {}, { doc, docType } = this.props.staticContext.dataObj;
     if (doc && docType) {
-      docType.attributes.forEach(attr => {
-        params[attr.attrName] = {
-          label: attr.attrName,
-          type: attr.attrType,
-          value: doc.content[attr.attrName],
+      docType.attributes.forEach(({ attrName, attrType, grammar }) => {
+        params[attrName] = {
+          label: attrName,
+          type: attrType,
+          value: doc.content[attrName],
         };
 
-        if (attr.grammar) {
-          params[attr.attrName].grammar = attr.grammar;
+        if (grammar) {
+          params[attrName].grammar = grammar;
         }
       });
 
@@ -38,7 +38,7 @@ class DocumentUpdatePage extends Component {
       return <GeneratedForm title='Edit Document'
         params={params} method="post"
         redirectUrl={docType ? `/admin/edit/${docType.docTypeId}` : '/admin'}
-        formAction={`/api/documents/update_document/${ 
+        formAction={`/api/documents/update_document/${
           this.props.match.params.docNode}`}
       />;
     }

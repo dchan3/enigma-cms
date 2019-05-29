@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import {
+  string, shape, objectOf, oneOfType, func, object, array, arrayOf, number
+} from 'prop-types';
 import styled from 'styled-components';
 import CodeEditor from './CodeEditor';
 import { get as loget, set as loset, concat as loconcat } from 'lodash';
@@ -92,29 +94,29 @@ var comps = {
 
 class GeneratedForm extends Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
-    params: PropTypes.objectOf(PropTypes.shape({
-      label: PropTypes.string,
-      type: PropTypes.oneOfType(
-        [PropTypes.string, PropTypes.func]).isRequired,
-      grammar: PropTypes.string,
-      shape: PropTypes.oneOfType(
-        [PropTypes.object, PropTypes.func]),
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.object,
-        PropTypes.array]),
-      enumList: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.shape({
-        value: PropTypes.string,
-        text: PropTypes.string
-      })), PropTypes.func]),
-      maximum: PropTypes.number,
-      minimum: PropTypes.number
+    title: string.isRequired,
+    params: objectOf(shape({
+      label: string,
+      type: oneOfType(
+        [string, func]).isRequired,
+      grammar: string,
+      shape: oneOfType(
+        [object, func]),
+      value: oneOfType([string, object, array]),
+      enumList: oneOfType([arrayOf(shape({
+        value: string,
+        text: string
+      })), func]),
+      maximum: number,
+      minimum: number,
+      attrDepends: object
     })).isRequired,
-    successCallback: PropTypes.func,
-    method: PropTypes.string.isRequired,
-    formAction: PropTypes.string.isRequired,
-    parentCallback: PropTypes.func,
-    fileContent: PropTypes.string,
-    redirectUrl: PropTypes.string
+    successCallback: func,
+    method: string.isRequired,
+    formAction: string.isRequired,
+    parentCallback: func,
+    fileContent: string,
+    redirectUrl: string
   };
 
   static defaultProps = {

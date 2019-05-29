@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { array, string } from 'prop-types';
 import styled from 'styled-components';
 
 var ContainerDiv = styled.div`
@@ -28,8 +28,8 @@ var SubList = styled.ul`
   text-transform: uppercase;
   font-family: sans-serif;
   padding-left: 0;
-  opacity: ${props => props.open ? '1' : '0' }
-  visibility: ${props => props.open ? 'visible' : 'hidden' }
+  opacity: ${({ open }) => open ? '1' : '0' }
+  visibility: ${({ open }) => open ? 'visible' : 'hidden' }
   -webkit-transition: opacity .5s;
   -moz-transition: opacity .5s;
   -o-transition: opacity .5s;
@@ -59,8 +59,8 @@ var WhiteSpan = styled.span`
 
 class NodeLinkText extends Component {
   static propTypes = {
-    url: PropTypes.string,
-    text: PropTypes.string
+    url: string,
+    text: string
   };
 
   render() {
@@ -71,8 +71,8 @@ class NodeLinkText extends Component {
 
 class LinkNode extends Component {
   static propTypes = {
-    url: PropTypes.string,
-    text: PropTypes.string
+    url: string,
+    text: string
   };
 
   render() {
@@ -83,22 +83,24 @@ class LinkNode extends Component {
 
 class SubLinkNode extends Component {
   static propTypes = {
-    url: PropTypes.string,
-    text: PropTypes.string
+    url: string,
+    text: string
   };
 
   render() {
+    let { url, text } = this.props;
+
     return <SubListItem>
-      <NodeLinkText url={this.props.url} text={this.props.text} />
+      <NodeLinkText url={url} text={text} />
     </SubListItem>;
   }
 }
 
 class SubMenu extends Component {
   static propTypes = {
-    childNodes: PropTypes.array,
-    url: PropTypes.string,
-    text: PropTypes.string
+    childNodes: array,
+    url: string,
+    text: string
   };
 
   constructor(props) {
@@ -114,12 +116,14 @@ class SubMenu extends Component {
   }
 
   render() {
+    let { childNodes } = this.props;
+
     return <ListItem>
       <NodeLinkText text={this.props.text} />
       <WhiteSpan onClick={this.handleClick}>{'▼'}</WhiteSpan>
       <SubList open={this.state.open}>
-        {this.props.childNodes.map(child => <SubLinkNode url={child.url}
-          text={child.text} />)}
+        {childNodes.map(({ url, text }) =>
+          <SubLinkNode url={url} text={text} />)}
       </SubList>
     </ListItem>;
   }
@@ -127,7 +131,7 @@ class SubMenu extends Component {
 
 class DropdownMenu extends Component {
   static propTypes = {
-    menuNodes: PropTypes.array
+    menuNodes: array
   };
 
   constructor(props) {
@@ -136,13 +140,13 @@ class DropdownMenu extends Component {
     this.renderNode = this.renderNode.bind(this);
   }
 
-  renderMenuLinkNode(node) {
-    return <LinkNode url={node.url} text={node.text} />
+  renderMenuLinkNode({ url, text }) {
+    return <LinkNode url={url} text={text} />
   }
 
-  renderMenuListNode(node) {
+  renderMenuListNode({ url, text, childNodes }) {
     return  (
-      <SubMenu url={node.url} text={node.text} childNodes={node.childNodes} />
+      <SubMenu url={url} text={text} childNodes={childNodes} />
     );
   }
 

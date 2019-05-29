@@ -1,27 +1,14 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { object, func, bool } from 'prop-types';
 import { Route, Redirect, Switch } from 'react-router-dom';
-import HomePage from '../views/front/HomePage';
-import MainMenu from '../views/admin/MainMenu';
-import SignupPage from '../views/admin/SignupPage';
-import LoginPage from '../views/front/LoginPage';
-import ConfigPage from '../views/admin/ConfigPage';
-import RegisterDocType from '../views/admin/RegisterDocType';
-import DocumentEditPage from '../views/admin/DocumentEditPage';
-import DocumentUpdatePage from '../views/admin/DocumentUpdatePage';
-import EditDocumentLanding from '../views/admin/EditDocumentLanding';
-import EditDisplayTemplate from '../views/admin/EditDisplayTemplate';
-import FrontDocumentDisplay from '../views/front/FrontDocumentDisplay';
-import FrontProfileDisplay from '../views/front/FrontProfileDisplay';
-import FrontCategoryDisplay from '../views/front/FrontCategoryDisplay';
-import UpdateDocType from '../views/admin/UpdateDocType';
-import NotFound from '../views/front/NotFound';
-import ProfileEditPage from '../views/admin/ProfileEditPage';
-import ChangePasswordPage from '../views/admin/ChangePasswordPage';
-import FileMgmtLanding from '../views/admin/FileMgmtLanding';
-import UploadFilePage from '../views/admin/UploadFilePage';
-import FrontHeader from '../views/front/FrontHeader';
-import Footer from '../reusables/Footer';
+import { ChangePasswordPage, ConfigPage, DocumentEditPage, DocumentUpdatePage,
+  EditDisplayTemplate, EditDocumentLanding, FileMgmtLanding, MainMenu,
+  ProfileEditPage, RegisterDocType, SignupPage, UpdateDocType, UploadFilePage
+} from '../views/admin';
+import { FrontCategoryDisplay, FrontDocumentDisplay, FrontHeader,
+  FrontProfileDisplay, HomePage, LoginPage, NotFound
+} from '../views/front';
+import { Footer } from '../reusables';
 import { Metamorph } from 'react-metamorph';
 
 var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
@@ -39,9 +26,9 @@ var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
 };
 
 ProtectedRoute.propTypes = {
-  isAdmin: PropTypes.bool,
-  staticContext: PropTypes.object,
-  component: PropTypes.func
+  isAdmin: bool,
+  staticContext: object,
+  component: func
 };
 
 var LoggedOutRoute = function({ component: Component, staticContext,
@@ -55,8 +42,8 @@ var LoggedOutRoute = function({ component: Component, staticContext,
 };
 
 LoggedOutRoute.propTypes = {
-  staticContext: PropTypes.object,
-  component: PropTypes.func
+  staticContext: object,
+  component: func
 };
 
 var FrontEndRoute = function({ component: Component, staticContext, ...rest }) {
@@ -66,13 +53,13 @@ var FrontEndRoute = function({ component: Component, staticContext, ...rest }) {
 };
 
 FrontEndRoute.propTypes = {
-  staticContext: PropTypes.object,
-  component: PropTypes.func
+  staticContext: object,
+  component: func
 };
 
 class App extends Component {
   static propTypes = {
-    staticContext: PropTypes.object
+    staticContext: object
   };
 
   constructor(props) {
@@ -80,9 +67,11 @@ class App extends Component {
   }
 
   render() {
-    let staticContext = this.props.staticContext || window.__INITIAL_DATA__;
+    let { staticContext } = this.props;
+    if (!staticContext) staticContext = window.__INITIAL_DATA__;
+    let { config } = staticContext;
     return <div>
-      <Metamorph title={staticContext.config ? staticContext.config.siteName :
+      <Metamorph title={config ? staticContext.config.siteName :
         'My Website'} description={staticContext.config ?
         staticContext.config.description :
         'Welcome to my website!'} keywords={staticContext.config &&

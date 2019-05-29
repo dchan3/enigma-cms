@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import EverAfter from 'react-everafter';
+import { object } from 'prop-types';
+import { TablePaginator } from 'react-everafter';
 import styled from 'styled-components';
-import { TextHeader } from '../../reusables/styled';
+import { TextHeader } from '../../reusables';
 import { delete as axdel } from 'axios';
 
 let TableText = styled.p`
@@ -12,8 +12,8 @@ let TableText = styled.p`
 
 class EditDocumentLanding extends Component {
   static propTypes = {
-    match: PropTypes.object,
-    staticContext: PropTypes.object
+    match: object,
+    staticContext: object
   };
 
   constructor(props) {
@@ -37,7 +37,7 @@ class EditDocumentLanding extends Component {
         <TextHeader>
           {`Edit ${docType.docTypeName}`}
         </TextHeader>,
-        <EverAfter.TablePaginator perPage={10} activeTabColor="cadetblue"
+        <TablePaginator perPage={10} activeTabColor="cadetblue"
           items={documents} truncate={true} columns={
             [docType.attributes.map(function(attr) {
               return {
