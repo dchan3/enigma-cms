@@ -6,7 +6,7 @@ class RegisterDocType extends Component {
     super(props);
 
     this.updateParams = this.updateParams.bind(this);
-    this.minMax = this.minMax.bind(this);
+    
     this.state = {
       optionParams: ['']
     }
