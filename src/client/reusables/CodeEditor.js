@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import styled  from 'styled-components';
 import Prism from 'prismjs';
 import { string } from 'prop-types';
@@ -41,53 +41,39 @@ let EditorContainer = styled.div`
   white-space: pre-wrap;
 `;
 
-class CodeEditor extends Component {
-  static propTypes = {
-    grammar: string.isRequired,
-    id: string.isRequired,
-    name: string.isRequired,
-    value: string
-  };
+function CodeEditor({ grammar, id, name, value }) {
+  let [state, setState] = useState({
+    value: value || ''
+  });
 
-  constructor(props) {
-    super(props);
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleScroll = this.handleScroll.bind(this);
-
-    this.state = {
-      value: this.props.value || '',
-      cursorPos: 0
-    }
+  function handleChange(event) {
+    setState({ value: event.target.value });
   }
 
-  handleChange(event) {
-    this.setState({ value: event.target.value });
-  }
-
-  handleScroll(event) {
+  function handleScroll(event) {
     if (event) {
       event.currentTarget.previousSibling.scrollTop =
         event.currentTarget.scrollTop;
     }
   }
 
-  render() {
-    let handleChange = this.handleChange, handleScroll = this.handleScroll;
+  return [
+    <EditorContainer>
+      <CodeDisplayArea dangerouslySetInnerHTML={{ __html:
+        state.value !== '' && Prism.highlight(
+          state.value, Prism.languages[grammar], grammar) || ''
+      }} />
+      <TextInputArea id={id} name={name} value={state.value}
+        onChange={handleChange} onScroll={handleScroll} />
+    </EditorContainer>
+  ]
+}
 
-    return [
-      <EditorContainer>
-        <CodeDisplayArea dangerouslySetInnerHTML={{ __html:
-          this.state.value !== '' && Prism.highlight(
-            this.state.value, Prism.languages[this.props.grammar],
-            this.props.grammar) || ''
-        }} />
-        <TextInputArea id={this.props.id} name={this.props.name}
-          value={this.state.value} onChange={handleChange}
-          onScroll={handleScroll} />
-      </EditorContainer>
-    ]
-  }
+CodeEditor.propTypes = {
+  grammar: string.isRequired,
+  id: string.isRequired,
+  name: string.isRequired,
+  value: string
 }
 
 export default CodeEditor;

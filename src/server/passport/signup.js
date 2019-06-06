@@ -8,18 +8,17 @@ var SignupStrategy = new LocalStrategy({
   usernameField : 'username',
   passwordField : 'password',
   passReqToCallback: true
-}, (req, username, password, done) => {
+}, ({ body }, username, password, done) => {
+  let { email } = body;
   User.findOne({}, function(erra, u) {
-    User.findOne({ $or: [{ username: username }, { email: req.body.email }] },
+    User.findOne({ $or: [{ username }, { email }] },
       function(err, userWith) {
         if (err) return done(err);
         if (userWith) return done(null, false);
         else {
           icongen(username, function(result) {
             const userData = {
-              username: username,
-              password: password,
-              email: req.body.email,
+              username, password, email,
               displayName: '',
               roleId: u ? 1 : 0,
               pictureSrc: result

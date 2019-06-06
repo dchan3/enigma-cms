@@ -1,110 +1,104 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { object } from 'prop-types';
 import { GeneratedForm } from '../../reusables';
 
-class ConfigPage extends Component {
-  static propTypes = {
-    staticContext: object
-  };
+function ConfigPage({ staticContext }) {
+  let { config } = staticContext;
 
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    let { config } = this.props.staticContext;
-
-    return <GeneratedForm title="Site Settings" params={{
-      siteName: {
-        type: 'text',
-        value: config ? config.siteName : ''
-      },
-      iconFile: {
-        type: 'file'
-      },
-      fileContent: {
-        type: 'string',
-        hidden: 'true'
-      },
-      description: {
-        type: 'text',
-        label: 'Site Description',
-        value: config ? config.description : ''
-      },
-      aboutBody: {
-        type: 'text',
-        value: config ? config.aboutBody : ''
-      },
-      stylesheet: {
-        type: 'text',
-        grammar: 'css',
-        value: config ? config.stylesheet : ''
-      },
-      profileTemplate: {
-        type: 'text',
-        grammar: 'html',
-        value: config ? config.profileTemplate : ''
-      },
-      menuLinks: {
-        type: '[object]',
-        shape: {
-          linkText: {
-            type: 'text'
-          },
-          linkUrl: {
-            type: 'text'
-          }
+  return <GeneratedForm title="Site Settings" params={{
+    siteName: {
+      type: 'text',
+      value: config ? config.siteName : ''
+    },
+    iconFile: {
+      type: 'file'
+    },
+    fileContent: {
+      type: 'string',
+      hidden: 'true'
+    },
+    description: {
+      type: 'text',
+      label: 'Site Description',
+      value: config ? config.description : ''
+    },
+    aboutBody: {
+      type: 'text',
+      value: config ? config.aboutBody : ''
+    },
+    stylesheet: {
+      type: 'text',
+      grammar: 'css',
+      value: config ? config.stylesheet : ''
+    },
+    profileTemplate: {
+      type: 'text',
+      grammar: 'html',
+      value: config ? config.profileTemplate : ''
+    },
+    menuLinks: {
+      type: '[object]',
+      shape: {
+        linkText: {
+          type: 'text'
         },
-        value: config ? config.menuLinks : [
-          {
-            linkText: '',
-            linkUrl: ''
-          }
-        ]
+        linkUrl: {
+          type: 'text'
+        }
       },
-      useSlug: {
-        type: 'enum',
-        enumList: [{
-          text: 'Yes', value: true }, {
-          text: 'No', value: false
-        }],
-        value: config ? config.useSlug : false
-      },
-      shortcodes: {
-        type: '[object]',
-        shape: {
-          name: {
-            type: 'text'
-          },
-          args: {
-            type: '[text]',
-            label: 'Arguments'
-          },
-          code: {
-            type: 'text',
-            label: 'Body',
-            grammar: 'js'
-          }
+      value: config ? config.menuLinks : [
+        {
+          linkText: '',
+          linkUrl: ''
+        }
+      ]
+    },
+    useSlug: {
+      type: 'enum',
+      enumList: [{
+        text: 'Yes', value: true }, {
+        text: 'No', value: false
+      }],
+      value: config ? config.useSlug : false
+    },
+    shortcodes: {
+      type: '[object]',
+      shape: {
+        name: {
+          type: 'text'
         },
-        value: (config && config.shortcodes && config.shortcodes.length > 0) ?
-          config.shortcodes : [{
-            name: '',
-            args: [''],
-            code: ''
-          }]
+        args: {
+          type: '[text]',
+          label: 'Arguments'
+        },
+        code: {
+          type: 'text',
+          label: 'Body',
+          grammar: 'js'
+        }
       },
-      keywords: {
-        type: '[text]',
-        value: (config && config.keywords && config.keywords.length > 0) ?
-          config.keywords : ['']
-      },
-      gaTrackingId: {
-        type: 'text',
-        value: config && config.gaTrackingId || ''
-      }
-    }}
-    method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
-  }
+      value: (config && config.shortcodes && config.shortcodes.length > 0) ?
+        config.shortcodes : [{
+          name: '',
+          args: [''],
+          code: ''
+        }]
+    },
+    keywords: {
+      type: '[text]',
+      value: (config && config.keywords && config.keywords.length > 0) ?
+        config.keywords : ['']
+    },
+    gaTrackingId: {
+      type: 'text',
+      value: config && config.gaTrackingId || ''
+    }
+  }}
+  method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
 }
+
+ConfigPage.propTypes = {
+  staticContext: object
+};
 
 export default ConfigPage;

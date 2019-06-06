@@ -1,60 +1,54 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { object } from 'prop-types';
 import Handlebars from 'handlebars';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 
-class FrontDocumentDisplay extends Component {
-  static propTypes = {
-    match: PropTypes.object,
-    staticContext: PropTypes.object
-  };
+function FrontDocumentDisplay({ staticContext }) {
+  let { config, dataObj } = staticContext,
+    { templateBody, doc } = dataObj;
 
-  constructor(props) {
-    super(props);
-  }
+  if (templateBody && doc) {
+    config.shortcodes.forEach(
+      function(shortcode) {
+        Handlebars.registerHelper(shortcode.name,
+          new Function(shortcode.args.join(','), shortcode.code));
+      });
 
-  render() {
-    let { config, dataObj } = this.props.staticContext,
-      { templateBody, doc } = dataObj;
+    let template = Handlebars.compile(templateBody), hdr = null, attrs = {};
 
-    if (templateBody && doc) {
-      config.shortcodes.forEach(
-        function(shortcode) {
-          Handlebars.registerHelper(shortcode.name,
-            new Function(shortcode.args.join(','), shortcode.code));
-        });
+    let ks = Object.keys(doc.content),
+      titleKey = ks.find(k => k.match(/title|name/i)),
+      summaryKey = ks.find(k => k.match(/summary|description|synopsis/i)),
+      pictureKey = ks.find(k => k.match(/image|img|picture|pic|photo/i)),
+      tagsKey = ks.find(k => k.match(/tags|keywords|buzzwords/i));
 
-      let template = Handlebars.compile(templateBody), hdr = null, attrs = {};
+    if (titleKey) attrs.title =
+      `${doc.content[titleKey]} | ${config.siteName}`;
+    if (summaryKey) attrs.description = doc.content[summaryKey];
+    if (pictureKey) attrs.image = doc.content[pictureKey];
+    if (tagsKey) attrs.keywords = typeof doc.content[tagsKey] === 'string' ?
+      [doc.content[tagsKey], ...config.keywords] :
+      [...doc.content[tagsKey], ...config.keywords];
 
-      let ks = Object.keys(doc.content),
-        titleKey = ks.find(k => k.match(/title|name/i)),
-        summaryKey = ks.find(k => k.match(/summary|description|synopsis/i)),
-        pictureKey = ks.find(k => k.match(/image|img|picture|pic|photo/i)),
-        tagsKey = ks.find(k => k.match(/tags|keywords|buzzwords/i));
-
-      if (titleKey) attrs.title =
-        `${doc.content[titleKey]} | ${config.siteName}`;
-      if (summaryKey) attrs.description = doc.content[summaryKey];
-      if (pictureKey) attrs.image = doc.content[pictureKey];
-      if (tagsKey) attrs.keywords = typeof doc.content[tagsKey] === 'string' ?
-        [doc.content[tagsKey], ...config.keywords] :
-        [...doc.content[tagsKey], ...config.keywords];
-
-      if (Object.keys(attrs).length > 0) {
-        hdr = <Metamorph {...attrs} />;
-      }
-
-      return [hdr, <div dangerouslySetInnerHTML=
-        {{ __html: template(
-          { ...doc.content,
-            createdAt: doc.createdAt,
-            editedAt: doc.editedAt
-          }) }} />];
+    if (Object.keys(attrs).length > 0) {
+      hdr = <Metamorph {...attrs} />;
     }
-    else
-      return <Redirect to='/not-found' />;
+
+    return [hdr, <div dangerouslySetInnerHTML=
+      {{ __html: template(
+        { ...doc.content,
+          createdAt: doc.createdAt,
+          editedAt: doc.editedAt
+        }) }} />];
   }
+  else
+    return <Redirect to='/not-found' />;
 }
+
+FrontDocumentDisplay.propTypes = {
+  match: object,
+  staticContext: object
+};
 
 export default FrontDocumentDisplay;

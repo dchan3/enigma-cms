@@ -1,18 +1,7 @@
-import React, { Component } from 'react';
-import { object } from 'prop-types';
+import React from 'react';
 
-class HomePage extends Component {
-  constructor(props) {
-    super(props);
-  }
-
-  static propTypes = {
-    staticContext: object
-  };
-
-  render() {
-    return <div />;
-  }
+function HomePage() {
+  return <div />;
 }
 
 export default HomePage;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { array, string } from 'prop-types';
 import styled from 'styled-components';
 
@@ -19,9 +19,7 @@ var TopLevelList = styled.ul`
   background-color: cadetblue;
 `;
 
-var ListItem = styled.li`
-  padding: 8px;
-`;
+var ListItem = styled.li`padding: 8px;`;
 
 var SubList = styled.ul`
   list-style-type: none;
@@ -36,9 +34,7 @@ var SubList = styled.ul`
   transition: opacity .5s;
 `;
 
-var SubListItem = styled.li`
-  padding: 8px 8px 0 8px;
-`;
+var SubListItem = styled.li`padding: 8px 8px 0 8px;`;
 
 var HoverLink = styled.a`
   color: white;
@@ -53,118 +49,68 @@ var HoverLink = styled.a`
   }
 `;
 
-var WhiteSpan = styled.span`
-  color: white;
-`;
+var WhiteSpan = styled.span`color: white;`;
 
-class NodeLinkText extends Component {
-  static propTypes = {
-    url: string,
-    text: string
-  };
-
-  render() {
-    return <HoverLink href={this.props.url}>
-      <span>{this.props.text}</span></HoverLink>;
-  }
+function NodeLinkText({ url, text }) {
+  return <HoverLink href={url}><span>{text}</span></HoverLink>;
 }
 
-class LinkNode extends Component {
-  static propTypes = {
-    url: string,
-    text: string
-  };
+NodeLinkText.propTypes = {
+  url: string,
+  text: string
+};
 
-  render() {
-    return <ListItem>
-      <NodeLinkText url={this.props.url} text={this.props.text} /></ListItem>;
-  }
+function LinkNode({ url, text }) {
+  return <ListItem><NodeLinkText url={url} text={text} /></ListItem>;
 }
 
-class SubLinkNode extends Component {
-  static propTypes = {
-    url: string,
-    text: string
-  };
+LinkNode.propTypes = {
+  url: string,
+  text: string
+};
 
-  render() {
-    let { url, text } = this.props;
-
-    return <SubListItem>
-      <NodeLinkText url={url} text={text} />
-    </SubListItem>;
-  }
+function SubLinkNode({ url, text }) {
+  return <SubListItem>
+    <NodeLinkText url={url} text={text} />
+  </SubListItem>;
 }
 
-class SubMenu extends Component {
-  static propTypes = {
-    childNodes: array,
-    url: string,
-    text: string
-  };
+SubLinkNode.propTypes = {
+  url: string,
+  text: string
+};
 
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-    this.state = {
-      open: false
-    }
-  }
-
-  handleClick() {
-    this.setState({ open: !this.state.open });
-  }
-
-  render() {
-    let { childNodes } = this.props;
-
-    return <ListItem>
-      <NodeLinkText text={this.props.text} />
-      <WhiteSpan onClick={this.handleClick}>{'▼'}</WhiteSpan>
-      <SubList open={this.state.open}>
-        {childNodes.map(({ url, text }) =>
-          <SubLinkNode url={url} text={text} />)}
-      </SubList>
-    </ListItem>;
-  }
+function SubMenu({ childNodes, text: labelText }){
+  return <ListItem>
+    <NodeLinkText text={labelText} />
+    <WhiteSpan>{'▼'}</WhiteSpan>
+    <SubList>
+      {childNodes.map(({ url, text }) =>
+        <SubLinkNode url={url} text={text} />)}
+    </SubList>
+  </ListItem>;
 }
 
-class DropdownMenu extends Component {
-  static propTypes = {
-    menuNodes: array
-  };
+SubMenu.propTypes = {
+  childNodes: array,
+  url: string,
+  text: string
+};
 
-  constructor(props) {
-    super(props);
-
-    this.renderNode = this.renderNode.bind(this);
+function DropdownMenu({ menuNodes }) {
+  function renderNode(node) {
+    return (node.childNodes) ? <SubMenu {...node} /> : <LinkNode {...node} />;
   }
 
-  renderMenuLinkNode({ url, text }) {
-    return <LinkNode url={url} text={text} />
-  }
-
-  renderMenuListNode({ url, text, childNodes }) {
-    return  (
-      <SubMenu url={url} text={text} childNodes={childNodes} />
-    );
-  }
-
-  renderNode(node) {
-    if (node.childNodes) return this.renderMenuListNode(node);
-    else if (node.url) return this.renderMenuLinkNode(node);
-  }
-
-  render() {
-    var renderNode = this.renderNode;
-    return <ContainerDiv>
-      <TopLevelList>
-        {this.props.menuNodes.map(node =>
-          renderNode(node)
-        )}
-      </TopLevelList>
-    </ContainerDiv>;
-  }
+  return <ContainerDiv>
+    <TopLevelList>
+      {menuNodes.map(node => renderNode(node))}
+    </TopLevelList>
+  </ContainerDiv>;
 }
+
+DropdownMenu.propTypes = {
+  menuNodes: array
+};
 
 export default DropdownMenu;

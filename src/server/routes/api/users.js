@@ -1,6 +1,6 @@
 import passport from 'passport';
 import express from 'express';
-import User from '../../models/User';
+import { User } from '../../models';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
@@ -10,9 +10,9 @@ import path from 'path';
 var router = express.Router();
 
 // GET Requests
-router.get('/get', (req, res)  => {
-  if (req.user !== undefined) {
-    res.send(JSON.stringify(req.user)).status(200).end();
+router.get('/get', ({ user }, res)  => {
+  if (user !== undefined) {
+    res.send(JSON.stringify(user)).status(200).end();
   }
   else res.send(JSON.stringify(null)).end();
 });
@@ -45,42 +45,44 @@ router.post('/login', verifyMiddleware, function(req, res, next) {
   })(req, res, next);
 });
 
-router.post('/change_password', verifyMiddleware, function(req, res, next) {
-  User.findOne({ _id: ObjectId(req.body.userId) }).then(user => {
-    if (!user.comparePassword(req.body.currentPassword)) {
-      return next({ error: 'Wrong password.' });
-    }
-    else {
-      user.set('password', req.body.newPassword);
-      user.save(function (err) {
-        if (err) return next({ error: err.message });
-        else return res.status(200).end();
-      });
-    }
-  })
-});
-
-router.post('/update', verifyMiddleware,  function(req, res, next) {
-  User.findOne({ _id: ObjectId(req.body.userId) }).then(async user => {
-    if (user !== null) {
-      if (!user.comparePassword(req.body.currentPassword)) {
+router.post('/change_password', verifyMiddleware,
+  function({ body }, res, next) {
+    User.findOne({ _id: ObjectId(body.userId) }).then(user => {
+      if (!user.comparePassword(body.currentPassword)) {
         return next({ error: 'Wrong password.' });
       }
       else {
-        for (let attr in req.body) {
+        user.set('password', body.newPassword);
+        user.save(function (err) {
+          if (err) return next({ error: err.message });
+          else return res.status(200).end();
+        });
+      }
+    })
+  });
+
+router.post('/update', verifyMiddleware,  function({ body }, res, next) {
+  var { userId, username, currentPassword, profilePhoto, fileContent } = body;
+  User.findOne({ _id: ObjectId(userId) }).then(async user => {
+    if (user !== null) {
+      if (!user.comparePassword(currentPassword)) {
+        return next({ error: 'Wrong password.' });
+      }
+      else {
+        for (let attr in body) {
           if (!['currentPassword', 'userId',
             'profilePhoto', 'fileContent'].includes(attr))
-            user.set(attr, req.body[attr]);
+            user.set(attr, body[attr]);
         }
 
-        if (req.body.profilePhoto && req.body.fileContent) {
-          let fmt = req.body.profilePhoto.split('.').pop(),
+        if (profilePhoto && fileContent) {
+          let fmt = profilePhoto.split('.').pop(),
             filepath = path.resolve(__dirname,
-              `./public/profile-pix/${req.body.username}.${fmt}`);
+              `./public/profile-pix/${username}.${fmt}`);
           fs.writeFileSync(
             filepath,
-            Buffer.from(req.body.fileContent, 'base64'), { flag: 'a+' });
-          user.set('pictureSrc', `/profile-pix/${req.body.username}.${fmt}`);
+            Buffer.from(fileContent, 'base64'), { flag: 'a+' });
+          user.set('pictureSrc', `/profile-pix/${username}.${fmt}`);
         }
         else if (user.get('pictureSrc') === undefined ||
             user.get('pictureSrc') === null || user.get('pictureSrc') === '' ||

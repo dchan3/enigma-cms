@@ -8,33 +8,15 @@ var conn = mongoose.createConnection(
 autoIncrement.initialize(conn);
 
 const DocumentSchema = new Schema({
-  docTypeId: {
-    type: Number
-  },
-  docNodeId: {
-    type: Number
-  },
-  creatorId: {
-    type: Number
-  },
-  createdAt: {
-    type: Date
-  },
-  editorId: {
-    type: Number
-  },
-  editedAt: {
-    type: Date
-  },
-  content: {
-    type: Object
-  },
-  slug: {
-    type: String
-  },
-  draft: {
-    type: Boolean
-  }
+  docTypeId: { type: Number },
+  docNodeId: { type: Number },
+  creatorId: { type: Number },
+  createdAt: { type: Date },
+  editorId: { type: Number },
+  editedAt: { type: Date },
+  content: { type: Object },
+  slug: { type: String },
+  draft: { ype: Boolean }
 });
 
 DocumentSchema.plugin(autoIncrementPlugin,

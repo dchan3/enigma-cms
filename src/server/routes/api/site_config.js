@@ -1,5 +1,5 @@
 import express from 'express';
-import SiteConfig from '../../models/SiteConfig';
+import { SiteConfig } from '../../models';
 import { default as verifyMiddleware } from '../middleware';
 import fs from 'fs';
 import path from 'path';

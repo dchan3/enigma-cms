@@ -1,7 +1,7 @@
 import { default as gensig } from '../../../lib/utils/gensig';
 
-export default function(req, res, next) {
-  let { sig } = req.body, tempReq = Object.assign(req.body, {});
+export default function({ body }, res, next) {
+  let { sig } = body, tempReq = Object.assign(body, {});
   delete tempReq.sig;
   if (gensig(tempReq) === sig) {
     res.status(200);

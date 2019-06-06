@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import {
   string, shape, objectOf, oneOfType, func, object, array, arrayOf, number
 } from 'prop-types';
@@ -70,57 +70,19 @@ let FormBackground = styled.form`
     FormEnumInput, FormEnumInputOption, FormObjectInputLabel
   };
 
-class GeneratedForm extends Component {
-  static propTypes = {
-    title: string.isRequired,
-    params: objectOf(shape({
-      label: string,
-      type: oneOfType(
-        [string, func]).isRequired,
-      grammar: string,
-      shape: oneOfType(
-        [object, func]),
-      value: oneOfType([string, object, array]),
-      enumList: oneOfType([arrayOf(shape({
-        value: string,
-        text: string
-      })), func]),
-      maximum: number,
-      minimum: number,
-      attrDepends: object
-    })).isRequired,
-    successCallback: func,
-    method: string.isRequired,
-    formAction: string.isRequired,
-    parentCallback: func,
-    fileContent: string,
-    redirectUrl: string
-  };
-
-  static defaultProps = {
-    parentCallback: undefined,
-    fileContent: 'fileContent',
-    method: 'post'
-  };
-
-  constructor(props) {
-    super(props);
-    let values = {};
-    for (let n in this.props.params) {
-      loset(values, n, loget(this.props.params, n).value);
-    }
-    this.state = {
-      values: values,
-      errorMessage: ''
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleArrayRemove = this.handleArrayRemove.bind(this);
-    this.handleArrayAdd = this.handleArrayAdd.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+function GeneratedForm({ params, parentCallback, method, formAction,
+  successCallback, redirectUrl, title }) {
+  let values = {};
+  for (let n in params) {
+    loset(values, n, loget(params, n).value);
   }
+  let [state, setState] = useState({
+    values: values,
+    errorMessage: ''
+  });
 
-  readFile(file) {
+
+  function readFile(file) {
     let rdr = new FileReader();
     return new Promise((resolve, reject) => {
       rdr.onload = event => resolve(event.target.result);
@@ -129,63 +91,61 @@ class GeneratedForm extends Component {
     });
   }
 
-  handleChange(param) {
-    let self = this;
+  function handleChange(param) {
     return async function(event) {
       event.preventDefault();
       let newState = {
-        values: self.state.values
+        values: state.values,
+        errorMessage: ''
       };
 
       loset(newState.values, param, event.target.value);
 
       if (event.target.type === 'file') {
-        let contents = await self.readFile(event.target.files[0]),
+        let contents = await readFile(event.target.files[0]),
           sixfour = Buffer.from(contents).toString('base64');
         loset(newState.values, self.props.fileContent, sixfour);
       }
 
-      self.setState(newState);
-      if (self.props.parentCallback !== undefined)
-        self.props.parentCallback(newState.values);
+      setState(newState);
+
+      if (parentCallback !== undefined) parentCallback(newState.values);
     }
   }
 
-  handleArrayRemove(param, n) {
-    let self = this;
+  function handleArrayRemove(param, n) {
     return function(event) {
       event.preventDefault();
       let newState = {
-        values: self.state.values
+        values: state.values
       };
       newState.values[param].splice(n, 1);
-      self.setState(newState);
+      setState(newState);
     }
   }
 
-  handleArrayAdd(param) {
-    let self = this;
+  function handleArrayAdd(param) {
     return function(event) {
       event.preventDefault();
       let newState = {
-          values: self.state.values
+          values: state.values
         }, toAdd = {}, actualParam = param.replace(/.\d./g, '.shape.');
-      if (loget(self.props.params, actualParam).type === '[object]') {
-        for (let key in loget(self.props.params, actualParam).shape) {
+      if (loget(params, actualParam).type === '[object]') {
+        for (let key in loget(params, actualParam).shape) {
           toAdd[key] = '';
         }
       }
       else toAdd = '';
       loset(newState.values, param,
         loconcat(loget(newState.values, param), toAdd));
-      self.setState(newState);
+      setState(newState);
     }
   }
 
-  handleSubmit(event) {
-    let self = this, requestBody = {};
+  function handleSubmit({ target }) {
+    let requestBody = {};
     Array.prototype.slice.call(
-      event.target.parentElement.elements, 0 , -1).forEach(
+      target.parentElement.elements, 0 , -1).forEach(
       (node) => { requestBody[node.id] = node.value; });
     let sig = gensig(requestBody), config = {
       headers: {
@@ -193,80 +153,104 @@ class GeneratedForm extends Component {
       },
       withCredentials: true
     };
-    (self.props.method.match('/^get$/i') ?
-      axget(self.props.formAction, config) :
-      axpost(self.props.formAction, {
+    (method.match('/^get$/i') ?
+      axget(formAction, config) :
+      axpost(formAction, {
         ...requestBody, sig: sig
       }, config)).then(function(response) {
-      if (self.props.successCallback)
-        self.props.successCallback(response);
-      else if (self.props.redirectUrl)
-        window.location.href = self.props.redirectUrl;
+      if (successCallback) successCallback(response);
+      else if (redirectUrl)
+        window.location.href = redirectUrl;
     }).catch(function (error) {
-      self.setState({ errorMessage: error.message });
+      setState({ errorMessage: error.message, value: state.value });
     });
   }
 
-  render() {
-    let params = this.props.params, self = this,
-      selfFuncs = {
-        handleArrayAdd: self.handleArrayAdd,
-        handleArrayRemove: self.handleArrayRemove,
-        handleChange: self.handleChange
-      };
+  let selfFuncs = { handleArrayAdd, handleArrayRemove, handleChange };
 
-    return (
-      <div>
-        <FormHeader>{this.props.title}</FormHeader>
-        {this.state.errorMessage ?
-          <FormErrorMessage>
-            {this.state.errorMessage}
-          </FormErrorMessage> : null}
-        <FormBackground onSubmit={(e) => e.preventDefault()}>
-          {formGenUtils.formFromObj(params, this.state.values).map(
-            function(node) {
-              if (node) {
-                let NodeComponent = comps[node.component],
-                  attrObj = Object.assign({}, node.attributes || {});
+  return (
+    <div>
+      <FormHeader>{title}</FormHeader>
+      {state.errorMessage ?
+        <FormErrorMessage>
+          {state.errorMessage}
+        </FormErrorMessage> : null}
+      <FormBackground onSubmit={(e) => e.preventDefault()}>
+        {formGenUtils.formFromObj(params, state.values).map(
+          function(node) {
+            if (node) {
+              let NodeComponent = comps[node.component],
+                attrObj = Object.assign({}, node.attributes || {});
 
-                if (attrObj.onChange) {
-                  let attrSplit = attrObj.onChange.split(' ');
-                  attrObj.onChange = (e) => {
-                    selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
-                  }
+              if (attrObj.onChange) {
+                let attrSplit = attrObj.onChange.split(' ');
+                attrObj.onChange = (e) => {
+                  selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
                 }
-                if (attrObj.onClick) {
-                  let attrSplit = attrObj.onClick.split(' ');
-                  attrObj.onClick = (e) => {
-                    selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
-                  }
-                }
-
-                if (node.innerText) {
-                  return <FormDiv><NodeComponent {...attrObj}>
-                    {node.innerText}
-                  </NodeComponent></FormDiv>;
-                } else if (node.children) {
-                  return <FormDiv><NodeComponent {...attrObj}>
-                    {node.children.map(child => {
-                      let ChildComponent = comps[child.component];
-                      return <ChildComponent {...child.attributes}>
-                        {child.innerText}
-                      </ChildComponent>;
-                    })}
-                  </NodeComponent></FormDiv>;
-                }
-                else return <FormDiv><NodeComponent {...attrObj} /></FormDiv>;
               }
-              else return null;
-            })
-          }
-          <FormSubmit type="submit" value="Submit"
-            onClick={this.handleSubmit} />
-        </FormBackground>
-      </div>
-    );
-  }
+              if (attrObj.onClick) {
+                let attrSplit = attrObj.onClick.split(' ');
+                attrObj.onClick = (e) => {
+                  selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
+                }
+              }
+
+              if (node.innerText) {
+                return <FormDiv><NodeComponent {...attrObj}>
+                  {node.innerText}
+                </NodeComponent></FormDiv>;
+              } else if (node.children) {
+                return <FormDiv><NodeComponent {...attrObj}>
+                  {node.children.map(child => {
+                    let ChildComponent = comps[child.component];
+                    return <ChildComponent {...child.attributes}>
+                      {child.innerText}
+                    </ChildComponent>;
+                  })}
+                </NodeComponent></FormDiv>;
+              }
+              else return <FormDiv><NodeComponent {...attrObj} /></FormDiv>;
+            }
+            else return null;
+          })
+        }
+        <FormSubmit type="submit" value="Submit"
+          onClick={handleSubmit} />
+      </FormBackground>
+    </div>
+  );
 }
+
+GeneratedForm.propTypes = {
+  title: string.isRequired,
+  params: objectOf(shape({
+    label: string,
+    type: oneOfType(
+      [string, func]).isRequired,
+    grammar: string,
+    shape: oneOfType(
+      [object, func]),
+    value: oneOfType([string, object, array]),
+    enumList: oneOfType([arrayOf(shape({
+      value: string,
+      text: string
+    })), func]),
+    maximum: number,
+    minimum: number,
+    attrDepends: object
+  })).isRequired,
+  successCallback: func,
+  method: string.isRequired,
+  formAction: string.isRequired,
+  parentCallback: func,
+  fileContent: string,
+  redirectUrl: string
+};
+
+GeneratedForm.defaultProps =  {
+  parentCallback: undefined,
+  fileContent: 'fileContent',
+  method: 'post'
+};
 
 export default GeneratedForm;

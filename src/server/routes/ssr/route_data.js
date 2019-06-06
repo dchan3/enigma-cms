@@ -39,14 +39,16 @@ export const frontEndRoutes = [
     component: FrontCategoryDisplay,
     fetchInitialData: async (path) => {
       let typeName = path.replace(/\//g, ''),
-        { docTypeId } =
-          await DocumentType.findOne({ docTypeNamePlural: typeName }),
-        { categoryTemplateBody } =
-        await DocumentDisplayTemplate.findOne({ docTypeId }),
-        items = await Document.find({
-          docTypeId,
-          draft: false
-        }).sort({ createdAt: -1 });
+        docType = await DocumentType.findOne({ docTypeNamePlural: typeName });
+      if (!docType) return null;
+      var { docTypeId } = docType,
+        template = await DocumentDisplayTemplate.findOne({ docTypeId });
+      if (!template) return null;
+      var { categoryTemplateBody } = template;
+      var items = await Document.find({
+        docTypeId,
+        draft: false
+      }).sort({ createdAt: -1 });
       return { categoryTemplateBody, items, typeName };
     },
     key: 'dataObj'
@@ -69,6 +71,10 @@ export const frontEndRoutes = [
   },
   {
     path: '/not-found',
+    exact: true,
+    component: NotFound
+  }, {
+    path: '*',
     exact: true,
     component: NotFound
   }];
