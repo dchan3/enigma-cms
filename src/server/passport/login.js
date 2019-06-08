@@ -5,8 +5,7 @@ var LoginStrategy = new LocalStrategy({
   usernameField: 'username'
 }, function(username, password, done) {
   User.findOne({ $or: [
-    { username },
-    { email: username }
+    { username }, { email: username }
   ] }, (err, user) => {
     if (err) return done(null, false);
 

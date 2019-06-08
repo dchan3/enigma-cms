@@ -14,7 +14,7 @@ var UserSchema = new mongoose.Schema({
     required: [true, 'Username required.'],
     unique: true,
     validate: {
-      validator: (val) => /[a-zA-Z0-9]+/.test(val),
+      validator: val => /[a-zA-Z0-9]+/.test(val),
       message: 'Username must be alphanumeric.'
     }
   },

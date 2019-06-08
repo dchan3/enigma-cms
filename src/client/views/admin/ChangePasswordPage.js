@@ -2,12 +2,12 @@ import React from 'react';
 import { object } from 'prop-types';
 import GeneratedForm from '../../reusables/GeneratedForm';
 
-function ChangePasswordPage() {
+function ChangePasswordPage({ user: { _id } }) {
   return <GeneratedForm title="Change Password" params={{
     userId: {
       label: 'User ID',
       type: 'text',
-      value: this.props.user._id,
+      value: _id,
       hidden: true
     },
     currentPassword: {

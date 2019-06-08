@@ -2,13 +2,10 @@ import React from 'react';
 import { object } from 'prop-types';
 import { FrontMenu } from '../../reusables';
 
-function FrontHeader({ staticContext }) {
-  let { config } = staticContext;
-
+function FrontHeader({ staticContext: { config: { siteName, menuLinks } } }) {
   return <div>
-    <h1 className="front-header">
-      {config ? config.siteName : 'My Website'}</h1>
-    <FrontMenu config={config} />
+    <h1 className="front-header">{siteName || 'My Website'}</h1>
+    <FrontMenu menuLinks={menuLinks} />
   </div>;
 }
 

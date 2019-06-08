@@ -1,9 +1,8 @@
 import { HomePage, LoginPage, FrontCategoryDisplay, FrontDocumentDisplay,
-  FrontProfileDisplay, NotFound
-} from '../../../client/views/front';
-import { MainMenu, SignupPage, ConfigPage, RegisterDocType, DocumentEditPage,
-  DocumentUpdatePage, EditDocumentLanding, EditDisplayTemplate, UpdateDocType,
-  ProfileEditPage, ChangePasswordPage, FileMgmtLanding, UploadFilePage
+  FrontProfileDisplay, NotFound } from '../../../client/views/front';
+import { MainMenu, SignupPage, ConfigPage, EditDocumentLanding,
+  EditDocumentPage, EditDisplayTemplate, ProfileEditPage, ChangePasswordPage,
+  FileMgmtLanding, UploadFilePage, EditDocType
 } from '../../../client/views/admin';
 import { Document, DocumentType, File, User, DocumentDisplayTemplate } from
   '../../models';
@@ -38,36 +37,33 @@ export const frontEndRoutes = [
     exact: true,
     component: FrontCategoryDisplay,
     fetchInitialData: async (path) => {
-      let typeName = path.replace(/\//g, ''),
-        docType = await DocumentType.findOne({ docTypeNamePlural: typeName });
+      let docTypeNamePlural = path.replace(/\//g, ''),
+        docType = await DocumentType.findOne({ docTypeNamePlural });
       if (!docType) return null;
       var { docTypeId } = docType,
         template = await DocumentDisplayTemplate.findOne({ docTypeId });
       if (!template) return null;
       var { categoryTemplateBody } = template;
       var items = await Document.find({
-        docTypeId,
-        draft: false
+        docTypeId, draft: false
       }).sort({ createdAt: -1 });
-      return { categoryTemplateBody, items, typeName };
-    },
-    key: 'dataObj'
+      return { categoryTemplateBody, items, typeName: docTypeNamePlural };
+    }
   },
   {
     path: '/:docType/:docNode',
     exact: true,
     component: FrontDocumentDisplay,
     fetchInitialData: async (path) => {
-      var [ typeName, slug ] = path.split('/').slice(-2);
+      var [ docTypeNamePlural, slug ] = path.split('/').slice(-2);
       var { docTypeId } =
-        await DocumentType.findOne({ docTypeNamePlural: typeName });
+        await DocumentType.findOne({ docTypeNamePlural });
       var { templateBody } =
         await DocumentDisplayTemplate.findOne({ docTypeId });
-      var doc = await Document.findOne({ slug: slug, draft: false });
+      var doc = await Document.findOne({ slug, draft: false });
       if (doc) return { templateBody, doc };
       else return { };
-    },
-    key: 'dataObj'
+    }
   },
   {
     path: '/not-found',
@@ -83,53 +79,53 @@ export const backEndRoutes = [
   {
     path: '/admin/new/:docTypeId',
     exact: true,
-    component: DocumentEditPage,
-    fetchInitialData: path =>
-      DocumentType.findOne({ docTypeId: path.split('/').pop() }),
-    key: 'docType'
+    component: EditDocumentPage,
+    fetchInitialData: async (path) => {
+      let docType = await DocumentType.findOne({
+        docTypeId: path.split('/').pop()
+      });
+      return { docType };
+    }
   },
   {
     path: '/admin/edit-document/:docNode',
     exact: true,
-    component: DocumentUpdatePage,
+    component: EditDocumentPage,
     fetchInitialData: async (path) => {
-      let nodeId = path.split('/').pop(),
-        doc = await Document.findOne({ docNodeId: nodeId }),
-        docType = await DocumentType.findOne({ docTypeId: doc.docTypeId });
+      let docNodeId = path.split('/').pop(),
+        doc = await Document.findOne({ docNodeId }), { docTypeId } = doc,
+        docType = await DocumentType.findOne({ docTypeId });
       return { docType, doc };
-    },
-    key: 'dataObj'
+    }
   },
   {
     path: '/admin/edit/:docType',
     exact: true,
     component: EditDocumentLanding,
     fetchInitialData: async path => {
-      let typeId = path.split('/').pop(),
-        documents = await Document.find({ docTypeId: typeId  }),
-        docType = await DocumentType.findOne({ docTypeId: typeId });
+      let docTypeId = path.split('/').pop(),
+        documents = await Document.find({ docTypeId }),
+        docType = await DocumentType.findOne({ docTypeId });
       return { documents, docType };
-    },
-    key: 'dataObj'
+    }
   },
   {
     path: '/admin/edit-template/:docTypeId',
     exact: true,
     component: EditDisplayTemplate,
     fetchInitialData: async path => {
-      var docTypeId =  path.split('/').pop();
+      var docTypeId = path.split('/').pop();
       var docType = await
         DocumentType.findOne({ docTypeId }),
         { templateBody, categoryTemplateBody } =
           await DocumentDisplayTemplate.findOne({ docTypeId });
       return { docType, templateBody, categoryTemplateBody };
-    },
-    key: 'dataObj'
+    }
   },
   {
     path: '/admin/edit-type/:docTypeId',
     exact: true,
-    component: UpdateDocType,
+    component: EditDocType,
     fetchInitialData: path =>
       DocumentType.findOne({ docTypeId: path.split('/').pop() }),
     key: 'docType'
@@ -147,17 +143,12 @@ export const backEndRoutes = [
   {
     path: '/admin/register-type',
     exact: true,
-    component: RegisterDocType
+    component: EditDocType
   },
   {
     path: '/admin/change-password',
     exact: true,
     component: ChangePasswordPage
-  },
-  {
-    path: '/admin/register-type',
-    exact: true,
-    component: RegisterDocType
   },
   {
     path: '/admin/file-mgmt',

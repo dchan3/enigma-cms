@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 import Handlebars from 'handlebars';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
@@ -37,8 +37,8 @@ function FrontCategoryDisplay({ staticContext }) {
 }
 
 FrontCategoryDisplay.propTypes = {
-  match: PropTypes.object,
-  staticContext: PropTypes.object
+  match: object,
+  staticContext: object
 }
 
 export default FrontCategoryDisplay;

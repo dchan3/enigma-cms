@@ -7,14 +7,12 @@ import { ObjectId } from 'mongodb';
 
 var router = express.Router();
 
-router.post('/upload_file', verifyMiddleware, ({ user, body }, res, next) => {
-  let fileName = body.fileToUpload.split('\\').pop(),
-    { fileType, fileContent } = body,
+router.post('/upload_file', verifyMiddleware, ({ user: { userId: uploadedBy },
+  body: { fileToUpload, fileType, fileContent } }, res, next) => {
+  let fileName = fileToUpload.split('\\').pop(),
     newFile = new File({
-      fileName, fileType,
-      createdDate: new Date(),
-      modifiedDate: new Date(),
-      uploadedBy: user.userId
+      fileName, fileType, uploadedBy,
+      createdDate: new Date(), modifiedDate: new Date()
     }), filepath = resolve(__dirname,
       `./public/uploads/${fileType}`, fileName);
   fs.writeFile(
@@ -29,19 +27,19 @@ router.post('/upload_file', verifyMiddleware, ({ user, body }, res, next) => {
   );
 });
 
-router.delete('/delete_file/:fileType/:id', ({ user, params }, res, next) => {
-  var { id, fileType } = params;
-  if (user) return File.findOneAndRemove({
-    _id: ObjectId(id), fileType
-  }).then(function(file) {
-    let fp = resolve(__dirname,
-      `./public/uploads/${fileType}`, file.fileName);
-    fs.unlinkSync(fp);
-    return res.redirect('/admin/file_mgmt');
-  })
-    .catch(err => next(err));
-  else
-    return res.status(500).redirect('/login').end();
-});
+router.delete('/delete_file/:fileType/:id',
+  ({ user, params: { id, fileType } }, res, next) => {
+    if (user) return File.findOneAndRemove({
+      _id: ObjectId(id), fileType
+    }).then(function({ fileName }) {
+      let fp = resolve(__dirname,
+        `./public/uploads/${fileType}`, fileName);
+      fs.unlinkSync(fp);
+      return res.redirect('/admin/file_mgmt');
+    })
+      .catch(err => next(err));
+    else
+      return res.status(500).redirect('/login').end();
+  });
 
 export default router;

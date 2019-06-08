@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { object } from 'prop-types';
 import { TextHeader } from '../../reusables';
 import { TablePaginator } from 'react-everafter';
 import { delete as axdel } from 'axios';
@@ -59,7 +59,7 @@ function FileMgmtLanding({ staticContext }) {
 }
 
 FileMgmtLanding.propTypes = {
-  staticContext: PropTypes.object
+  staticContext: object
 };
 
 export default FileMgmtLanding;

@@ -11,7 +11,7 @@ router.post('/register_type', verifyMiddleware, ({ body }, res, next) => {
   let reset = [];
   for (let attr in body) {
     if (attr.indexOf('.') > -1) {
-      let mainKey = attr.split('.')[0];
+      let [mainKey,] = attr.split('.');
       if (!reset.includes(mainKey)) {
         newType.set(mainKey, {});
         reset.push(mainKey);
@@ -37,8 +37,8 @@ router.post('/register_type', verifyMiddleware, ({ body }, res, next) => {
 });
 
 router.post('/update_type/:id', verifyMiddleware,
-  ({ body, params }, res, next) => {
-    DocumentType.findOne({ docTypeId: params.id }).then(newType => {
+  ({ body, params: { id: docTypeId } }, res, next) => {
+    DocumentType.findOne({ docTypeId }).then(newType => {
       let reset = [];
       for (var attr in body) {
         if (attr.indexOf('.') > -1) {
@@ -58,13 +58,14 @@ router.post('/update_type/:id', verifyMiddleware,
   });
 
 router.post('/new_document/:type_id', verifyMiddleware,
-  ({ params, user, body }, res) => {
+  ({ params: { type_id: docTypeId, node_id },
+    user: { userId }, body }, res) => {
     let newDoc = new Document({
-        docTypeId: params.type_id,
+        docTypeId,
         createdAt: new Date(),
-        creatorId: user.userId,
+        creatorId: userId,
         editedAt: new Date(),
-        editorId: user.userId
+        editorId: userId
       }), reset = [];
     for (var attr in body) {
       if (attr !== 'draft') {
@@ -79,13 +80,13 @@ router.post('/new_document/:type_id', verifyMiddleware,
       }
       else { newDoc.set(attr, body[attr]); }
     }
-    DocumentType.findOne({ docTypeId: newDoc.docTypeId }).then(docType => {
-      let propSlug = slug(newDoc.content[docType.slugFrom]);
-      Document.find({ docNodeId: { $ne: params.node_id }, slug: {
+    DocumentType.findOne({ docTypeId }).then(({ slugFrom }) => {
+      let propSlug = slug(newDoc.content[slugFrom]);
+      Document.find({ docNodeId: { $ne: node_id }, slug: {
         $regex: new RegExp(`^${propSlug}`)
-      } }).sort({ slug: -1 }).then(documents => {
-        if (documents.length > 0) {
-          propSlug = `${slug}-${documents.length}`;
+      } }).sort({ slug: -1 }).then(({ length }) => {
+        if (length > 0) {
+          propSlug = `${slug}-${length}`;
         }
         newDoc.set('slug', propSlug);
         newDoc.save(function(err) {
@@ -96,12 +97,13 @@ router.post('/new_document/:type_id', verifyMiddleware,
     }).catch(() => { res.status(500); });
   });
 
-router.post('/update_document/:node_id', verifyMiddleware, (req, res, next) => {
-  Document.findOne({ docNodeId: req.params.node_id }).then(doc => {
+router.post('/update_document/:node_id', verifyMiddleware, (
+  { params: { node_id: docNodeId } , body, user }, res, next) => {
+  Document.findOne({ docNodeId }).then(doc => {
     doc.set('editedAt', new Date());
-    doc.set('editorId', req.user.userId);
+    doc.set('editorId', user.userId);
     var reset = [];
-    for (var attr in req.body) {
+    for (var attr in body) {
       if (attr !== 'draft') {
         if (attr.indexOf('.') > -1) {
           var mainKey = attr.split('.')[0];
@@ -110,17 +112,17 @@ router.post('/update_document/:node_id', verifyMiddleware, (req, res, next) => {
             reset.push(mainKey);
           }
         }
-        doc.set(`content.${attr}`, req.body[attr]);
+        doc.set(`content.${attr}`, body[attr]);
       }
-      else { doc.set(attr, req.body[attr]); }
+      else { doc.set(attr, body[attr]); }
     }
-    DocumentType.findOne({ docTypeId: doc.docTypeId }).then(docType => {
-      var propSlug = slug(doc.content[docType.slugFrom]);
-      Document.find({ docNodeId: { $ne: req.params.node_id }, slug: {
+    DocumentType.findOne({ docTypeId: doc.docTypeId }).then(({ slugFrom }) => {
+      let propSlug = slug(doc.content[slugFrom]);
+      Document.find({ docNodeId: { $ne: docNodeId }, slug: {
         $regex: new RegExp(`^${propSlug}`)
-      } }).sort({ slug: -1 }).then(documents => {
-        if (documents.length > 0) {
-          propSlug = `${slug}-${documents.length}`;
+      } }).sort({ slug: -1 }).then(({ length }) => {
+        if (length > 0) {
+          propSlug = `${slug}-${length}`;
         }
         doc.set('slug', propSlug);
         doc.save(function(err) {
@@ -135,23 +137,22 @@ router.post('/update_document/:node_id', verifyMiddleware, (req, res, next) => {
 });
 
 router.delete('/delete_document/:docType/:id',
-  ({ user, params }, res, next) => {
-    let { docType, id } = params;
+  ({ user, params: { docType: docTypeId, id } }, res, next) => {
     if (user) return Document.findOneAndDelete({
-      _id: ObjectId(id), docTypeId: docType
+      _id: ObjectId(id), docTypeId
     }).then(
-      () => res.redirect(`/admin/edit/${docType}`))
+      () => res.redirect(`/admin/edit/${docTypeId}`))
       .catch(err => next(err));
     else
       return res.status(500).redirect('/login').end();
   });
 
 router.post('/update_template/:type_id', verifyMiddleware,
-  ({ body, params }, res, next) => {
-    var { type_id } = params;
-    DocumentDisplayTemplate.findOne({ docTypeId: type_id }).then(
+  ({ body: {
+    templateBody, categoryTemplateBody
+  }, params: { type_id: docTypeId } }, res, next) => {
+    DocumentDisplayTemplate.findOne({ docTypeId }).then(
       doc => {
-        let { templateBody, categoryTemplateBody } = body;
         if (doc) {
           doc.set('templateBody', templateBody);
           doc.set('categoryTemplateBody', categoryTemplateBody);
@@ -162,7 +163,7 @@ router.post('/update_template/:type_id', verifyMiddleware,
         }
         else {
           var newDoc = new DocumentDisplayTemplate({
-            docTypeId: type_id, templateBody, categoryTemplateBody
+            docTypeId, templateBody, categoryTemplateBody
           });
           newDoc.save(function(err) {
             if (err) return next(err);

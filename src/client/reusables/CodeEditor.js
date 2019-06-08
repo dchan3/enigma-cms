@@ -3,11 +3,9 @@ import styled  from 'styled-components';
 import Prism from 'prismjs';
 import { string } from 'prop-types';
 
-let EditorContainer = styled.div`
-  height: 250px;
-  position: relative;
-  text-align: left;
-`, TextInputArea = styled.textarea`
+let EditorContainer =
+  styled.div`height:250px;position:relative;text-align:left;`,
+  TextInputArea = styled.textarea`
   background-color: transparent;
   overflow-wrap: break-word;
   top: 0;
@@ -46,15 +44,12 @@ function CodeEditor({ grammar, id, name, value }) {
     value: value || ''
   });
 
-  function handleChange(event) {
-    setState({ value: event.target.value });
+  function handleChange({ target: { value } }) {
+    setState({ value });
   }
 
-  function handleScroll(event) {
-    if (event) {
-      event.currentTarget.previousSibling.scrollTop =
-        event.currentTarget.scrollTop;
-    }
+  function handleScroll({ currentTarget }) {
+    currentTarget.previousSibling.scrollTop = currentTarget.scrollTop;
   }
 
   return [

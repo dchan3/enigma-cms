@@ -16,12 +16,11 @@ var SignupStrategy = new LocalStrategy({
         if (err) return done(err);
         if (userWith) return done(null, false);
         else {
-          icongen(username, function(result) {
+          icongen(username, function(pictureSrc) {
             const userData = {
-              username, password, email,
+              username, password, email, pictureSrc,
               displayName: '',
               roleId: u ? 1 : 0,
-              pictureSrc: result
             };
 
             var newUser = new User(userData);

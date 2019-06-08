@@ -2,103 +2,42 @@ import React from 'react';
 import { object } from 'prop-types';
 import { GeneratedForm } from '../../reusables';
 
-function ConfigPage({ staticContext }) {
-  let { config } = staticContext;
-
-  return <GeneratedForm title="Site Settings" params={{
-    siteName: {
-      type: 'text',
-      value: config ? config.siteName : ''
-    },
-    iconFile: {
-      type: 'file'
-    },
-    fileContent: {
-      type: 'string',
-      hidden: 'true'
-    },
-    description: {
-      type: 'text',
-      label: 'Site Description',
-      value: config ? config.description : ''
-    },
-    aboutBody: {
-      type: 'text',
-      value: config ? config.aboutBody : ''
-    },
-    stylesheet: {
-      type: 'text',
-      grammar: 'css',
-      value: config ? config.stylesheet : ''
-    },
-    profileTemplate: {
-      type: 'text',
-      grammar: 'html',
-      value: config ? config.profileTemplate : ''
-    },
+function ConfigPage({ staticContext: { config } }) {
+  return <GeneratedForm title="Site Settings" currentValue={config} params={{
+    siteName: { type: 'text' },
+    iconFile: { type: 'file' },
+    fileContent: { type: 'string', hidden: 'true' },
+    description: { type: 'text', label: 'Site Description', },
+    aboutBody: { type: 'text' },
+    stylesheet: { type: 'text', grammar: 'css' },
+    profileTemplate: { type: 'text', grammar: 'html' },
     menuLinks: {
       type: '[object]',
       shape: {
-        linkText: {
-          type: 'text'
-        },
-        linkUrl: {
-          type: 'text'
-        }
-      },
-      value: config ? config.menuLinks : [
-        {
-          linkText: '',
-          linkUrl: ''
-        }
-      ]
+        linkText: { type: 'text' },
+        linkUrl: { type: 'text' }
+      }
     },
     useSlug: {
       type: 'enum',
-      enumList: [{
-        text: 'Yes', value: true }, {
-        text: 'No', value: false
-      }],
-      value: config ? config.useSlug : false
+      enumList: [{ text: 'Yes', value: true }, { text: 'No', value: false }]
     },
     shortcodes: {
       type: '[object]',
       shape: {
-        name: {
-          type: 'text'
-        },
-        args: {
-          type: '[text]',
-          label: 'Arguments'
-        },
-        code: {
-          type: 'text',
-          label: 'Body',
-          grammar: 'js'
-        }
-      },
-      value: (config && config.shortcodes && config.shortcodes.length > 0) ?
-        config.shortcodes : [{
-          name: '',
-          args: [''],
-          code: ''
-        }]
+        name: { type: 'text' },
+        args: { type: '[text]', label: 'Arguments' },
+        code: { type: 'text', label: 'Body', grammar: 'js' }
+      }
     },
     keywords: {
-      type: '[text]',
-      value: (config && config.keywords && config.keywords.length > 0) ?
-        config.keywords : ['']
+      type: '[text]'
     },
-    gaTrackingId: {
-      type: 'text',
-      value: config && config.gaTrackingId || ''
-    }
+    gaTrackingId: { type: 'text' }
   }}
   method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
 }
 
-ConfigPage.propTypes = {
-  staticContext: object
-};
+ConfigPage.propTypes = { staticContext: object };
 
 export default ConfigPage;

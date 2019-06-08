@@ -1,8 +1,7 @@
 import React from 'react';
 import App from '../../../client/app/App';
 import { frontEndRoutes, backEndRoutes } from './route_data';
-import SiteConfig from '../../models/SiteConfig';
-import DocumentType from '../../models/DocumentType';
+import { SiteConfig, DocumentType } from '../../models';
 import { matchPath, StaticRouter } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
@@ -10,27 +9,25 @@ import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
 
 var htmlTemplate =
- (stylesheet, conf, helmetTags, dom, data) => `<!DOCTYPE html>
+  (styleTags, { stylesheet, gaTrackingId },
+    { title, meta, link }, dom, data) => `<!DOCTYPE html>
 <html>
   <head>
-  ${conf.gaTrackingId ?
+  ${gaTrackingId ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=${
-  conf.gaTrackingId}">
+  gaTrackingId}">
     </script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      gtag('config', '${conf.gaTrackingId}');
+      gtag('config', '${gaTrackingId}');
     </script>` : ''}
 ${[
-    helmetTags.title.toString(),
-    helmetTags.meta.toString(),
-    helmetTags.link.toString(),
-    stylesheet,
-    conf.stylesheet.length ? `<style>${conf.stylesheet}</style>` : ''
+    title.toString(),meta.toString(), link.toString(), styleTags,
+    stylesheet.length ? `<style>${stylesheet}</style>` : ''
   ].map(str => str.length ? (`    ${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
     <script>
@@ -45,28 +42,23 @@ ${[
     <div id="root">${dom}</div>
   </body>
 </html>
-`, ssrRenderer = async (req, res, next) => {
+`, ssrRenderer = async ({ path, url }, res, next) => {
     let config = await SiteConfig.findOne({}),
-      types = await DocumentType.find({}),
-      path = req.path, routes = path.startsWith('/admin') ?
+      types = await DocumentType.find({}), routes = path.startsWith('/admin') ?
         backEndRoutes : frontEndRoutes, context = { config, types },
-      activeRoute =
+      { fetchInitialData, key } =
         routes.find(route => matchPath(path, route)) || {},
-      promise = activeRoute.fetchInitialData
-        ? activeRoute.fetchInitialData(path) : Promise.resolve();
-
-    promise.then((data) => {
-      let sheet = new ServerStyleSheet();
-      if (activeRoute.key && data) context[activeRoute.key] = data;
-      const jsx = (
-          <StaticRouter location={req.url} context={context}>
+      promise = fetchInitialData ? fetchInitialData(path) : Promise.resolve();
+    promise.then(data => {
+      if (data) context[key || 'dataObj'] = data;
+      let sheet = new ServerStyleSheet(), jsx = (
+          <StaticRouter location={url} context={context}>
             <App staticContext={context} />
           </StaticRouter>), markup = renderToString(sheet.collectStyles(jsx)),
         helmet = Helmet.renderStatic(), styleTags = sheet.getStyleTags();
       sheet.seal();
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
-      res.end(htmlTemplate(styleTags, config, helmet, markup,
-        context));
+      res.end(htmlTemplate(styleTags, config, helmet, markup, context));
     }).catch(next)
   };
 

@@ -3,8 +3,7 @@ import { expect } from 'chai';
 import Enzyme, { render } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 Enzyme.configure({ adapter: new Adapter() });
-import GeneratedForm from '../src/client/reusables/GeneratedForm';
-import CodeEditor from '../src/client/reusables/CodeEditor';
+import { GeneratedForm, CodeEditor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as gensig } from '../src/lib/utils/gensig';
@@ -190,7 +189,9 @@ describe('Form from Obj', function() {
           id: 'guestList.0.firstName',
           name: 'guestList.0.firstName',
           onChange: 'handleChange guestList.0.firstName',
-          type: 'text'
+          type: 'text',
+          required: false,
+          hidden: false
         }
       },
       {
@@ -205,7 +206,9 @@ describe('Form from Obj', function() {
           id: 'guestList.0.lastName',
           name: 'guestList.0.lastName',
           onChange: 'handleChange guestList.0.lastName',
-          type: 'text'
+          type: 'text',
+          required: false,
+          hidden: false
         }
       },
       {
@@ -222,7 +225,9 @@ describe('Form from Obj', function() {
           id: 'guestList.0.age',
           name: 'guestList.0.age',
           onChange: 'handleChange guestList.0.age',
-          type: 'number'
+          type: 'number',
+          required: false,
+          hidden: false
         }
       },
       {
@@ -243,7 +248,9 @@ describe('Form from Obj', function() {
           id: 'guestList.0.contactInformation.phone',
           name: 'guestList.0.contactInformation.phone',
           onChange: 'handleChange guestList.0.contactInformation.phone',
-          type: 'text'
+          type: 'text',
+          required: false,
+          hidden: false
         }
       },
       {
@@ -260,7 +267,9 @@ describe('Form from Obj', function() {
           id: 'guestList.0.contactInformation.email',
           name: 'guestList.0.contactInformation.email',
           onChange: 'handleChange guestList.0.contactInformation.email',
-          type: 'text'
+          type: 'text',
+          required: false,
+          hidden: false
         }
       },
       {
@@ -271,6 +280,72 @@ describe('Form from Obj', function() {
         innerText: 'Remove'
       }
     ]);
+    done();
+  });
+
+  it('Validation function', function(done) {
+    var parameters = {
+        guestList: {
+          type: '[object]',
+          shape: {
+            firstName: {
+              type: 'text',
+              required: true
+            },
+            lastName: {
+              type: 'text',
+              required: true
+            },
+            age: {
+              type: 'number'
+            },
+            contactInformation: {
+              type: 'object',
+              shape: {
+                phone: {
+                  type: 'text'
+                },
+                email: {
+                  type: 'text'
+                }
+              }
+            }
+          }
+        }
+      }, valuesValid = {
+        guestList: [{
+          firstName: 'John',
+          lastName: 'Doe',
+          age: 50,
+          contactInformation: {
+            phone: '123-456-7890',
+            email: 'john@johndoe.net'
+          }
+        }]
+      }, valuesInvalid = {
+        guestList: [{
+          firstName: 'John',
+          lastName: '',
+          age: 50,
+          contactInformation: {
+            phone: '123-456-7890',
+            email: 'john@johndoe.net'
+          }
+        }, {
+          firstName: '',
+          lastName: '',
+          age: 50,
+          contactInformation: {
+            phone: '123-456-7890',
+            email: 'john@johndoe.net'
+          }
+        }]
+      };
+    expect(formGenUtils.validateForm(parameters, valuesValid)).to.be.true;
+    expect(formGenUtils.validateForm(parameters,
+      valuesInvalid)).to.have.members(['guestList.0.lastName',
+      'guestList.1.firstName',
+      'guestList.1.lastName']);
     done();
   });
 })

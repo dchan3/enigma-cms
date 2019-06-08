@@ -39,11 +39,11 @@ const calcFromDependValues = function(paramSpec, attr, formVal, keyToUse) {
 };
 
 const genInputComponent =
-  function(paramObj, paramSpec, valueVar, keyToUse, index, formVal) {
+  function(paramObj, paramSpec, valueVar, keyToUse, index, formVal,
+    invalidFields) {
     let theType = typeof paramSpec.type === 'function' ?
       calcFromDependValues(
-        paramSpec, 'type', formVal, keyToUse) :
-      paramSpec.type;
+        paramSpec, 'type', formVal, keyToUse) : paramSpec.type;
 
     if (theType.match(/enum/)) {
       return {
@@ -51,14 +51,16 @@ const genInputComponent =
         attributes: {
           id: keyToUse,
           name: keyToUse,
+          invalid: invalidFields.includes(keyToUse),
           onChange: `handleChange ${keyToUse}`,
-          value: valueVar
+          value: valueVar,
+          required: paramSpec.required || false
         },
         children: paramSpec.enumList.map((option) => ({
           component: 'FormEnumInputOption',
           attributes: { value: option.value },
           innerText: option.text
-        }))
+        })),
       }
     }
     else if (theType.match(/text/)) {
@@ -66,10 +68,13 @@ const genInputComponent =
         return {
           component: 'CodeEditor',
           attributes: {
+            invalid: invalidFields.includes(keyToUse),
             id: keyToUse,
             name: keyToUse,
             grammar: paramSpec.grammar,
-            value: valueVar || ''
+            value: valueVar || '',
+            hidden: paramSpec.hidden || false,
+            required: paramSpec.required || false
           }
         };
       }
@@ -77,25 +82,15 @@ const genInputComponent =
         return {
           component: 'FormInput',
           attributes: {
+            invalid: invalidFields.includes(keyToUse),
             id: keyToUse,
             name: keyToUse,
             type: 'text',
             maxLength: paramSpec.maximum,
             onChange: `handleChange ${keyToUse}`,
-            value: valueVar
-          }
-        };
-      }
-      else if (paramSpec.hidden) {
-        return {
-          component: 'FormInput',
-          attributes: {
-            id: keyToUse,
-            name: keyToUse,
-            type: 'text',
-            onChange: `handleChange ${keyToUse}`,
             value: valueVar,
-            hidden: true
+            hidden: paramSpec.hidden || false,
+            required: paramSpec.required || false
           }
         };
       }
@@ -103,11 +98,14 @@ const genInputComponent =
         return {
           component: 'FormInput',
           attributes: {
+            invalid: invalidFields.includes(keyToUse),
             id: keyToUse,
             name: keyToUse,
             type: 'text',
             onChange: `handleChange ${keyToUse}`,
-            value: valueVar
+            hidden: paramSpec.hidden || false,
+            value: valueVar,
+            required: paramSpec.required || false
           }
         };
       }
@@ -116,17 +114,16 @@ const genInputComponent =
       let retval = {
         component: 'FormInput',
         attributes: {
+          invalid: invalidFields.includes(keyToUse),
           id: keyToUse,
           name: keyToUse,
           type: theType.match(/[a-z]+/)[0],
           onChange: `handleChange ${keyToUse}`,
-          value: valueVar
+          value: valueVar,
+          hidden: paramSpec.hidden || false,
+          required: paramSpec.required || false
         }
       };
-
-      if (paramSpec.hidden) {
-        retval.attributes.hidden = paramSpec.hidden;
-      }
 
       if (paramSpec.minimum) {
         retval.attributes.minimum = paramSpec.minimum;
@@ -140,7 +137,7 @@ const genInputComponent =
     }
   };
 
-const formFromObj = function(paramsObj, valuesObj, extra) {
+const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
   let retval = [],
     realParamsObj = Object.assign({}, (extra && extra.parentKey) ?
       loget(paramsObj,
@@ -150,10 +147,11 @@ const formFromObj = function(paramsObj, valuesObj, extra) {
           .replace('.shape.shape.', '.shape.')}.shape`) :
       paramsObj);
   for (var key in realParamsObj) {
-    var label = realParamsObj[key].label || camelcaseConvert(key),
+    var { label } = realParamsObj[key],
       paramType = typeVerify(realParamsObj[key].type, [valuesObj[key]]),
       isArray = paramType.match(/\[.+\]/), isObj = paramType.match(/object/),
       keyConstruct = [];
+    if (!label) label = camelcaseConvert(key);
     if (extra && extra.parentKey) keyConstruct.push(extra.parentKey);
     if (extra && extra.iteration) keyConstruct.push(extra.iteration);
     keyConstruct.push(key);
@@ -175,13 +173,14 @@ const formFromObj = function(paramsObj, valuesObj, extra) {
     if (isObj) {
       if (!isArray) {
         retval.push(
-          ...formFromObj(paramsObj, valuesObj, { parentKey: actualKey }))
+          ...formFromObj(paramsObj, valuesObj, { parentKey: actualKey }),
+          invalidFields)
       }
       else {
         for (let i in valuesObj[key]) {
           retval.push(
             ...formFromObj(paramsObj, valuesObj,
-              { parentKey: actualKey, iteration: i }));
+              { parentKey: actualKey, iteration: i }, invalidFields));
           retval.push({
             component: 'FormSubmitButton',
             innerText: 'Remove',
@@ -198,7 +197,8 @@ const formFromObj = function(paramsObj, valuesObj, extra) {
               actualKey.replace(
                 /([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
                 .replace(/\.\d+\./g, '.shape.')),
-            loget(valuesObj, actualKey), actualKey, undefined, valuesObj));
+            loget(valuesObj, actualKey), actualKey, undefined, valuesObj,
+            invalidFields));
       }
       else {
         for (let i in loget(valuesObj, actualKey)) {
@@ -207,7 +207,7 @@ const formFromObj = function(paramsObj, valuesObj, extra) {
               actualKey.replace(/([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
                 .replace(/\.\d+\./g, '.shape.')),
             loget(valuesObj, `${actualKey}.${i}`),
-            `${actualKey}.${i}`, i, valuesObj));
+            `${actualKey}.${i}`, i, valuesObj, invalidFields));
           retval.push({
             component: 'FormSubmitButton',
             innerText: 'Remove',
@@ -220,4 +220,34 @@ const formFromObj = function(paramsObj, valuesObj, extra) {
   return retval;
 };
 
-export default { formFromObj, mapKeysToValues, outputKeys };
+const checkRequired = function(paramObj, valueObj) {
+  var invalidFields = [],
+    pks = mapKeysToValues(paramObj), reqFields =
+      outputKeys(paramObj).filter(k => k.endsWith('.required'))
+        .map(k => k.replace('.required', '')),
+    vks = outputKeys(valueObj), vs = mapKeysToValues(valueObj);
+
+  for (let reqField in reqFields) {
+    if (pks[`${reqFields[reqField]}.required`]) {
+      let relevant = vks.filter(k => {
+        return reqFields[reqField] ===
+      k.replace(/([a-z]+)\.([a-z+])/g, '$1.shape.$2')
+        .replace(/\.\d+\./g, '.shape.')
+        .replace('.shape.shape.', '.shape.'); });
+      for (let r in relevant) {
+        if (!vs[relevant[r]] || vs[relevant[r]] === '') {
+          invalidFields.push(relevant[r]);
+        }
+      }
+    }
+  }
+
+  return invalidFields;
+}
+
+const validateForm = function(paramObj, valueObj) {
+  var reqd = checkRequired(paramObj, valueObj);
+  return ![...reqd].flat().length || [...reqd].flat();
+}
+
+export default { formFromObj, mapKeysToValues, outputKeys, validateForm };

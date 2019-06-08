@@ -1,73 +1,44 @@
 import React from 'react';
 import { object, func, bool } from 'prop-types';
 import { Route, Redirect, Switch } from 'react-router-dom';
-import { ChangePasswordPage, ConfigPage, DocumentEditPage, DocumentUpdatePage,
-  EditDisplayTemplate, EditDocumentLanding, FileMgmtLanding, MainMenu,
-  ProfileEditPage, RegisterDocType, SignupPage, UpdateDocType, UploadFilePage
+import { ChangePasswordPage, ConfigPage, EditDisplayTemplate,
+  EditDocumentLanding, EditDocumentPage, FileMgmtLanding, MainMenu,
+  ProfileEditPage, SignupPage, EditDocType, UploadFilePage
 } from '../views/admin';
 import { FrontCategoryDisplay, FrontDocumentDisplay, FrontHeader,
-  FrontProfileDisplay, HomePage, LoginPage, NotFound
-} from '../views/front';
+  FrontProfileDisplay, HomePage, LoginPage, NotFound } from '../views/front';
 import { Footer } from '../reusables';
 import { Metamorph } from 'react-metamorph';
 
-var ProtectedRoute = function({ component: Component, isAdmin, staticContext,
-  ...rest }) {
-  return <Route {...rest} render={(props) => {
-    if (staticContext.user) {
-      if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
-        return [<MainMenu staticContext={staticContext} />,
-          <Component {...props} staticContext={staticContext} />];
+let ProtectedRoute =
+  ({ component: Component, isAdmin, staticContext, ...rest }) => (
+    <Route {...rest} render={(props) => {
+      if (staticContext.user) {
+        if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
+          return [<MainMenu staticContext={staticContext} />,
+            <Component {...props} staticContext={staticContext} />];
+        }
+        else return <Redirect to="/admin" />
       }
-      else return <Redirect to="/admin" />
-    }
-    else return <Redirect to="/login" />
-  }} />
-};
-
-ProtectedRoute.propTypes = {
-  isAdmin: bool,
-  staticContext: object,
-  component: func
-};
-
-var LoggedOutRoute = function({ component: Component, staticContext,
-  ...rest }) {
-  return <Route {...rest} render={(props) => {
-    if (staticContext.user) {
-      return <Redirect to="/admin" />
-    }
-    else return  <Component {...props} staticContext={staticContext} />;
-  }} />
-};
-
-LoggedOutRoute.propTypes = {
-  staticContext: object,
-  component: func
-};
-
-var FrontEndRoute = function({ component: Component, staticContext, ...rest }) {
-  return <Route {...rest} render={(props) => {
-    return <Component {...props} staticContext={staticContext} />
-  }} />
-};
-
-FrontEndRoute.propTypes = {
-  staticContext: object,
-  component: func
-};
-
-function App({ staticContext }) {
+      else return <Redirect to="/login" />
+    }} />), LoggedOutRoute =
+  ({ component: Component, staticContext, ...rest }) => (<Route {...rest}
+    render={(props) =>
+      staticContext.user ? <Redirect to="/admin" /> : (
+        <Component {...props} staticContext={staticContext} />)
+    } />
+  ),
+  FrontEndRoute = ({ component: Component, staticContext, ...rest }) => (
+    <Route {...rest} render={(props) => (<Component {...props}
+      staticContext={staticContext} />)} />), App =
+({ staticContext }) => {
   if (!staticContext) staticContext = window.__INITIAL_DATA__;
-  let { config } = staticContext;
+  let { config } = staticContext,
+    { description, keywords, siteName, iconUrl } = config;
   return <div>
-    <Metamorph title={config ? staticContext.config.siteName :
-      'My Website'} description={staticContext.config ?
-      staticContext.config.description :
-      'Welcome to my website!'} keywords={staticContext.config &&
-      staticContext.config.keywords &&
-      staticContext.config.keywords.join(',') || ''}
-    image={staticContext.config ? staticContext.config.iconUrl : ''}/>
+    <Metamorph title={siteName || 'My Website'}
+      description={description || 'Welcome to my website!'}
+      keywords={keywords && keywords.join(',') || ''} image={iconUrl || ''}/>
     <FrontHeader staticContext={staticContext} />
     <Switch>
       <FrontEndRoute exact path='/' staticContext={staticContext}
@@ -75,17 +46,16 @@ function App({ staticContext }) {
       <ProtectedRoute exact path='/admin' isAdmin={false}
         staticContext={staticContext} component={() => <div />}/>
       <ProtectedRoute exact path='/admin/new/:docTypeId' isAdmin={false}
-        staticContext={staticContext} component={DocumentEditPage} />
+        staticContext={staticContext} component={EditDocumentPage} />
       <ProtectedRoute exact path='/admin/edit/:docType' isAdmin={true}
         staticContext={staticContext} component={EditDocumentLanding} />
-      <ProtectedRoute exact path='/admin/edit-document/:docNode'
-        isAdmin={false}
-        staticContext={staticContext} component={DocumentUpdatePage}/>
+      <ProtectedRoute exact path='/admin/edit-document/:docNode' isAdmin={false}
+        staticContext={staticContext} component={EditDocumentPage}/>
       <ProtectedRoute exact path='/admin/edit-template/:docTypeId'
         staticContext={staticContext} isAdmin={false}
-        component={EditDisplayTemplate}/>,
+        component={EditDisplayTemplate} />
       <ProtectedRoute exact path='/admin/edit-type/:docTypeId' isAdmin={false}
-        staticContext={staticContext} component={UpdateDocType}/>
+        staticContext={staticContext} component={EditDocType}/>
       <LoggedOutRoute path="/signup" staticContext={staticContext}
         component={SignupPage} />
       <LoggedOutRoute path="/login" staticContext={staticContext}
@@ -95,7 +65,7 @@ function App({ staticContext }) {
       <ProtectedRoute exact path="/admin/edit-config" isAdmin={true}
         staticContext={staticContext} component={ConfigPage} />
       <ProtectedRoute exact path="/admin/register-type" isAdmin={true}
-        staticContext={staticContext} component={RegisterDocType} />
+        staticContext={staticContext} component={EditDocType} />
       <ProtectedRoute exact path='/admin/change-password' isAdmin={false}
         staticContext={staticContext} component={ChangePasswordPage} />
       <ProtectedRoute exact path='/admin/file-mgmt' isAdmin={false}
@@ -106,8 +76,8 @@ function App({ staticContext }) {
         staticContext={staticContext} />
       <FrontEndRoute exact path="/profile/:username"
         component={FrontProfileDisplay} staticContext={staticContext} />
-      <FrontEndRoute exact path="/:docType"
-        component={FrontCategoryDisplay} staticContext={staticContext} />
+      <FrontEndRoute exact path="/:docType" component={FrontCategoryDisplay}
+        staticContext={staticContext} />
       <FrontEndRoute exact path="/:docType/:docNode"
         component={FrontDocumentDisplay} staticContext={staticContext} />
       <Route path="*" component={NotFound} />
@@ -116,8 +86,14 @@ function App({ staticContext }) {
   </div>;
 }
 
-App.propTypes = {
-  staticContext: object
-}
+[ProtectedRoute, LoggedOutRoute, FrontEndRoute].forEach((comp) => {
+  if (!comp.propTypes) comp.propTypes = {
+    staticContext: object, component: func
+  };
+});
+
+ProtectedRoute.propTypes.isAdmin = bool;
+
+App.propTypes = { staticContext: object }
 
 export default App;

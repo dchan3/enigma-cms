@@ -16,7 +16,7 @@ const DocumentSchema = new Schema({
   editedAt: { type: Date },
   content: { type: Object },
   slug: { type: String },
-  draft: { ype: Boolean }
+  draft: { type: Boolean }
 });
 
 DocumentSchema.plugin(autoIncrementPlugin,

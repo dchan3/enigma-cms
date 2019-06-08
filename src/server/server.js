@@ -1,16 +1,11 @@
 import express from 'express';
 import passport from 'passport';
-import User from './models/User';
-import SiteConfig from './models/SiteConfig';
-import Document from './models/Document';
-import DocumentType from './models/DocumentType';
+import { User, SiteConfig, Document, DocumentType } from './models';
 import { default as SignupStrategy } from './passport/signup';
 import { default as LoginStrategy } from './passport/login';
 import mongoose from 'mongoose';
-import { default as userRoutes } from './routes/api/users';
-import { default as configRoutes } from './routes/api/site_config';
-import { default as documentRoutes } from './routes/api/documents';
-import { default as fileRoutes } from './routes/api/file_mgmt';
+import { userRoutes, configRoutes, documentRoutes, fileRoutes }
+  from './routes/api';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
@@ -63,7 +58,6 @@ passport.deserializeUser((_id, done) => {
 });
 
 passport.use('local-signup', SignupStrategy);
-
 passport.use('local-login', LoginStrategy);
 
 app.use(express.static('public'));
@@ -96,8 +90,7 @@ app.get('/profile-pix/:filename', (req, res) => {
   res.send(fs.readFileSync(path.resolve(__dirname,
     `public/profile-pix/${filename}`)));
 });
-app.get('/site-icon/:filename', (req, res) => {
-  var { filename } = req.params;
+app.get('/site-icon/:filename', ({ params: { filename } }, res) => {
   res.send(fs.readFileSync(path.resolve(__dirname,
     `public/site-icon/${filename}`)));
 });

@@ -1,5 +1,5 @@
 import passport from 'passport';
-import express from 'express';
+import { Router } from 'express';
 import { User } from '../../models';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
@@ -7,7 +7,7 @@ import { default as verifyMiddleware } from '../middleware';
 import fs from 'fs';
 import path from 'path';
 
-var router = express.Router();
+var router = Router();
 
 // GET Requests
 router.get('/get', ({ user }, res)  => {
@@ -17,8 +17,8 @@ router.get('/get', ({ user }, res)  => {
   else res.send(JSON.stringify(null)).end();
 });
 
-router.get('/logout', function(req, res) {
-  req.logout();
+router.get('/logout', function({ logout }, res) {
+  logout();
   res.redirect('/');
 });
 
@@ -46,13 +46,13 @@ router.post('/login', verifyMiddleware, function(req, res, next) {
 });
 
 router.post('/change_password', verifyMiddleware,
-  function({ body }, res, next) {
-    User.findOne({ _id: ObjectId(body.userId) }).then(user => {
-      if (!user.comparePassword(body.currentPassword)) {
+  function({ body: { userId, currentPassword, newPassword } }, res, next) {
+    User.findOne({ _id: ObjectId(userId) }).then(user => {
+      if (!user.comparePassword(currentPassword)) {
         return next({ error: 'Wrong password.' });
       }
       else {
-        user.set('password', body.newPassword);
+        user.set('password', newPassword);
         user.save(function (err) {
           if (err) return next({ error: err.message });
           else return res.status(200).end();
@@ -63,7 +63,7 @@ router.post('/change_password', verifyMiddleware,
 
 router.post('/update', verifyMiddleware,  function({ body }, res, next) {
   var { userId, username, currentPassword, profilePhoto, fileContent } = body;
-  User.findOne({ _id: ObjectId(userId) }).then(async user => {
+  User.findOne({ userId }).then(async user => {
     if (user !== null) {
       if (!user.comparePassword(currentPassword)) {
         return next({ error: 'Wrong password.' });

@@ -1,40 +1,41 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import GeneratedForm from '../../reusables/GeneratedForm';
+import { object } from 'prop-types';
+import { GeneratedForm } from '../../reusables';
 
-function UpdateDocType({ match, staticContext }) {
+var minMax = {
+  type: (value) => (value === 'date') ? 'date' : 'number',
+  attrDepends: { type: ['attributes.$.attrType'] }
+};
+
+var EditDocType = ({ match, staticContext: { docType } }) => {
   let [state, setState] = useState({
-    optionParams: staticContext.docType &&
-      staticContext.docType.attributes &&
-      staticContext.docType.attributes.length &&
-      staticContext.docType.attributes.map(
+    optionParams: docType && docType.attributes && docType.attributes.length &&
+      docType.attributes.map(
         ({ attrName, attrType }) => ({
           attrName, attrType
-        })) || []
+        })) || ['']
   });
 
 
-  function updateParams(values) {
+  function updateParams({ attributes }) {
     setState({
-      optionParams: values.attributes.map(({ attrName, attrType }) => ({
+      optionParams: attributes.map(({ attrName, attrType }) => ({
         attrName, attrType
       }))
     });
   }
 
-  let { docType } = staticContext;
-  if (docType !== null) {
-    let { docTypeName, docTypeNamePlural } = docType;
-    return <GeneratedForm title="Update Document Type" params={{
+  return <GeneratedForm currentValue={docType} title="Edit Document Type"
+    params={{
       docTypeName: {
         label: 'Document Type Name',
         type: 'text',
-        value: docTypeName
+        value: ''
       },
       docTypeNamePlural: {
         label: 'Document Type Name Plural',
         type: 'text',
-        value: docTypeNamePlural || ''
+        value: ''
       },
       attributes: {
         label: 'Attributes',
@@ -53,18 +54,8 @@ function UpdateDocType({ match, staticContext }) {
               { 'text': 'Number', 'value': 'number' }
             ]
           },
-          minimum: {
-            type: (value) => (value === 'date') ? 'date' : 'number',
-            attrDepends: {
-              type: ['attributes.$.attrType']
-            }
-          },
-          maximum: {
-            type: (value) => (value === 'date') ? 'date' : 'number',
-            attrDepends: {
-              type: ['attributes.$.attrType']
-            }
-          },
+          minimum: minMax,
+          maximum: minMax,
           grammar: {
             label: 'Grammar',
             type: 'enum',
@@ -78,30 +69,29 @@ function UpdateDocType({ match, staticContext }) {
             label: 'Options',
             type: '[text]',
           }
-        },
-        value: docType.attributes || []
+        }
       },
       slugFrom: {
         label: 'Generate Slug From',
         type: 'enum',
-        enumList: !!state.optionParams ?
+        enumList: state.optionParams ?
           [{ text: '(None)', value: '' },
-            state.optionParams.map(param => ({
-              text: param.attrName, value: param.attrName
+            state.optionParams.map(({ attrName }) => ({
+              text: attrName, value: attrName
             }))].flat() : [
             { text: '(None)', value: '' }
           ],
-        value: docType.slugFrom || ''
+        value: ''
       }
     }} method="post" parentCallback={updateParams} redirectUrl='/admin'
-    formAction={`/api/documents/update_type/${match.params.docTypeId}`} />;
-  }
-  else return null;
+    formAction={docType ?
+      `/api/documents/update_type/${match.params.docTypeId}` :
+      '/api/documents/register_type'}/>;
 }
 
-UpdateDocType.propTypes = {
-  match: PropTypes.object,
-  staticContext: PropTypes.object
+EditDocType.propTypes = {
+  match: object,
+  staticContext: object
 };
 
-export default UpdateDocType;
+export default EditDocType;

@@ -1,11 +1,8 @@
-const path = require('path'), webpack = require('webpack'),
-  nodeExternals = require('webpack-node-externals'),
+const path = require('path'), nodeExternals = require('webpack-node-externals'),
   UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = [{
-  optimization: {
-    minimizer: [new UglifyJsPlugin()]
-  },
+  optimization: { minimizer: [new UglifyJsPlugin()] },
   mode: 'production',
   entry:  './src/client/app/index.js',
   target: 'web',
@@ -15,17 +12,10 @@ module.exports = [{
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        options: {
-          babelrc: true
-        }
+        options: { babelrc: true }
       },
     ]
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      __isBrowser__: 'true'
-    })
-  ],
   output: {
     path: path.resolve( __dirname, 'public' ),
     publicPath: path.resolve( __dirname, 'public' ),
@@ -43,9 +33,7 @@ module.exports = [{
   },
   devtool: 'source-map'
 }, {
-  optimization: {
-    minimizer: [new UglifyJsPlugin()]
-  },
+  optimization: { minimizer: [new UglifyJsPlugin()] },
   mode: 'production',
   entry: './src/server/server.js',
   target: 'node',
@@ -62,18 +50,11 @@ module.exports = [{
       },
     ],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      __isBrowser__: 'false'
-    })
-  ],
   output: {
     path: __dirname,
     filename: 'server.bundle.js',
     publicPath: '/'
   },
   devtool: 'source-map',
-  node: {
-    __dirname: false
-  }
+  node: { __dirname: false }
 }];

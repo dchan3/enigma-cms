@@ -1,15 +1,15 @@
-import express from 'express';
+import { Router } from 'express';
 import { SiteConfig } from '../../models';
 import { default as verifyMiddleware } from '../middleware';
 import fs from 'fs';
 import path from 'path';
 
-var router = express.Router();
+var router = Router();
 
-router.post('/update', verifyMiddleware, function(req, res, next) {
+router.post('/update', verifyMiddleware, function({ body }, res, next) {
   SiteConfig.findOne({ }).then(async config => {
     var reset = [];
-    for (var attr in req.body) {
+    for (var attr in body) {
       if (attr.indexOf('.') > -1) {
         var mainKey = attr.split('.')[0];
         if (!reset.includes(mainKey)) {
@@ -18,14 +18,17 @@ router.post('/update', verifyMiddleware, function(req, res, next) {
         }
       }
       if (attr !== 'iconFile' && attr !== 'fileContent') {
-        config.set(attr, req.body[attr]);
+        config.set(attr, body[attr]);
       }
     }
-    if (req.body.iconFile && req.body.iconFile !== '') {
-      let fn = req.body.iconFile.split('\\').pop();
+
+    let { iconFile, fileContent } = body;
+
+    if (iconFile && iconFile !== '') {
+      let fn = iconFile.split('\\').pop();
       await fs.writeFile(path.resolve(__dirname,
         `./public/site-icon/${fn}`),
-      Buffer.from(req.body.fileContent, 'base64'), { flag: 'a+' },
+      Buffer.from(fileContent, 'base64'), { flag: 'a+' },
       function(error) {
         if (error) return next(error);
         config.set('iconUrl', `/site-icon/${fn}`);

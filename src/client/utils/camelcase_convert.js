@@ -1,5 +1,2 @@
-export default function(str) {
-  let retval = str.replace(/[A-Z]/g, ' $&');
-  retval = retval[0].toUpperCase() + retval.substr(1);
-  return retval;
-}
+export default (str) =>
+  str.replace(/[A-Z]/g, ' $&').replace(/^[a-z]/, (m) => m.toUpperCase());

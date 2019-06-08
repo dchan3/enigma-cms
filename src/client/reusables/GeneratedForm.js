@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
-  string, shape, objectOf, oneOfType, func, object, array, arrayOf, number
-} from 'prop-types';
+  string, shape, objectOf, oneOfType, func, object, array, arrayOf, number,
+  bool } from 'prop-types';
 import styled from 'styled-components';
 import CodeEditor from './CodeEditor';
 import { get as loget, set as loset, concat as loconcat } from 'lodash';
@@ -10,14 +10,10 @@ import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
 
 let FormBackground = styled.form`
-  background-color: cadetblue;
-  width: fit-content;
-  margin: auto;
-  text-align: left;
-`, FormDiv = styled.div`
-  padding: 8px;
-  display: ${props => props.hidden ? 'none' : 'block'}
-`, FormInput = styled.input`
+background-color:cadetblue;width: fit-content;margin:auto;text-align:left;`,
+  FormDiv = styled.div`padding:8px;display:${({ hidden }) =>
+    hidden ? 'none' : 'block'}`,
+  FormInput = styled.input`
   border-radius: 8px;
   vertical-align: top;
   height: 16px;
@@ -26,22 +22,18 @@ let FormBackground = styled.form`
   font-size: 16px;
   padding: 5px;
   display: ${({ hidden }) => hidden ? 'none' : 'block'}
-`, FormHeader = styled.h2`
-  text-align: center;
-  font-family: sans-serif;
-`, FormLabel = styled.label`
+  box-shadow: ${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'}
+`, FormHeader = styled.h2`text-align:center;font-family:sans-serif;`,
+  FormLabel = styled.label`
   color: white;
   padding-right: 4px;
   font-family: sans-serif;
   text-transform: uppercase;
   display: ${({ hidden }) => hidden ? 'none' : 'block'}
-`, FormEnumInput = styled.select`
-  font-family: sans-serif;
-  font-size: 16px;
-`, FormEnumInputOption = styled.option`
-  font-family: sans-serif;
-  font-size: 16px;
-`, FormObjectInputLabel = styled.p`
+  text-shadow: ${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'}
+`, FormEnumInput = styled.select`font-family: sans-serif;font-size:16px;`,
+  FormEnumInputOption = styled.option`font-family:sans-serif;font-size:16px;`,
+  FormObjectInputLabel = styled.p`
   color: white;
   padding-right: 4px;
   font-family: sans-serif;
@@ -54,38 +46,30 @@ let FormBackground = styled.form`
   margin: 8px;
   border-radius: 8px;
   font-size: 14px;
-`, FormErrorMessage = styled.p`
-  font-family: sans-serif;
-  text-transform: uppercase;
-  text-align: center;
+`, FormErrorMessage =
+  styled.p`font-family:sans-serif;text-transform:uppercase;text-align:center;
 `, FormSubmitButton = styled.button`
-  font-size: 16px;
-  font-family: sans-serif;
-  text-transform: uppercase;
-  padding: 8px;
-  border-radius: 8px;
-  margin: 8px;
-`, comps = {
+  font-size:16px;font-family:sans-serif;text-transform:uppercase;padding:8px;
+  border-radius:8px;margin:8px;`, comps = {
     FormInput, FormLabel, CodeEditor, FormSubmitButton,
     FormEnumInput, FormEnumInputOption, FormObjectInputLabel
   };
 
 function GeneratedForm({ params, parentCallback, method, formAction,
-  successCallback, redirectUrl, title }) {
+  successCallback, redirectUrl, title, fileContent, currentValue }) {
   let values = {};
+  if (currentValue) Object.assign(values, currentValue);
   for (let n in params) {
-    loset(values, n, loget(params, n).value);
+    let paramVal = loget(params, n);
+    if (paramVal && paramVal.value) loset(values, n, paramVal.value);
   }
   let [state, setState] = useState({
-    values: values,
-    errorMessage: ''
-  });
-
+    values, errorMessage: '', invalidFields: [] });
 
   function readFile(file) {
     let rdr = new FileReader();
     return new Promise((resolve, reject) => {
-      rdr.onload = event => resolve(event.target.result);
+      rdr.onload = ({ target: { result } }) => resolve(result);
       rdr.onerror = error => reject(error);
       rdr.readAsArrayBuffer(file);
     });
@@ -93,18 +77,20 @@ function GeneratedForm({ params, parentCallback, method, formAction,
 
   function handleChange(param) {
     return async function(event) {
+      var { type, value, files } = event.target;
       event.preventDefault();
       let newState = {
         values: state.values,
-        errorMessage: ''
+        errorMessage: '',
+        invalidFields: state.invalidFields
       };
 
-      loset(newState.values, param, event.target.value);
+      loset(newState.values, param, value);
 
-      if (event.target.type === 'file') {
-        let contents = await readFile(event.target.files[0]),
+      if (type === 'file') {
+        let [fileStuff] = files, contents = await readFile(fileStuff),
           sixfour = Buffer.from(contents).toString('base64');
-        loset(newState.values, self.props.fileContent, sixfour);
+        loset(newState.values, fileContent, sixfour);
       }
 
       setState(newState);
@@ -117,7 +103,9 @@ function GeneratedForm({ params, parentCallback, method, formAction,
     return function(event) {
       event.preventDefault();
       let newState = {
-        values: state.values
+        values: state.values,
+        errorMessage: '',
+        invalidFields: state.invalidFields
       };
       newState.values[param].splice(n, 1);
       setState(newState);
@@ -128,10 +116,14 @@ function GeneratedForm({ params, parentCallback, method, formAction,
     return function(event) {
       event.preventDefault();
       let newState = {
-          values: state.values
-        }, toAdd = {}, actualParam = param.replace(/.\d./g, '.shape.');
-      if (loget(params, actualParam).type === '[object]') {
-        for (let key in loget(params, actualParam).shape) {
+          values: state.values,
+          errorMessage: '',
+          invalidFields: state.invalidFields
+        }, toAdd = {},
+        actualParam = param.replace(/.\d./g, '.shape.');
+      var { type: gotType, shape: gotShape } = loget(params, actualParam);
+      if (gotType === '[object]') {
+        for (let key in gotShape) {
           toAdd[key] = '';
         }
       }
@@ -142,28 +134,35 @@ function GeneratedForm({ params, parentCallback, method, formAction,
     }
   }
 
-  function handleSubmit({ target }) {
-    let requestBody = {};
-    Array.prototype.slice.call(
-      target.parentElement.elements, 0 , -1).forEach(
-      (node) => { requestBody[node.id] = node.value; });
-    let sig = gensig(requestBody), config = {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      withCredentials: true
-    };
-    (method.match('/^get$/i') ?
-      axget(formAction, config) :
-      axpost(formAction, {
-        ...requestBody, sig: sig
-      }, config)).then(function(response) {
-      if (successCallback) successCallback(response);
-      else if (redirectUrl)
-        window.location.href = redirectUrl;
-    }).catch(function (error) {
-      setState({ errorMessage: error.message, value: state.value });
-    });
+  function handleSubmit({ target: { parentElement: { elements } } }) {
+    let requestBody = {}, valid =
+      formGenUtils.validateForm(params, state.values);
+    if (valid === true) {
+      Array.prototype.slice.call(elements, 0 , -1).forEach(
+        ({ id, value }) => { requestBody[id] = value; });
+      let sig = gensig(requestBody), config = {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true
+      };
+      (method.match('/^get$/i') ?
+        axget(formAction, config) :
+        axpost(formAction, { ...requestBody, sig }, config))
+        .then(function(response) {
+          if (successCallback) successCallback(response);
+          else if (redirectUrl) window.location.href = redirectUrl;
+        }).catch(function (error) {
+          setState({
+            errorMessage: error.message,
+            values: state.values, invalidFields: state.invalidFields
+          });
+        });
+    }
+    else {
+      setState({
+        errorMessage: 'Fields missing.',
+        invalidFields: valid,
+        values: state.values })
+    }
   }
 
   let selfFuncs = { handleArrayAdd, handleArrayRemove, handleChange };
@@ -176,7 +175,8 @@ function GeneratedForm({ params, parentCallback, method, formAction,
           {state.errorMessage}
         </FormErrorMessage> : null}
       <FormBackground onSubmit={(e) => e.preventDefault()}>
-        {formGenUtils.formFromObj(params, state.values).map(
+        {formGenUtils.formFromObj(
+          params, state.values, null, state.invalidFields).map(
           function(node) {
             if (node) {
               let NodeComponent = comps[node.component],
@@ -201,10 +201,10 @@ function GeneratedForm({ params, parentCallback, method, formAction,
                 </NodeComponent></FormDiv>;
               } else if (node.children) {
                 return <FormDiv><NodeComponent {...attrObj}>
-                  {node.children.map(child => {
-                    let ChildComponent = comps[child.component];
-                    return <ChildComponent {...child.attributes}>
-                      {child.innerText}
+                  {node.children.map(({ component, attributes, innerText }) => {
+                    let ChildComponent = comps[component];
+                    return <ChildComponent {...attributes}>
+                      {innerText}
                     </ChildComponent>;
                   })}
                 </NodeComponent></FormDiv>;
@@ -214,8 +214,7 @@ function GeneratedForm({ params, parentCallback, method, formAction,
             else return null;
           })
         }
-        <FormSubmit type="submit" value="Submit"
-          onClick={handleSubmit} />
+        <FormSubmit type="submit" value="Submit" onClick={handleSubmit} />
       </FormBackground>
     </div>
   );
@@ -235,16 +234,18 @@ GeneratedForm.propTypes = {
       value: string,
       text: string
     })), func]),
-    maximum: number,
-    minimum: number,
-    attrDepends: object
+    maximum: oneOfType([number, func]),
+    minimum: oneOfType([number, func]),
+    attrDepends: object,
+    required: bool,
   })).isRequired,
   successCallback: func,
   method: string.isRequired,
   formAction: string.isRequired,
   parentCallback: func,
   fileContent: string,
-  redirectUrl: string
+  redirectUrl: string,
+  currentValue: object
 };
 
 GeneratedForm.defaultProps =  {

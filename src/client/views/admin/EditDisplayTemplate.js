@@ -2,11 +2,14 @@ import React from 'react';
 import { object } from 'prop-types';
 import { GeneratedForm } from '../../reusables';
 
-function EditDisplayTemplate({ match, staticContext }) {
-  let { docType, templateBody, categoryTemplateBody } = staticContext.dataObj;
-  if (docType !== null && templateBody !== null)
+function EditDisplayTemplate({ match: { params: { docTypeId } },
+  staticContext: { dataObj: {
+    docType, templateBody, categoryTemplateBody
+  } } }) {
+  if (docType !== null && templateBody !== null) {
+    let { docTypeName } = docType;
     return <GeneratedForm title=
-      {`Edit ${docType.docTypeName} Display Template`} params={{
+      {`Edit ${docTypeName} Display Template`} params={{
       templateBody: {
         type: 'text',
         grammar: 'html',
@@ -18,9 +21,9 @@ function EditDisplayTemplate({ match, staticContext }) {
         value: categoryTemplateBody
       }
     }} method="post" redirectUrl='/admin'
-    formAction={
-      `/api/documents/update_template/${match.params.docTypeId}`}
+    formAction={`/api/documents/update_template/${docTypeId}`}
     />;
+  }
   else return null;
 }
 
