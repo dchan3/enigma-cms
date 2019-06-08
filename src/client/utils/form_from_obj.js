@@ -51,7 +51,7 @@ const genInputComponent =
         attributes: {
           id: keyToUse,
           name: keyToUse,
-          invalid: invalidFields.includes(keyToUse),
+          invalid: invalidFields && invalidFields.includes(keyToUse) || false,
           onChange: `handleChange ${keyToUse}`,
           value: valueVar,
           required: paramSpec.required || false
@@ -68,7 +68,7 @@ const genInputComponent =
         return {
           component: 'CodeEditor',
           attributes: {
-            invalid: invalidFields.includes(keyToUse),
+            invalid: invalidFields && invalidFields.includes(keyToUse) || false,
             id: keyToUse,
             name: keyToUse,
             grammar: paramSpec.grammar,
@@ -82,7 +82,7 @@ const genInputComponent =
         return {
           component: 'FormInput',
           attributes: {
-            invalid: invalidFields.includes(keyToUse),
+            invalid: invalidFields && invalidFields.includes(keyToUse) || false,
             id: keyToUse,
             name: keyToUse,
             type: 'text',
@@ -98,7 +98,7 @@ const genInputComponent =
         return {
           component: 'FormInput',
           attributes: {
-            invalid: invalidFields.includes(keyToUse),
+            invalid: invalidFields && invalidFields.includes(keyToUse) || false,
             id: keyToUse,
             name: keyToUse,
             type: 'text',
@@ -114,7 +114,7 @@ const genInputComponent =
       let retval = {
         component: 'FormInput',
         attributes: {
-          invalid: invalidFields.includes(keyToUse),
+          invalid: invalidFields && invalidFields.includes(keyToUse) || false,
           id: keyToUse,
           name: keyToUse,
           type: theType.match(/[a-z]+/)[0],
@@ -173,8 +173,8 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
     if (isObj) {
       if (!isArray) {
         retval.push(
-          ...formFromObj(paramsObj, valuesObj, { parentKey: actualKey }),
-          invalidFields)
+          ...formFromObj(paramsObj, valuesObj, { parentKey: actualKey },
+            invalidFields))
       }
       else {
         for (let i in valuesObj[key]) {

@@ -187,6 +187,7 @@ describe('Form from Obj', function() {
         attributes: {
           value: 'John',
           id: 'guestList.0.firstName',
+          invalid: false,
           name: 'guestList.0.firstName',
           onChange: 'handleChange guestList.0.firstName',
           type: 'text',
@@ -204,6 +205,7 @@ describe('Form from Obj', function() {
         attributes: {
           value: 'Doe',
           id: 'guestList.0.lastName',
+          invalid: false,
           name: 'guestList.0.lastName',
           onChange: 'handleChange guestList.0.lastName',
           type: 'text',
@@ -223,6 +225,7 @@ describe('Form from Obj', function() {
         attributes: {
           value: 50,
           id: 'guestList.0.age',
+          invalid: false,
           name: 'guestList.0.age',
           onChange: 'handleChange guestList.0.age',
           type: 'number',
@@ -245,6 +248,7 @@ describe('Form from Obj', function() {
         component: 'FormInput',
         attributes: {
           value: '123-456-7890',
+          invalid: false,
           id: 'guestList.0.contactInformation.phone',
           name: 'guestList.0.contactInformation.phone',
           onChange: 'handleChange guestList.0.contactInformation.phone',
@@ -264,6 +268,7 @@ describe('Form from Obj', function() {
         component: 'FormInput',
         attributes: {
           value: 'john@johndoe.net',
+          invalid: false,
           id: 'guestList.0.contactInformation.email',
           name: 'guestList.0.contactInformation.email',
           onChange: 'handleChange guestList.0.contactInformation.email',
