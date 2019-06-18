@@ -12,8 +12,20 @@ module.exports = [{
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        options: { babelrc: true }
+        options: {
+          babelrc: true,
+          comments: false,
+          plugins: ['./babel/hashify']
+        }
       },
+      {
+        test: /\.jsx?$/,
+        include: /node_modules|handlebars|react/,
+        loader: 'babel-loader',
+        options: {
+          comments: false
+        }
+      }
     ]
   },
   output: {
@@ -45,9 +57,19 @@ module.exports = [{
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
-          babelrc: true
+          babelrc: true,
+          comments: false,
+          plugins: ['./babel/hashify']
         }
       },
+      {
+        test: /\.jsx?$/,
+        include: /node_modules|handlebars|react/,
+        loader: 'babel-loader',
+        options: {
+          comments: false
+        }
+      }
     ],
   },
   output: {

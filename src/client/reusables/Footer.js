@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 let FooterContainer =
   styled.div`text-align:center;font-family:sans-serif;margin:10px;`,
-  FooterText = styled.p`margin: 0;`;
+  FooterText = styled.p`margin:0;`;
 
 function Footer({ user }) {
   return <FooterContainer>

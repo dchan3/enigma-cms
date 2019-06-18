@@ -9,5 +9,7 @@
     "@babel/plugin-transform-strict-mode",
     "@babel/plugin-transform-react-jsx",
     "babel-plugin-styled-components",
-  ]
+    "./babel/hashify"
+  ],
+  "comments": false
 }

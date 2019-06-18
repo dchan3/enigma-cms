@@ -4,7 +4,7 @@ import {
   bool } from 'prop-types';
 import styled from 'styled-components';
 import CodeEditor from './CodeEditor';
-import { get as loget, set as loset, concat as loconcat } from 'lodash';
+import { loget, loset } from '../utils/lofuncs';
 import { get as axget, post as axpost } from 'axios';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
@@ -129,7 +129,7 @@ function GeneratedForm({ params, parentCallback, method, formAction,
       }
       else toAdd = '';
       loset(newState.values, param,
-        loconcat(loget(newState.values, param), toAdd));
+        [...loget(newState.values, param), toAdd]);
       setState(newState);
     }
   }

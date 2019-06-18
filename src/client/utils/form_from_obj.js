@@ -1,4 +1,4 @@
-import { get as loget } from 'lodash';
+import { loget } from './lofuncs';
 import { default as camelcaseConvert } from './camelcase_convert';
 
 const outputKeys = function(obj, includeParents, parent) {

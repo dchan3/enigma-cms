@@ -8,6 +8,7 @@ import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as gensig } from '../src/lib/utils/gensig';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
+import { loget, loset } from '../src/client/utils/lofuncs.js';
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -353,4 +354,29 @@ describe('Form from Obj', function() {
       'guestList.1.lastName']);
     done();
   });
-})
+});
+
+describe('loget and loset functions', function() {
+  it('loget works', function(done) {
+    var object = {
+      homies: [
+        { name: 'Jack', hobbies: ['art', 'music'] }
+      ]
+    };
+    expect(loget(object, 'homies.0.name')).to.equal('Jack');
+    expect(loget(object, 'homies.0.hobbies')).to.deep.equal(['art', 'music']);
+    expect(loget(object, 'homies.0.girlfriend')).to.be.undefined;
+    done();
+  });
+
+  it('loset works', function(done) {
+    var object = {
+      homies: [
+        { name: 'Jack', hobbies: ['art', 'music'] }
+      ]
+    }
+    loset(object, 'homies.0.name', 'John');
+    expect(loget(object, 'homies.0.name')).to.equal('John');
+    done();
+  });
+});
