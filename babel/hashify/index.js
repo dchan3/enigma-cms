@@ -1,38 +1,27 @@
-let crypto = require('crypto');
+let crypto = require('crypto'),
+  hashifyName =
+    (name) => crypto.createHash('sha1').update(name).digest('base64')
+      .replace(/^\d/g, '_').replace(/[+/=]/g, '_').substring(0, 6),
+  cap = str => str.replace(/^[a-z]/, match => match.toUpperCase()),
+  renameToHash = (path, key, capit) => {
+    let thing = path.node[key];
+    if (thing) {
+      let { name } = thing, hashed = hashifyName(name);
+      path.scope.rename(name, capit ? cap(hashed) : hashed);
+    }
+  }
 
 module.exports = function () {
   return {
     visitor: {
       FunctionDeclaration(path) {
-        if (path.node.id) {
-          let newName = crypto.createHash('sha1')
-            .update(path.node.id.name).digest('base64')
-            .replace(/^\d/g, '_')
-            .replace(/[+/=]/g, '_')
-            .substring(0, 6);
-          path.scope.rename(path.node.id.name, newName);
-        }
+        renameToHash(path, 'id', false);
       },
       VariableDeclarator(path) {
-        if (path.node.id) {
-          let newName = crypto.createHash('sha1').update(path.node.id.name)
-            .digest('base64').replace(/^\d/g, '_')
-            .replace(/[+/=]/g, '_')
-            .substring(0, 6);
-          path.scope.rename(path.node.id.name, newName.replace(/^[a-z]/,
-            match => match.toUpperCase()));
-        }
+        renameToHash(path, 'id', true);
       },
       ImportSpecifier(path) {
-        if (path.node.local) {
-          let newName = crypto.createHash('sha1')
-            .update(path.node.local.name).digest('base64')
-            .replace(/^\d/g, '_')
-            .replace(/[+/=]/g, '_')
-            .substring(0, 6);
-          path.scope.rename(path.node.local.name, newName.replace(/^[a-z]/,
-            match => match.toUpperCase()));
-        }
+        renameToHash(path, 'local', false);
       }
     },
   };
