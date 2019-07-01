@@ -137,14 +137,16 @@ const genInputComponent =
     }
   };
 
+
+const numKeyToShapeKey = function(key) {
+  return key.replace(/([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
+    .replace(/\.\d+\./g, '.shape.').replace('.shape.shape.', '.shape.')
+};
+
 const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
   let retval = [],
     realParamsObj = Object.assign({}, (extra && extra.parentKey) ?
-      loget(paramsObj,
-        `${extra.parentKey
-          .replace(/([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
-          .replace(/\.\d+\./g, '.shape.')
-          .replace('.shape.shape.', '.shape.')}.shape`) :
+      loget(paramsObj,`${numKeyToShapeKey(extra.parentKey)}.shape`) :
       paramsObj);
   for (var key in realParamsObj) {
     var { label } = realParamsObj[key],
@@ -191,21 +193,15 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
     }
     else  {
       if (!isArray) {
-        retval.push(
-          genInputComponent(paramsObj,
-            loget(paramsObj,
-              actualKey.replace(
-                /([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
-                .replace(/\.\d+\./g, '.shape.')),
-            loget(valuesObj, actualKey), actualKey, undefined, valuesObj,
-            invalidFields));
+        retval.push(genInputComponent(paramsObj, loget(paramsObj,
+          numKeyToShapeKey(actualKey)), loget(valuesObj, actualKey), actualKey,
+        undefined, valuesObj, invalidFields));
       }
       else {
         for (let i in loget(valuesObj, actualKey)) {
           retval.push(
             genInputComponent(paramsObj, loget(paramsObj,
-              actualKey.replace(/([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
-                .replace(/\.\d+\./g, '.shape.')),
+              numKeyToShapeKey(actualKey)),
             loget(valuesObj, `${actualKey}.${i}`),
             `${actualKey}.${i}`, i, valuesObj, invalidFields));
           retval.push({
@@ -221,18 +217,15 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
 };
 
 const checkRequired = function(paramObj, valueObj) {
-  var invalidFields = [], pks = mapKeysToValues(paramObj), reqFields =
-      outputKeys(paramObj).filter(k => k.endsWith('.required'))
-        .map(k => k.replace('.required', '')),
-    vks = outputKeys(valueObj), vs = mapKeysToValues(valueObj);
+  let invalidFields = [], pks = mapKeysToValues(paramObj), reqFields =
+      outputKeys(paramObj).filter(k => k.endsWith('.required')).map(
+        k => k.replace('.required', '')), vks = outputKeys(valueObj),
+    vs = mapKeysToValues(valueObj);
 
   for (let reqField in reqFields) {
     if (pks[`${reqFields[reqField]}.required`]) {
-      let relevant = vks.filter(k => {
-        return reqFields[reqField] ===
-      k.replace(/([a-z]+)\.([a-z+])/g, '$1.shape.$2')
-        .replace(/\.\d+\./g, '.shape.')
-        .replace('.shape.shape.', '.shape.'); });
+      let relevant = vks.filter(k =>
+        reqFields[reqField] === numKeyToShapeKey(k));
       for (let r in relevant) {
         if (!vs[relevant[r]] || vs[relevant[r]] === '') {
           invalidFields.push(relevant[r]);
@@ -249,4 +242,5 @@ const validateForm = function(paramObj, valueObj) {
   return ![...reqd].flat().length || [...reqd].flat();
 };
 
-export default { formFromObj, mapKeysToValues, outputKeys, validateForm };
+export default { formFromObj, mapKeysToValues, outputKeys, validateForm,
+  numKeyToShapeKey };

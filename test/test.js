@@ -380,3 +380,12 @@ describe('loget and loset functions', function() {
     done();
   });
 });
+
+describe('Num Key to Shape Key function', function() {
+  it('works', function(done) {
+    var actual = formGenUtils.numKeyToShapeKey('groups.1.leader.name'),
+      expected = 'groups.shape.leader.shape.name';
+    expect(actual).to.equal(expected);
+    done();
+  });
+});
