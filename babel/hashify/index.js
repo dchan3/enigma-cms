@@ -9,19 +9,16 @@ let crypto = require('crypto'),
       let { name } = thing, hashed = hashifyName(name);
       path.scope.rename(name, capit ? cap(hashed) : hashed);
     }
-  }
+  };
 
 module.exports = function () {
   return {
     visitor: {
       FunctionDeclaration(path) {
-        renameToHash(path, 'id', false);
+        renameToHash(path, 'id', true);
       },
       VariableDeclarator(path) {
         renameToHash(path, 'id', true);
-      },
-      ImportSpecifier(path) {
-        renameToHash(path, 'local', false);
       }
     },
   };

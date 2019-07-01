@@ -1,5 +1,5 @@
 import React from 'react';
-import { object } from 'prop-types';
+import { array } from 'prop-types';
 
 function FrontMenu({ menuLinks }) {
   return <div className="front-menu__container">
@@ -12,7 +12,7 @@ function FrontMenu({ menuLinks }) {
 }
 
 FrontMenu.propTypes = {
-  menuLinks: object
-}
+  menuLinks: array
+};
 
 export default FrontMenu;

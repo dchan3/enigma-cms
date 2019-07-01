@@ -26,12 +26,13 @@ function EditDocumentPage({ match: { params: { docNode } }, staticContext: {
       }
     });
 
-    return <GeneratedForm title='Edit Document' params={params} method="post"
-      currentValue={doc} formAction={
-        doc ?  `/api/documents/update_document/${docNode}` :
-          `/api/documents/new_document/${docType.docTypeId}`
-      }
-      redirectUrl={`/admin/edit/${docType.docTypeId}`}
+    let { docTypeId } = docType;
+
+    return <GeneratedForm title='Edit Document' {...{ params }} method="post"
+      currentValue={doc} formAction={doc ?
+        `/api/documents/update_document/${docNode}` :
+        `/api/documents/new_document/${docTypeId}`
+      } redirectUrl={`/admin/edit/${docTypeId}`}
     />;
   }
   else return null;

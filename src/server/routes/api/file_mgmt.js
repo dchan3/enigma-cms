@@ -32,12 +32,10 @@ router.delete('/delete_file/:fileType/:id',
     if (user) return File.findOneAndRemove({
       _id: ObjectId(id), fileType
     }).then(function({ fileName }) {
-      let fp = resolve(__dirname,
-        `./public/uploads/${fileType}`, fileName);
+      let fp = resolve(__dirname, `./public/uploads/${fileType}`, fileName);
       fs.unlinkSync(fp);
       return res.redirect('/admin/file_mgmt');
-    })
-      .catch(err => next(err));
+    }).catch(err => next(err));
     else
       return res.status(500).redirect('/login').end();
   });

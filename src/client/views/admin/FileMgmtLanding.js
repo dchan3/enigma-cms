@@ -4,7 +4,7 @@ import { TextHeader } from '../../reusables';
 import { TablePaginator } from 'react-everafter';
 import { delete as axdel } from 'axios';
 
-function FileMgmtLanding({ staticContext }) {
+function FileMgmtLanding({ staticContext: { files } }) {
   function handleDeleteClick() {
     return function(url) {
       axdel(url);
@@ -14,32 +14,31 @@ function FileMgmtLanding({ staticContext }) {
   return [
     <TextHeader>Manage Files</TextHeader>,
     <a href='/admin/upload-file'>Upload File</a>,
-    staticContext.files.length > 0 ? <TablePaginator perPage={10}
-      activeTabColor="cadetblue" items={staticContext.files} truncate={true}
-      columns={[
+    files.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
+      items={files} truncate={true} columns={[
         {
           headerText: 'File Name',
-          display: (item) => <p>{item.fileName}</p>
+          display: ({ fileName }) => <p>{fileName}</p>
         },
         {
           headerText: 'File Type',
-          display: (item) => <p>{item.fileType}</p>
+          display: ({ fileType }) => <p>{fileType}</p>
         },
         {
           headerText: 'Preview',
-          display: (item) => {
-            if (item.fileType === 'image')
+          display: ({ fileType, fileName }) => {
+            if (fileType === 'image')
               return <img style={{ height: '100px', width: 'auto' }}
-                src={`/uploads/${item.fileType}/${item.fileName}`} />;
-            else if (item.fileType === 'audio')
+                src={`/uploads/${fileType}/${fileName}`} />;
+            else if (fileType === 'audio')
               return <audio controls>
-                <source src={`/uploads/${item.fileType}/${item.fileName}`} />
+                <source src={`/uploads/${fileType}/${fileName}`} />
               </audio>;
-            else if (item.fileType === 'video')
+            else if (fileType === 'video')
               return <video controls>
-                <source src={`/uploads/${item.fileType}/${item.fileName}`} />
+                <source src={`/uploads/${fileType}/${fileName}`} />
               </video>;
-            return <a href= {`/uploads/${item.fileType}/${item.fileName}`}>
+            return <a href= {`/uploads/${fileType}/${fileName}`}>
               Download</a>;
           }
         },

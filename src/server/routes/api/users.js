@@ -7,7 +7,7 @@ import { default as verifyMiddleware } from '../middleware';
 import fs from 'fs';
 import path from 'path';
 
-var router = Router();
+let router = Router();
 
 // GET Requests
 router.get('/get', ({ user }, res)  => {
@@ -17,8 +17,8 @@ router.get('/get', ({ user }, res)  => {
   else res.send(JSON.stringify(null)).end();
 });
 
-router.get('/logout', function({ logout }, res) {
-  logout();
+router.get('/logout', function(req, res) {
+  req.logout();
   res.redirect('/');
 });
 
@@ -76,18 +76,16 @@ router.post('/update', verifyMiddleware,  function({ body }, res, next) {
         }
 
         if (profilePhoto && fileContent) {
-          let fmt = profilePhoto.split('.').pop(),
-            filepath = path.resolve(__dirname,
-              `./public/profile-pix/${username}.${fmt}`);
-          fs.writeFileSync(
-            filepath,
-            Buffer.from(fileContent, 'base64'), { flag: 'a+' });
+          let fmt = profilePhoto.split('.').pop(), filepath = path.resolve(
+            __dirname, `./public/profile-pix/${username}.${fmt}`);
+          fs.writeFileSync(filepath, Buffer.from(fileContent, 'base64'),
+            { flag: 'a+' });
           user.set('pictureSrc', `/profile-pix/${username}.${fmt}`);
         }
         else if (user.get('pictureSrc') === undefined ||
             user.get('pictureSrc') === null || user.get('pictureSrc') === '' ||
             user.get('pictureSrc').startsWith('data:image/png;base64,')) {
-          var icon = await icongen(user.username);
+          let icon = await icongen(user.username);
           user.set('pictureSrc', icon);
         }
         user.save(function (err) {

@@ -5,9 +5,8 @@ import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 
 function FrontDocumentDisplay({
-  staticContext: { config: {
-    shortcodes, siteName, keywords
-  }, dataObj: { templateBody, doc } } }) {
+  staticContext: { config: { shortcodes, siteName, keywords }, dataObj: {
+    templateBody, doc } } }) {
   if (templateBody && doc) {
     shortcodes.forEach(
       function({ name, args, code }) {
@@ -15,23 +14,19 @@ function FrontDocumentDisplay({
       });
 
     let template = Handlebars.compile(templateBody), hdr = null, attrs = {},
-      { content, createdAt, editedAt } = doc;
-
-    let ks = Object.keys(content),
+      { content, createdAt, editedAt } = doc, ks = Object.keys(content),
       titleKey = ks.find(k => k.match(/title|name/i)),
       summaryKey = ks.find(k => k.match(/summary|description|synopsis/i)),
       pictureKey = ks.find(k => k.match(/image|img|picture|pic|photo/i)),
       tagsKey = ks.find(k => k.match(/tags|keywords|buzzwords/i));
 
-    if (titleKey) attrs.title =
-      `${content[titleKey]} | ${siteName}`;
+    if (titleKey) attrs.title = `${content[titleKey]} | ${siteName}`;
     if (summaryKey) attrs.description = content[summaryKey];
     if (pictureKey) attrs.image = content[pictureKey];
     if (tagsKey) attrs.keywords = typeof content[tagsKey] === 'string' ?
-      [content[tagsKey], ...keywords] :
-      [...content[tagsKey], ...keywords];
+      [content[tagsKey], ...keywords] : [...content[tagsKey], ...keywords];
 
-    if (Object.keys(attrs).length > 0) {
+    if (Object.keys(attrs).length) {
       hdr = <Metamorph {...attrs} />;
     }
 

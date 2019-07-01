@@ -69,6 +69,6 @@ CodeEditor.propTypes = {
   id: string.isRequired,
   name: string.isRequired,
   value: string
-}
+};
 
 export default CodeEditor;

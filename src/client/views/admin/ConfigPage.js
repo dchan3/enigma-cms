@@ -30,12 +30,9 @@ function ConfigPage({ staticContext: { config } }) {
         code: { type: 'text', label: 'Body', grammar: 'js' }
       }
     },
-    keywords: {
-      type: '[text]'
-    },
+    keywords: { type: '[text]' },
     gaTrackingId: { type: 'text' }
-  }}
-  method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
+  }} method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
 }
 
 ConfigPage.propTypes = { staticContext: object };

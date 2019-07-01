@@ -19,7 +19,7 @@ function Footer({ user }) {
       {' '}
       <a href='/api/users/logout'>Logout</a>.
       {' '}
-      <a href='/change-password'>Change password</a>.
+      <a href='/admin/change-password'>Change password</a>.
     </FooterText> : <FooterText>
       <a href="/login">Login</a>
       {' | '}

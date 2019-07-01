@@ -5,7 +5,7 @@ import { FrontMenu } from '../../reusables';
 function FrontHeader({ staticContext: { config: { siteName, menuLinks } } }) {
   return <div>
     <h1 className="front-header">{siteName || 'My Website'}</h1>
-    <FrontMenu menuLinks={menuLinks} />
+    <FrontMenu {...{ menuLinks }} />
   </div>;
 }
 

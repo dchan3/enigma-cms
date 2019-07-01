@@ -9,48 +9,25 @@ import { get as axget, post as axpost } from 'axios';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
 
-let FormBackground = styled.form`
-background-color:cadetblue;width: fit-content;margin:auto;text-align:left;`,
-  FormDiv = styled.div`padding:8px;display:${({ hidden }) =>
-    hidden ? 'none' : 'block'}`,
-  FormInput = styled.input`
-  border-radius: 8px;
-  vertical-align: top;
-  height: 16px;
-  margin-top: 5px;
-  font-family: sans-serif;
-  font-size: 16px;
-  padding: 5px;
-  display: ${({ hidden }) => hidden ? 'none' : 'block'}
-  box-shadow: ${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'}
-`, FormHeader = styled.h2`text-align:center;font-family:sans-serif;`,
-  FormLabel = styled.label`
-  color: white;
-  padding-right: 4px;
-  font-family: sans-serif;
-  text-transform: uppercase;
-  display: ${({ hidden }) => hidden ? 'none' : 'block'}
-  text-shadow: ${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'}
-`, FormEnumInput = styled.select`font-family: sans-serif;font-size:16px;`,
-  FormEnumInputOption = styled.option`font-family:sans-serif;font-size:16px;`,
-  FormObjectInputLabel = styled.p`
-  color: white;
-  padding-right: 4px;
-  font-family: sans-serif;
-  text-transform: uppercase;
-  margin: 8px;
-  display: ${({ hidden }) => hidden ? 'none' : 'block'}
-`, FormSubmit = styled.input`
-  font-family: sans-serif;
-  text-transform: uppercase;
-  margin: 8px;
-  border-radius: 8px;
-  font-size: 14px;
-`, FormErrorMessage =
-  styled.p`font-family:sans-serif;text-transform:uppercase;text-align:center;
-`, FormSubmitButton = styled.button`
-  font-size:16px;font-family:sans-serif;text-transform:uppercase;padding:8px;
-  border-radius:8px;margin:8px;`, comps = {
+let FormBackground = styled.form`background-color:cadetblue;width:fit-content;
+margin:auto;text-align:left;`,FormDiv = styled.div`padding:8px;display:${({
+    hidden }) => hidden ? 'none' : 'block'}`,FormInput = styled.input`
+border-radius:8px;vertical-align:top;height:16px;margin-top:5px;font-family:
+sans-serif;font-size:16px;padding:5px;display:${({ hidden }) => hidden ? 'none' 
+    : 'block'};box-shadow:${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'};
+`,FormHeader = styled.h2`text-align:center;font-family:sans-serif;`,FormLabel =
+styled.label`color:white;padding-right:4px;font-family:sans-serif;text-transform
+:uppercase;display:${({ hidden }) => hidden ? 'none' : 'block'};text-shadow:${({
+  invalid }) => invalid ? 'red 2px 2px' : 'unset'};`,FormEnumInput = styled.
+    select`font-family:sans-serif;font-size:16px;`,FormEnumInputOption =
+  styled.option`font-family:sans-serif;font-size:16px;`,FormObjectInputLabel =
+  styled.p`color:white;padding-right:4px;font-family:sans-serif;text-transform:
+uppercase;margin:8px;display: ${({ hidden }) => hidden ? 'none' : 'block'};`,
+  FormSubmit = styled.input`font-family:sans-serif;text-transform:uppercase;
+margin:8px;border-radius:8px;font-size:14px;`, FormErrorMessage =
+  styled.p`font-family:sans-serif;text-transform:uppercase;text-align:center;`,
+  FormSubmitButton = styled.button`font-size:16px;font-family:sans-serif;
+text-transform:uppercase;padding:8px;border-radius:8px;margin:8px;`, comps = {
     FormInput, FormLabel, CodeEditor, FormSubmitButton,
     FormEnumInput, FormEnumInputOption, FormObjectInputLabel
   };
@@ -77,14 +54,10 @@ function GeneratedForm({ params, parentCallback, method, formAction,
 
   function handleChange(param) {
     return async function(event) {
-      var { type, value, files } = event.target;
+      let { type, value, files } = event.target;
       event.preventDefault();
-      let newState = {
-        values: state.values,
-        errorMessage: '',
-        invalidFields: state.invalidFields
-      };
-
+      let newState = Object.assign({}, state);
+      newState.errorMessage = '';
       loset(newState.values, param, value);
 
       if (type === 'file') {
@@ -102,11 +75,8 @@ function GeneratedForm({ params, parentCallback, method, formAction,
   function handleArrayRemove(param, n) {
     return function(event) {
       event.preventDefault();
-      let newState = {
-        values: state.values,
-        errorMessage: '',
-        invalidFields: state.invalidFields
-      };
+      let newState = Object.assign({}, state);
+      newState.errorMessage = '';
       newState.values[param].splice(n, 1);
       setState(newState);
     }
@@ -115,19 +85,16 @@ function GeneratedForm({ params, parentCallback, method, formAction,
   function handleArrayAdd(param) {
     return function(event) {
       event.preventDefault();
-      let newState = {
-          values: state.values,
-          errorMessage: '',
-          invalidFields: state.invalidFields
-        }, toAdd = {},
-        actualParam = param.replace(/.\d./g, '.shape.');
-      var { type: gotType, shape: gotShape } = loget(params, actualParam);
+      let newState = Object.assign({}, state), toAdd = {},
+        actualParam = param.replace(/.\d./g, '.shape.'),
+        { type: gotType, shape: gotShape } = loget(params, actualParam);
       if (gotType === '[object]') {
         for (let key in gotShape) {
           toAdd[key] = '';
         }
       }
       else toAdd = '';
+      newState.errorMessage = '';
       loset(newState.values, param,
         [...loget(newState.values, param), toAdd]);
       setState(newState);
@@ -167,57 +134,55 @@ function GeneratedForm({ params, parentCallback, method, formAction,
 
   let selfFuncs = { handleArrayAdd, handleArrayRemove, handleChange };
 
-  return (
-    <div>
-      <FormHeader>{title}</FormHeader>
-      {state.errorMessage ?
-        <FormErrorMessage>
-          {state.errorMessage}
-        </FormErrorMessage> : null}
-      <FormBackground onSubmit={(e) => e.preventDefault()}>
-        {formGenUtils.formFromObj(
-          params, state.values, null, state.invalidFields).map(
-          function(node) {
-            if (node) {
-              let NodeComponent = comps[node.component],
-                attrObj = Object.assign({}, node.attributes || {});
+  return <div>
+    <FormHeader>{title}</FormHeader>
+    {state.errorMessage ?
+      <FormErrorMessage>{state.errorMessage}</FormErrorMessage> : null}
+    <FormBackground onSubmit={(e) => e.preventDefault()}>
+      {formGenUtils.formFromObj(
+        params, state.values, null, state.invalidFields).map(
+        function(node) {
+          if (node) {
+            let { component, attributes, innerText, children } = node,
+              NodeComponent = comps[component],
+              attrObj = Object.assign({}, attributes || {}),
+              attrSplit = '';
 
-              if (attrObj.onChange) {
-                let attrSplit = attrObj.onChange.split(' ');
-                attrObj.onChange = (e) => {
-                  selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
-                }
+            if (attrObj.onChange) {
+              attrSplit = attrObj.onChange.split(' ');
+              attrObj.onChange = (e) => {
+                selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
               }
-              if (attrObj.onClick) {
-                let attrSplit = attrObj.onClick.split(' ');
-                attrObj.onClick = (e) => {
-                  selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
-                }
-              }
-
-              if (node.innerText) {
-                return <FormDiv><NodeComponent {...attrObj}>
-                  {node.innerText}
-                </NodeComponent></FormDiv>;
-              } else if (node.children) {
-                return <FormDiv><NodeComponent {...attrObj}>
-                  {node.children.map(({ component, attributes, innerText }) => {
-                    let ChildComponent = comps[component];
-                    return <ChildComponent {...attributes}>
-                      {innerText}
-                    </ChildComponent>;
-                  })}
-                </NodeComponent></FormDiv>;
-              }
-              else return <FormDiv><NodeComponent {...attrObj} /></FormDiv>;
             }
-            else return null;
-          })
-        }
-        <FormSubmit type="submit" value="Submit" onClick={handleSubmit} />
-      </FormBackground>
-    </div>
-  );
+            if (attrObj.onClick) {
+              attrSplit = attrObj.onClick.split(' ');
+              attrObj.onClick = (e) => {
+                selfFuncs[attrSplit[0]](...attrSplit.slice(1))(e);
+              }
+            }
+
+            if (innerText) {
+              return <FormDiv><NodeComponent {...attrObj}>
+                {innerText}
+              </NodeComponent></FormDiv>;
+            } else if (children) {
+              return <FormDiv><NodeComponent {...attrObj}>
+                {children.map(({ component, attributes, innerText }) => {
+                  let ChildComponent = comps[component];
+                  return <ChildComponent {...attributes}>
+                    {innerText}
+                  </ChildComponent>;
+                })}
+              </NodeComponent></FormDiv>;
+            }
+            else return <FormDiv><NodeComponent {...attrObj} /></FormDiv>;
+          }
+          else return null;
+        })
+      }
+      <FormSubmit type="submit" value="Submit" onClick={handleSubmit} />
+    </FormBackground>
+  </div>;
 }
 
 GeneratedForm.propTypes = {

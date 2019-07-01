@@ -6,11 +6,10 @@ export default function(username, cb) {
   let hash = sha1(username),
     first36 = hash.substr(0,36).split('')
       .map((digit) => parseInt(digit) % 2 === 0), last5 = hash.substr(-5),
-    color1 = `#${last5}0`,
-    color2 = `#${last5.split('').reverse().join('')}0`,
+    color1 = `#${last5}0`, color2 = `#${last5.split('').reverse().join('')}0`,
     image = gm(64, 64, 'white');
 
-  for (var letter in first36) {
+  for (let letter in first36) {
     let row = Math.floor(letter / 6), column = letter % 6;
     image
       .stroke(first36[letter] ? color1 : color2, 10, 0)

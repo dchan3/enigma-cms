@@ -5,30 +5,24 @@ import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 
 function FrontCategoryDisplay({ staticContext }) {
-  let { config, dataObj } = staticContext;
+  let { config: { shortcodes, siteName }, dataObj } = staticContext;
   if (!dataObj) return <Redirect to='/not-found' />;
   let  { categoryTemplateBody, items, typeName } = dataObj;
 
   if (categoryTemplateBody && items) {
-    config.shortcodes.forEach(
-      function(shortcode) {
-        Handlebars.registerHelper(shortcode.name,
-          new Function(shortcode.args.join(','), shortcode.code));
+    shortcodes.forEach(
+      function({ name, args, code }) {
+        Handlebars.registerHelper(name, new Function(args.join(','), code));
       });
 
     let template = Handlebars.compile(categoryTemplateBody),
-      newItems = items.map(item => ({
-        ...item.content,
-        slug: item.slug,
-        createdAt: item.createdAt,
-        editedAt: item.editedAt
+      newItems = items.map(({ content, slug, createdAt, editedAt }) => ({
+        ...content, slug, createdAt, editedAt
       }));
-    return [<Metamorph title={
-      `${typeName.charAt(0).toUpperCase() +
-        typeName.slice(1)} | ${config.siteName}`}
-    description={
-      `${typeName.charAt(0).toUpperCase() +
-        typeName.slice(1)} on ${config.siteName}`} />,
+    return [<Metamorph title={`${typeName.charAt(0).toUpperCase() + 
+    typeName.slice(1)} | ${siteName}`}
+    description={`${typeName.charAt(0).toUpperCase() +
+      typeName.slice(1)} on ${siteName}`} />,
     <div dangerouslySetInnerHTML=
       {{ __html: template({ items: newItems }) }} />];
   }
@@ -39,6 +33,6 @@ function FrontCategoryDisplay({ staticContext }) {
 FrontCategoryDisplay.propTypes = {
   match: object,
   staticContext: object
-}
+};
 
 export default FrontCategoryDisplay;

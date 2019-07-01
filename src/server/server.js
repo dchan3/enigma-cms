@@ -80,8 +80,7 @@ app.get('/prism.js', (req, res) => {
 app.get('/favicon.ico', (req, res) => {
   res.send(fs.readFileSync(path.resolve(__dirname, 'public/favicon.ico')));
 });
-app.get('/uploads/:type/:filename', (req, res) => {
-  var { type, filename } = req.params;
+app.get('/uploads/:type/:filename', ({ params: { type, filename } }, res) => {
   res.send(fs.readFileSync(path.resolve(__dirname,
     `public/${type}/${filename}`)));
 });
@@ -97,22 +96,16 @@ app.get('/site-icon/:filename', ({ params: { filename } }, res) => {
 app.get('/robots.txt', (req, res) => {
   res.send(fs.readFileSync(path.resolve(__dirname, 'public/robots.txt')));
 });
-app.get('/sitemap.txt', async (req, res) => {
-  var { host } = req.headers, { protocol } = req,
-    docTypes = await DocumentType.find({}).select({
-      docTypeNamePlural: 1, docTypeId: 1
-    }),
-    documents = await Document.find({
-      draft: false
-    }).sort({ docType: 1, createdAt: -1 }).select({
-      slug: 1, docTypeId: 1, _id: -1
-    }), docTypeMap = {}, slugs = [`${protocol}://${host}/`];
-  docTypes.forEach(dt => {
-    slugs.push(`${protocol}://${host}/${dt.docTypeNamePlural}`);
-    docTypeMap[dt.docTypeId] = dt.docTypeNamePlural;
-  }), slugs.push(...documents.map(
-    doc =>
-      `${protocol}://${host}/${docTypeMap[doc.docTypeId]}/${doc.slug}`));
+app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
+  var docTypes = await DocumentType.find({}).select({ docTypeNamePlural: 1,
+      docTypeId: 1 }), documents = await Document.find({ draft: false }).sort({
+      docType: 1, createdAt: -1 }).select({ slug: 1, docTypeId: 1, _id: -1 }),
+    docTypeMap = {}, slugs = [`${protocol}://${host}/`];
+  docTypes.forEach(({ docTypeNamePlural, docTypeId }) => {
+    slugs.push(`${protocol}://${host}/${docTypeNamePlural}`);
+    docTypeMap[docTypeId] = docTypeNamePlural; });
+  slugs.push(...documents.map(({ docTypeId, slug }) =>
+    `${protocol}://${host}/${docTypeMap[docTypeId]}/${slug}`));
   slugs.sort();
   res.header('Content-Type', 'text/plain');
   res.send(slugs.join('\n'));

@@ -10,14 +10,10 @@ function ChangePasswordPage({ user: { _id } }) {
       value: _id,
       hidden: true
     },
-    currentPassword: {
-      type: 'password'
-    },
-    newPassword: {
-      type: 'password'
-    }
-  }} method="post" formAction='/api/users/change_password'
-  redirectUrl='/admin' />;
+    currentPassword: { type: 'password' },
+    newPassword: { type: 'password' }
+  }} method="post" formAction='/api/users/change_password' redirectUrl='/admin'
+  />;
 }
 
 ChangePasswordPage.propTypes = {

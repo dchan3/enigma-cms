@@ -8,21 +8,19 @@ function EditDisplayTemplate({ match: { params: { docTypeId } },
   } } }) {
   if (docType !== null && templateBody !== null) {
     let { docTypeName } = docType;
-    return <GeneratedForm title=
-      {`Edit ${docTypeName} Display Template`} params={{
-      templateBody: {
-        type: 'text',
-        grammar: 'html',
-        value: templateBody
-      },
-      categoryTemplateBody: {
-        type: 'text',
-        grammar: 'html',
-        value: categoryTemplateBody
-      }
-    }} method="post" redirectUrl='/admin'
-    formAction={`/api/documents/update_template/${docTypeId}`}
-    />;
+    return <GeneratedForm title={`Edit ${docTypeName} Display Template`}
+      params={{
+        templateBody: {
+          type: 'text',
+          grammar: 'html',
+          value: templateBody
+        },
+        categoryTemplateBody: {
+          type: 'text',
+          grammar: 'html',
+          value: categoryTemplateBody
+        } }} method="post" redirectUrl='/admin'
+      formAction={`/api/documents/update_template/${docTypeId}`} />;
   }
   else return null;
 }

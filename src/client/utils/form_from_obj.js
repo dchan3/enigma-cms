@@ -221,8 +221,7 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
 };
 
 const checkRequired = function(paramObj, valueObj) {
-  var invalidFields = [],
-    pks = mapKeysToValues(paramObj), reqFields =
+  var invalidFields = [], pks = mapKeysToValues(paramObj), reqFields =
       outputKeys(paramObj).filter(k => k.endsWith('.required'))
         .map(k => k.replace('.required', '')),
     vks = outputKeys(valueObj), vs = mapKeysToValues(valueObj);
@@ -243,11 +242,11 @@ const checkRequired = function(paramObj, valueObj) {
   }
 
   return invalidFields;
-}
+};
 
 const validateForm = function(paramObj, valueObj) {
-  var reqd = checkRequired(paramObj, valueObj);
+  let reqd = checkRequired(paramObj, valueObj);
   return ![...reqd].flat().length || [...reqd].flat();
-}
+};
 
 export default { formFromObj, mapKeysToValues, outputKeys, validateForm };

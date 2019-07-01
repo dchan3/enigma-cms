@@ -23,9 +23,7 @@ var UserSchema = new mongoose.Schema({
     required: false,
     default: ''
   },
-  password: {
-    type: String
-  },
+  password: { type: String },
   email: {
     type: String,
     required: [true, 'Email required'],

@@ -43,10 +43,10 @@ export const frontEndRoutes = [
       var { docTypeId } = docType,
         template = await DocumentDisplayTemplate.findOne({ docTypeId });
       if (!template) return null;
-      var { categoryTemplateBody } = template;
-      var items = await Document.find({
-        docTypeId, draft: false
-      }).sort({ createdAt: -1 });
+      var { categoryTemplateBody } = template,
+        items = await Document.find({
+          docTypeId, draft: false
+        }).sort({ createdAt: -1 });
       return { categoryTemplateBody, items, typeName: docTypeNamePlural };
     }
   },

@@ -6,7 +6,5 @@ export default () => [<GeneratedForm title="Sign Up" params={{
   email: { type: 'email', required: true },
   password: { type: 'password', required: true }
 }} method="post" formAction='/api/users/register' redirectUrl='/admin' />,
-<StyledDiv>
-  <p>Have an account? Sign in <a href="/login">here</a>.</p>
-</StyledDiv>
-];
+<StyledDiv><p>Have an account? Sign in <a href="/login">here</a>.</p>
+</StyledDiv>];

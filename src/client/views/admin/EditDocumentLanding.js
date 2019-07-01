@@ -16,12 +16,9 @@ function EditDocumentLanding({ staticContext: {
     }
   }
 
-  if (docType && documents.length > 0) {
-    var { docTypeName, docTypeNamePlural, attributes } = docType;
-    return [
-      <TextHeader>
-        {`Edit ${docTypeName}`}
-      </TextHeader>,
+  if (docType && documents.length) {
+    let { docTypeName, docTypeNamePlural, attributes } = docType;
+    return [<TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
       <TablePaginator perPage={10} activeTabColor="cadetblue" items={documents}
         truncate={true} columns={[attributes.map(({ attrName }) => ({
           headerText: attrName,

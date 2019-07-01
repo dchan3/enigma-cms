@@ -2,20 +2,18 @@ import React, { useState } from 'react';
 import { object } from 'prop-types';
 import { GeneratedForm } from '../../reusables';
 
-var minMax = {
-  type: (value) => (value === 'date') ? 'date' : 'number',
-  attrDepends: { type: ['attributes.$.attrType'] }
-};
 
-var EditDocType = ({ match, staticContext: { docType } }) => {
+let EditDocType = ({ match, staticContext: { docType } }) => {
   let [state, setState] = useState({
-    optionParams: docType && docType.attributes && docType.attributes.length &&
-      docType.attributes.map(
-        ({ attrName, attrType }) => ({
-          attrName, attrType
-        })) || ['']
-  });
-
+      optionParams: docType && docType.attributes && docType.attributes.length
+        && docType.attributes.map(
+          ({ attrName, attrType }) => ({
+            attrName, attrType
+          })) || ['']
+    }), minMax = {
+      type: (value) => (value === 'date') ? 'date' : 'number',
+      attrDepends: { type: ['attributes.$.attrType'] }
+    };
 
   function updateParams({ attributes }) {
     setState({
@@ -82,12 +80,10 @@ var EditDocType = ({ match, staticContext: { docType } }) => {
             { text: '(None)', value: '' }
           ],
         value: ''
-      }
-    }} method="post" parentCallback={updateParams} redirectUrl='/admin'
-    formAction={docType ?
-      `/api/documents/update_type/${match.params.docTypeId}` :
-      '/api/documents/register_type'}/>;
-}
+      } }} method="post" parentCallback={updateParams} redirectUrl='/admin'
+    formAction={docType ? `/api/documents/update_type/${match.params.docTypeId}`
+      : '/api/documents/register_type'}/>;
+};
 
 EditDocType.propTypes = {
   match: object,

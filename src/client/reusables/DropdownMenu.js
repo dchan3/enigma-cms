@@ -51,7 +51,7 @@ let urlText = { url: string, text: string },
 
 [NodeLinkText, LinkNode, SubLinkNode].forEach(({ propTypes }) => {
   if (!propTypes) propTypes = urlText;
-})
+});
 
 
 SubMenu.propTypes = {
@@ -62,7 +62,7 @@ SubMenu.propTypes = {
 
 function DropdownMenu({ menuNodes }) {
   function renderNode(node) {
-    var L = { true: SubMenu, false: LinkNode }[!!node.childNodes]
+    let L = { true: SubMenu, false: LinkNode }[!!node.childNodes];
     return <L {...node} />;
   }
 

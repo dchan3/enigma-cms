@@ -3,8 +3,7 @@ import { object } from 'prop-types';
 import { DropdownMenu } from '../../reusables';
 
 function MainMenu({ staticContext: { user, types } }) {
-  let isAdmin = user && user.roleId === 0 || false,
-    menuNodes = [];
+  let isAdmin = user && user.roleId === 0 || false, menuNodes = [];
   if (isAdmin) menuNodes.push({ url: '/admin/edit-config',
     text: 'Site Settings' }, { url: '/admin/register-type',
     text: 'Register Document Type' }, {
@@ -35,7 +34,7 @@ function MainMenu({ staticContext: { user, types } }) {
   });
 
   return <div>
-    {user ? <DropdownMenu menuNodes={menuNodes} /> : null}
+    {user ? <DropdownMenu {...{ menuNodes }} /> : null}
   </div>;
 }
 
