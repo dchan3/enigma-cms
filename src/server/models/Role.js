@@ -12,9 +12,7 @@ var RoleSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  roleId: {
-    type: Number
-  }
+  roleId: { type: Number }
 });
 
 RoleSchema.plugin(autoIncrementPlugin,

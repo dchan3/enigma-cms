@@ -31,7 +31,13 @@ function ConfigPage({ staticContext: { config } }) {
       }
     },
     keywords: { type: '[text]' },
-    gaTrackingId: { type: 'text' }
+    gaTrackingId: { type: 'text' },
+    language: {
+      type: 'enum',
+      enumList: [
+        { text: 'English', value: 'en' },
+        { text: '中文', value: 'zh' }]
+    }
   }} method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
 }
 

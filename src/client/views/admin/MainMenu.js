@@ -2,7 +2,7 @@ import React from 'react';
 import { object } from 'prop-types';
 import { DropdownMenu } from '../../reusables';
 
-function MainMenu({ staticContext: { user, types } }) {
+function MainMenu({ staticContext: { user, types }, history }) {
   let isAdmin = user && user.roleId === 0 || false, menuNodes = [];
   if (isAdmin) menuNodes.push({ url: '/admin/edit-config',
     text: 'Site Settings' }, { url: '/admin/register-type',
@@ -34,7 +34,7 @@ function MainMenu({ staticContext: { user, types } }) {
   });
 
   return <div>
-    {user ? <DropdownMenu {...{ menuNodes }} /> : null}
+    {user ? <DropdownMenu {...{ history, menuNodes }} /> : null}
   </div>;
 }
 

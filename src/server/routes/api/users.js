@@ -6,6 +6,7 @@ import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
 import fs from 'fs';
 import path from 'path';
+import { findTheOne } from './utils';
 
 let router = Router();
 
@@ -21,6 +22,9 @@ router.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/');
 });
+
+router.get('/get_user_by_username/:username',
+  findTheOne(User,{ username: 'username' }));
 
 // POST Requests
 router.post('/register', verifyMiddleware, function(req, res, next) {

@@ -3,9 +3,7 @@ import uuid from 'uuid/v4';
 import { default as secret } from '../../../config/secret';
 
 export default session({
-  genid: () => {
-    return uuid();
-  },
+  genid: () => uuid(),
   secret: secret,
   resave: false,
   saveUninitialized: false,

@@ -55,13 +55,12 @@ export const frontEndRoutes = [
     exact: true,
     component: FrontDocumentDisplay,
     fetchInitialData: async (path) => {
-      var [ docTypeNamePlural, slug ] = path.split('/').slice(-2);
-      var { docTypeId } =
-        await DocumentType.findOne({ docTypeNamePlural });
-      var { templateBody } =
-        await DocumentDisplayTemplate.findOne({ docTypeId });
-      var doc = await Document.findOne({ slug, draft: false });
-      if (doc) return { templateBody, doc };
+      var [ docTypeNamePlural, slug ] = path.split('/').slice(-2),
+        { docTypeId } = await DocumentType.findOne({ docTypeNamePlural }),
+        { templateBody, categoryTemplateBody } =
+          await DocumentDisplayTemplate.findOne({ docTypeId }),
+        doc = await Document.findOne({ slug, draft: false });
+      if (doc) return { templateBody, doc, categoryTemplateBody };
       else return { };
     }
   },
@@ -126,8 +125,8 @@ export const backEndRoutes = [
     path: '/admin/edit-type/:docTypeId',
     exact: true,
     component: EditDocType,
-    fetchInitialData: path =>
-      DocumentType.findOne({ docTypeId: path.split('/').pop() }),
+    fetchInitialData: async path =>
+      await DocumentType.findOne({ docTypeId: path.split('/').pop() }),
     key: 'docType'
   },
   {

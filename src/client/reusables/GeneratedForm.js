@@ -9,25 +9,56 @@ import { get as axget, post as axpost } from 'axios';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
 
-let FormBackground = styled.form`background-color:cadetblue;width:fit-content;
-margin:auto;text-align:left;`,FormDiv = styled.div`padding:8px;display:${({
-    hidden }) => hidden ? 'none' : 'block'}`,FormInput = styled.input`
-border-radius:8px;vertical-align:top;height:16px;margin-top:5px;font-family:
-sans-serif;font-size:16px;padding:5px;display:${({ hidden }) => hidden ? 'none' 
-    : 'block'};box-shadow:${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'};
-`,FormHeader = styled.h2`text-align:center;font-family:sans-serif;`,FormLabel =
-styled.label`color:white;padding-right:4px;font-family:sans-serif;text-transform
-:uppercase;display:${({ hidden }) => hidden ? 'none' : 'block'};text-shadow:${({
-  invalid }) => invalid ? 'red 2px 2px' : 'unset'};`,FormEnumInput = styled.
-    select`font-family:sans-serif;font-size:16px;`,FormEnumInputOption =
-  styled.option`font-family:sans-serif;font-size:16px;`,FormObjectInputLabel =
-  styled.p`color:white;padding-right:4px;font-family:sans-serif;text-transform:
-uppercase;margin:8px;display: ${({ hidden }) => hidden ? 'none' : 'block'};`,
-  FormSubmit = styled.input`font-family:sans-serif;text-transform:uppercase;
-margin:8px;border-radius:8px;font-size:14px;`, FormErrorMessage =
-  styled.p`font-family:sans-serif;text-transform:uppercase;text-align:center;`,
-  FormSubmitButton = styled.button`font-size:16px;font-family:sans-serif;
-text-transform:uppercase;padding:8px;border-radius:8px;margin:8px;`, comps = {
+let FormBackground = styled.form`
+  background-color: cadetblue;
+  width: fit-content;
+  margin: auto;
+  text-align: left;`, FormDiv = styled.div`
+    padding: 8px;
+    display: ${({ hidden }) => hidden ? 'none' : 'block'}`, FormInput =
+    styled.input`
+    border-radius: 8px;
+    vertical-align: top;
+    height: 16px;
+    margin-top: 5px;
+    font-family: sans-serif;
+    font-size: 16px;
+    padding: 5px;
+    display: ${({ hidden }) => hidden ? 'none' : 'block'};
+    box-shadow: ${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'};`,
+  FormHeader = styled.h2`
+  text-align: center;
+  font-family: sans-serif;`, FormLabel = styled.label`
+    color: white;
+    padding-right: 4px;
+    font-family: sans-serif;
+    text-transform: uppercase;
+    display:${({ hidden }) => hidden ? 'none' : 'block'};
+    text-shadow:${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'};`,
+  FormEnumInput = styled.select`
+  font-family: sans-serif;
+  font-size: 16px;`, FormEnumInputOption = styled.option`
+  font-family: sans-serif;
+  font-size: 16px;`,FormObjectInputLabel = styled.p`
+  color: white;
+  padding-right: 4px;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  margin:8px;
+  display: ${({ hidden }) => hidden ? 'none' : 'block'};`,
+  FormSubmit = styled.input`font-family:sans-serif;
+  text-transform: uppercase;
+  margin: 8px;
+  border-radius: 8px;
+  font-size: 14px;`, FormErrorMessage = styled.p`font-family: sans-serif;
+  text-transform: uppercase;
+  text-align:center;`,
+  FormSubmitButton = styled.button`font-size:16px;
+  font-family: sans-serif;
+  text-transform: uppercase;
+  padding: 8px;
+  border-radius: 8px;
+  margin: 8px;`, comps = {
     FormInput, FormLabel, CodeEditor, FormSubmitButton,
     FormEnumInput, FormEnumInputOption, FormObjectInputLabel
   };
@@ -179,8 +210,7 @@ function GeneratedForm({ params, parentCallback, method, formAction,
           }
           else return null;
         })
-      }
-      <FormSubmit type="submit" value="Submit" onClick={handleSubmit} />
+      } <FormSubmit type="submit" value="Submit" onClick={handleSubmit} />
     </FormBackground>
   </div>;
 }

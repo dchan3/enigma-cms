@@ -1,15 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { object } from 'prop-types';
+import { get as axget } from 'axios';
 import { TextHeader } from '../../reusables';
 import { TablePaginator } from 'react-everafter';
 import { delete as axdel } from 'axios';
 
-function FileMgmtLanding({ staticContext: { files } }) {
+function FileMgmtLanding({ staticContext }) {
   function handleDeleteClick() {
     return function(url) {
       axdel(url);
     }
   }
+
+  let [state, setState] = useState({
+    files: []
+  });
+
+  useEffect(function() {
+    let { files } = staticContext;
+    if (files) {
+      setState({ files });
+    }
+    else {
+      axget('/api/files/get').then(({ data }) => {
+        setState({ files: data })
+      });
+    }
+  }, []);
+
+  let { files } = state;
 
   return [
     <TextHeader>Manage Files</TextHeader>,
@@ -44,14 +63,13 @@ function FileMgmtLanding({ staticContext: { files } }) {
         },
         {
           headerText: 'Delete',
-          display: (item) =>
+          display: ({ fileType, _id }) =>
             <button onClick={() => handleDeleteClick()(
-              `/api/files/delete_file/${item.fileType}/${item._id}`
-            )}>Delete</button>
+              `/api/files/delete_file/${fileType}/${_id}`)}>Delete</button>
         },
         {
           headerText: 'Date Created',
-          display: (item) => <p>{item.createdDate.toString()}</p>
+          display: ({ createdDate }) => <p>{createdDate.toString()}</p>
         }
       ]} /> : null
   ];

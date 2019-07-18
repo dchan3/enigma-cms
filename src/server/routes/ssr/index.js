@@ -9,9 +9,9 @@ import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
 
 var htmlTemplate =
-  (styleTags, { stylesheet, gaTrackingId },
+  (styleTags, { language, stylesheet, gaTrackingId },
     { title, meta, link }, dom, data) => `<!DOCTYPE html>
-<html>
+<html lang="${language}">
   <head>
   ${gaTrackingId ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->

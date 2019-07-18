@@ -58,6 +58,11 @@ const SiteConfigSchema = new mongoose.Schema({
   gaTrackingId: {
     type: String,
     required: false
+  },
+  language: {
+    type: String,
+    enum: ['en', 'zh'],
+    default: 'en'
   }
 });
 

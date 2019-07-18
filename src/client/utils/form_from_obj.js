@@ -6,9 +6,8 @@ const outputKeys = function(obj, includeParents, parent) {
   for (var key in obj) {
     if (typeof obj[key] === 'object') {
       if (includeParents) retval.push(parent ? `${parent}.${key}` : key);
-      retval.push(
-        ...outputKeys(obj[key],
-          includeParents, parent ? `${parent}.${key}` : key));
+      retval.push(...outputKeys(obj[key], includeParents, parent ?
+        `${parent}.${key}` : key));
     }
     else retval.push(parent ? `${parent}.${key}` : key);
   }
@@ -38,103 +37,61 @@ const calcFromDependValues = function(paramSpec, attr, formVal, keyToUse) {
   return paramSpec[attr](...args);
 };
 
+const retThing = {
+  enum: 'FormEnumInput',
+  text: ['FormInput', 'CodeEditor'],
+  defo: 'FormInput'
+}
+
+const chooseComponent = (type, hasGrammar) => {
+  let m = retThing[type.match(/[a-z]+/)[0]] || retThing['defo'];
+  return (typeof m === 'object') ? m[+hasGrammar] : m;
+}
+
 const genInputComponent =
   function(paramObj, paramSpec, valueVar, keyToUse, index, formVal,
     invalidFields) {
     let theType = typeof paramSpec.type === 'function' ?
-      calcFromDependValues(
-        paramSpec, 'type', formVal, keyToUse) : paramSpec.type;
-
-    if (theType.match(/enum/)) {
-      return {
-        component: 'FormEnumInput',
-        attributes: {
-          id: keyToUse,
-          name: keyToUse,
-          invalid: invalidFields && invalidFields.includes(keyToUse) || false,
-          onChange: `handleChange ${keyToUse}`,
-          value: valueVar,
-          required: paramSpec.required || false
-        },
-        children: paramSpec.enumList.map((option) => ({
-          component: 'FormEnumInputOption',
-          attributes: { value: option.value },
-          innerText: option.text
-        })),
-      }
-    }
-    else if (theType.match(/text/)) {
-      if (paramSpec.grammar) {
-        return {
-          component: 'CodeEditor',
-          attributes: {
-            invalid: invalidFields && invalidFields.includes(keyToUse) || false,
-            id: keyToUse,
-            name: keyToUse,
-            grammar: paramSpec.grammar,
-            value: valueVar || '',
-            hidden: paramSpec.hidden || false,
-            required: paramSpec.required || false
-          }
-        };
-      }
-      else if (paramSpec.maximum && paramSpec.maximum !== '') {
-        return {
-          component: 'FormInput',
-          attributes: {
-            invalid: invalidFields && invalidFields.includes(keyToUse) || false,
-            id: keyToUse,
-            name: keyToUse,
-            type: 'text',
-            maxLength: paramSpec.maximum,
-            onChange: `handleChange ${keyToUse}`,
-            value: valueVar,
-            hidden: paramSpec.hidden || false,
-            required: paramSpec.required || false
-          }
-        };
-      }
-      else {
-        return {
-          component: 'FormInput',
-          attributes: {
-            invalid: invalidFields && invalidFields.includes(keyToUse) || false,
-            id: keyToUse,
-            name: keyToUse,
-            type: 'text',
-            onChange: `handleChange ${keyToUse}`,
-            hidden: paramSpec.hidden || false,
-            value: valueVar,
-            required: paramSpec.required || false
-          }
-        };
-      }
-    }
-    else {
-      let retval = {
-        component: 'FormInput',
-        attributes: {
-          invalid: invalidFields && invalidFields.includes(keyToUse) || false,
-          id: keyToUse,
-          name: keyToUse,
-          type: theType.match(/[a-z]+/)[0],
-          onChange: `handleChange ${keyToUse}`,
-          value: valueVar,
-          hidden: paramSpec.hidden || false,
-          required: paramSpec.required || false
-        }
+        calcFromDependValues(paramSpec, 'type', formVal, keyToUse) :
+        paramSpec.type, attributes = {
+        id: keyToUse,
+        name: keyToUse,
+        invalid: invalidFields && invalidFields.includes(keyToUse) || false,
+        onChange: `handleChange ${keyToUse}`,
+        value: valueVar,
+        required: paramSpec.required || false,
+        hidden: paramSpec.hidden || false,
       };
 
-      if (paramSpec.minimum) {
-        retval.attributes.minimum = paramSpec.minimum;
-      }
-
-      if (paramSpec.maximum) {
-        retval.attributes.maximum = paramSpec.maximum;
-      }
-
-      return retval;
+    if (!theType.match(/enum/)) {
+      attributes.type = theType.match(/[a-z]+/)[0];
     }
+
+    if (paramSpec.grammar) {
+      attributes.grammar = paramSpec.grammar;
+    }
+    if (paramSpec.maximum) {
+      if (theType.match(/text/)) attributes.maxLength = paramSpec.maximum;
+      else attributes.maximum = paramSpec.maximum
+    }
+    if (paramSpec.minimum) {
+      attributes.minimum = paramSpec.minimum;
+    }
+
+    let retval = {
+      component: chooseComponent(theType, paramSpec.grammar ? true : false),
+      attributes
+    }
+
+    if (paramSpec.enumList) {
+      retval.children = paramSpec.enumList.map((option) => ({
+        component: 'FormEnumInputOption',
+        attributes: { value: option.value },
+        innerText: option.text
+      }));
+    }
+
+    return retval;
   };
 
 

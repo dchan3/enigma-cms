@@ -1,35 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { get as axget } from 'axios';
 import { object } from 'prop-types';
 import styled from 'styled-components';
+import SamePageAnchor from './SamePageAnchor';
+let FooterContainer = styled.div`
+text-align:center;font-family:sans-serif;margin:10px;`, FooterText =
+  styled.p`margin:0;`;
 
-let FooterContainer =
-  styled.div`text-align:center;font-family:sans-serif;margin:10px;`,
-  FooterText = styled.p`margin:0;`;
+function Footer({ staticContext, history }) {
+  let [state, setState] = useState({
+    user: staticContext && staticContext.user || null
+  });
 
-function Footer({ user }) {
+  useEffect(function() {
+    if (!state.user) axget('/api/users/get').then(({ data: user }) => {
+      setState({ user })
+    });
+  }, []);
+
+  var { user } = state;
+
   return <FooterContainer>
     <FooterText>Powered by <a href="https://github.com/dchan3/enigma-cms">
       Enigma CMS</a>.</FooterText>
     {user ? <FooterText>
       Logged in as {user.username}.
       {' '}
-      <a href='/admin'>Go to Admin Panel.</a>
+      <SamePageAnchor {...{ history }} href='/admin'>Go to Admin Panel.
+      </SamePageAnchor>
       {' '}
-      <a href='/admin/edit-profile'>Edit profile</a>.
+      <SamePageAnchor {...{ history }} href='/admin/edit-profile'>Edit profile
+      </SamePageAnchor>.
       {' '}
-      <a href='/api/users/logout'>Logout</a>.
+      <SamePageAnchor {...{ history }}  href='/api/users/logout'>Logout
+      </SamePageAnchor>.
       {' '}
-      <a href='/admin/change-password'>Change password</a>.
+      <SamePageAnchor {...{ history }} href='/admin/change-password'>
+        Change password</SamePageAnchor>.
     </FooterText> : <FooterText>
-      <a href="/login">Login</a>
+      <SamePageAnchor {...{ history }} href="/login">Login</SamePageAnchor>
       {' | '}
-      <a href="/signup">Register</a>
+      <SamePageAnchor {...{ history }} href="/signup">Register</SamePageAnchor>
     </FooterText>}
   </FooterContainer>;
 }
 
 Footer.propTypes = {
-  user: object
+  staticContext: object,
+  history: object
 };
 
 export default Footer;

@@ -40,16 +40,14 @@ app.use(function(req, res, next) {
     'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
-app.use(bodyParser.urlencoded({
-  extended: true
-}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json({ limit: '50mb' }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.serializeUser((user, done) => {
-  done(null, user._id);
+passport.serializeUser(({ _id }, done) => {
+  done(null, _id);
 });
 passport.deserializeUser((_id, done) => {
   User.findById(_id, function(err, user) {

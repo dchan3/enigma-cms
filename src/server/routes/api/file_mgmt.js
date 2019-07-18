@@ -7,14 +7,18 @@ import { ObjectId } from 'mongodb';
 
 var router = express.Router();
 
+router.get('/get', (req, res, next) => {
+  File.find({ }).then(files => {
+    res.status(200).json(files);
+  }).catch(err => next(err));
+});
+
 router.post('/upload_file', verifyMiddleware, ({ user: { userId: uploadedBy },
   body: { fileToUpload, fileType, fileContent } }, res, next) => {
-  let fileName = fileToUpload.split('\\').pop(),
-    newFile = new File({
+  let fileName = fileToUpload.split('\\').pop(), newFile = new File({
       fileName, fileType, uploadedBy,
       createdDate: new Date(), modifiedDate: new Date()
-    }), filepath = resolve(__dirname,
-      `./public/uploads/${fileType}`, fileName);
+    }), filepath = resolve(__dirname, `./public/uploads/${fileType}`, fileName);
   fs.writeFile(
     filepath,
     Buffer.from(fileContent, 'base64'), { flag: 'a+' }, (err) => {

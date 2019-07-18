@@ -11,11 +11,9 @@ export default function(username, cb) {
 
   for (let letter in first36) {
     let row = Math.floor(letter / 6), column = letter % 6;
-    image
-      .stroke(first36[letter] ? color1 : color2, 10, 0)
-      .fill(first36[letter] ? color1 : color2, 10)
-      .drawRectangle(row * 10 + 2,  column * 10 + 2,
-        (row + 1) * 10 + 2,  (column + 1) * 10 + 2);
+    image.stroke(first36[letter] ? color1 : color2, 10, 0).fill(
+      first36[letter] ? color1 : color2, 10).drawRectangle(row * 10 + 2,
+      column * 10 + 2, (row + 1) * 10 + 2,  (column + 1) * 10 + 2);
   }
 
   image.resize(256, 256);

@@ -1,33 +1,56 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { object } from 'prop-types';
 import Handlebars from 'handlebars';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
+import { get as axget } from 'axios';
 
-function FrontCategoryDisplay({ staticContext }) {
-  let { config: { shortcodes, siteName }, dataObj } = staticContext;
-  if (!dataObj) return <Redirect to='/not-found' />;
-  let  { categoryTemplateBody, items, typeName } = dataObj;
+function FrontCategoryDisplay({ staticContext, match }) {
+  let [state, setState] = useState({
+    dataObj: null
+  });
 
-  if (categoryTemplateBody && items) {
-    shortcodes.forEach(
-      function({ name, args, code }) {
-        Handlebars.registerHelper(name, new Function(args.join(','), code));
-      });
+  useEffect(function() {
+    let { dataObj } = staticContext;
+    if (dataObj && Object.keys(dataObj).includes('categoryTemplateBody')) {
+      setState({ dataObj });
+    }
+    else {
+      axget(
+        `/api/documents/get_documents_by_type_name/${match.params.docType}`)
+        .then(
+          ({ data }) => {
+            setState({ dataObj: data })
+          })
+    }
+  }, []);
 
-    let template = Handlebars.compile(categoryTemplateBody),
-      newItems = items.map(({ content, slug, createdAt, editedAt }) => ({
-        ...content, slug, createdAt, editedAt
-      }));
-    return [<Metamorph title={`${typeName.charAt(0).toUpperCase() + 
-    typeName.slice(1)} | ${siteName}`}
-    description={`${typeName.charAt(0).toUpperCase() +
-      typeName.slice(1)} on ${siteName}`} />,
-    <div dangerouslySetInnerHTML=
-      {{ __html: template({ items: newItems }) }} />];
+  let { config: { shortcodes, siteName } } = staticContext, { dataObj } = state;
+  if (dataObj === undefined) return <Redirect to='/not-found' />;
+  else if (dataObj) {
+    let { categoryTemplateBody, items, typeName } = dataObj;
+
+    if (categoryTemplateBody && items) {
+      shortcodes.forEach(
+        function({ name, args, code }) {
+          Handlebars.registerHelper(name, new Function(args.join(','), code));
+        });
+
+      let template = Handlebars.compile(categoryTemplateBody),
+        newItems = items.map(({ content, slug, createdAt, editedAt }) => ({
+          ...content, slug, createdAt, editedAt
+        }));
+      return [<Metamorph title={`${typeName.charAt(0).toUpperCase() +
+      typeName.slice(1)} | ${siteName}`}
+      description={`${typeName.charAt(0).toUpperCase() +
+        typeName.slice(1)} on ${siteName}`} />,
+      <div dangerouslySetInnerHTML={{ __html:
+        template({ items: newItems }) }} />
+      ];
+    }
   }
 
-  return <Redirect to='/not-found' />;
+  return null;
 }
 
 FrontCategoryDisplay.propTypes = {

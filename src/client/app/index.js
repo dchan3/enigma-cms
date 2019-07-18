@@ -7,7 +7,7 @@ import { get as axget } from 'axios';
 axget('/api/users/get').then(({ data }) => data).then(user => {
   hydrate(
     <BrowserRouter>
-      <App staticContext={{ ...window.__INITIAL_DATA__, user: user }} />
+      <App staticContext={{ ...window.__INITIAL_DATA__, user }} />
     </BrowserRouter>,
     document.getElementById('root'));
 });

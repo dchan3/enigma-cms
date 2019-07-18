@@ -12,26 +12,29 @@ import { Footer } from '../reusables';
 import { Metamorph } from 'react-metamorph';
 
 let FrontEndRoute = ({ component: Component, staticContext, ...rest }) => <Route
-  exact {...rest} render={(props) => <Component {...props}
-    {...{ staticContext }} />} />;
+  exact {...rest} component={({ history, match }) => (
+    <Component {...{ history, staticContext, match }} />)} />;
 
-let ProtectedRoute =
-  ({ component: Component, isAdmin, staticContext, ...rest }) => <Route exact
-    {...rest} render={(props) => {
-      if (staticContext.user) {
-        if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
-          return [<MainMenu {...{ staticContext }} />,
-            <Component {...props} {...{ staticContext }} />];
-        }
-        else return <Redirect to="/admin" />;
-      }
-      else return <Redirect to="/login" />;
-    }} />;
+let ProtectedRoute = ({ component: Component, isAdmin, staticContext, ...rest
+}) => <Route exact {...rest} component={({ history, match }) => {
+  if (staticContext.user) {
+    if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
+      return <Component {...{ history, staticContext, match }} />;
+    }
+    else return <Redirect to="/admin" />;
+  }
+  else return <Redirect to="/login" />;
+}} />;
 
 let LoggedOutRoute =
   ({ component: Component, staticContext, ...rest }) => <Route exact {...rest}
-    render={(props) => staticContext.user ? <Redirect to="/admin" /> :
-      <Component {...props} {...{ staticContext }} />} />;
+    component={() => staticContext.user ? <Redirect to="/admin" /> :
+      <Component {...{ staticContext }} />} />;
+
+let UniversalRoute =
+  ({ component: Component, staticContext, ...rest }) => <Route exact {...rest}
+    component={({ history }) => <Component {...{
+      staticContext, history }} />} />;
 
 let App = ({ staticContext }) => {
   if (!staticContext) staticContext = window.__INITIAL_DATA__;
@@ -41,7 +44,11 @@ let App = ({ staticContext }) => {
     <Metamorph title={siteName || 'My Website'}
       description={description || 'Welcome to my website!'}
       keywords={keywords && keywords.join(',') || ''} image={iconUrl || ''}/>
-    <FrontHeader {...{ staticContext }} />
+    <Switch>
+      <ProtectedRoute path='/admin' component={MainMenu}
+        {...{ staticContext }} />
+      <FrontEndRoute path='*' {...{ staticContext }} component={FrontHeader}/>
+    </Switch>
     <Switch>
       <ProtectedRoute path="/admin/edit-profile" isAdmin={false}
         {...{ staticContext }} component={ProfileEditPage} />
@@ -65,8 +72,8 @@ let App = ({ staticContext }) => {
         {...{ staticContext }} component={EditDisplayTemplate} />
       <ProtectedRoute path='/admin/edit-type/:docTypeId' isAdmin={false}
         {...{ staticContext }} component={EditDocType}/>
-      <ProtectedRoute path='/admin' isAdmin={false}
-        {...{ staticContext }} component={() => <div />}/>
+      <ProtectedRoute path='/admin' isAdmin={false} {...{ staticContext }}
+        component={() => <div />}/>
       <LoggedOutRoute path="/signup" {...{ staticContext }}
         component={SignupPage} />
       <LoggedOutRoute path="/login" {...{ staticContext }}
@@ -75,14 +82,16 @@ let App = ({ staticContext }) => {
         {...{ staticContext }} />
       <FrontEndRoute path="/profile/:username" {...{ staticContext }}
         component={FrontProfileDisplay} />
-      <FrontEndRoute path="/:docType" component={FrontCategoryDisplay}
-        {...{ staticContext }} />
       <FrontEndRoute path="/:docType/:docNode"  {...{ staticContext }}
         component={FrontDocumentDisplay} />
+      <FrontEndRoute path="/:docType" component={FrontCategoryDisplay}
+        {...{ staticContext }} />
       <FrontEndRoute path='/' {...{ staticContext }} component={HomePage} />
       <Route path="*" component={NotFound} />
     </Switch>
-    <Footer user={staticContext.user || null} />
+    <Switch>
+      <UniversalRoute path="*" component={Footer} />
+    </Switch>
   </div>;
 };
 
