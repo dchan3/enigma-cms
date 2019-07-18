@@ -8,15 +8,16 @@ import { Metamorph } from 'react-metamorph';
 function FrontDocumentDisplay({
   staticContext, match: { params: { docType, docNode } } }) {
   let [state, setState] = useState({
-    dataObj: null
+    dataObj: staticContext.dataObj &&
+      staticContext.dataObj.docTypeNamePlural &&
+      staticContext.dataObj.docTypeNamePlural === docType &&
+      staticContext.dataObj.doc && staticContext.dataObj.doc.slug === docNode &&
+      staticContext.dataObj || null
   });
 
   useEffect(function() {
     let { dataObj } = staticContext;
-    if (dataObj && Object.keys(dataObj).includes('doc')) {
-      setState({ dataObj });
-    }
-    else {
+    if (!dataObj) {
       axget(
         `/api/documents/get_document_by_type_and_slug/${docType}/${docNode}`)
         .then(

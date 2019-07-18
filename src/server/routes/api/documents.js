@@ -49,7 +49,7 @@ router.get('/get_document_by_type_and_slug/:type/:slug', function(req, res) {
           slug: req.params.slug })
           .then(doc => {
             res.status(200).json({
-              docType,
+              docTypeNamePlural: docType.docTypeNamePlural,
               templateBody: template.templateBody,
               document: doc
             });

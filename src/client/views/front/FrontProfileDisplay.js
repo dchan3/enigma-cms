@@ -5,20 +5,20 @@ import Handlebars from 'handlebars';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 
-function FrontProfileDisplay({ staticContext, match: { params: { username } } })
+function FrontProfileDisplay({ staticContext, match: { params: { username:
+  urlUsername } } })
 {
   let [state, setState] = useState({
-    profileUser: null
+    profileUser: staticContext.profileUser &&
+      staticContext.profileUser.username === urlUsername &&
+      staticContext.profileUser || null
   });
 
   useEffect(function() {
     let { profileUser } = staticContext;
-    if (profileUser) {
-      setState({ profileUser });
-    }
-    else {
+    if (!profileUser) {
       axget(
-        `/api/documents/get_user_by_username/${username}`)
+        `/api/documents/get_user_by_username/${urlUsername}`)
         .then(
           ({ data }) => {
             setState({ profileUser: data })

@@ -57,10 +57,11 @@ export const frontEndRoutes = [
     fetchInitialData: async (path) => {
       var [ docTypeNamePlural, slug ] = path.split('/').slice(-2),
         { docTypeId } = await DocumentType.findOne({ docTypeNamePlural }),
-        { templateBody, categoryTemplateBody } =
+        { templateBody } =
           await DocumentDisplayTemplate.findOne({ docTypeId }),
         doc = await Document.findOne({ slug, draft: false });
-      if (doc) return { templateBody, doc, categoryTemplateBody };
+      if (doc) return { docTypeId, docTypeNamePlural,
+        templateBody, doc };
       else return { };
     }
   },

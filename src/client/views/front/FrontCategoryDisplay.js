@@ -5,19 +5,20 @@ import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import { get as axget } from 'axios';
 
-function FrontCategoryDisplay({ staticContext, match }) {
+function FrontCategoryDisplay({ staticContext, match: { params: { docType
+} } }) {
   let [state, setState] = useState({
-    dataObj: null
+    dataObj: staticContext.dataObj &&
+      staticContext.dataObj.docTypeNamePlural &&
+      staticContext.dataObj.docTypeNamePlural === docType &&
+      staticContext.dataObj || null
   });
 
   useEffect(function() {
     let { dataObj } = staticContext;
-    if (dataObj && Object.keys(dataObj).includes('categoryTemplateBody')) {
-      setState({ dataObj });
-    }
-    else {
+    if (!dataObj) {
       axget(
-        `/api/documents/get_documents_by_type_name/${match.params.docType}`)
+        `/api/documents/get_documents_by_type_name/${docType}`)
         .then(
           ({ data }) => {
             setState({ dataObj: data })
