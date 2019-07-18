@@ -32,7 +32,7 @@ function FrontDocumentDisplay({
 
   if (dataObj === undefined) return <Redirect to='/not-found' />;
   else if (dataObj) {
-    let { templateBody, doc } = dataObj;
+    let { templateBody, doc, authorInfo } = dataObj;
     if (templateBody && doc) {
       shortcodes.forEach(
         function({ name, args, code }) {
@@ -55,7 +55,8 @@ function FrontDocumentDisplay({
         [attrs.keywords, ...keywords] : [attrs.keywords, ...keywords];
 
       return [<Metamorph {...attrs} />, <div dangerouslySetInnerHTML=
-        {{ __html: template({ ...content, createdAt, editedAt }) }} />];
+        {{ __html:
+          template({ ...content, createdAt, editedAt, authorInfo }) }} />];
     }
   }
   return null;

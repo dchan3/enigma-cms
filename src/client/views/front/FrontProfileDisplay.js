@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { get as axget } from 'axios';
 import { object } from 'prop-types';
 import Handlebars from 'handlebars';
-import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 
 function FrontProfileDisplay({ staticContext, match: { params: { username:
@@ -29,10 +28,7 @@ function FrontProfileDisplay({ staticContext, match: { params: { username:
   let { profileUser } = state, { profileTemplate, siteName } =
     staticContext.config;
 
-  if (profileUser !== undefined) {
-    return <Redirect to='/not-found' />;
-  }
-  else if (profileUser) {
+  if (profileUser) {
     let { username, displayName, pictureSrc } = profileUser, template =
     Handlebars.compile(profileTemplate),
       pref = `${displayName || username}'s Profile`, disp =

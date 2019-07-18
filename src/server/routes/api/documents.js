@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { DocumentDisplayTemplate, DocumentType, Document } from '../../models';
+import { DocumentDisplayTemplate, DocumentType, Document, User }
+  from '../../models';
 import slug from 'limax';
 import { default as verifyMiddleware } from '../middleware';
 import { ObjectId } from 'mongodb';
@@ -38,24 +39,26 @@ router.get('/get_document_and_type_info/:id', function(req, res) {
 router.get('/get_document_by_slug/:slug',
   findTheOne(Document, { slug: 'slug' }));
 
-router.get('/get_document_by_type_and_slug/:type/:slug', function(req, res) {
+router.get('/get_document_by_type_and_slug/:type/:slug', function({ params: {
+  type, slug
+} }, res) {
   DocumentType.findOne({
-    docTypeName: req.params.type
-  }).then(docType => {
-    DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId })
-      .then(template => {
-        Document.findOne({
-          docTypeId: docType.docTypeId,
-          slug: req.params.slug })
-          .then(doc => {
-            res.status(200).json({
-              docTypeNamePlural: docType.docTypeNamePlural,
-              templateBody: template.templateBody,
-              document: doc
-            });
-          })
+    docTypeName: type
+  }).then(({ docTypeId, docTypeNamePlural }) => {
+    DocumentDisplayTemplate.findOne({ docTypeId }).then(({ templateBody }) => {
+      Document.findOne({ docTypeId, slug }).then(document => {
+        User.findOne({ userId: document.creatorId
+        }).select({ password: 0, _id: 0 }).then(authorInfo => {
+          res.status(200).json({
+            docTypeNamePlural,
+            templateBody,
+            document,
+            authorInfo
+          });
+        })
       });
-  }).catch(() => res.status(500));
+    }).catch(() => res.status(500));
+  });
 });
 
 router.get('/get_documents/:id', (req, res, next) => {
@@ -71,16 +74,18 @@ router.get('/get_documents/:id', (req, res, next) => {
   }).catch(err => next(err))
 });
 
-router.get('/get_documents_by_type_name/:docTypeNamePlural', (req, res, next) =>
+router.get('/get_documents_by_type_name/:docTypeNamePlural', ({
+  params: { docTypeNamePlural }
+}, res, next) =>
 {
   DocumentType.findOne({
-    docTypeNamePlural: req.params.docTypeNamePlural
+    docTypeNamePlural
   }).then(docType => {
     DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId }).then(
       template => {
         Document.find({ docTypeId: docType.docTypeId }).then(docs => {
           res.status(200).json({
-            typeName: req.params.docTypeNamePlural,
+            docTypeNamePlural,
             items: docs,
             categoryTemplateBody: template.categoryTemplateBody,
             docTypeId: docType.docTypeId

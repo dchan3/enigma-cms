@@ -47,7 +47,7 @@ export const frontEndRoutes = [
         items = await Document.find({
           docTypeId, draft: false
         }).sort({ createdAt: -1 });
-      return { categoryTemplateBody, items, typeName: docTypeNamePlural };
+      return { categoryTemplateBody, items, docTypeNamePlural };
     }
   },
   {
@@ -59,8 +59,10 @@ export const frontEndRoutes = [
         { docTypeId } = await DocumentType.findOne({ docTypeNamePlural }),
         { templateBody } =
           await DocumentDisplayTemplate.findOne({ docTypeId }),
-        doc = await Document.findOne({ slug, draft: false });
-      if (doc) return { docTypeId, docTypeNamePlural,
+        doc = await Document.findOne({ slug, draft: false }),
+        authorInfo = await User.findOne({ userId: doc.creatorId
+        }).select({ password: 0, _id: 0 })
+      if (doc) return { docTypeNamePlural, authorInfo,
         templateBody, doc };
       else return { };
     }

@@ -19,7 +19,7 @@ var SignupStrategy = new LocalStrategy({
           icongen(username, function(pictureSrc) {
             const userData = {
               username, password, email, pictureSrc,
-              displayName: '',
+              displayName: username,
               roleId: u ? 1 : 0,
             };
 

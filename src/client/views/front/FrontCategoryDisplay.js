@@ -29,7 +29,7 @@ function FrontCategoryDisplay({ staticContext, match: { params: { docType
   let { config: { shortcodes, siteName } } = staticContext, { dataObj } = state;
   if (dataObj === undefined) return <Redirect to='/not-found' />;
   else if (dataObj) {
-    let { categoryTemplateBody, items, typeName } = dataObj;
+    let { categoryTemplateBody, items, docTypeNamePlural } = dataObj;
 
     if (categoryTemplateBody && items) {
       shortcodes.forEach(
@@ -41,10 +41,10 @@ function FrontCategoryDisplay({ staticContext, match: { params: { docType
         newItems = items.map(({ content, slug, createdAt, editedAt }) => ({
           ...content, slug, createdAt, editedAt
         }));
-      return [<Metamorph title={`${typeName.charAt(0).toUpperCase() +
-      typeName.slice(1)} | ${siteName}`}
-      description={`${typeName.charAt(0).toUpperCase() +
-        typeName.slice(1)} on ${siteName}`} />,
+      return [<Metamorph title={`${docTypeNamePlural.charAt(0).toUpperCase() +
+      docTypeNamePlural.slice(1)} | ${siteName}`}
+      description={`${docTypeNamePlural.charAt(0).toUpperCase() +
+        docTypeNamePlural.slice(1)} on ${siteName}`} />,
       <div dangerouslySetInnerHTML={{ __html:
         template({ items: newItems }) }} />
       ];
