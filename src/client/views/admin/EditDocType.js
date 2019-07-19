@@ -54,10 +54,12 @@ let EditDocType = ({ match: {
         docTypeName: {
           label: 'Document Type Name',
           type: 'text',
+          required: true
         },
         docTypeNamePlural: {
           label: 'Document Type Name Plural',
-          type: 'text'
+          type: 'text',
+          required: true
         },
         attributes: {
           label: 'Attributes',
@@ -65,7 +67,8 @@ let EditDocType = ({ match: {
           shape: {
             attrName: {
               label: 'Attribute Name',
-              type: 'text'
+              type: 'text',
+              required: true
             },
             attrType: {
               label: 'Attribute Type',
@@ -73,7 +76,11 @@ let EditDocType = ({ match: {
               enumList: [
                 { 'text': 'Text', 'value': 'text' },
                 { 'text': 'Datetime', 'value': 'date' },
-                { 'text': 'Number', 'value': 'number' }
+                { 'text': 'Select', 'value': 'enum' },
+                { 'text': 'Number', 'value': 'number' },
+                { 'text': 'Email', 'value': 'email' },
+                { 'text': 'URL', 'value': 'url' },
+                { 'text': 'Color', 'value': 'color' }
               ]
             },
             minimum: minMax,

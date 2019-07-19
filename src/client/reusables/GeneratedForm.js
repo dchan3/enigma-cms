@@ -150,14 +150,13 @@ function GeneratedForm({ params, parentCallback, method, formAction,
           else if (redirectUrl) window.location.href = redirectUrl;
         }).catch(function (error) {
           setState({
-            errorMessage: error.message,
-            values: state.values, invalidFields: state.invalidFields
+            errorMessage: error.message, ...state,
           });
         });
     }
     else {
       setState({
-        errorMessage: 'Fields missing.',
+        errorMessage: `Fields missing: ${valid.join(', ')}.`,
         invalidFields: valid,
         values: state.values })
     }
@@ -169,7 +168,7 @@ function GeneratedForm({ params, parentCallback, method, formAction,
     <FormHeader>{title}</FormHeader>
     {state.errorMessage ?
       <FormErrorMessage>{state.errorMessage}</FormErrorMessage> : null}
-    <FormBackground onSubmit={(e) => e.preventDefault()}>
+    <FormBackground noValidate={true} onSubmit={(e) => e.preventDefault()}>
       {formGenUtils.formFromObj(
         params, state.values, null, state.invalidFields).map(
         function(node) {

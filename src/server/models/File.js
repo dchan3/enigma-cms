@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 
@@ -7,7 +7,7 @@ var conn = mongoose.createConnection(
 
 autoIncrement.initialize(conn);
 
-const FileSchema = new mongoose.Schema({
+const FileSchema = new Schema({
   fileName: {
     type: String,
     required: true
@@ -42,4 +42,4 @@ const FileSchema = new mongoose.Schema({
 FileSchema.plugin(autoIncrementPlugin,
   { model: 'File', field: 'fileId', startAt: 0, incrementBy: 1 });
 
-export default mongoose.model('File', FileSchema);
+export default model('File', FileSchema);

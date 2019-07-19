@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt, { hash, genSalt } from 'bcrypt';
 import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 
@@ -58,10 +58,10 @@ UserSchema.pre('save', function saveHook(next) {
   if (!user.isModified('password')) return next();
 
 
-  return bcrypt.genSalt((saltError, salt) => {
+  return genSalt((saltError, salt) => {
     if (saltError) { return next(saltError); }
 
-    return bcrypt.hash(user.password, salt, (hashError, hash) => {
+    return hash(user.password, salt, (hashError, hash) => {
       if (hashError) { return next(hashError); }
 
       // replace a password string with hash value

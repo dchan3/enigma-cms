@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 
@@ -28,4 +28,4 @@ const DocumentTypeSchema = new Schema({
 DocumentTypeSchema.plugin(autoIncrementPlugin,
   { model: 'DocumentType', field: 'docTypeId', startAt: 0, incrementBy: 1 });
 
-export default mongoose.model('DocumentType', DocumentTypeSchema);
+export default model('DocumentType', DocumentTypeSchema);

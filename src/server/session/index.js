@@ -4,7 +4,7 @@ import { default as secret } from '../../../config/secret';
 
 export default session({
   genid: () => uuid(),
-  secret: secret,
+  secret,
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false }

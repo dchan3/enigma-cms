@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 
@@ -7,7 +7,7 @@ var conn =
 
 autoIncrement.initialize(conn);
 
-var RoleSchema = new mongoose.Schema({
+var RoleSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -18,4 +18,4 @@ var RoleSchema = new mongoose.Schema({
 RoleSchema.plugin(autoIncrementPlugin,
   { model: 'Role', field: 'roleId', startAt: 0, incrementBy: 1 });
 
-export default mongoose.model('Role', RoleSchema);
+export default model('Role', RoleSchema);

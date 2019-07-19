@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import ShortcodeSchema from './ShortcodeSchema';
 
-const SiteConfigSchema = new mongoose.Schema({
+const SiteConfigSchema = new Schema({
   siteName: {
     type: String,
     required: [true, 'Site name required.'],
@@ -66,4 +66,4 @@ const SiteConfigSchema = new mongoose.Schema({
   }
 });
 
-export default mongoose.model('SiteConfig', SiteConfigSchema);
+export default model('SiteConfig', SiteConfigSchema);

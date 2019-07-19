@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const ShortcodeSchema = new mongoose.Schema({
+const ShortcodeSchema = new Schema({
   name: { type: String },
   args: { type: [String] },
   code: { type: String }

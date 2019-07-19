@@ -10,8 +10,8 @@ import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
 import { createProxyServer } from 'http-proxy';
-import fs from 'fs';
-import path from 'path';
+import fs, { readFileSync, } from 'fs';
+import path, { resolve } from 'path';
 
 mongoose.Promise = global.Promise;
 
@@ -67,32 +67,32 @@ app.use('/api/files', fileRoutes);
 // STATIC FILES
 app.get('/app.bundle.js', (req, res) => {
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8' );
-  res.send(fs.readFileSync(path.resolve(__dirname, 'public/app.bundle.js')))
+  res.send(readFileSync(resolve(__dirname, 'public/app.bundle.js')))
 });
 app.get('/prism.css', (req, res) => {
-  res.send(fs.readFileSync(path.resolve(__dirname, 'public/prism.css')));
+  res.send(readFileSync(resolve(__dirname, 'public/prism.css')));
 });
 app.get('/prism.js', (req, res) => {
-  res.send(fs.readFileSync(path.resolve(__dirname, 'public/prism.js')));
+  res.send(readFileSync(resolve(__dirname, 'public/prism.js')));
 });
 app.get('/favicon.ico', (req, res) => {
-  res.send(fs.readFileSync(path.resolve(__dirname, 'public/favicon.ico')));
+  res.send(readFileSync(resolve(__dirname, 'public/favicon.ico')));
 });
 app.get('/uploads/:type/:filename', ({ params: { type, filename } }, res) => {
-  res.send(fs.readFileSync(path.resolve(__dirname,
+  res.send(readFileSync(resolve(__dirname,
     `public/${type}/${filename}`)));
 });
 app.get('/profile-pix/:filename', (req, res) => {
   var { filename } = req.params;
-  res.send(fs.readFileSync(path.resolve(__dirname,
+  res.send(readFileSync(resolve(__dirname,
     `public/profile-pix/${filename}`)));
 });
 app.get('/site-icon/:filename', ({ params: { filename } }, res) => {
-  res.send(fs.readFileSync(path.resolve(__dirname,
+  res.send(readFileSync(resolve(__dirname,
     `public/site-icon/${filename}`)));
 });
 app.get('/robots.txt', (req, res) => {
-  res.send(fs.readFileSync(path.resolve(__dirname, 'public/robots.txt')));
+  res.send(readFileSync(resolve(__dirname, 'public/robots.txt')));
 });
 app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
   var docTypes = await DocumentType.find({}).select({ docTypeNamePlural: 1,

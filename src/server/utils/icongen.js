@@ -1,6 +1,6 @@
 import sha1 from 'sha1';
 import gm from 'gm';
-import path from 'path';
+import path, { resolve } from 'path';
 
 export default function(username, cb) {
   let hash = sha1(username),
@@ -20,7 +20,7 @@ export default function(username, cb) {
 
   let filename = `/profile-pix/${username}.png`;
 
-  image.write(path.resolve(__dirname, `./public/${filename}`), function(err) {
+  image.write(resolve(__dirname, `./public/${filename}`), function(err) {
     if (!err) cb(filename);
   });
 }

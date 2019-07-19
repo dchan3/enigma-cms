@@ -51,7 +51,8 @@ module.exports = [{
       handlebars: path.resolve(__dirname, 'node_modules',
         'handlebars/dist/handlebars.min.js'),
       'styled-components':
-        path.resolve(__dirname, 'node_modules', 'styled-components'),
+        path.resolve(__dirname, 'node_modules', 'styled-components', 'dist',
+          'styled-components.cjs.js'),
       'react-dom/server': path.resolve(__dirname, 'node_modules', 'react-dom',
         'cjs', 'react-dom-server.browser.production.min.js'),
       'react-router-dom': path.resolve(__dirname, 'node_modules',
