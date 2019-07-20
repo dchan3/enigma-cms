@@ -9,39 +9,37 @@ function EditDisplayTemplate({ match: { params: { docTypeId } }, staticContext
     dataObj: staticContext.dataObj && docTypeId &&
       staticContext.dataObj.docType &&
     staticContext.dataObj.docTypeId === parseInt(docTypeId)
-    && staticContext.dataObj || {
-      docType: null,
-      templateBody: null,
-      categoryTemplateBody: null
-    }
+    && staticContext.dataObj || null
   });
 
   useEffect(function() {
     let { dataObj } = staticContext;
-    if (!dataObj || (dataObj.docType && dataObj.docType.docTypeId !==
-      docTypeId)) {
+    if (!dataObj) {
       axget(`/api/documents/get_template/${docTypeId}`).then(({ data }) => {
         setState({ dataObj: data })
       });
     }
   }, []);
 
-  let { docType, templateBody, categoryTemplateBody } = state.dataObj;
+  if (state.dataObj) {
+    let { docType, templateBody, categoryTemplateBody } = state.dataObj;
 
-  if (docType !== null && templateBody !== null
-    && categoryTemplateBody !== null) {
-    let { docTypeName } = docType;
-    return <GeneratedForm title={`Edit ${docTypeName} Display Template`}
-      currentValue={{ ...{ templateBody, categoryTemplateBody } }}params={{
-        templateBody: {
-          type: 'text',
-          grammar: 'html'
-        },
-        categoryTemplateBody: {
-          type: 'text',
-          grammar: 'html'
-        } }} method="post" redirectUrl='/admin'
-      formAction={`/api/documents/update_template/${docTypeId}`} />;
+    if (docType !== null && templateBody !== null
+      && categoryTemplateBody !== null) {
+      let { docTypeName } = docType;
+      return <GeneratedForm title={`Edit ${docTypeName} Display Template`}
+        currentValue={{ ...{ templateBody, categoryTemplateBody } }}params={{
+          templateBody: {
+            type: 'text',
+            grammar: 'html'
+          },
+          categoryTemplateBody: {
+            type: 'text',
+            grammar: 'html'
+          } }} method="post" redirectUrl='/admin'
+        formAction={`/api/documents/update_template/${docTypeId}`} />;
+    }
+    else return null;
   }
   else return null;
 }

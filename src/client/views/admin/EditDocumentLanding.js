@@ -11,9 +11,9 @@ let TableText = styled.p`text-align:center;font-family:sans-serif;`;
 function EditDocumentLanding({ staticContext, match: {
   params: { docType: docTypeId } } }) {
   let [state, setState] = useState({
-    dataObj: staticContext.dataObj && docTypeId && 
+    dataObj: staticContext.dataObj && docTypeId &&
       staticContext.dataObj.docType &&
-      staticContext.dataObj.docType.docTypeId === docTypeId &&
+      staticContext.dataObj.docType.docTypeId === parseInt(docTypeId) &&
       staticContext.dataObj.documents &&
       staticContext.dataObj || null
   });
@@ -38,9 +38,9 @@ function EditDocumentLanding({ staticContext, match: {
   }
 
   let { dataObj } = state;
-  if (dataObj === undefined) return <Redirect to='/not-found' />;
+  if (dataObj === undefined) return <Redirect to='/admin' />;
   else if (dataObj) {
-    var { docType, documents } = dataObj;
+    let { docType, documents } = dataObj;
 
     if (docType && documents && documents.length) {
       let { docTypeName, docTypeNamePlural, attributes } = docType;
