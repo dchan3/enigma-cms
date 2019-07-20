@@ -193,7 +193,8 @@ describe('Form from Obj', function() {
           onChange: 'handleChange guestList.0.firstName',
           type: 'text',
           required: false,
-          hidden: false
+          hidden: false,
+          noValidate: true
         }
       },
       {
@@ -211,7 +212,8 @@ describe('Form from Obj', function() {
           onChange: 'handleChange guestList.0.lastName',
           type: 'text',
           required: false,
-          hidden: false
+          hidden: false,
+          noValidate: true
         }
       },
       {
@@ -231,7 +233,8 @@ describe('Form from Obj', function() {
           onChange: 'handleChange guestList.0.age',
           type: 'number',
           required: false,
-          hidden: false
+          hidden: false,
+          noValidate: true
         }
       },
       {
@@ -255,7 +258,8 @@ describe('Form from Obj', function() {
           onChange: 'handleChange guestList.0.contactInformation.phone',
           type: 'text',
           required: false,
-          hidden: false
+          hidden: false,
+          noValidate: true
         }
       },
       {
@@ -275,7 +279,8 @@ describe('Form from Obj', function() {
           onChange: 'handleChange guestList.0.contactInformation.email',
           type: 'text',
           required: false,
-          hidden: false
+          hidden: false,
+          noValidate: true
         }
       },
       {

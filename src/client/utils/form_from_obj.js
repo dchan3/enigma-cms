@@ -175,22 +175,29 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
 };
 
 const checkRequired = function(paramObj, valueObj) {
-  let invalidFields = [], reqFields = outputKeys(paramObj).filter(k =>
-    k.endsWith('.required')).map(k => k.replace('.required', ''));
+  let invalidFields = [], pks = mapKeysToValues(paramObj), reqFields =
+      outputKeys(paramObj).filter(k => k.endsWith('.required')).map(
+        k => k.replace('.required', '')), vks = outputKeys(valueObj),
+    vs = mapKeysToValues(valueObj);
 
-  reqFields.forEach(field => {
-    var v = loget(valueObj, field);
-    if (!v || !v.length) {
-      invalidFields.push(field);
+  for (let reqField in reqFields) {
+    if (pks[`${reqFields[reqField]}.required`]) {
+      let relevant = vks.filter(k =>
+        reqFields[reqField] === numKeyToShapeKey(k));
+      for (let r in relevant) {
+        if (!vs[relevant[r]] || vs[relevant[r]] === '') {
+          invalidFields.push(relevant[r]);
+        }
+      }
     }
-  });
+  }
 
   return invalidFields;
 };
 
 const validateForm = function(paramObj, valueObj) {
   let reqd = [...checkRequired(paramObj, valueObj)].flat();
-  return !reqd.length || reqd;
+  return reqd.length ? reqd : true;
 };
 
 export default { formFromObj, mapKeysToValues, outputKeys, validateForm,
