@@ -384,6 +384,16 @@ describe('loget and loset functions', function() {
     expect(loget(object, 'homies.0.name')).to.equal('John');
     done();
   });
+
+  it('loset new key', function(done) {
+    var object = {
+      leader:
+        { name: 'Jack', hobbies: ['art', 'music'] }
+    };
+    loset(object, 'leader.lastName', 'Sparrow');
+    expect(object.leader.lastName).to.equal('Sparrow');
+    done();
+  });
 });
 
 describe('Num Key to Shape Key function', function() {

@@ -202,23 +202,25 @@ router.post('/new_document/:type_id', verifyMiddleware,
   });
 
 router.post('/update_document/:node_id', verifyMiddleware, (
-  { params: { node_id: docNodeId } , body, user }, res, next) => {
+  { params: { node_id: docNodeId }, body, user }, res, next) => {
   Document.findOne({ docNodeId }).then(doc => {
     doc.set('editedAt', new Date());
     doc.set('editorId', user.userId);
     var reset = [];
     for (var attr in body) {
-      if (attr !== 'draft') {
-        if (attr.indexOf('.') > -1) {
-          var mainKey = attr.split('.')[0];
-          if (!reset.includes(mainKey)) {
-            doc.set(`content.${mainKey}`, {});
-            reset.push(mainKey);
+      if (attr !== '') {
+        if (attr !== 'draft') {
+          if (attr.indexOf('.') > -1) {
+            var mainKey = attr.split('.')[0];
+            if (!reset.includes(mainKey)) {
+              doc.set(`content.${mainKey}`, {});
+              reset.push(mainKey);
+            }
           }
+          doc.set(`content.${attr}`, body[attr]);
         }
-        doc.set(`content.${attr}`, body[attr]);
+        else { doc.set(attr, body[attr]); }
       }
-      else { doc.set(attr, body[attr]); }
     }
     DocumentType.findOne({ docTypeId: doc.docTypeId }).then(({ slugFrom }) => {
       let propSlug = slug(doc.content[slugFrom]);
