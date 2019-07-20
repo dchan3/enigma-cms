@@ -19,7 +19,7 @@ function EditDocumentLanding({ staticContext, match: {
   });
 
   useEffect(function() {
-    let { dataObj } = staticContext;
+    let { dataObj } = state;
     if (!dataObj) {
       axget(`/api/documents/get_documents/${docTypeId}`).then(({ data }) => {
         setState({ dataObj: data })

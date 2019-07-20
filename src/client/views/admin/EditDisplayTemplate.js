@@ -13,7 +13,7 @@ function EditDisplayTemplate({ match: { params: { docTypeId } }, staticContext
   });
 
   useEffect(function() {
-    let { dataObj } = staticContext;
+    let { dataObj } = state;
     if (!dataObj) {
       axget(`/api/documents/get_template/${docTypeId}`).then(({ data }) => {
         setState({ dataObj: data })

@@ -7,7 +7,12 @@ import { Redirect } from 'react-router-dom';
 function EditDocumentPage({ match: { params: { docNode, docTypeId } },
   staticContext }) {
   let [state, setState] = useState({
-      dataObj: null
+      dataObj: staticContext.dataObj &&
+        ((staticContext.dataObj.docType &&
+        staticContext.dataObj.docType.docTypeId === parseInt(docTypeId)) ||
+        (staticContext.dataObj.doc &&
+        staticContext.dataObj.doc.docNodeId === parseInt(docNode))) &&
+        staticContext.dataObj || null
     }), params = {
       draft: {
         type: 'enum',
@@ -19,8 +24,8 @@ function EditDocumentPage({ match: { params: { docNode, docTypeId } },
     };
 
   useEffect(function() {
-    let { dataObj } = staticContext;
-    if (dataObj && (dataObj.docNode || dataObj.docTypeId)) {
+    let { dataObj } = state;
+    if (dataObj) {
       setState({ dataObj });
     }
     else {
