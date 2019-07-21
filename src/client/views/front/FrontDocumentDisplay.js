@@ -16,7 +16,7 @@ function FrontDocumentDisplay({
   });
 
   useEffect(function() {
-    let { dataObj } = staticContext;
+    let { dataObj } = state;
     if (!dataObj) {
       axget(
         `/api/documents/get_document_by_type_and_slug/${docType}/${docNode}`)

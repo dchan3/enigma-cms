@@ -9,8 +9,7 @@ autoIncrement.initialize(conn);
 
 var RoleSchema = new Schema({
   name: {
-    type: String,
-    required: true
+    type: String, required: true
   },
   roleId: { type: Number }
 });

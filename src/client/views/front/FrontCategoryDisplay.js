@@ -15,7 +15,7 @@ function FrontCategoryDisplay({ staticContext, match: { params: { docType
   });
 
   useEffect(function() {
-    let { dataObj } = staticContext;
+    let { dataObj } = state;
     if (!dataObj) {
       axget(
         `/api/documents/get_documents_by_type_name/${docType}`)
