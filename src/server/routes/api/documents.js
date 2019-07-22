@@ -81,9 +81,9 @@ router.get('/get_documents_by_type_name/:docTypeNamePlural', ({
   DocumentType.findOne({
     docTypeNamePlural
   }).then(({ docTypeId }) => {
-    DocumentDisplayTemplate.findOne({ docTypeId, draft: false }).then(
+    DocumentDisplayTemplate.findOne({ docTypeId }).then(
       ({ categoryTemplateBody }) => {
-        Document.find({ docTypeId }).then(docs => {
+        Document.find({ docTypeId, draft: false }).then(docs => {
           res.status(200).json({
             docTypeNamePlural,
             items: docs,
