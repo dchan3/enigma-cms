@@ -45,7 +45,7 @@ let App = ({ staticContext }) => {
       description={description || 'Welcome to my website!'}
       keywords={keywords && keywords.join(',') || ''} image={iconUrl || ''}/>
     <Switch>
-      <ProtectedRoute path='/admin' component={MainMenu}
+      <ProtectedRoute path='/admin' component={MainMenu} isAdmin={false}
         {...{ staticContext }} />
       <FrontEndRoute path='*' {...{ staticContext }} component={FrontHeader}/>
     </Switch>

@@ -20,7 +20,7 @@ function SamePageAnchor({
     }
   }
 
-  return history.location.pathname !== href ?
+  return (history && history.location.pathname !== href) ?
     <Anchor {...{ href, target, className, id, style
     }} onClick={handleClick}>{children}</Anchor> :
     <AlreadyOn>{children}</AlreadyOn>;
@@ -35,5 +35,5 @@ SamePageAnchor.propTypes = {
   id: oneOfType([string, func]),
   style: oneOfType([object, func]),
   children: oneOfType([array, func]),
-  history: object
+  history: object.isRequired
 };

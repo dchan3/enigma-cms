@@ -39,7 +39,8 @@ function MainMenu({ staticContext: { user, types }, history }) {
 }
 
 MainMenu.propTypes = {
-  staticContext: object
+  staticContext: object,
+  history: object
 };
 
 export default MainMenu;

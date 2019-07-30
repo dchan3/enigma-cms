@@ -1,9 +1,9 @@
 import React from 'react';
-import { array, string } from 'prop-types';
+import { array, string, object } from 'prop-types';
 import styled from 'styled-components';
 import SamePageAnchor from './SamePageAnchor';
 
-let urlText = { url: string, text: string }, ContainerDiv =
+let urlText = { url: string, text: string, history: object }, ContainerDiv =
   styled.div`width:fit-content;margin:auto;text-align:center;`, TopLevelList =
   styled.ul`list-style-type:none;text-transform:uppercase;padding-left:0;
 font-family:sans-serif;@media(min-width:767px){display:inline-flex;}
@@ -16,9 +16,9 @@ font-family:sans-serif;`, SubListItem = styled.li`padding:8px 8px 0 8px;`,
   -o-transition:font-size .25s;
   transition:font-size .25s;
   &:hover{text-decoration:underline;font-size:1.2em;}`,
-  WhiteSpan = styled.span`color: white;`,
+  WhiteSpan = styled.span`color:white;`,
   NodeLinkText = ({ url, text, history }) => (
-    <SamePageAnchor component={HoverLink} history={history} href={url}>
+    <SamePageAnchor component={HoverLink} {...{ history }} href={url}>
       <span>{text}</span></SamePageAnchor>),
   LinkNode = ({ url, text, history }) => (
     <ListItem><NodeLinkText {...{ url, text, history }} /></ListItem>),
@@ -38,16 +38,15 @@ font-family:sans-serif;`, SubListItem = styled.li`padding:8px 8px 0 8px;`,
   if (!propTypes) propTypes = urlText;
 });
 
-
 SubMenu.propTypes = {
   childNodes: array,
-  url: string,
-  text: string
+  text: string,
+  history: object
 };
 
 function DropdownMenu({ menuNodes, history }) {
   function renderNode(node) {
-    let L = { true: SubMenu, false: LinkNode }[!!node.childNodes];
+    let L = !!node.childNodes ? SubMenu : LinkNode;
     return <L {...node} {...{ history }} />;
   }
 

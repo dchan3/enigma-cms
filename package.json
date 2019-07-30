@@ -32,7 +32,7 @@
     "prop-types": "^15.7.2",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-everafter": "^1.0.2",
+    "react-everafter": "^1.1.0",
     "react-helmet": "^5.2.1",
     "react-metamorph": "^1.0.0",
     "react-router-dom": "^5.0.1",
