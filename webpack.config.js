@@ -30,14 +30,6 @@ module.exports = [{
           comments: false,
           plugins: ['./babel/hashify']
         }
-      },
-      {
-        test: /\.jsx?$/,
-        include: /node_modules|handlebars|react/,
-        loader: 'babel-loader',
-        options: {
-          comments: false
-        }
       }
     ]
   },
@@ -115,6 +107,8 @@ module.exports = [{
     alias: {
       'react-dom/server': path.resolve(__dirname, 'node_modules', 'react-dom',
         'cjs', 'react-dom-server.node.production.min.js'),
+      'react-dom': path.resolve(__dirname, 'node_modules', 'react-dom',
+        'cjs', 'react-dom.production.min.js'),
       'react-router-dom': path.resolve(__dirname, 'node_modules',
         'react-router-dom', 'cjs', 'react-router-dom.min.js'),
       'prop-types': path.resolve(__dirname, 'node_modules', 'prop-types',

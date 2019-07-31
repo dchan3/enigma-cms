@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { oneOfType, string, func, object, array } from 'prop-types';
 import styled from 'styled-components';
+import GeneralContext from '../contexts/GeneralContext';
 
 function SamePageAnchor({
-  children, href, target, className, id, style, history, component
+  children, href, target, className, id, style, component
 }) {
-  let Anchor = component || styled.a``, AlreadyOn = styled.span`
+  let { generalState, setGeneralState } = useContext(GeneralContext),
+    Anchor = component || styled.a``, AlreadyOn = styled.span`
     text-decoration: underline;
     font-weight: 900;
     margin: 0;
@@ -15,12 +17,15 @@ function SamePageAnchor({
 
   function handleClick(event) {
     if (href.startsWith('/')) {
+      let newState = Object.assign({}, generalState);
       event.preventDefault();
-      history.push(href);
+      newState.history.push(href);
+      setGeneralState(newState);
     }
   }
 
-  return (history && history.location.pathname !== href) ?
+  return (generalState.history &&
+    generalState.history.location.pathname !== href) ?
     <Anchor {...{ href, target, className, id, style
     }} onClick={handleClick}>{children}</Anchor> :
     <AlreadyOn>{children}</AlreadyOn>;
@@ -34,6 +39,5 @@ SamePageAnchor.propTypes = {
   className: oneOfType([string, func]),
   id: oneOfType([string, func]),
   style: oneOfType([object, func]),
-  children: oneOfType([array, func]),
-  history: object.isRequired
+  children: oneOfType([array, func])
 };

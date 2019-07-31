@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { get as axget } from 'axios';
-import { object } from 'prop-types';
 import Handlebars from 'handlebars';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function FrontDocumentDisplay({
-  staticContext, match: { params: { docType, docNode } } }) {
-  let [state, setState] = useState({
-    dataObj: staticContext.dataObj &&
+function FrontDocumentDisplay() {
+  let { generalState } = useContext(GeneralContext),
+    { staticContext, match: { params: { docType, docNode } } } = generalState,
+    [state, setState] = useState({
+      dataObj: staticContext.dataObj &&
       staticContext.dataObj.docTypeNamePlural &&
       staticContext.dataObj.docTypeNamePlural === docType &&
       staticContext.dataObj.doc && staticContext.dataObj.doc.slug === docNode &&
       staticContext.dataObj || null
-  });
+    });
 
   useEffect(function() {
     let { dataObj } = state;
@@ -61,10 +62,5 @@ function FrontDocumentDisplay({
   }
   return null;
 }
-
-FrontDocumentDisplay.propTypes = {
-  match: object,
-  staticContext: object
-};
 
 export default FrontDocumentDisplay;

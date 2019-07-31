@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { object } from 'prop-types';
+import React, { useEffect, useState, useContext } from 'react';
 import { get as axget } from 'axios';
-import { TextHeader } from '../../reusables';
+import { TextHeader, SamePageAnchor } from '../../reusables';
 import { TablePaginator } from 'react-everafter';
 import { delete as axdel } from 'axios';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function FileMgmtLanding({ staticContext }) {
+function FileMgmtLanding() {
+  let { generalState: { staticContext } } = useContext(GeneralContext);
+
   function handleDeleteClick() {
     return function(url) {
       axdel(url);
@@ -32,7 +34,7 @@ function FileMgmtLanding({ staticContext }) {
 
   return [
     <TextHeader>Manage Files</TextHeader>,
-    <a href='/admin/upload-file'>Upload File</a>,
+    <SamePageAnchor href='/admin/upload-file'>Upload File</SamePageAnchor>,
     files.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
       items={files} truncate={true} columns={[
         {
@@ -74,9 +76,5 @@ function FileMgmtLanding({ staticContext }) {
       ]} /> : null
   ];
 }
-
-FileMgmtLanding.propTypes = {
-  staticContext: object
-};
 
 export default FileMgmtLanding;

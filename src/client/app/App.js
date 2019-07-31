@@ -10,16 +10,22 @@ import { FrontCategoryDisplay, FrontDocumentDisplay, FrontHeader,
   FrontProfileDisplay, HomePage, LoginPage, NotFound } from '../views/front';
 import { Footer } from '../reusables';
 import { Metamorph } from 'react-metamorph';
+import { GeneralContextProvider } from '../contexts/GeneralContext';
 
 let FrontEndRoute = ({ component: Component, staticContext, ...rest }) => <Route
   exact {...rest} component={({ history, match }) => (
-    <Component {...{ history, staticContext, match }} />)} />;
+    <GeneralContextProvider initialVals={{ history, staticContext, match }}>
+      <Component />
+    </GeneralContextProvider>)} />;
 
 let ProtectedRoute = ({ component: Component, isAdmin, staticContext, ...rest
 }) => <Route exact {...rest} component={({ history, match }) => {
   if (staticContext.user) {
     if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
-      return <Component {...{ history, staticContext, match }} />;
+      return <GeneralContextProvider
+        initialVals={{ history, staticContext, match }}>
+        <Component />
+      </GeneralContextProvider>;
     }
     else return <Redirect to="/admin" />;
   }
@@ -28,13 +34,17 @@ let ProtectedRoute = ({ component: Component, isAdmin, staticContext, ...rest
 
 let LoggedOutRoute =
   ({ component: Component, staticContext, ...rest }) => <Route exact {...rest}
-    component={() => staticContext.user ? <Redirect to="/admin" /> :
-      <Component {...{ staticContext }} />} />;
+    component={({ history, match }) =>
+      staticContext.user ? <Redirect to="/admin" /> :
+        <GeneralContextProvider
+          initialVals={{ history, staticContext, match }}>
+          <Component /></GeneralContextProvider>} />;
 
 let UniversalRoute =
   ({ component: Component, staticContext, ...rest }) => <Route exact {...rest}
-    component={({ history }) => <Component {...{
-      staticContext, history }} />} />;
+    component={({ history, match }) => <GeneralContextProvider
+      initialVals={{ history, staticContext, match }}><Component />
+    </GeneralContextProvider>} />;
 
 let App = ({ staticContext }) => {
   if (!staticContext) staticContext = window.__INITIAL_DATA__;

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { object } from 'prop-types';
+import React, { useState, useEffect, useContext } from 'react';
 import { GeneratedForm } from '../../reusables';
 import { get as axget } from 'axios';
+import GeneralContext from '../../contexts/GeneralContext';
 
-let EditDocType = ({ match: {
-  params: { docTypeId }
-}, staticContext }) => {
+let EditDocType = () => {
+  let { generalState } = useContext(GeneralContext),
+    { staticContext, match: { params: { docTypeId } } } = generalState;
+
   let [state, setState] = useState({
       docType: docTypeId ? (staticContext.docType && docTypeId &&
       staticContext.docType.docTypeId === parseInt(docTypeId) &&
@@ -116,11 +117,6 @@ let EditDocType = ({ match: {
         : '/api/documents/register_type'}/>;
   }
   return null;
-};
-
-EditDocType.propTypes = {
-  match: object,
-  staticContext: object
 };
 
 export default EditDocType;
