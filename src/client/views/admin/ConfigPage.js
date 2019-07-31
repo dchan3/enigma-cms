@@ -1,8 +1,11 @@
-import React from 'react';
-import { object } from 'prop-types';
+import React, { useContext } from 'react';
 import { GeneratedForm } from '../../reusables';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function ConfigPage({ staticContext: { config } }) {
+function ConfigPage() {
+  let { generalState } = useContext(GeneralContext),
+    { staticContext: { config } } = generalState;
+
   return <GeneratedForm title="Site Settings" currentValue={config} params={{
     siteName: { type: 'text' },
     iconFile: { type: 'file' },
@@ -40,7 +43,5 @@ function ConfigPage({ staticContext: { config } }) {
     }
   }} method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
 }
-
-ConfigPage.propTypes = { staticContext: object };
 
 export default ConfigPage;

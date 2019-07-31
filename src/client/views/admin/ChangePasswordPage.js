@@ -1,8 +1,11 @@
-import React from 'react';
-import { object } from 'prop-types';
+import React, { useContext } from 'react';
 import GeneratedForm from '../../reusables/GeneratedForm';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function ChangePasswordPage({ user: { _id } }) {
+function ChangePasswordPage() {
+  let { generalState } = useContext(GeneralContext),
+    { staticContext } = generalState, { user: { _id } } = staticContext;
+
   return <GeneratedForm title="Change Password" params={{
     userId: {
       label: 'User ID',
@@ -15,9 +18,5 @@ function ChangePasswordPage({ user: { _id } }) {
   }} method="post" formAction='/api/users/change_password' redirectUrl='/admin'
   />;
 }
-
-ChangePasswordPage.propTypes = {
-  user: object
-};
 
 export default ChangePasswordPage;

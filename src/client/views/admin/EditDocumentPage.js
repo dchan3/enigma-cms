@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { get as axget } from 'axios';
-import { object } from 'prop-types';
 import { GeneratedForm } from '../../reusables';
 import { Redirect } from 'react-router-dom';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function EditDocumentPage({ match: { params: { docNode, docTypeId } },
-  staticContext }) {
+function EditDocumentPage() {
+  let { generalState: { match: { params: { docNode, docTypeId } },
+    staticContext } } = useContext(GeneralContext);
+
   let [state, setState] = useState({
       dataObj: staticContext.dataObj &&
         ((staticContext.dataObj.docType &&
@@ -74,10 +76,5 @@ function EditDocumentPage({ match: { params: { docNode, docTypeId } },
   }
   else return null;
 }
-
-EditDocumentPage.propTypes = {
-  match: object,
-  staticContext: object
-};
 
 export default EditDocumentPage;

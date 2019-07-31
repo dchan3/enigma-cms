@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { object } from 'prop-types';
+import React, { useEffect, useState, useContext } from 'react';
 import Handlebars from 'handlebars';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import { get as axget } from 'axios';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function FrontCategoryDisplay({ staticContext, match: { params: { docType
-} } }) {
-  let [state, setState] = useState({
-    dataObj: staticContext.dataObj &&
+function FrontCategoryDisplay() {
+  let { generalState } = useContext(GeneralContext),
+    { staticContext, match: { params: { docType } } } = generalState,
+    [state, setState] = useState({
+      dataObj: staticContext.dataObj &&
       staticContext.dataObj.docTypeNamePlural &&
       staticContext.dataObj.docTypeNamePlural === docType &&
       staticContext.dataObj || null
-  });
+    });
 
   useEffect(function() {
     let { dataObj } = state;
-    if (!dataObj) {
+    if (!dataObj || (dataObj && dataObj.docTypeNamePlural && dataObj.doc)) {
       axget(
         `/api/documents/get_documents_by_type_name/${docType}`)
         .then(
@@ -53,10 +54,5 @@ function FrontCategoryDisplay({ staticContext, match: { params: { docType
 
   return null;
 }
-
-FrontCategoryDisplay.propTypes = {
-  match: object,
-  staticContext: object
-};
 
 export default FrontCategoryDisplay;

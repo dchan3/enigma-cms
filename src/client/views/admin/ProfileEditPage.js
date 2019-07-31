@@ -1,8 +1,11 @@
-import React from 'react';
-import { object } from 'prop-types';
+import React, { useContext } from 'react';
 import { GeneratedForm } from '../../reusables';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function ProfileEditPage({ staticContext: { user } }) {
+function ProfileEditPage() {
+  let { generalState } = useContext(GeneralContext),
+    { staticContext: { user } } = generalState;
+
   return <GeneratedForm title='Edit Profile' currentValue={user} params={{
     userId: { label: 'User ID', type: 'text', hidden: true },
     username: { type: 'text' }, displayName: { type: 'text' },
@@ -10,9 +13,5 @@ function ProfileEditPage({ staticContext: { user } }) {
     fileContent: { type: 'string', hidden: true }, email: { type: 'email' },
   }} method="post" redirectUrl='/admin' formAction='/api/users/update' />;
 }
-
-ProfileEditPage.propTypes = {
-  staticContext: object
-};
 
 export default ProfileEditPage;

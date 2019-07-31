@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { get as axget } from 'axios';
-import { object } from 'prop-types';
 import styled from 'styled-components';
 import SamePageAnchor from './SamePageAnchor';
 let FooterContainer = styled.div`
 text-align:center;font-family:sans-serif;margin:10px;`, FooterText =
   styled.p`margin:0;`;
+import GeneralContext from '../contexts/GeneralContext';
 
-function Footer({ staticContext, history }) {
+function Footer() {
+  let { generalState } = useContext(GeneralContext);
+
   let [state, setState] = useState({
-    user: staticContext && staticContext.user || null
+    user: generalState.staticContext && generalState.staticContext.user || null
   });
 
   useEffect(function() {
@@ -26,28 +28,20 @@ function Footer({ staticContext, history }) {
     {user ? <FooterText>
       Logged in as {user.username}.
       {' '}
-      <SamePageAnchor {...{ history }} href='/admin'>Go to Admin Panel.
-      </SamePageAnchor>
+      <SamePageAnchor href='/admin'>Go to Admin Panel.</SamePageAnchor>
       {' '}
-      <SamePageAnchor {...{ history }} href='/admin/edit-profile'>Edit profile
+      <SamePageAnchor href='/admin/edit-profile'>Edit profile</SamePageAnchor>.
+      {' '}
+      <SamePageAnchor href='/api/users/logout'>Logout</SamePageAnchor>.
+      {' '}
+      <SamePageAnchor href='/admin/change-password'>Change password
       </SamePageAnchor>.
-      {' '}
-      <SamePageAnchor {...{ history }}  href='/api/users/logout'>Logout
-      </SamePageAnchor>.
-      {' '}
-      <SamePageAnchor {...{ history }} href='/admin/change-password'>
-        Change password</SamePageAnchor>.
     </FooterText> : <FooterText>
-      <SamePageAnchor {...{ history }} href="/login">Login</SamePageAnchor>
+      <SamePageAnchor href="/login">Login</SamePageAnchor>
       {' | '}
-      <SamePageAnchor {...{ history }} href="/signup">Register</SamePageAnchor>
+      <SamePageAnchor href="/signup">Register</SamePageAnchor>
     </FooterText>}
   </FooterContainer>;
 }
-
-Footer.propTypes = {
-  staticContext: object,
-  history: object
-};
 
 export default Footer;

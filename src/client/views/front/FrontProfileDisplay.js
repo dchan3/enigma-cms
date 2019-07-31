@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { get as axget } from 'axios';
-import { object } from 'prop-types';
 import Handlebars from 'handlebars';
 import { Metamorph } from 'react-metamorph';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function FrontProfileDisplay({ staticContext, match: { params: { username:
-  urlUsername } } })
+function FrontProfileDisplay()
 {
-  let [state, setState] = useState({
-    profileUser: staticContext.profileUser &&
+  let { generalState } = useContext(GeneralContext), { staticContext, match: {
+      params: { username: urlUsername }
+    } } =
+    generalState, [state, setState] = useState({
+      profileUser: staticContext.profileUser &&
       staticContext.profileUser.username === urlUsername &&
       staticContext.profileUser || null
-  });
+    });
 
   useEffect(function() {
     let { profileUser } = staticContext;
@@ -38,7 +40,5 @@ function FrontProfileDisplay({ staticContext, match: { params: { username:
   }
   else return null;
 }
-
-FrontProfileDisplay.propTypes = { match: object, staticContext: object };
 
 export default FrontProfileDisplay;

@@ -1,8 +1,11 @@
-import React from 'react';
-import { object } from 'prop-types';
+import React, { useContext } from 'react';
 import { DropdownMenu } from '../../reusables';
+import GeneralContext from '../../contexts/GeneralContext';
 
-function MainMenu({ staticContext: { user, types }, history }) {
+function MainMenu() {
+  let { generalState } = useContext(GeneralContext),
+    { staticContext: { user, types } } = generalState;
+
   let isAdmin = user && user.roleId === 0 || false, menuNodes = [];
   if (isAdmin) menuNodes.push({ url: '/admin/edit-config',
     text: 'Site Settings' }, { url: '/admin/register-type',
@@ -34,13 +37,8 @@ function MainMenu({ staticContext: { user, types }, history }) {
   });
 
   return <div>
-    {user ? <DropdownMenu {...{ history, menuNodes }} /> : null}
+    {user ? <DropdownMenu {...{ menuNodes }} /> : null}
   </div>;
 }
-
-MainMenu.propTypes = {
-  staticContext: object,
-  history: object
-};
 
 export default MainMenu;

@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { object } from 'prop-types';
+import React, { useEffect, useState, useContext } from 'react';
 import { TablePaginator } from 'react-everafter';
 import styled from 'styled-components';
-import { TextHeader } from '../../reusables';
+import { TextHeader, SamePageAnchor } from '../../reusables';
 import { Redirect } from 'react-router-dom';
 import { get as axget, delete as axdel } from 'axios';
+import GeneralContext from '../../contexts/GeneralContext';
 
 let TableText = styled.p`text-align:center;font-family:sans-serif;`;
 
-function EditDocumentLanding({ staticContext, match: {
-  params: { docType: docTypeId } } }) {
+function EditDocumentLanding() {
+  let { generalState } = useContext(GeneralContext), { staticContext, match: {
+    params: { docType: docTypeId } } } = generalState;
+
   let [state, setState] = useState({
     dataObj: staticContext.dataObj && docTypeId &&
       staticContext.dataObj.docType &&
@@ -59,7 +61,8 @@ function EditDocumentLanding({ staticContext, match: {
           {
             headerText: 'Edit',
             display: ({ docNodeId }) =>
-              <a href={`/admin/edit-document/${docNodeId}`}>Edit</a>
+              <SamePageAnchor href={`/admin/edit-document/${docNodeId}`}>Edit
+              </SamePageAnchor>
           }, {
             headerText: 'Delete',
             display: ({ docTypeId, _id }) =>
@@ -68,17 +71,12 @@ function EditDocumentLanding({ staticContext, match: {
               )}>Delete</button>
           }, {
             headerText: 'View Live',
-            display: ({ slug }) => <a href={
-              `/${docTypeNamePlural}/${slug}`}>View Live</a>
+            display: ({ slug }) => <SamePageAnchor href={
+              `/${docTypeNamePlural}/${slug}`}>View Live</SamePageAnchor>
           }].flat()} />];
     }
   }
   return null;
 }
-
-EditDocumentLanding.propTypes = {
-  match: object,
-  staticContext: object
-};
 
 export default EditDocumentLanding;
