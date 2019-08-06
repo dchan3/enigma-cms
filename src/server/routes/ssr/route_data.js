@@ -6,6 +6,10 @@ import { MainMenu, SignupPage, ConfigPage, EditDocumentLanding,
 } from '../../../client/views/admin';
 import { Document, DocumentType, File, User, DocumentDisplayTemplate } from
   '../../models';
+import renderMarkup, { prepareDocumentsForRender } from
+  '../../utils/render_markup';
+import { categoryMetadata, documentMetadata } from
+  '../../utils/render_metadata';
 
 export const frontEndRoutes = [
   {
@@ -40,14 +44,23 @@ export const frontEndRoutes = [
       let docTypeNamePlural = path.replace(/\//g, ''),
         docType = await DocumentType.findOne({ docTypeNamePlural });
       if (!docType) return null;
-      var { docTypeId } = docType,
-        template = await DocumentDisplayTemplate.findOne({ docTypeId });
-      if (!template) return null;
-      var { categoryTemplateBody } = template,
-        items = await Document.find({
+      var { docTypeId } = docType, docDisplayTemplate =
+        await DocumentDisplayTemplate.findOne({ docTypeId });
+      if (!docDisplayTemplate) return null;
+      var { categoryTemplateBody } = docDisplayTemplate,
+        docs = await Document.find({
           docTypeId, draft: false
         }).sort({ createdAt: -1 });
-      return { categoryTemplateBody, items, docTypeNamePlural };
+
+      let items = prepareDocumentsForRender(docs),
+        rendered = await renderMarkup(categoryTemplateBody, { items }),
+        metadata = await categoryMetadata(docTypeNamePlural);
+
+      return {
+        docTypeNamePlural,
+        rendered,
+        metadata
+      };
     }
   },
   {
@@ -61,9 +74,16 @@ export const frontEndRoutes = [
           await DocumentDisplayTemplate.findOne({ docTypeId }),
         doc = await Document.findOne({ slug, draft: false }),
         authorInfo = await User.findOne({ userId: doc.creatorId
-        }).select({ password: 0, _id: 0 })
-      if (doc) return { docTypeNamePlural, authorInfo,
-        templateBody, doc };
+        }).select({ password: 0, _id: 0 });
+
+      let { content, editedAt, createdAt } = doc,
+        metadata = await documentMetadata(content);
+
+      let rendered = await renderMarkup(templateBody,
+        { ...content, createdAt, editedAt, authorInfo });
+
+      if (doc) return {
+        authorInfo, rendered, slug, editedAt, createdAt, metadata };
       else return { };
     }
   },

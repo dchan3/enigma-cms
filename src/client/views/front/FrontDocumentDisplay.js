@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { get as axget } from 'axios';
-import Handlebars from 'handlebars';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import GeneralContext from '../../contexts/GeneralContext';
@@ -10,9 +9,8 @@ function FrontDocumentDisplay() {
     { staticContext, match: { params: { docType, docNode } } } = generalState,
     [state, setState] = useState({
       dataObj: staticContext.dataObj &&
-      staticContext.dataObj.docTypeNamePlural &&
-      staticContext.dataObj.docTypeNamePlural === docType &&
-      staticContext.dataObj.doc && staticContext.dataObj.doc.slug === docNode &&
+      staticContext.dataObj.slug &&
+      staticContext.dataObj.slug === docNode &&
       staticContext.dataObj || null
     });
 
@@ -20,7 +18,8 @@ function FrontDocumentDisplay() {
     let { dataObj } = state;
     if (!dataObj) {
       axget(
-        `/api/documents/get_document_by_type_and_slug/${docType}/${docNode}`)
+        `/api/documents/get_rendered_document_by_type_and_slug/${docType
+        }/${docNode}`)
         .then(
           ({ data }) => {
             setState({ dataObj: data })
@@ -28,37 +27,11 @@ function FrontDocumentDisplay() {
     }
   }, []);
 
-  let { dataObj } = state, { config: { shortcodes, keywords, siteName } } =
-    staticContext;
-
+  let { dataObj } = state;
   if (dataObj === undefined) return <Redirect to='/not-found' />;
-  else if (dataObj) {
-    let { templateBody, doc, authorInfo } = dataObj;
-    if (templateBody && doc) {
-      shortcodes.forEach(
-        function({ name, args, code }) {
-          Handlebars.registerHelper(name, new Function(args.join(','), code));
-        });
-
-      let template = Handlebars.compile(templateBody),
-        { content, createdAt, editedAt } = doc, attrs = {
-          title: content['title'] || content['name'] || '',
-          description: content['description'] || content['summary'] ||
-            content['synopsis'] || '',
-          image: content['image'] || content['img'] || content['picture'] ||
-           content['pic'] || content['photo'],
-          keywords: content['tags'] || content['keywords'] ||
-            content['buzzwords'] || ''
-        };
-
-      attrs.title += attrs.title.length ? ` | ${siteName}` : siteName;
-      attrs.keywords = typeof attrs.keywords === 'string' ?
-        [attrs.keywords, ...keywords] : [attrs.keywords, ...keywords];
-
-      return [<Metamorph {...attrs} />, <div dangerouslySetInnerHTML=
-        {{ __html:
-          template({ ...content, createdAt, editedAt, authorInfo }) }} />];
-    }
+  else if (dataObj && dataObj.metadata && dataObj.rendered) {
+    return [<Metamorph {...dataObj.metadata} />, <div dangerouslySetInnerHTML=
+      {{ __html: dataObj.rendered }} />];
   }
   return null;
 }

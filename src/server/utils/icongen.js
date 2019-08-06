@@ -1,6 +1,6 @@
 import sha1 from 'sha1';
 import gm from 'gm';
-import path, { resolve } from 'path';
+import { resolve } from 'path';
 
 export default function(username, cb) {
   let hash = sha1(username),

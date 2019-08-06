@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { SiteConfig } from '../../models';
 import { default as verifyMiddleware } from '../middleware';
-import fs from 'fs';
+import { writeFile } from 'fs';
 import path from 'path';
 
 var router = Router();
@@ -26,7 +26,7 @@ router.post('/update', verifyMiddleware, function({ body }, res, next) {
 
     if (iconFile && iconFile !== '') {
       let fn = iconFile.split('\\').pop();
-      await fs.writeFile(path.resolve(__dirname,
+      await writeFile(path.resolve(__dirname,
         `./public/site-icon/${fn}`),
       Buffer.from(fileContent, 'base64'), { flag: 'a+' },
       function(error) {

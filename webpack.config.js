@@ -16,7 +16,7 @@ module.exports = [{
       test: /\.jsx?$/i
     })]
   },
-  mode: 'production',
+  mode: process.env.DEV_MODE ? 'development' : 'production',
   entry:  './src/client/app/index.js',
   target: 'web',
   module: {
@@ -72,7 +72,7 @@ module.exports = [{
     },
     test: /\.jsx?$/i,
   })] },
-  mode: 'production',
+  mode: process.env.DEV_MODE ? 'development' : 'production',
   entry: './src/server/server.js',
   target: 'node',
   externals: [nodeExternals()],

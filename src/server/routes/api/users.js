@@ -4,7 +4,7 @@ import { User } from '../../models';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
-import fs from 'fs';
+import { writeFileSync } from 'fs';
 import path from 'path';
 import { findTheOne } from './utils';
 
@@ -82,7 +82,7 @@ router.post('/update', verifyMiddleware,  function({ body }, res, next) {
         if (profilePhoto && fileContent) {
           let fmt = profilePhoto.split('.').pop(), filepath = path.resolve(
             __dirname, `./public/profile-pix/${username}.${fmt}`);
-          fs.writeFileSync(filepath, Buffer.from(fileContent, 'base64'),
+          writeFileSync(filepath, Buffer.from(fileContent, 'base64'),
             { flag: 'a+' });
           user.set('pictureSrc', `/profile-pix/${username}.${fmt}`);
         }

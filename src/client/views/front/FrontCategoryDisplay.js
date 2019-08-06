@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react';
-import Handlebars from 'handlebars';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import { get as axget } from 'axios';
@@ -19,7 +18,7 @@ function FrontCategoryDisplay() {
     let { dataObj } = state;
     if (!dataObj || (dataObj && dataObj.docTypeNamePlural && dataObj.doc)) {
       axget(
-        `/api/documents/get_documents_by_type_name/${docType}`)
+        `/api/documents/get_rendered_documents_by_type_name/${docType}`)
         .then(
           ({ data }) => {
             setState({ dataObj: data })
@@ -27,29 +26,12 @@ function FrontCategoryDisplay() {
     }
   }, []);
 
-  let { config: { shortcodes, siteName } } = staticContext, { dataObj } = state;
+  let { dataObj } = state;
   if (dataObj === undefined) return <Redirect to='/not-found' />;
-  else if (dataObj) {
-    let { categoryTemplateBody, items, docTypeNamePlural } = dataObj;
-
-    if (categoryTemplateBody && items) {
-      shortcodes.forEach(
-        function({ name, args, code }) {
-          Handlebars.registerHelper(name, new Function(args.join(','), code));
-        });
-
-      let template = Handlebars.compile(categoryTemplateBody),
-        newItems = items.map(({ content, slug, createdAt, editedAt }) => ({
-          ...content, slug, createdAt, editedAt
-        }));
-      return [<Metamorph title={`${docTypeNamePlural.charAt(0).toUpperCase() +
-      docTypeNamePlural.slice(1)} | ${siteName}`}
-      description={`${docTypeNamePlural.charAt(0).toUpperCase() +
-        docTypeNamePlural.slice(1)} on ${siteName}`} />,
-      <div dangerouslySetInnerHTML={{ __html:
-        template({ items: newItems }) }} />
-      ];
-    }
+  else if (dataObj && dataObj.metadata && dataObj.rendered) {
+    return [<Metamorph {...dataObj.metadata} />,
+      <div dangerouslySetInnerHTML={{ __html: dataObj.rendered }} />
+    ];
   }
 
   return null;

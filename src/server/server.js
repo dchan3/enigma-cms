@@ -10,8 +10,8 @@ import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
 import { createProxyServer } from 'http-proxy';
-import fs, { readFileSync, } from 'fs';
-import path, { resolve } from 'path';
+import { readFileSync, } from 'fs';
+import { resolve } from 'path';
 
 mongoose.Promise = global.Promise;
 
