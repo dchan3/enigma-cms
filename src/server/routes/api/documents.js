@@ -5,6 +5,10 @@ import slug from 'limax';
 import { default as verifyMiddleware } from '../middleware';
 import { ObjectId } from 'mongodb';
 import { findTheOne } from './utils';
+import renderMarkup, { prepareDocumentsForRender } from
+  '../../utils/render_markup';
+import { categoryMetadata, documentMetadata } from
+  '../../utils/render_metadata';
 
 var router = Router();
 
@@ -61,6 +65,38 @@ router.get('/get_document_by_type_and_slug/:type/:slug', function({ params: {
   });
 });
 
+router.get('/get_rendered_document_by_type_and_slug/:type/:slug', function({
+  params: {
+    type, slug
+  } }, res) {
+  DocumentType.findOne({
+    $or: [
+      { docTypeName: type },
+      { docTypeNamePlural: type }]
+  }).then(({ docTypeId }) => {
+    DocumentDisplayTemplate.findOne({ docTypeId }).then(({ templateBody }) => {
+      Document.findOne({ docTypeId, slug }).then(({ creatorId, content,
+        createdAt, editedAt }) => {
+        User.findOne({ userId: creatorId
+        }).select({ password: 0, _id: 0 }).then(async authorInfo => {
+          let metadata = await documentMetadata(content), rendered =
+            await renderMarkup(templateBody, {
+              ...content, createdAt, editedAt, authorInfo })
+
+          res.status(200).json({
+            slug,
+            editedAt,
+            createdAt,
+            authorInfo,
+            rendered,
+            metadata
+          });
+        });
+      });
+    });
+  }).catch(() => res.status(500));
+});
+
 router.get('/get_documents/:id', (req, res, next) => {
   DocumentType.findOne({
     docTypeId: parseInt(req.params.id)
@@ -89,6 +125,30 @@ router.get('/get_documents_by_type_name/:docTypeNamePlural', ({
             items: docs,
             categoryTemplateBody,
             docTypeId
+          })
+        })
+      })
+  }).catch(err => next(err))
+});
+
+router.get('/get_rendered_documents_by_type_name/:docTypeNamePlural', ({
+  params: { docTypeNamePlural }
+}, res, next) =>
+{
+  DocumentType.findOne({
+    docTypeNamePlural
+  }).then(({ docTypeId }) => {
+    DocumentDisplayTemplate.findOne({ docTypeId }).then(
+      ({ categoryTemplateBody }) => {
+        Document.find({ docTypeId, draft: false }).then(async docs => {
+          let items = prepareDocumentsForRender(docs),
+            metadata = await categoryMetadata(docTypeNamePlural),
+            rendered = await renderMarkup(categoryTemplateBody, { items })
+
+          res.status(200).json({
+            docTypeNamePlural,
+            rendered,
+            metadata
           })
         })
       })
