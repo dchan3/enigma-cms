@@ -1,12 +1,14 @@
 import passport from 'passport';
 import { Router } from 'express';
-import { User } from '../../models';
+import { User, SiteConfig } from '../../models';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
 import { writeFileSync } from 'fs';
 import path from 'path';
 import { findTheOne } from './utils';
+import renderMarkup from '../../utils/render_markup';
+import { profileMetadata } from '../../utils/render_metadata';
 
 let router = Router();
 
@@ -24,7 +26,20 @@ router.get('/logout', function(req, res) {
 });
 
 router.get('/get_user_by_username/:username',
-  findTheOne(User,{ username: 'username' }));
+  findTheOne(User, { username: 'username' }));
+
+router.get('/get_user_profile/:username', function({ params: { username } },
+  res) {
+  User.findOne({ username }).then(user => {
+    SiteConfig.findOne({ }).then(async ({ profileTempate }) => {
+      let metadata = await profileMetadata(user), rendered =
+        await renderMarkup(profileTempate, user);
+      res.status(200).json({
+        metadata, rendered, username
+      });
+    });
+  }).catch(() => res.status(500));
+});
 
 // POST Requests
 router.post('/register', verifyMiddleware, function(req, res, next) {

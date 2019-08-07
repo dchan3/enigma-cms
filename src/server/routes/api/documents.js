@@ -27,9 +27,6 @@ router.get('/get_type_2/:id', function(req, res) {
   });
 });
 
-router.get('/get_document/:id',
-  findTheOne(Document, { docNodeId: 'id' }));
-
 router.get('/get_document_and_type_info/:id', function(req, res) {
   Document.findOne({ docNodeId: req.params.id }).then(doc => {
     DocumentType.findOne({ docTypeId: doc.docTypeId }).then(docType => {
@@ -38,31 +35,6 @@ router.get('/get_document_and_type_info/:id', function(req, res) {
       });
     });
   }).catch(() => res.status(500));
-});
-
-router.get('/get_document_by_slug/:slug',
-  findTheOne(Document, { slug: 'slug' }));
-
-router.get('/get_document_by_type_and_slug/:type/:slug', function({ params: {
-  type, slug
-} }, res) {
-  DocumentType.findOne({
-    docTypeName: type
-  }).then(({ docTypeId, docTypeNamePlural }) => {
-    DocumentDisplayTemplate.findOne({ docTypeId }).then(({ templateBody }) => {
-      Document.findOne({ docTypeId, slug }).then(document => {
-        User.findOne({ userId: document.creatorId
-        }).select({ password: 0, _id: 0 }).then(authorInfo => {
-          res.status(200).json({
-            docTypeNamePlural,
-            templateBody,
-            document,
-            authorInfo
-          });
-        })
-      });
-    }).catch(() => res.status(500));
-  });
 });
 
 router.get('/get_rendered_document_by_type_and_slug/:type/:slug', function({
@@ -110,27 +82,6 @@ router.get('/get_documents/:id', (req, res, next) => {
   }).catch(err => next(err))
 });
 
-router.get('/get_documents_by_type_name/:docTypeNamePlural', ({
-  params: { docTypeNamePlural }
-}, res, next) =>
-{
-  DocumentType.findOne({
-    docTypeNamePlural
-  }).then(({ docTypeId }) => {
-    DocumentDisplayTemplate.findOne({ docTypeId }).then(
-      ({ categoryTemplateBody }) => {
-        Document.find({ docTypeId, draft: false }).then(docs => {
-          res.status(200).json({
-            docTypeNamePlural,
-            items: docs,
-            categoryTemplateBody,
-            docTypeId
-          })
-        })
-      })
-  }).catch(err => next(err))
-});
-
 router.get('/get_rendered_documents_by_type_name/:docTypeNamePlural', ({
   params: { docTypeNamePlural }
 }, res, next) =>
@@ -140,17 +91,18 @@ router.get('/get_rendered_documents_by_type_name/:docTypeNamePlural', ({
   }).then(({ docTypeId }) => {
     DocumentDisplayTemplate.findOne({ docTypeId }).then(
       ({ categoryTemplateBody }) => {
-        Document.find({ docTypeId, draft: false }).then(async docs => {
-          let items = prepareDocumentsForRender(docs),
-            metadata = await categoryMetadata(docTypeNamePlural),
-            rendered = await renderMarkup(categoryTemplateBody, { items })
+        Document.find({ docTypeId, draft: false }).sort({ createdAt: -1 })
+          .then(async docs => {
+            let items = prepareDocumentsForRender(docs),
+              metadata = await categoryMetadata(docTypeNamePlural),
+              rendered = await renderMarkup(categoryTemplateBody, { items });
 
-          res.status(200).json({
-            docTypeNamePlural,
-            rendered,
-            metadata
+            res.status(200).json({
+              docTypeNamePlural,
+              rendered,
+              metadata
+            })
           })
-        })
       })
   }).catch(err => next(err))
 });

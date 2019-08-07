@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { get as axget } from 'axios';
-import Handlebars from 'handlebars';
 import { Metamorph } from 'react-metamorph';
+import { Redirect } from 'react-router-dom';
 import GeneralContext from '../../contexts/GeneralContext';
 
 function FrontProfileDisplay()
@@ -10,35 +10,31 @@ function FrontProfileDisplay()
       params: { username: urlUsername }
     } } =
     generalState, [state, setState] = useState({
-      profileUser: staticContext.profileUser &&
-      staticContext.profileUser.username === urlUsername &&
-      staticContext.profileUser || null
+      dataObj: staticContext.dataObj &&
+      staticContext.dataObj.username === urlUsername &&
+      staticContext.dataObj || null
     });
 
   useEffect(function() {
-    let { profileUser } = staticContext;
-    if (!profileUser) {
+    let { dataObj } = staticContext;
+    if (!dataObj) {
       axget(
         `/api/documents/get_user_by_username/${urlUsername}`)
         .then(
           ({ data }) => {
-            setState({ profileUser: data })
-          })
+            if (data) setState({ dataObj: data });
+            else setState({ dataObj: undefined });
+          }).catch(() => setState({ dataObj: undefined }));
     }
   }, []);
 
-  let { profileUser } = state, { profileTemplate, siteName } =
-    staticContext.config;
+  let { dataObj } = state, { rendered, metadata } = dataObj;
 
-  if (profileUser) {
-    let { username, displayName, pictureSrc } = profileUser, template =
-    Handlebars.compile(profileTemplate),
-      pref = `${displayName || username}'s Profile`, disp =
-      `${pref} | ${siteName}`, desc = `${pref}.`
-    return [<Metamorph title={disp} description={desc} image={pictureSrc}/>,
-      <div dangerouslySetInnerHTML={{ __html: template(profileUser) }} />];
-  }
-  else return null;
+  if (dataObj === undefined) return <Redirect to='/not-found' />;
+  else if (dataObj)
+    return [<Metamorph {...metadata} />,
+      <div dangerouslySetInnerHTML={{ __html: rendered }} />];
+  return null;
 }
 
 export default FrontProfileDisplay;

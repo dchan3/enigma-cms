@@ -4,11 +4,11 @@ import { MainMenu, SignupPage, ConfigPage, EditDocumentLanding,
   EditDocumentPage, EditDisplayTemplate, ProfileEditPage, ChangePasswordPage,
   FileMgmtLanding, UploadFilePage, EditDocType
 } from '../../../client/views/admin';
-import { Document, DocumentType, File, User, DocumentDisplayTemplate } from
-  '../../models';
+import { Document, DocumentType, File, User, DocumentDisplayTemplate,
+  SiteConfig } from '../../models';
 import renderMarkup, { prepareDocumentsForRender } from
   '../../utils/render_markup';
-import { categoryMetadata, documentMetadata } from
+import { categoryMetadata, documentMetadata, profileMetadata } from
   '../../utils/render_metadata';
 
 export const frontEndRoutes = [
@@ -31,10 +31,22 @@ export const frontEndRoutes = [
     path: '/profile/:username',
     exact: true,
     component: FrontProfileDisplay,
-    fetchInitialData: (path) => User.findOne({
-      username: path.split('/').pop()
-    }).select({ password: 0, _id: 0 }),
-    key: 'profileUser'
+    fetchInitialData: async (path) => {
+      var user = await User.findOne({
+          username: path.split('/').pop()
+        }).select({ password: 0, _id: 0 }),
+        { profileTemplate } = await SiteConfig.findOne({});
+
+      if (user) {
+        let rendered = await renderMarkup(profileTemplate, user),
+          metadata = await profileMetadata(user);
+
+        return {
+          rendered, metadata, username: user.username
+        }
+      }
+      else return undefined;
+    }
   },
   {
     path: '/:docType',

@@ -19,11 +19,21 @@ export const documentMetadata = async function (content) {
 }
 
 export const categoryMetadata = async function (docTypeNamePlural) {
-  let { siteName } = await SiteConfig.findOne({})
+  let { siteName } = await SiteConfig.findOne({});
   return {
     title: `${docTypeNamePlural.charAt(0).toUpperCase() +
       docTypeNamePlural.slice(1)} | ${siteName}`,
     description: `${docTypeNamePlural.charAt(0).toUpperCase() +
       docTypeNamePlural.slice(1)} on ${siteName}`
   }
+}
+
+export const profileMetadata = async ({ displayName, username,
+  pictureSrc }) => {
+  let { siteName } = await SiteConfig.findOne({}),
+    pref = `${displayName || username}'s Profile`, title =
+  `${pref} | ${siteName}`, description = `${pref}.`;
+  return {
+    title, description, image: pictureSrc
+  };
 }

@@ -1,20 +1,28 @@
 const path = require('path'), nodeExternals = require('webpack-node-externals'),
   UglifyJsPlugin = require('uglifyjs-webpack-plugin'),
-  { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+  { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'),
+  MiniCssExtractPlugin = require('mini-css-extract-plugin'),
+  LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
+
+const cssPlugin = new MiniCssExtractPlugin({
+    filename: 'app.style.css'
+  }), loRep = new LodashModuleReplacementPlugin();
 
 module.exports = [{
   plugins: process.env.ANALYZER ? [
-    new BundleAnalyzerPlugin()
-  ] : [],
-  optimization: { minimizer: [
-    new UglifyJsPlugin({
-      uglifyOptions: {
-        output: {
-          comments: false,
+    new BundleAnalyzerPlugin(),
+    cssPlugin, loRep
+  ] : [cssPlugin, loRep],
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          output: {
+            comments: false,
+          },
         },
-      },
-      test: /\.jsx?$/i
-    })]
+        test: /\.jsx?$/i
+      })]
   },
   mode: process.env.DEV_MODE ? 'development' : 'production',
   entry:  './src/client/app/index.js',
@@ -22,7 +30,7 @@ module.exports = [{
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.jsx?$/i,
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
@@ -30,6 +38,14 @@ module.exports = [{
           comments: false,
           plugins: ['./babel/hashify']
         }
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader
+          }
+        ]
       }
     ]
   },
@@ -48,7 +64,7 @@ module.exports = [{
       'react-dom/server': path.resolve(__dirname, 'node_modules', 'react-dom',
         'cjs', 'react-dom-server.browser.production.min.js'),
       'react-router-dom': path.resolve(__dirname, 'node_modules',
-        'react-router-dom', 'cjs', 'react-router-dom.min.js'),
+        'react-router-dom'),
       'react-dom': path.resolve(__dirname, 'node_modules', 'react-dom', 'cjs',
         'react-dom.production.min.js'),
       'react': path.resolve(__dirname, 'node_modules', 'react', 'cjs',
@@ -64,14 +80,19 @@ module.exports = [{
   plugins: process.env.ANALYZER ? [
     new BundleAnalyzerPlugin()
   ] : [],
-  optimization: { minimizer: [new UglifyJsPlugin({
-    uglifyOptions: {
-      output: {
-        comments: false,
+  optimization: {
+    minimizer: [new UglifyJsPlugin({
+      uglifyOptions: {
+        output: {
+          comments: false,
+        },
       },
-    },
-    test: /\.jsx?$/i,
-  })] },
+      test: /\.jsx?$/i,
+    })],
+    splitChunks: {
+      chunks: 'all'
+    }
+  },
   mode: process.env.DEV_MODE ? 'development' : 'production',
   entry: './src/server/server.js',
   target: 'node',
@@ -79,7 +100,7 @@ module.exports = [{
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.jsx?$/i,
         exclude: /node_modules/,
         loader: 'babel-loader',
         options: {
@@ -89,7 +110,7 @@ module.exports = [{
         }
       },
       {
-        test: /\.jsx?$/,
+        test: /\.jsx?$/i,
         include: /node_modules|handlebars|react/,
         loader: 'babel-loader',
         options: {
@@ -110,7 +131,7 @@ module.exports = [{
       'react-dom': path.resolve(__dirname, 'node_modules', 'react-dom',
         'cjs', 'react-dom.production.min.js'),
       'react-router-dom': path.resolve(__dirname, 'node_modules',
-        'react-router-dom', 'cjs', 'react-router-dom.min.js'),
+        'react-router-dom'),
       'prop-types': path.resolve(__dirname, 'node_modules', 'prop-types',
         'prop-types.min.js'),
       'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',

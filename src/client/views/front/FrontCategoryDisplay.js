@@ -21,8 +21,9 @@ function FrontCategoryDisplay() {
         `/api/documents/get_rendered_documents_by_type_name/${docType}`)
         .then(
           ({ data }) => {
-            setState({ dataObj: data })
-          })
+            if (data) setState({ dataObj: data });
+            else setState({ dataObj: undefined });
+          }).catch(() => setState({ dataObj: undefined }));
     }
   }, []);
 

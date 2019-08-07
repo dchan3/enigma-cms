@@ -22,8 +22,9 @@ function FrontDocumentDisplay() {
         }/${docNode}`)
         .then(
           ({ data }) => {
-            setState({ dataObj: data })
-          })
+            if (data) setState({ dataObj: data });
+            else setState({ dataObj: undefined });
+          }).catch(() => setState({ dataObj: undefined }));
     }
   }, []);
 

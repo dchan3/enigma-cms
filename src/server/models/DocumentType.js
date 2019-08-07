@@ -12,7 +12,8 @@ const DocumentTypeSchema = new Schema({
   docTypeName: { type: String },
   docTypeNamePlural: { type: String },
   attributes: { type: [Object] },
-  slugFrom: { type: String }
+  slugFrom: { type: String },
+  rendered: { type: String }
 });
 
 DocumentTypeSchema.plugin(autoIncrementPlugin,
