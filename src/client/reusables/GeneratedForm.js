@@ -11,7 +11,7 @@ import { default as formGenUtils } from '../utils/form_from_obj';
 
 let FormBackground = styled.form`
   background-color: cadetblue;
-  width: fit-content;
+  width: 45%;
   margin: auto;
   text-align: left;`, FormDiv = styled.div`
     padding: 8px;
@@ -20,6 +20,7 @@ let FormBackground = styled.form`
     border-radius: 8px;
     vertical-align: top;
     height: 16px;
+    width: calc(100% - 16px);
     margin-top: 5px;
     font-family: sans-serif;
     font-size: 16px;
@@ -30,6 +31,7 @@ let FormBackground = styled.form`
   text-align: center;
   font-family: sans-serif;`, FormLabel = styled.label`
     color: white;
+    font-size: 16px;
     padding-right: 4px;
     font-family: sans-serif;
     text-transform: uppercase;
@@ -44,13 +46,15 @@ let FormBackground = styled.form`
   padding-right: 4px;
   font-family: sans-serif;
   text-transform: uppercase;
-  margin:8px;
+  margin: 8px;
+  font-size: 16px;
+  width: calc(100% - 16px);
   display: ${({ hidden }) => hidden ? 'none' : 'block'};`,
   FormSubmit = styled.input`font-family:sans-serif;
   text-transform: uppercase;
   margin: 8px;
   border-radius: 8px;
-  font-size: 14px;`, FormErrorMessage = styled.p`font-family: sans-serif;
+  font-size: 16px;`, FormErrorMessage = styled.p`font-family: sans-serif;
   text-transform: uppercase;
   text-align:center;`,
   FormSubmitButton = styled.button`font-size:16px;
