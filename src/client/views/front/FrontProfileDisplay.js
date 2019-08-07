@@ -28,13 +28,11 @@ function FrontProfileDisplay()
     }
   }, []);
 
-  let { dataObj } = state, { rendered, metadata } = dataObj;
-
-  if (dataObj === undefined) return <Redirect to='/not-found' />;
-  else if (dataObj)
-    return [<Metamorph {...metadata} />,
-      <div dangerouslySetInnerHTML={{ __html: rendered }} />];
-  return null;
+  let { dataObj } = state;
+  if (!dataObj) return <Redirect to='/not-found' />;
+  let { rendered, metadata } = dataObj;
+  return [<Metamorph {...metadata} />,
+    <div dangerouslySetInnerHTML={{ __html: rendered }} />];
 }
 
 export default FrontProfileDisplay;

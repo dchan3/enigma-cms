@@ -84,9 +84,11 @@ export const frontEndRoutes = [
         { docTypeId } = await DocumentType.findOne({ docTypeNamePlural }),
         { templateBody } =
           await DocumentDisplayTemplate.findOne({ docTypeId }),
-        doc = await Document.findOne({ slug, draft: false }),
-        authorInfo = await User.findOne({ userId: doc.creatorId
-        }).select({ password: 0, _id: 0 });
+        doc = await Document.findOne({ slug, draft: false });
+      if (!doc) return undefined;
+      let authorInfo = await User.findOne({
+        userId: doc.creatorId
+      }).select({ password: 0, _id: 0 });
 
       let { content, editedAt, createdAt } = doc,
         metadata = await documentMetadata(content);
@@ -96,7 +98,7 @@ export const frontEndRoutes = [
 
       if (doc) return {
         authorInfo, rendered, slug, editedAt, createdAt, metadata };
-      else return { };
+      else return undefined;
     }
   },
   {

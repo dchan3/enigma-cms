@@ -47,8 +47,8 @@ router.get('/get_rendered_document_by_type_and_slug/:type/:slug', function({
       { docTypeNamePlural: type }]
   }).then(({ docTypeId }) => {
     DocumentDisplayTemplate.findOne({ docTypeId }).then(({ templateBody }) => {
-      Document.findOne({ docTypeId, slug }).then(({ creatorId, content,
-        createdAt, editedAt }) => {
+      Document.findOne({ docTypeId, slug }).then((doc) => {
+        let { creatorId, content, createdAt, editedAt } = doc;
         User.findOne({ userId: creatorId
         }).select({ password: 0, _id: 0 }).then(async authorInfo => {
           let metadata = await documentMetadata(content), rendered =
