@@ -28,7 +28,7 @@ function FrontCategoryDisplay() {
   }, []);
 
   let { dataObj } = state;
-  if (!dataObj) return <Redirect to='/not-found' />;
+  if (dataObj === undefined) return <Redirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
     return [<Metamorph {...dataObj.metadata} />,
       <div dangerouslySetInnerHTML={{ __html: dataObj.rendered }} />
