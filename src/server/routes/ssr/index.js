@@ -9,7 +9,7 @@ import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
 
 var htmlTemplate =
-  (styleTags, { language, stylesheet, gaTrackingId },
+  (styleTags, { language, gaTrackingId },
     { title, meta, link }, dom, data) => `<!DOCTYPE html>
 <html lang="${language}">
   <head>
@@ -27,14 +27,14 @@ var htmlTemplate =
     </script>` : ''}
 ${[
     title.toString(),meta.toString(), link.toString(), styleTags,
-    stylesheet.length ? `<style>${stylesheet}</style>` : ''
   ].map(str => str.length ? (`    ${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
     <script>
       window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
     </script>
     <script src='/app.bundle.js' defer></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="/style.css" />
   </head>
   <body>
     <div id="root">${dom}</div>

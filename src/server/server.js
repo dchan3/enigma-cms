@@ -10,8 +10,6 @@ import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
 import { createProxyServer } from 'http-proxy';
-import { readFileSync, } from 'fs';
-import { resolve } from 'path';
 
 mongoose.Promise = global.Promise;
 
@@ -64,36 +62,6 @@ app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
 
-// STATIC FILES
-app.get('/app.bundle.js', (req, res) => {
-  res.setHeader('Content-Type', 'application/javascript; charset=utf-8' );
-  res.send(readFileSync(resolve(__dirname, 'public/app.bundle.js')))
-});
-app.get('/prism.css', (req, res) => {
-  res.send(readFileSync(resolve(__dirname, 'public/prism.css')));
-});
-app.get('/prism.js', (req, res) => {
-  res.send(readFileSync(resolve(__dirname, 'public/prism.js')));
-});
-app.get('/favicon.ico', (req, res) => {
-  res.send(readFileSync(resolve(__dirname, 'public/favicon.ico')));
-});
-app.get('/uploads/:type/:filename', ({ params: { type, filename } }, res) => {
-  res.send(readFileSync(resolve(__dirname,
-    `public/${type}/${filename}`)));
-});
-app.get('/profile-pix/:filename', (req, res) => {
-  var { filename } = req.params;
-  res.send(readFileSync(resolve(__dirname,
-    `public/profile-pix/${filename}`)));
-});
-app.get('/site-icon/:filename', ({ params: { filename } }, res) => {
-  res.send(readFileSync(resolve(__dirname,
-    `public/site-icon/${filename}`)));
-});
-app.get('/robots.txt', (req, res) => {
-  res.send(readFileSync(resolve(__dirname, 'public/robots.txt')));
-});
 app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
   var docTypes = await DocumentType.find({}).select({ docTypeNamePlural: 1,
       docTypeId: 1 }), documents = await Document.find({ draft: false }).sort({
@@ -108,6 +76,14 @@ app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
   res.header('Content-Type', 'text/plain');
   res.send(slugs.join('\n'));
 });
+
+app.get('/style.css', (req, res) => {
+  SiteConfig.findOne({ }).then(({ stylesheet }) => {
+    res.header('Content-Type', 'text/css');
+    res.send(`${stylesheet}\n`);
+  });
+});
+app.use('/', express.static('public'));
 app.get('/*', ssrRoutes);
 
 app.listen(port);
