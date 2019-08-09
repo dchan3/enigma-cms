@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
 import { createProxyServer } from 'http-proxy';
+import path from 'path';
 
 mongoose.Promise = global.Promise;
 
@@ -56,7 +57,7 @@ passport.deserializeUser((_id, done) => {
 passport.use('local-signup', SignupStrategy);
 passport.use('local-login', LoginStrategy);
 
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '/public')));
 app.use('/api/users', userRoutes);
 app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
@@ -83,7 +84,7 @@ app.get('/style.css', (req, res) => {
     res.send(`${stylesheet}\n`);
   });
 });
-app.use('/', express.static('public'));
+app.use('/', express.static(path.join(__dirname, '/public')));
 app.get('/*', ssrRoutes);
 
 app.listen(port);
