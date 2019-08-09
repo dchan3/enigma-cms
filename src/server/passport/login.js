@@ -1,12 +1,10 @@
 import { Strategy as LocalStrategy } from 'passport-local';
-import User from '../models/User';
+import { User } from '../models/';
 
 var LoginStrategy = new LocalStrategy({
   usernameField: 'username'
 }, function(username, password, done) {
-  User.findOne({ $or: [
-    { username }, { email: username }
-  ] }, (err, user) => {
+  User.findOne({ $or: [ { username }, { email: username } ] }, (err, user) => {
     if (err) return done(null, false);
 
     if (!user) {

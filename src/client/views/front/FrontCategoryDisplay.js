@@ -3,10 +3,12 @@ import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import { get as axget } from 'axios';
 import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 function FrontCategoryDisplay() {
   let { generalState } = useContext(GeneralContext),
-    { staticContext, match: { params: { docType } } } = generalState,
+    { match: { params: { docType } } } = generalState,
+    { staticContext } = useContext(StaticContext),
     [state, setState] = useState({
       dataObj: staticContext.dataObj &&
       staticContext.dataObj.docTypeNamePlural &&

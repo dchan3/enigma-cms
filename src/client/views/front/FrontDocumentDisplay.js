@@ -3,10 +3,12 @@ import { get as axget } from 'axios';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 function FrontDocumentDisplay() {
   let { generalState } = useContext(GeneralContext),
-    { staticContext, match: { params: { docType, docNode } } } = generalState,
+    { staticContext } = useContext(StaticContext),
+    { match: { params: { docType, docNode } } } = generalState,
     [state, setState] = useState({
       dataObj: staticContext.dataObj &&
       staticContext.dataObj.slug &&

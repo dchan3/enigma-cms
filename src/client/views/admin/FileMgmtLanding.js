@@ -3,10 +3,10 @@ import { get as axget } from 'axios';
 import { TextHeader, SamePageAnchor } from '../../reusables';
 import { TablePaginator } from 'react-everafter';
 import { delete as axdel } from 'axios';
-import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 function FileMgmtLanding() {
-  let { generalState: { staticContext } } = useContext(GeneralContext);
+  let { staticContext } = useContext(StaticContext);
 
   function handleDeleteClick() {
     return function(url) {

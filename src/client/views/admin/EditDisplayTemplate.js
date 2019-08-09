@@ -2,10 +2,12 @@ import React, { useEffect, useState, useContext } from 'react';
 import { get as axget } from 'axios';
 import { GeneratedForm } from '../../reusables';
 import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 function EditDisplayTemplate() {
   let { generalState } = useContext(GeneralContext),
-    { staticContext, match: { params: { docTypeId } } } =
+    { staticContext } =  useContext(StaticContext),
+    { match: { params: { docTypeId } } } =
       generalState, [state, setState] = useState({
       dataObj: staticContext.dataObj && docTypeId &&
       staticContext.dataObj.docType &&

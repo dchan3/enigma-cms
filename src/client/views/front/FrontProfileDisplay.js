@@ -3,10 +3,12 @@ import { get as axget } from 'axios';
 import { Metamorph } from 'react-metamorph';
 import { Redirect } from 'react-router-dom';
 import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 function FrontProfileDisplay()
 {
-  let { generalState } = useContext(GeneralContext), { staticContext, match: {
+  let { generalState } = useContext(GeneralContext), { staticContext } =
+    useContext(StaticContext), { match: {
       params: { username: urlUsername }
     } } =
     generalState, [state, setState] = useState({

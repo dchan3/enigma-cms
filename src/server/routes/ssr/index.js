@@ -7,6 +7,7 @@ import { renderToString } from 'react-dom/server';
 import { ServerStyleSheet } from 'styled-components';
 import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
+import { StaticContextProvider } from '../../../client/contexts/StaticContext';
 
 var htmlTemplate =
   (styleTags, { language, gaTrackingId },
@@ -40,7 +41,7 @@ ${[
     <div id="root">${dom}</div>
   </body>
 </html>
-`, ssrRenderer = async ({ path, url }, res, next) => {
+`, ssrRenderer = async ({ path, url: location }, res, next) => {
     let config = await SiteConfig.findOne({}),
       types = await DocumentType.find({}), routes = path.startsWith('/admin') ?
         backEndRoutes : frontEndRoutes, context = { config, types },
@@ -50,8 +51,10 @@ ${[
     promise.then(data => {
       if (data) context[key || 'dataObj'] = data;
       let sheet = new ServerStyleSheet(), jsx = (
-          <StaticRouter location={url} context={context}>
-            <App staticContext={context} />
+          <StaticRouter {...{ location }}>
+            <StaticContextProvider initialVals={context}>
+              <App />
+            </StaticContextProvider>,
           </StaticRouter>), markup = renderToString(sheet.collectStyles(jsx)),
         helmet = Helmet.renderStatic(), styleTags = sheet.getStyleTags();
       sheet.seal();

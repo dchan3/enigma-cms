@@ -3,10 +3,11 @@ import { get as axget } from 'axios';
 import { GeneratedForm } from '../../reusables';
 import { Redirect } from 'react-router-dom';
 import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 function EditDocumentPage() {
-  let { generalState: { match: { params: { docNode, docTypeId } },
-    staticContext } } = useContext(GeneralContext);
+  let { generalState: { match: { params: { docNode, docTypeId } } } } =
+    useContext(GeneralContext), { staticContext } = useContext(StaticContext);
 
   let [state, setState] = useState({
       dataObj: staticContext.dataObj &&

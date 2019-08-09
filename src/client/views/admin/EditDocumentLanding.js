@@ -5,12 +5,14 @@ import { TextHeader, SamePageAnchor } from '../../reusables';
 import { Redirect } from 'react-router-dom';
 import { get as axget, delete as axdel } from 'axios';
 import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 let TableText = styled.p`text-align:center;font-family:sans-serif;`;
 
 function EditDocumentLanding() {
-  let { generalState } = useContext(GeneralContext), { staticContext, match: {
-    params: { docType: docTypeId } } } = generalState;
+  let { generalState } = useContext(GeneralContext),
+    { staticContext } = useContext(StaticContext), { match: {
+      params: { docType: docTypeId } } } = generalState;
 
   let [state, setState] = useState({
     dataObj: staticContext.dataObj && docTypeId &&

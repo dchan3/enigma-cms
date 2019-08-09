@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { GeneratedForm } from '../../reusables';
-import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 function ConfigPage() {
-  let { generalState } = useContext(GeneralContext),
-    { staticContext: { config } } = generalState;
+  let { staticContext: { config } } = useContext(StaticContext);
 
   return <GeneratedForm title="Site Settings" currentValue={config} params={{
     siteName: { type: 'text' },

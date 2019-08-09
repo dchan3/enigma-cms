@@ -20,6 +20,10 @@ module.exports = [{
           output: {
             comments: false,
           },
+          mangle: {
+            toplevel: true
+          },
+          keep_fnames: false
         },
         test: /\.jsx?$/i
       })]
@@ -36,7 +40,6 @@ module.exports = [{
         options: {
           babelrc: true,
           comments: false,
-          plugins: ['./babel/hashify']
         }
       },
       {
@@ -86,6 +89,10 @@ module.exports = [{
         output: {
           comments: false,
         },
+        mangle: {
+          toplevel: true
+        },
+        keep_fnames: true
       },
       test: /\.jsx?$/i,
     })],
@@ -105,15 +112,6 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           babelrc: true,
-          comments: false,
-          plugins: ['./babel/hashify']
-        }
-      },
-      {
-        test: /\.jsx?$/i,
-        include: /node_modules|handlebars|react/,
-        loader: 'babel-loader',
-        options: {
           comments: false
         }
       }

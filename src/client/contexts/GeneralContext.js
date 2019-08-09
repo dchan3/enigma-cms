@@ -1,8 +1,8 @@
 import React, { createContext, useState } from 'react';
-import PropTypes from 'prop-types';
+import { oneOfType, object, array } from 'prop-types';
 
-let initialState = ({ history, match, staticContext }) => ({
-  history, match, staticContext
+let initialState = ({ history, match }) => ({
+  history, match
 });
 const GeneralContext = createContext(initialState);
 
@@ -18,6 +18,6 @@ export const GeneralContextProvider = ({ children, initialVals }) => {
 };
 
 GeneralContextProvider.propTypes = {
-  children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  initialVals: PropTypes.object
+  children: oneOfType([array, object]),
+  initialVals: object
 };

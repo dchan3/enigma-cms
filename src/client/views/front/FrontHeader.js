@@ -1,22 +1,15 @@
 import React, { useContext } from 'react';
-import { object } from 'prop-types';
 import { FrontMenu } from '../../reusables';
-import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 function FrontHeader() {
-  let { generalState } = useContext(GeneralContext);
-
-  let { staticContext: { config: { siteName, menuLinks } } } = 
-    generalState;
+  let { staticContext: { config: { siteName, menuLinks } } } =
+    useContext(StaticContext);
 
   return <div>
     <h1 className="front-header">{siteName || 'My Website'}</h1>
     <FrontMenu {...{ menuLinks }} />
   </div>;
 }
-
-FrontHeader.propTypes = {
-  staticContext: object
-};
 
 export default FrontHeader;

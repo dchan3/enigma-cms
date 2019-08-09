@@ -2,10 +2,12 @@ import React, { useState, useEffect, useContext } from 'react';
 import { GeneratedForm } from '../../reusables';
 import { get as axget } from 'axios';
 import GeneralContext from '../../contexts/GeneralContext';
+import StaticContext from '../../contexts/StaticContext';
 
 let EditDocType = () => {
   let { generalState } = useContext(GeneralContext),
-    { staticContext, match: { params: { docTypeId } } } = generalState;
+    { staticContext } = useContext(StaticContext),
+    { match: { params: { docTypeId } } } = generalState;
 
   let [state, setState] = useState({
       docType: docTypeId ? (staticContext.docType && docTypeId &&
