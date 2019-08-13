@@ -16,7 +16,7 @@ function SamePageAnchor({
   `;
 
   function handleClick(event) {
-    if (href.startsWith('/')) {
+    if (generalState && href.startsWith('/')) {
       let newState = Object.assign({}, generalState);
       event.preventDefault();
       newState.history.push(href);
@@ -24,7 +24,7 @@ function SamePageAnchor({
     }
   }
 
-  return (generalState.history &&
+  return (generalState && generalState.history &&
     generalState.history.location.pathname !== href) ?
     <Anchor {...{ href, target, className, id, style
     }} onClick={handleClick}>{children}</Anchor> :

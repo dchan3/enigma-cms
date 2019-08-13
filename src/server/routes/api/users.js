@@ -31,9 +31,9 @@ router.get('/get_user_by_username/:username',
 router.get('/get_user_profile/:username', function({ params: { username } },
   res) {
   User.findOne({ username }).then(user => {
-    SiteConfig.findOne({ }).then(async ({ profileTempate }) => {
+    SiteConfig.findOne({ }).then(async ({ profileTemplate }) => {
       let metadata = await profileMetadata(user), rendered =
-        await renderMarkup(profileTempate, user);
+        await renderMarkup(profileTemplate, user);
       res.status(200).json({
         metadata, rendered, username
       });

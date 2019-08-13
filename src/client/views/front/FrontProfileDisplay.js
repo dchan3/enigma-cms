@@ -4,6 +4,7 @@ import { Metamorph } from 'react-metamorph';
 import { Redirect } from 'react-router-dom';
 import GeneralContext from '../../contexts/GeneralContext';
 import StaticContext from '../../contexts/StaticContext';
+import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 
 function FrontProfileDisplay()
 {
@@ -18,10 +19,10 @@ function FrontProfileDisplay()
     });
 
   useEffect(function() {
-    let { dataObj } = staticContext;
+    let { dataObj } = state;
     if (!dataObj) {
       axget(
-        `/api/documents/get_user_by_username/${urlUsername}`)
+        `/api/users/get_user_profile/${urlUsername}`)
         .then(
           ({ data }) => {
             if (data) setState({ dataObj: data });
@@ -32,9 +33,12 @@ function FrontProfileDisplay()
 
   let { dataObj } = state;
   if (dataObj === undefined) return <Redirect to='/not-found' />;
-  let { rendered, metadata } = dataObj;
-  return [<Metamorph {...metadata} />,
-    <div dangerouslySetInnerHTML={{ __html: rendered }} />];
+  else if (dataObj && dataObj.metadata && dataObj.rendered) {
+    let { rendered, metadata } = dataObj;
+    return [<Metamorph {...metadata} />,
+      <div><InnerHtmlRenderer innerHtml={rendered} /></div>];
+  }
+  return null;
 }
 
 export default FrontProfileDisplay;

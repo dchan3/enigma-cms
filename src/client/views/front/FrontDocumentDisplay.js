@@ -4,6 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import GeneralContext from '../../contexts/GeneralContext';
 import StaticContext from '../../contexts/StaticContext';
+import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 
 function FrontDocumentDisplay() {
   let { generalState } = useContext(GeneralContext),
@@ -33,8 +34,8 @@ function FrontDocumentDisplay() {
   let { dataObj } = state;
   if (dataObj === undefined) return <Redirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
-    return [<Metamorph {...dataObj.metadata} />, <div dangerouslySetInnerHTML=
-      {{ __html: dataObj.rendered }} />];
+    return [<Metamorph {...dataObj.metadata} />, <div><InnerHtmlRenderer
+      innerHtml={dataObj.rendered} /></div>];
   }
   return null;
 }

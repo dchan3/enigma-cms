@@ -61,6 +61,7 @@
     "enzyme-adapter-react-16": "^1.14.0",
     "eslint": "^6.1.0",
     "eslint-plugin-react": "^7.14.3",
+    "html-react-parser": "^0.9.1",
     "lodash-webpack-plugin": "^0.11.5",
     "mini-css-extract-plugin": "^0.8.0",
     "mocha": "^6.2.0",

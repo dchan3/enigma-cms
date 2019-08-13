@@ -4,6 +4,7 @@ import { Metamorph } from 'react-metamorph';
 import { get as axget } from 'axios';
 import GeneralContext from '../../contexts/GeneralContext';
 import StaticContext from '../../contexts/StaticContext';
+import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 
 function FrontCategoryDisplay() {
   let { generalState } = useContext(GeneralContext),
@@ -33,7 +34,7 @@ function FrontCategoryDisplay() {
   if (dataObj === undefined) return <Redirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
     return [<Metamorph {...dataObj.metadata} />,
-      <div dangerouslySetInnerHTML={{ __html: dataObj.rendered }} />
+      <div><InnerHtmlRenderer innerHtml={dataObj.rendered} /></div>
     ];
   }
 
