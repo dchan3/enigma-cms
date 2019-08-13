@@ -1,4 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+
+let { Schema } = mongoose;
 
 const ShortcodeSchema = new Schema({
   name: { type: String },

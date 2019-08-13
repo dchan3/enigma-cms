@@ -1,4 +1,6 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
+
+let { Schema, model } = mongoose;
 
 const PrivilegeSchema = new Schema({
   docTypeId: { type: Number },

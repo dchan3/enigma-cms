@@ -1,5 +1,7 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose from 'mongoose';
 import ShortcodeSchema from './ShortcodeSchema';
+
+let { Schema, model } = mongoose;
 
 const SiteConfigSchema = new Schema({
   siteName: {
