@@ -1,47 +1,35 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { TablePaginator } from 'react-everafter';
 import styled from 'styled-components';
 import { TextHeader, SamePageAnchor } from '../../reusables';
 import { Redirect } from 'react-router-dom';
-import { get as axget, delete as axdel } from 'axios';
-import GeneralContext from '../../contexts/GeneralContext';
-import StaticContext from '../../contexts/StaticContext';
+import { delete as axdel } from 'axios';
+import useFrontContext from '../../hooks/useFrontContext';
+import { get as axget } from 'axios';
 
 let TableText = styled.p`text-align:center;font-family:sans-serif;`;
 
 function EditDocumentLanding() {
-  let { generalState } = useContext(GeneralContext),
-    { staticContext } = useContext(StaticContext), { match: {
-      params: { docType: docTypeId } } } = generalState;
-
-  let [state, setState] = useState({
-    dataObj: staticContext.dataObj && docTypeId &&
-      staticContext.dataObj.docType &&
-      staticContext.dataObj.docType.docTypeId === parseInt(docTypeId) &&
-      staticContext.dataObj.documents &&
-      staticContext.dataObj || null
-  });
-
-  useEffect(function() {
-    let { dataObj } = state;
-    if (!dataObj) {
-      axget(`/api/documents/get_documents/${docTypeId}`).then(({ data }) => {
-        setState({ dataObj: data })
-      });
+  let { state, setState, apiUrl } = useFrontContext({
+    dataParams: ['docType.docTypeId'],
+    urlParams: ['docType'],
+    apiUrl: function({ docType }) {
+      return `/api/documents/get_documents/${docType}`;
     }
-  }, []);
+  });
 
   function handleDeleteClick() {
     return function(url) {
-      axdel(url).then(function() {
-        axget(`/api/documents/get_documents/${docTypeId}`).then(({ data }) => {
-          setState({ dataObj: data })
-        });
-      });
+      axdel(url);
     }
   }
 
+  useEffect(function() {
+    axget(apiUrl).then(({ data }) => setState({ dataObj: data }));
+  }, []);
+
   let { dataObj } = state;
+
   if (dataObj === undefined) return <Redirect to='/admin' />;
   else if (dataObj) {
     let { docType, documents } = dataObj;

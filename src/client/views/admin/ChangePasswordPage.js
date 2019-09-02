@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import GeneratedForm from '../../reusables/GeneratedForm';
-import StaticContext from '../../contexts/StaticContext';
+import useStaticContext from '../../hooks/useStaticContext';
 
 function ChangePasswordPage() {
-  let { staticContext } = useContext(StaticContext),
-    { user: { _id } } = staticContext;
+  let { user: { _id } } = useStaticContext(['user']);
 
   return <GeneratedForm title="Change Password" params={{
     userId: {

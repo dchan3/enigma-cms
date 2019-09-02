@@ -1,12 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { oneOfType, string, func, object, array } from 'prop-types';
 import styled from 'styled-components';
-import GeneralContext from '../contexts/GeneralContext';
+import useGeneralContext from '../hooks/useGeneralContext';
 
 function SamePageAnchor({
   children, href, target, className, id, style, component
 }) {
-  let { generalState, setGeneralState } = useContext(GeneralContext),
+  let { generalState, setGeneralState } = useGeneralContext(),
     Anchor = component || styled.a``, AlreadyOn = styled.span`
     text-decoration: underline;
     font-weight: 900;

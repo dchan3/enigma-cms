@@ -1,37 +1,26 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { get as axget } from 'axios';
+import React, { useEffect } from 'react';
 import { Metamorph } from 'react-metamorph';
 import { Redirect } from 'react-router-dom';
-import GeneralContext from '../../contexts/GeneralContext';
-import StaticContext from '../../contexts/StaticContext';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
+import useFrontContext from '../../hooks/useFrontContext.js';
+import { get as axget } from 'axios';
 
 function FrontProfileDisplay()
 {
-  let { generalState } = useContext(GeneralContext), { staticContext } =
-    useContext(StaticContext), { match: {
-      params: { username: urlUsername }
-    } } =
-    generalState, [state, setState] = useState({
-      dataObj: staticContext.dataObj &&
-      staticContext.dataObj.username === urlUsername &&
-      staticContext.dataObj || null
-    });
+  let { state, setState, apiUrl } = useFrontContext({
+    dataParams: ['username'],
+    urlParams: ['username'],
+    apiUrl: function({ username }) {
+      return `/api/users/get_user_profile/${username}`;
+    }
+  });
 
   useEffect(function() {
-    let { dataObj } = state;
-    if (!dataObj) {
-      axget(
-        `/api/users/get_user_profile/${urlUsername}`)
-        .then(
-          ({ data }) => {
-            if (data) setState({ dataObj: data });
-            else setState({ dataObj: undefined });
-          }).catch(() => setState({ dataObj: undefined }));
-    }
+    axget(apiUrl).then(({ data }) => setState({ dataObj: data }));
   }, []);
 
   let { dataObj } = state;
+
   if (dataObj === undefined) return <Redirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
     let { rendered, metadata } = dataObj;

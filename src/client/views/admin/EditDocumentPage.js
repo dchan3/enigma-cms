@@ -1,21 +1,17 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { get as axget } from 'axios';
+import React, { useEffect } from 'react';
 import { GeneratedForm } from '../../reusables';
 import { Redirect } from 'react-router-dom';
-import GeneralContext from '../../contexts/GeneralContext';
-import StaticContext from '../../contexts/StaticContext';
+import useFrontContext from '../../hooks/useFrontContext';
+import { get as axget } from 'axios';
 
 function EditDocumentPage() {
-  let { generalState: { match: { params: { docNode, docTypeId } } } } =
-    useContext(GeneralContext), { staticContext } = useContext(StaticContext);
-
-  let [state, setState] = useState({
-      dataObj: staticContext.dataObj &&
-        ((staticContext.dataObj.docType &&
-        staticContext.dataObj.docType.docTypeId === parseInt(docTypeId)) ||
-        (staticContext.dataObj.doc &&
-        staticContext.dataObj.doc.docNodeId === parseInt(docNode))) &&
-        staticContext.dataObj || null
+  let { state, setState, apiUrl } = useFrontContext({
+      dataParams: ['doc.docNodeId', 'docType.docTypeId'],
+      urlParams: ['docNode', 'docTypeId'],
+      apiUrl: function({ docTypeId, docNode }) {
+        return docNode ? `/api/documents/get_document_and_type_info/${docNode}`
+          : `/api/documents/get_type_2/${docTypeId}`;
+      }
     }), params = {
       draft: {
         type: 'enum',
@@ -27,21 +23,11 @@ function EditDocumentPage() {
     };
 
   useEffect(function() {
-    let { dataObj } = state;
-    if (dataObj) {
-      setState({ dataObj });
-    }
-    else {
-      axget(docNode ?
-        `/api/documents/get_document_and_type_info/${docNode}` :
-        `/api/documents/get_type_2/${docTypeId}`
-      ).then(({ data }) => {
-        setState({ dataObj: data })
-      });
-    }
+    axget(apiUrl).then(({ data }) => setState({ dataObj: data }));
   }, []);
 
   let { dataObj } = state;
+
   if (dataObj === undefined) {
     return <Redirect to="/admin" />;
   }
@@ -60,9 +46,9 @@ function EditDocumentPage() {
       });
 
       var obj = {
-        formAction: docNode ?
-          `/api/documents/update_document/${docNode}` :
-          `/api/documents/new_document/${docTypeId}`
+        formAction: dataObj.doc ?
+          `/api/documents/update_document/${dataObj.doc.docNode}` :
+          `/api/documents/new_document/${dataObj.docType.docTypeId}`
       };
 
       if (doc) obj.currentValue = {

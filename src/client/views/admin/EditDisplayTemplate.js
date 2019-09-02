@@ -1,35 +1,29 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { get as axget } from 'axios';
+import React, { useEffect } from 'react';
 import { GeneratedForm } from '../../reusables';
-import GeneralContext from '../../contexts/GeneralContext';
-import StaticContext from '../../contexts/StaticContext';
+import useFrontContext from '../../hooks/useFrontContext';
+import { get as axget } from 'axios';
 
 function EditDisplayTemplate() {
-  let { generalState } = useContext(GeneralContext),
-    { staticContext } =  useContext(StaticContext),
-    { match: { params: { docTypeId } } } =
-      generalState, [state, setState] = useState({
-      dataObj: staticContext.dataObj && docTypeId &&
-      staticContext.dataObj.docType &&
-    staticContext.dataObj.docTypeId === parseInt(docTypeId)
-    && staticContext.dataObj || null
-    });
+  let { state, setState, apiUrl } = useFrontContext({
+    dataParams: ['docTypeId'],
+    urlParams: ['docTypeId'],
+    apiUrl: function({ docTypeId }) {
+      return `/api/documents/get_template/${docTypeId}`;
+    }
+  });
 
   useEffect(function() {
-    let { dataObj } = state;
-    if (!dataObj) {
-      axget(`/api/documents/get_template/${docTypeId}`).then(({ data }) => {
-        setState({ dataObj: data })
-      });
-    }
+    axget(apiUrl).then(({ data }) => setState({ dataObj: data }));
   }, []);
 
-  if (state.dataObj) {
-    let { docType, templateBody, categoryTemplateBody } = state.dataObj;
+  let { dataObj } = state;
+
+  if (dataObj) {
+    let { docType, templateBody, categoryTemplateBody } = dataObj;
 
     if (docType !== null && templateBody !== null
       && categoryTemplateBody !== null) {
-      let { docTypeName } = docType;
+      let { docTypeName, docTypeId } = docType;
       return <GeneratedForm title={`Edit ${docTypeName} Display Template`}
         currentValue={{ ...{ templateBody, categoryTemplateBody } }}params={{
           templateBody: {

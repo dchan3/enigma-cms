@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { GeneratedForm } from '../../reusables';
-import StaticContext from '../../contexts/StaticContext';
+import useStaticContext from '../../hooks/useStaticContext.js';
 
 function ProfileEditPage() {
-  let { staticContext: { user } } = useContext(StaticContext);
+  let { user } = useStaticContext(['user']);
 
   return <GeneratedForm title='Edit Profile' currentValue={user} params={{
     userId: { label: 'User ID', type: 'text', hidden: true },

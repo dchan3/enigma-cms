@@ -1,26 +1,13 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { get as axget } from 'axios';
+import React from 'react';
 import styled from 'styled-components';
 import SamePageAnchor from './SamePageAnchor';
 let FooterContainer = styled.div`
 text-align:center;font-family:sans-serif;margin:10px;`, FooterText =
   styled.p`margin:0;`;
-import GeneralContext from '../contexts/GeneralContext';
+import useStaticContext from '../hooks/useStaticContext';
 
 function Footer() {
-  let { generalState } = useContext(GeneralContext);
-
-  let [state, setState] = useState({
-    user: generalState.staticContext && generalState.staticContext.user || null
-  });
-
-  useEffect(function() {
-    if (!state.user) axget('/api/users/get').then(({ data: user }) => {
-      setState({ user })
-    });
-  }, []);
-
-  var { user } = state;
+  let { user } = useStaticContext(['user']);
 
   return <FooterContainer>
     <FooterText>Powered by <a href="https://github.com/dchan3/enigma-cms">

@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { FrontMenu } from '../../reusables';
-import StaticContext from '../../contexts/StaticContext';
+import useStaticContext from '../../hooks/useStaticContext.js';
 
 function FrontHeader() {
-  let { staticContext: { config: { siteName, menuLinks } } } =
-    useContext(StaticContext);
+  let { config: { siteName, menuLinks } } =
+    useStaticContext(['config']);
 
   return <div>
     <h1 className="front-header">{siteName || 'My Website'}</h1>

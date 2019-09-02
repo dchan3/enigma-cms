@@ -162,9 +162,11 @@ export const backEndRoutes = [
     path: '/admin/edit-type/:docTypeId',
     exact: true,
     component: EditDocType,
-    fetchInitialData: async path =>
-      await DocumentType.findOne({ docTypeId: path.split('/').pop() }),
-    key: 'docType'
+    fetchInitialData: async path => {
+      let docType =
+        await DocumentType.findOne({ docTypeId: path.split('/').pop() });
+      return { docType };
+    }
   },
   {
     path: '/admin/edit-profile',
@@ -193,8 +195,7 @@ export const backEndRoutes = [
     fetchInitialData: async () => {
       var retval = await File.find({});
       return retval && retval.length > 0 && retval || [];
-    },
-    key: 'files'
+    }
   },
   {
     path: '/admin/upload-file',

@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { DropdownMenu } from '../../reusables';
-import StaticContext from '../../contexts/StaticContext';
+import useStaticContext from '../../hooks/useStaticContext.js';
 
 function MainMenu() {
-  let { staticContext: { user, types } } = useContext(StaticContext);
+  let { user, types } = useStaticContext(['user', 'types']);
 
   let isAdmin = user && user.roleId === 0 || false, menuNodes = [];
   if (isAdmin) menuNodes.push({ url: '/admin/edit-config',

@@ -1,30 +1,32 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { GeneratedForm } from '../../reusables';
+import useFrontContext from '../../hooks/useFrontContext';
 import { get as axget } from 'axios';
-import GeneralContext from '../../contexts/GeneralContext';
-import StaticContext from '../../contexts/StaticContext';
 
 let EditDocType = () => {
-  let { generalState } = useContext(GeneralContext),
-    { staticContext } = useContext(StaticContext),
-    { match: { params: { docTypeId } } } = generalState;
+  let { state, setState, apiUrl } = useFrontContext({
+    dataParams: ['docType.docTypeId'],
+    urlParams: ['docTypeId'],
+    apiUrl: function(params) {
+      if (params && params.docTypeId)
+        return `/api/documents/get_type_2/${params.docTypeId}`
+      else return '';
+    }
+  });
 
-  let [state, setState] = useState({
-      docType: docTypeId ? (staticContext.docType && docTypeId &&
-      staticContext.docType.docTypeId === parseInt(docTypeId) &&
-        staticContext.docType || null) : undefined,
-      optionParams: staticContext.docType && docTypeId &&
-      staticContext.docType.docTypeId === parseInt(docTypeId) &&
-      staticContext.docType.attributes &&
-      staticContext.docType.attributes.length
-      && staticContext.docType.attributes.map(
-        ({ attrName, attrType }) => ({
-          attrName, attrType
-        })) || ['']
-    }), minMax = {
-      type: (value) => (value === 'date') ? 'date' : 'number',
-      attrDepends: { type: ['attributes.$.attrType'] }
-    };
+  useEffect(function() {
+    axget(apiUrl).then(({ data }) => {
+      setState({ dataObj: data,
+        optionParams: data.docType.attributes.map(
+          ({ attrName, attrType }) => ({ attrName, attrType }))
+      });
+    });
+  }, []);
+
+  let minMax = {
+    type: (value) => (value === 'date') ? 'date' : 'number',
+    attrDepends: { type: ['attributes.$.attrType'] }
+  }
 
   function updateParams({ attributes }) {
     var newState = Object.assign({}, state);
@@ -34,22 +36,11 @@ let EditDocType = () => {
     setState(newState);
   }
 
-  useEffect(function() {
-    let { docType } = staticContext;
-    if (!docType || (docType && docType.docTypeId !== parseInt(docTypeId))) {
-      axget(`/api/documents/get_type/${docTypeId}`).then(({ data }) => {
-        setState({
-          docType: data,
-          optionParams: data.attributes.map(({
-            attrName, attrType }) => ({
-            attrName, attrType
-          }))
-        });
-      });
-    }
-  }, []);
+  let { dataObj, optionParams } = state;
 
-  let { docType, optionParams } = state;
+  if (!dataObj) return null;
+
+  let { docType } = dataObj;
 
   if (docType !== null) {
     return <GeneratedForm currentValue={docType} title="Edit Document Type"
@@ -115,7 +106,8 @@ let EditDocType = () => {
             ],
           value: ''
         } }} method="post" parentCallback={updateParams} redirectUrl='/admin'
-      formAction={docTypeId ? `/api/documents/update_type/${docTypeId}`
+      formAction={docType && docType.docTypeId ?
+        `/api/documents/update_type/${docType.docTypeId}`
         : '/api/documents/register_type'}/>;
   }
   return null;

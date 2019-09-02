@@ -1,36 +1,32 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
-import { get as axget } from 'axios';
-import GeneralContext from '../../contexts/GeneralContext';
-import StaticContext from '../../contexts/StaticContext';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
+import useFrontContext from '../../hooks/useFrontContext.js';
+import { get as axget } from 'axios';
 
 function FrontCategoryDisplay() {
-  let { generalState } = useContext(GeneralContext),
-    { match: { params: { docType } } } = generalState,
-    { staticContext } = useContext(StaticContext),
-    [state, setState] = useState({
-      dataObj: staticContext.dataObj &&
-      staticContext.dataObj.docTypeNamePlural &&
-      staticContext.dataObj.docTypeNamePlural === docType &&
-      staticContext.dataObj || null
-    });
+  let { state, setState, apiUrl } = useFrontContext({
+    dataParams: ['docTypeNamePlural'],
+    urlParams: ['docType'],
+    apiUrl: function({ docType }) {
+      return `/api/documents/get_rendered_documents_by_type_name/${docType}`;
+    }
+  });
+
+  async function getData() {
+    let resp = await axget(apiUrl);
+    setState({ dataObj: resp.data });
+  }
 
   useEffect(function() {
-    let { dataObj } = state;
-    if (!dataObj || (dataObj && dataObj.docTypeNamePlural && dataObj.doc)) {
-      axget(
-        `/api/documents/get_rendered_documents_by_type_name/${docType}`)
-        .then(
-          ({ data }) => {
-            if (data) setState({ dataObj: data });
-            else setState({ dataObj: undefined });
-          }).catch(() => setState({ dataObj: undefined }));
+    if (!state.dataObj) {
+      getData();
     }
-  }, []);
+  }, [state.dataObj]);
 
   let { dataObj } = state;
+
   if (dataObj === undefined) return <Redirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
     return [<Metamorph {...dataObj.metadata} />,

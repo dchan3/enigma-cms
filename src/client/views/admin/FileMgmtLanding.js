@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { get as axget } from 'axios';
 import { TextHeader, SamePageAnchor } from '../../reusables';
 import { TablePaginator } from 'react-everafter';
 import { delete as axdel } from 'axios';
-import StaticContext from '../../contexts/StaticContext';
+import useStaticContext from '../../hooks/useStaticContext';
 
 function FileMgmtLanding() {
-  let { staticContext } = useContext(StaticContext);
+  let { files } = useStaticContext(['files']);
 
   function handleDeleteClick() {
     return function(url) {
@@ -19,7 +19,6 @@ function FileMgmtLanding() {
   });
 
   useEffect(function() {
-    let { files } = staticContext;
     if (files) {
       setState({ files });
     }
@@ -30,13 +29,13 @@ function FileMgmtLanding() {
     }
   }, []);
 
-  let { files } = state;
+  let { files: stateFiles } = state;
 
   return [
     <TextHeader>Manage Files</TextHeader>,
     <SamePageAnchor href='/admin/upload-file'>Upload File</SamePageAnchor>,
-    files.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
-      items={files} truncate={true} columns={[
+    stateFiles.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
+      items={stateFiles} truncate={true} columns={[
         {
           headerText: 'File Name',
           display: ({ fileName }) => <p>{fileName}</p>
