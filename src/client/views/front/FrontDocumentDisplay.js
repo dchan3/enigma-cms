@@ -7,21 +7,24 @@ import { get as axget } from 'axios';
 
 function FrontDocumentDisplay() {
   let { state, setState, apiUrl } = useFrontContext({
-    dataParams: ['docTypeNamePlural', 'slug'],
-    urlParams: ['docType', 'docNode'],
+    dataParams: ['slug'],
+    urlParams: ['docNode'],
     apiUrl: function({ docType, docNode }) {
       return `/api/documents/get_rendered_document_by_type_and_slug/${docType
       }/${docNode}`;
     }
   });
 
+  async function getData() {
+    let resp = await axget(apiUrl);
+    setState({ dataObj: resp.data });
+  }
+
   useEffect(function() {
     if (!state.dataObj) {
-      axget(apiUrl).then(({ data }) => {
-        setState({ dataObj: data });
-      });
+      getData();
     }
-  }, []);
+  }, [state.dataObj]);
 
   let { dataObj } = state;
 
