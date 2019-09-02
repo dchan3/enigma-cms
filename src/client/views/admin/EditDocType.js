@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { GeneratedForm } from '../../reusables';
+import { Redirect } from 'react-router-dom';
 import useFrontContext from '../../hooks/useFrontContext';
 import { get as axget } from 'axios';
 
@@ -15,12 +16,27 @@ let EditDocType = () => {
   });
 
   useEffect(function() {
-    axget(apiUrl).then(({ data }) => {
-      setState({ dataObj: data,
-        optionParams: data.docType.attributes.map(
-          ({ attrName, attrType }) => ({ attrName, attrType }))
+    if (apiUrl !== '')
+      axget(apiUrl).then(({ data }) => {
+        setState({ dataObj: data,
+          optionParams: data && data.docType && data.docType.attributes.map(
+            ({ attrName, attrType }) => ({ attrName, attrType })) || [{
+            attrName: '',
+            attrType: ''
+          }]
+        });
       });
-    });
+    else {
+      setState({
+        dataObj: {
+          docType: {},
+          optionParams: [{
+            attrName: '',
+            attrType: ''
+          }]
+        }
+      })
+    }
   }, []);
 
   let minMax = {
@@ -38,11 +54,10 @@ let EditDocType = () => {
 
   let { dataObj, optionParams } = state;
 
-  if (!dataObj) return null;
-
-  let { docType } = dataObj;
-
-  if (docType !== null) {
+  if (dataObj === undefined) return <Redirect to="/admin" />;
+  else if (dataObj === null) return null;
+  else {
+    let docType = dataObj.docType || {};
     return <GeneratedForm currentValue={docType} title="Edit Document Type"
       params={{
         docTypeName: {
@@ -110,7 +125,6 @@ let EditDocType = () => {
         `/api/documents/update_type/${docType.docTypeId}`
         : '/api/documents/register_type'}/>;
   }
-  return null;
 };
 
 export default EditDocType;
