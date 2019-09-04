@@ -47,7 +47,7 @@ function EditDocumentPage() {
 
       var obj = {
         formAction: dataObj.doc ?
-          `/api/documents/update_document/${dataObj.doc.docNode}` :
+          `/api/documents/update_document/${dataObj.doc.docNodeId}` :
           `/api/documents/new_document/${dataObj.docType.docTypeId}`
       };
 
