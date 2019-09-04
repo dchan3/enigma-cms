@@ -1,5 +1,4 @@
 import React, { createContext, useState } from 'react';
-import { array, object, oneOfType } from 'prop-types';
 
 let initialState = staticContext => staticContext;
 const StaticContext = createContext(initialState);
@@ -13,9 +12,4 @@ export const StaticContextProvider = ({ children, initialVals }) => {
 
   return <Provider value={{
     staticContext, setStaticContext }}>{children}</Provider>;
-};
-
-StaticContextProvider.propTypes = {
-  children: oneOfType([array, object]),
-  initialVals: object
 };

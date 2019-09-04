@@ -1,5 +1,4 @@
 import React from 'react';
-import { oneOfType, string, func, object, array } from 'prop-types';
 import styled from 'styled-components';
 import useGeneralContext from '../hooks/useGeneralContext';
 
@@ -32,12 +31,3 @@ function SamePageAnchor({
 }
 
 export default SamePageAnchor;
-
-SamePageAnchor.propTypes = {
-  href: oneOfType([string, func]),
-  target: oneOfType([string, func]),
-  className: oneOfType([string, func]),
-  id: oneOfType([string, func]),
-  style: oneOfType([object, func]),
-  children: oneOfType([array, func])
-};

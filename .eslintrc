@@ -16,7 +16,7 @@
   },
   "rules": {
     "react/jsx-key": "off",
-    "react/prop-types": "warning",
+    "react/prop-types": "off",
     "react/display-name": "off",
     "indent": ["error", 2],
     "prefer-template":  "error",

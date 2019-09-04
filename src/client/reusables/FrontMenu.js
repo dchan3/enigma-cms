@@ -1,5 +1,4 @@
 import React from 'react';
-import { array } from 'prop-types';
 import SamePageAnchor from './SamePageAnchor';
 
 function FrontMenu({ menuLinks }) {
@@ -11,9 +10,5 @@ function FrontMenu({ menuLinks }) {
     </ul>
   </div>;
 }
-
-FrontMenu.propTypes = {
-  menuLinks: array
-};
 
 export default FrontMenu;

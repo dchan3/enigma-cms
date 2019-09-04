@@ -1,6 +1,5 @@
 import React, { useState, useReducer } from 'react';
 import styled  from 'styled-components';
-import { string } from 'prop-types';
 
 let EditorContainer =
   styled.div`height:250px;text-align:left;`,
@@ -60,12 +59,5 @@ function CodeEditor({ id, name, value }) {
         onChange={handleChange} onScroll={handleScroll} />}
   </EditorContainer>;
 }
-
-CodeEditor.propTypes = {
-  grammar: string.isRequired,
-  id: string.isRequired,
-  name: string.isRequired,
-  value: string
-};
 
 export default CodeEditor;

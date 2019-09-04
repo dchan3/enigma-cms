@@ -1,5 +1,4 @@
 import React, { createContext, useState } from 'react';
-import { oneOfType, object, array } from 'prop-types';
 
 let initialState = ({ history, match }) => ({
   history, match
@@ -15,9 +14,4 @@ export const GeneralContextProvider = ({ children, initialVals }) => {
 
   return <Provider value={{ generalState,
     setGeneralState }}>{children}</Provider>;
-};
-
-GeneralContextProvider.propTypes = {
-  children: oneOfType([array, object]),
-  initialVals: object
 };

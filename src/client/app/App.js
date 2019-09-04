@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { func, bool } from 'prop-types';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import {
   ChangePasswordPage, ConfigPage, EditDisplayTemplate,
@@ -99,13 +98,5 @@ let App = () => {
     </Switch>
   </div>;
 };
-
-[ProtectedRoute, LoggedOutRoute, FrontEndRoute].forEach((comp) => {
-  if (!comp.propTypes) comp.propTypes = {
-    component: func
-  };
-});
-
-ProtectedRoute.propTypes.isAdmin = bool;
 
 export default App;
