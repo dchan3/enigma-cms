@@ -34,10 +34,11 @@ function EditDocumentPage() {
   else if (dataObj) {
     let { docType, doc } = dataObj;
     if (docType) {
-      docType.attributes.forEach(({ attrName, attrType, grammar }) => {
+      docType.attributes.forEach(({ attrName, attrType, grammar, repeatable
+      }) => {
         params[attrName] = {
           label: attrName,
-          type: attrType
+          type: repeatable ? `[${attrType}]` : attrType
         };
 
         if (grammar) {
@@ -51,10 +52,13 @@ function EditDocumentPage() {
           `/api/documents/new_document/${dataObj.docType.docTypeId}`
       };
 
-      if (doc) obj.currentValue = {
+      if (doc && doc.content) obj.currentValue = {
         draft: doc.draft,
         ...doc.content
-      };
+      }
+      else if (doc) obj.currentValue = {
+        draft: doc.draft
+      }
 
       return <GeneratedForm title='Edit Document' {...{ params }} method="post"
         redirectUrl='/admin' {...obj}  />;

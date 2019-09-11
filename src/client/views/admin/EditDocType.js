@@ -92,6 +92,13 @@ let EditDocType = () => {
                 { 'text': 'Color', 'value': 'color' }
               ]
             },
+            repeatable: {
+              type: 'enum',
+              enumList: [
+                { 'text': 'No', 'value': false },
+                { 'text': 'Yes', 'value': true }
+              ]
+            },
             minimum: minMax,
             maximum: minMax,
             grammar: {

@@ -110,9 +110,10 @@ function GeneratedForm({ params, parentCallback, method, formAction,
   function handleArrayRemove(param, n) {
     return function(event) {
       event.preventDefault();
-      let newState = Object.assign({}, state);
+      let newState = Object.assign({}, state), vals = newState.values[param];
       newState.errorMessage = '';
-      newState.values[param].splice(n, 1);
+      vals.splice(n, 1);
+      newState.values[param]= vals;
       setState(newState);
     }
   }
@@ -123,6 +124,7 @@ function GeneratedForm({ params, parentCallback, method, formAction,
       let newState = Object.assign({}, state), toAdd = {},
         actualParam = param.replace(/.\d./g, '.shape.'),
         { type: gotType, shape: gotShape } = loget(params, actualParam);
+      if (!newState.values[param]) newState.values[param] = [];
       if (gotType === '[object]') {
         for (let key in gotShape) {
           toAdd[key] = '';
