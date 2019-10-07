@@ -37,7 +37,8 @@ router.get('/:query', function({ params: {
             }
           }).then(types => {
             for (let d in docs) {
-              let docInfo = documents.find(ds => ds.docNodeId === parseInt(d));
+              let docInfo =
+                documents.find(ds => ds.docNodeId === Number.parseInt(d, 10));
               output[d] = {
                 results: docs[d],
                 docInfo,
