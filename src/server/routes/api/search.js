@@ -6,6 +6,9 @@ var router = Router();
 router.get('/:query', function({ params: {
   query
 } }, res) {
+  if (!query || query.length === 0) {
+    return res.send('Input query.').status(200).end();
+  }
   let qSplit = decodeURIComponent(query.trim()).split(' ')
   ReverseIndex.find({ string: { $in:
     qSplit
