@@ -24,7 +24,7 @@ const DocumentSchema = new Schema({
 DocumentSchema.plugin(autoIncrementPlugin,
   { model: 'Document', field: 'docNodeId', startAt: 0, incrementBy: 1 });
 
-DocumentSchema.pre('save', function saveHook(next) {
+DocumentSchema.pre('save', async function saveHook(next) {
   const doc = this, content = doc.get('content'), { docNodeId } = doc,
     thaMap = {};
 
@@ -42,7 +42,7 @@ DocumentSchema.pre('save', function saveHook(next) {
   }
 
   for (let string in thaMap) {
-    ReverseIndex.findOne({ string }).then(index => {
+    await ReverseIndex.findOne({ string }).then(index => {
       if (index) {
         let i = index.where.findIndex(doc => doc.docNodeId === docNodeId);
         if (i <= -1) {
@@ -51,10 +51,12 @@ DocumentSchema.pre('save', function saveHook(next) {
             locations: thaMap[string]
           });
         }
-        else index.where.set(i, {
-          docNodeId,
-          locations: thaMap[string]
-        });
+        else {
+          index.where.set(i, {
+            docNodeId,
+            locations: thaMap[string]
+          });
+        }
       }
       else index = new ReverseIndex({
         string, where: [
