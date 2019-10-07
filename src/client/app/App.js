@@ -6,7 +6,7 @@ import {
   ProfileEditPage, SignupPage, EditDocType, UploadFilePage, MainMenu
 } from '../views/admin';
 import { FrontCategoryDisplay, FrontDocumentDisplay, FrontHeader,
-  FrontProfileDisplay, LoginPage } from '../views/front';
+  FrontProfileDisplay, LoginPage, SearchPage } from '../views/front';
 import { Footer } from '../reusables';
 import { Metamorph } from 'react-metamorph';
 import { GeneralContextProvider } from '../contexts/GeneralContext';
@@ -82,6 +82,7 @@ let App = () => {
       <ProtectedRoute path='/admin' isAdmin={false} component={() => <div />}/>
       <LoggedOutRoute path="/signup" component={SignupPage} />
       <LoggedOutRoute path="/login" component={LoginPage} />
+      <LoggedOutRoute path="/search" component={SearchPage} />
       <FrontEndRoute path="/not-found" component={() => <div>
         <h1>Not Found</h1>
         <p>We're sorry, but the page you requested could not be found.</p>

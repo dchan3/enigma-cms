@@ -9,6 +9,8 @@ import { default as camelcaseConvert }
 import { default as gensig } from '../src/lib/utils/gensig';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
 import { loget, loset } from '../src/client/utils/lofuncs.js';
+import { default as createReverseIndex }
+  from '../src/server/utils/create_reverse_index';
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -401,6 +403,15 @@ describe('Num Key to Shape Key function', function() {
     var actual = formGenUtils.numKeyToShapeKey('groups.1.leader.name'),
       expected = 'groups.shape.leader.shape.name';
     expect(actual).to.equal(expected);
+    done();
+  });
+});
+
+describe('Reverse Index function', function() {
+  it ('works as desired', function(done) {
+    var actual = createReverseIndex('Hello World'),
+      expected = { 'Hello': [0], 'World': [6] };
+    expect(actual).to.deep.equal(expected);
     done();
   });
 });

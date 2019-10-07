@@ -40,6 +40,7 @@ module.exports = [{
         options: {
           babelrc: true,
           comments: false,
+          plugins: ['./babel/rightify', './babel/hashify']
         }
       },
       {
@@ -49,7 +50,34 @@ module.exports = [{
             loader: MiniCssExtractPlugin.loader
           }
         ]
-      }
+      },
+      {
+        test: /\.jsx?$/,
+        include: /react/,
+        loader: 'babel-loader',
+        options: {
+          comments: false,
+          plugins: ['./babel/rightify']
+        }
+      },
+      {
+        test: /\.jsx?$/,
+        include: /styled-components/,
+        loader: 'babel-loader',
+        options: {
+          comments: false,
+          plugins: ['./babel/rightify']
+        }
+      },
+      {
+        test: /\.jsx?$/,
+        include: /buffer/,
+        loader: 'babel-loader',
+        options: {
+          comments: false,
+          plugins: ['./babel/rightify']
+        }
+      },
     ]
   },
   output: {
@@ -107,6 +135,24 @@ module.exports = [{
         options: {
           babelrc: true,
           comments: false
+        }
+      },
+      {
+        test: /\.jsx?$/,
+        include: /react/,
+        loader: 'babel-loader',
+        options: {
+          comments: false,
+          plugins: ['./babel/rightify']
+        }
+      },
+      {
+        test: /\.jsx?$/,
+        include: /styled-components/,
+        loader: 'babel-loader',
+        options: {
+          comments: false,
+          plugins: ['./babel/rightify']
         }
       }
     ],

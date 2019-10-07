@@ -4,7 +4,7 @@ import { User, SiteConfig, Document, DocumentType } from './models';
 import { default as SignupStrategy } from './passport/signup';
 import { default as LoginStrategy } from './passport/login';
 import mongoose from 'mongoose';
-import { userRoutes, configRoutes, documentRoutes, fileRoutes }
+import { userRoutes, configRoutes, documentRoutes, fileRoutes, searchRoutes }
   from './routes/api';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
@@ -24,6 +24,10 @@ mongoose.connect(require('../../config/db.js').url, {}, () => {
       newConfig.save();
     }
     else return;
+  });
+
+  Document.find({}).then(docs => {
+    docs.forEach(doc => { doc.save(); });
   });
 });
 
@@ -62,6 +66,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
+app.use('/api/search', searchRoutes);
 
 app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
   var docTypes = await DocumentType.find({}).select({ docTypeNamePlural: 1,
