@@ -10,6 +10,7 @@ function ProfileEditPage() {
     username: { type: 'text' }, displayName: { type: 'text' },
     profilePhoto: { type: 'file' }, currentPassword: { type: 'password' },
     fileContent: { type: 'string', hidden: true }, email: { type: 'email' },
+    bio: { type: 'text', grammar: 'html' }
   }} method="post" redirectUrl='/admin' formAction='/api/users/update' />;
 }
 

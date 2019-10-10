@@ -44,7 +44,11 @@ var UserSchema = new mongoose.Schema({
   userId: {
     type: Number,
     required: true
-  }
+  },
+  bio: {
+    type: String,
+    default: ''
+  },
 });
 
 UserSchema.methods.comparePassword = function comparePassword(password) {

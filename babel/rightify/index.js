@@ -7,7 +7,8 @@ module.exports = function () {
         path.node.argument = t.stringLiteral('');
       },
       CallExpression(path) {
-        if (path.node.callee && path.node.callee.object && path.node.callee.property) {
+        if (path.node.callee && path.node.callee.object
+          && path.node.callee.property) {
           if (path.node.callee.object.name === 'console'
             && path.node.callee.property.name === 'error') {
             path.node.arguments = [t.stringLiteral('')];
