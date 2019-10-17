@@ -127,10 +127,7 @@ export const backEndRoutes = [
     exact: true,
     component: EditDocumentLanding,
     fetchInitialData: async path => {
-      let docTypeId = path.split('/').pop(),
-        documents = await Document.find({ docTypeId }),
-        docType = await DocumentType.findOne({ docTypeId });
-      return { documents, docType };
+      return await documentFetchFuncs.getDocuments(path.split('/').pop());
     }
   },
   {

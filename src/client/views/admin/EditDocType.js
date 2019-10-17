@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { GeneratedForm } from '../../reusables';
 import { Redirect } from 'react-router-dom';
 import useFrontContext from '../../hooks/useFrontContext';
-import { get as axget } from 'axios';
+import { default as requests } from '../../utils/api_request_async';
 
 let EditDocType = () => {
   let { state, setState, apiUrl } = useFrontContext({
@@ -10,14 +10,14 @@ let EditDocType = () => {
     urlParams: ['docTypeId'],
     apiUrl: function(params) {
       if (params && params.docTypeId)
-        return `/api/documents/get_type_2/${params.docTypeId}`
+        return `documents/get_type_2/${params.docTypeId}`
       else return '';
     }
   });
 
   useEffect(function() {
     if (apiUrl !== '')
-      axget(apiUrl).then(({ data }) => {
+      requests.getRequest(apiUrl, (data) => {
         setState({ dataObj: data,
           optionParams: data && data.docType && data.docType.attributes.map(
             ({ attrName, attrType }) => ({ attrName, attrType })) || [{
@@ -127,10 +127,10 @@ let EditDocType = () => {
               { text: '(None)', value: '' }
             ],
           value: ''
-        } }} method="post" parentCallback={updateParams} redirectUrl='/admin'
-      formAction={docType && docType.docTypeId ?
-        `/api/documents/update_type/${docType.docTypeId}`
-        : '/api/documents/register_type'}/>;
+        } }} parentCallback={updateParams} redirectUrl='/admin'
+      formAction={`documents/${(docType && docType.docTypeId) ?
+        `update_type/${docType.docTypeId}`
+        : 'register_type'}`} />;
   }
 };
 

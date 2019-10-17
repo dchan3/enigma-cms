@@ -7,7 +7,7 @@ router.get('/:query', function({ params: {
   query
 } }, res) {
   if (!query || query.length === 0) {
-    return res.send('Input query.').status(200).end();
+    return res.json({ error: 'Input query.' }).status(200).end();
   }
   let qSplit = decodeURIComponent(query.trim()).split(' ');
   ReverseIndex.find({ string: { $in:
@@ -21,12 +21,6 @@ router.get('/:query', function({ params: {
           let { docNodeId, locations } = where[w];
           if (!docs[docNodeId]) docs[docNodeId] = {};
           docs[docNodeId][string] = locations;
-        }
-      }
-
-      for (let d in docs) {
-        if (Object.keys(docs[d]).length !== indexes.length) {
-          delete docs[d];
         }
       }
 
@@ -49,12 +43,12 @@ router.get('/:query', function({ params: {
               }
             }
 
-            res[Object.keys(output) ? 'json' : 'send'](
-              Object.keys(output) ? output : 'Not found').status(200).end();
+            res.json(Object.keys(output) ? output : {
+              error: 'Not found' }).status(200).end();
           })
         });
     }
-    else res.send('Not found').status(200).end();
+    else res.json({ error: 'Not found' }).status(200).end();
   });
 });
 

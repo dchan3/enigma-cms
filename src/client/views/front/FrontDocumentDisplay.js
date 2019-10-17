@@ -2,22 +2,23 @@ import React, { useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
+import { default as requests } from '../../utils/api_request_async';
 import useFrontContext from '../../hooks/useFrontContext.js';
-import { get as axget } from 'axios';
 
 function FrontDocumentDisplay() {
   let { state, setState, apiUrl } = useFrontContext({
     dataParams: ['slug'],
     urlParams: ['docNode'],
     apiUrl: function({ docType, docNode }) {
-      return `/api/documents/get_rendered_document_by_type_and_slug/${docType
+      return `documents/get_rendered_document_by_type_and_slug/${docType
       }/${docNode}`;
     }
   });
 
-  async function getData() {
-    let resp = await axget(apiUrl);
-    setState({ dataObj: resp.data });
+  function getData() {
+    requests.getRequest(apiUrl, function(dataObj) {
+      setState({ dataObj });
+    });
   }
 
   useEffect(function() {

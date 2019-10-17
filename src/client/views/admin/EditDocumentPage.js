@@ -2,15 +2,15 @@ import React, { useEffect } from 'react';
 import { GeneratedForm } from '../../reusables';
 import { Redirect } from 'react-router-dom';
 import useFrontContext from '../../hooks/useFrontContext';
-import { get as axget } from 'axios';
+import { default as requests } from '../../utils/api_request_async';
 
 function EditDocumentPage() {
   let { state, setState, apiUrl } = useFrontContext({
       dataParams: ['doc.docNodeId', 'docType.docTypeId'],
       urlParams: ['docNode', 'docTypeId'],
       apiUrl: function({ docTypeId, docNode }) {
-        return docNode ? `/api/documents/get_document_and_type_info/${docNode}`
-          : `/api/documents/get_type_2/${docTypeId}`;
+        return `documents/${docNode ? `get_document_and_type_info/${docNode}`
+          : `get_type_2/${docTypeId}`}`;
       }
     }), params = {
       draft: {
@@ -23,7 +23,7 @@ function EditDocumentPage() {
     };
 
   useEffect(function() {
-    axget(apiUrl).then(({ data }) => setState({ dataObj: data }));
+    requests.getRequest(apiUrl, (dataObj) => setState({ dataObj }));
   }, []);
 
   let { dataObj } = state;
@@ -47,9 +47,10 @@ function EditDocumentPage() {
       });
 
       var obj = {
-        formAction: dataObj.doc ?
-          `/api/documents/update_document/${dataObj.doc.docNodeId}` :
-          `/api/documents/new_document/${dataObj.docType.docTypeId}`
+        formAction:
+          `documents/${dataObj.doc ?
+            `update_document/${dataObj.doc.docNodeId}` :
+            `new_document/${dataObj.docType.docTypeId}`}`
       };
 
       if (doc && doc.content) obj.currentValue = {
@@ -60,8 +61,8 @@ function EditDocumentPage() {
         draft: doc.draft
       }
 
-      return <GeneratedForm title='Edit Document' {...{ params }} method="post"
-        redirectUrl='/admin' {...obj}  />;
+      return <GeneratedForm title='Edit Document' {...{ params }} {...obj}
+        redirectUrl='/admin' />;
     }
     else return null;
   }

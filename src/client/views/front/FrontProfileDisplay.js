@@ -3,7 +3,7 @@ import { Metamorph } from 'react-metamorph';
 import { Redirect } from 'react-router-dom';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 import useFrontContext from '../../hooks/useFrontContext.js';
-import { get as axget } from 'axios';
+import { default as requests } from '../../utils/api_request_async';
 
 function FrontProfileDisplay()
 {
@@ -11,12 +11,12 @@ function FrontProfileDisplay()
     dataParams: ['username'],
     urlParams: ['username'],
     apiUrl: function({ username }) {
-      return `/api/users/get_user_profile/${username}`;
+      return `users/get_user_profile/${username}`;
     }
   });
 
   useEffect(function() {
-    axget(apiUrl).then(({ data }) => setState({ dataObj: data }));
+    requests.getRequest(apiUrl, (dataObj) => setState({ dataObj }));
   }, []);
 
   let { dataObj } = state;

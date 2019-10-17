@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { get as axget } from 'axios';
 import { TextHeader, SamePageAnchor } from '../../reusables';
 import { TablePaginator } from 'react-everafter';
-import { delete as axdel } from 'axios';
 import useStaticContext from '../../hooks/useStaticContext';
-
+import { default as syncReqs } from '../../utils/api_request_async';
+import { default as asyncReqs } from '../../utils/api_request_sync';
 function FileMgmtLanding() {
   let { files } = useStaticContext(['files']);
 
   function handleDeleteClick() {
     return function(url) {
-      axdel(url);
+      asyncReqs.deleteRequestSync(url);
     }
   }
 
@@ -23,8 +22,8 @@ function FileMgmtLanding() {
       setState({ files });
     }
     else {
-      axget('/api/files/get').then(({ data }) => {
-        setState({ files: data })
+      syncReqs.getRequest('files/get', (files) => {
+        setState({ files })
       });
     }
   }, []);
@@ -66,7 +65,7 @@ function FileMgmtLanding() {
           headerText: 'Delete',
           display: ({ fileType, _id }) =>
             <button onClick={() => handleDeleteClick()(
-              `/api/files/delete_file/${fileType}/${_id}`)}>Delete</button>
+              `files/delete_file/${fileType}/${_id}`)}>Delete</button>
         },
         {
           headerText: 'Date Created',

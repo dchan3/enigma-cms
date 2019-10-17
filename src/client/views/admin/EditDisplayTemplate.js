@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react';
 import { GeneratedForm } from '../../reusables';
 import useFrontContext from '../../hooks/useFrontContext';
-import { get as axget } from 'axios';
+import { default as requests } from '../../utils/api_request_async';
 
 function EditDisplayTemplate() {
   let { state, setState, apiUrl } = useFrontContext({
     dataParams: ['docTypeId'],
     urlParams: ['docTypeId'],
     apiUrl: function({ docTypeId }) {
-      return `/api/documents/get_template/${docTypeId}`;
+      return `documents/get_template/${docTypeId}`;
     }
   });
 
   useEffect(function() {
-    axget(apiUrl).then(({ data }) => setState({ dataObj: data }));
+    requests.getRequest(apiUrl, (dataObj) => setState({ dataObj }));
   }, []);
 
   let { dataObj } = state;
@@ -33,8 +33,8 @@ function EditDisplayTemplate() {
           categoryTemplateBody: {
             type: 'text',
             grammar: 'html'
-          } }} method="post" redirectUrl='/admin'
-        formAction={`/api/documents/update_template/${docTypeId}`} />;
+          } }} redirectUrl='/admin'
+        formAction={`documents/update_template/${docTypeId}`} />;
     }
     else return null;
   }

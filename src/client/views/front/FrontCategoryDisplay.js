@@ -3,20 +3,21 @@ import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 import useFrontContext from '../../hooks/useFrontContext.js';
-import { get as axget } from 'axios';
+import { default as requests } from '../../utils/api_request_async';
 
 function FrontCategoryDisplay() {
   let { state, setState, apiUrl } = useFrontContext({
     dataParams: ['docTypeNamePlural'],
     urlParams: ['docType'],
     apiUrl: function({ docType }) {
-      return `/api/documents/get_rendered_documents_by_type_name/${docType}`;
+      return `documents/get_rendered_documents_by_type_name/${docType}`;
     }
   });
 
-  async function getData() {
-    let resp = await axget(apiUrl);
-    setState({ dataObj: resp.data });
+  function getData() {
+    requests.getRequest(apiUrl, function(dataObj) {
+      setState({ dataObj })
+    });
   }
 
   useEffect(function() {

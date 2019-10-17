@@ -14,7 +14,7 @@ function ChangePasswordPage() {
     },
     currentPassword: { type: 'password' },
     newPassword: { type: 'password' }
-  }} method="post" formAction='/api/users/change_password' redirectUrl='/admin'
+  }} formAction='users/change_password' redirectUrl='/admin'
   />;
 }
 

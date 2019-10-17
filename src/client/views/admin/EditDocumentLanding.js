@@ -3,9 +3,9 @@ import { TablePaginator } from 'react-everafter';
 import styled from 'styled-components';
 import { TextHeader, SamePageAnchor } from '../../reusables';
 import { Redirect } from 'react-router-dom';
-import { delete as axdel } from 'axios';
+import { default as asyncReqs } from '../../utils/api_request_async';
 import useFrontContext from '../../hooks/useFrontContext';
-import { get as axget } from 'axios';
+import { default as syncReqs } from '../../utils/api_request_sync';
 
 let TableText = styled.p`text-align:center;font-family:sans-serif;`;
 
@@ -14,18 +14,18 @@ function EditDocumentLanding() {
     dataParams: ['docType.docTypeId'],
     urlParams: ['docType'],
     apiUrl: function({ docType }) {
-      return `/api/documents/get_documents/${docType}`;
+      return `documents/get_documents/${docType}`;
     }
   });
 
   function handleDeleteClick() {
     return function(url) {
-      axdel(url);
+      syncReqs.deleteRequestSync(url);
     }
   }
 
   useEffect(function() {
-    axget(apiUrl).then(({ data }) => setState({ dataObj: data }));
+    asyncReqs.getRequest(apiUrl, dataObj => setState({ dataObj }));
   }, []);
 
   let { dataObj } = state;
@@ -33,6 +33,8 @@ function EditDocumentLanding() {
   if (dataObj === undefined) return <Redirect to='/admin' />;
   else if (dataObj) {
     let { docType, documents } = dataObj;
+
+    console.log(dataObj);
 
     if (docType && documents && documents.length) {
       let { docTypeName, docTypeNamePlural, attributes } = docType;
@@ -57,7 +59,7 @@ function EditDocumentLanding() {
             headerText: 'Delete',
             display: ({ docTypeId, _id }) =>
               <button onClick={() => handleDeleteClick()(
-                `/api/documents/delete_document/${docTypeId}/${_id}`
+                `documents/delete_document/${docTypeId}/${_id}`
               )}>Delete</button>
           }, {
             headerText: 'View Live',

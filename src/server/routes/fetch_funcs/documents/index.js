@@ -6,12 +6,12 @@ async function getTypes() {
   return types;
 }
 
-async function getDocuments(id) {
-  let { docTypeId } = await DocumentType.findOne({
-      docTypeId: parseInt(id)
-    }), docs = await Document.find(docTypeId);
+async function getDocuments(docTypeId) {
+  let docType = await DocumentType.findOne({
+      docTypeId
+    }), documents = await Document.find({ docTypeId });
 
-  return docs;
+  return { documents, docType };
 }
 
 async function getType2(id) {

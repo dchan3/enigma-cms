@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { get as axget } from 'axios';
+import { default as requests } from '../../utils/api_request_async';
 import { SamePageAnchor } from '../../reusables';
 
 function SearchPage() {
   let [query, setQuery] = useState(''), [results, setResults] = useState({});
 
   useEffect(function() {
-    axget(`/api/search/${query}`).then(({ data }) => setResults(
-      typeof data === 'string' ? {} : data
+    requests.getRequest(`search/${query}`, (data) => setResults(
+      data.error ? {} : data
     ));
   }, [query])
 

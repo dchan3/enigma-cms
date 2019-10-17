@@ -11,6 +11,4 @@ export default () => <GeneratedForm title='Upload File' params={{
       text: 'Audio', value: 'audio' }, {
       text: 'Video', value: 'video' }, {
       text: 'Other', value: 'other' }],
-  } }} method="post" formAction='/api/files/upload_file' redirectUrl=
-  "/admin/file-mgmt"
-/>;
+  } }} formAction='files/upload_file' redirectUrl="/admin/file-mgmt" />;

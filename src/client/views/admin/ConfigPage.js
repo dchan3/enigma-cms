@@ -40,7 +40,7 @@ function ConfigPage() {
         { text: 'English', value: 'en' },
         { text: '中文', value: 'zh' }]
     }
-  }} method="post" redirectUrl='/admin' formAction='/api/site_config/update' />
+  }} redirectUrl='/admin' formAction='site_config/update' />
 }
 
 export default ConfigPage;

@@ -5,7 +5,7 @@ import {
 import styled from 'styled-components';
 import CodeEditor from './CodeEditor';
 import { loget, loset } from '../utils/lofuncs';
-import { get as axget, post as axpost } from 'axios';
+import { default as requests } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
 
@@ -145,20 +145,16 @@ function GeneratedForm({ params, parentCallback, method, formAction,
       Array.prototype.slice.call(elements, 0 , -1).forEach(
         ({ id, value }) => { requestBody[id] = value; });
       let sig = gensig(requestBody), config = {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true
-      };
-      (method.match('/^get$/i') ?
-        axget(formAction, config) :
-        axpost(formAction, { ...requestBody, sig }, config))
-        .then(function(response) {
-          if (successCallback) successCallback(response);
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include'
+        }, cbFunc = function(data) {
+          if (successCallback) successCallback(data);
           else if (redirectUrl) window.location.href = redirectUrl;
-        }).catch(function (error) {
-          setState({
-            errorMessage: error.message, ...state,
-          });
-        });
+        };
+      method.match('/^get$/i') ?
+        requests.getRequest(formAction, cbFunc, config) :
+        requests.postRequest(formAction, JSON.stringify({
+          ...requestBody, sig }), cbFunc, config);
     }
     else {
       setState({

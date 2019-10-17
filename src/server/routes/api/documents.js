@@ -21,7 +21,7 @@ router.get('/get_type/:id',
   findTheOne(DocumentType, { docTypeId: 'id' }));
 
 router.get('/get_type_2/:id', async function(req, res) {
-  let docType = await documentFetchFuncs.getType2(req.params.id)
+  let docType = await documentFetchFuncs.getType2(parseInt(req.params.id));
   return res.json({ docType });
 });
 
@@ -68,7 +68,8 @@ router.get('/get_rendered_document_by_type_and_slug/:type/:slug', function({
 });
 
 router.get('/get_documents/:id', async function (req, res) {
-  return res.status(200).json(documentFetchFuncs.getDocuments(req.params.id));
+  let retval = await documentFetchFuncs.getDocuments(parseInt(req.params.id));
+  return res.status(200).json(retval);
 });
 
 router.get('/get_rendered_documents_by_type_name/:docTypeNamePlural', ({
