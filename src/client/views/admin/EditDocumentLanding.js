@@ -34,8 +34,6 @@ function EditDocumentLanding() {
   else if (dataObj) {
     let { docType, documents } = dataObj;
 
-    console.log(dataObj);
-
     if (docType && documents && documents.length) {
       let { docTypeName, docTypeNamePlural, attributes } = docType;
       return [<TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
