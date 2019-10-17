@@ -9,22 +9,20 @@ import renderMarkup, { prepareDocumentsForRender } from
   '../../utils/render_markup';
 import { categoryMetadata, documentMetadata } from
   '../../utils/render_metadata';
+import { default as documentFetchFuncs } from '../fetch_funcs/documents';
 
 var router = Router();
 
-router.get('/get_types', (req, res) => {
-  DocumentType.find({ }).then(types => {
-    res.status(200).json(types);
-  }).catch(() => res.status(500));
+router.get('/get_types', async function (req, res) {
+  return res.status(200).json(await documentFetchFuncs.getTypes());
 });
 
 router.get('/get_type/:id',
   findTheOne(DocumentType, { docTypeId: 'id' }));
 
-router.get('/get_type_2/:id', function(req, res) {
-  DocumentType.findOne({ docTypeId: req.params.id }).then(docType => {
-    res.json({ docType });
-  });
+router.get('/get_type_2/:id', async function(req, res) {
+  let docType = await documentFetchFuncs.getType2(req.params.id)
+  return res.json({ docType });
 });
 
 router.get('/get_document_and_type_info/:id', function(req, res) {
@@ -69,17 +67,8 @@ router.get('/get_rendered_document_by_type_and_slug/:type/:slug', function({
   }).catch(() => res.status(500));
 });
 
-router.get('/get_documents/:id', (req, res, next) => {
-  DocumentType.findOne({
-    docTypeId: parseInt(req.params.id)
-  }).then(docType => {
-    Document.find({ docTypeId: docType.docTypeId }).then(docs => {
-      res.status(200).json({
-        docType,
-        documents: docs
-      })
-    })
-  }).catch(err => next(err))
+router.get('/get_documents/:id', async function (req, res) {
+  return res.status(200).json(documentFetchFuncs.getDocuments(req.params.id));
 });
 
 router.get('/get_rendered_documents_by_type_name/:docTypeNamePlural', ({

@@ -4,12 +4,14 @@ import { MainMenu, SignupPage, ConfigPage, EditDocumentLanding,
   EditDocumentPage, EditDisplayTemplate, ProfileEditPage, ChangePasswordPage,
   FileMgmtLanding, UploadFilePage, EditDocType
 } from '../../../client/views/admin';
-import { Document, DocumentType, File, User, DocumentDisplayTemplate,
-  SiteConfig } from '../../models';
+import { Document, DocumentType, File, User, DocumentDisplayTemplate
+} from '../../models';
 import renderMarkup, { prepareDocumentsForRender } from
   '../../utils/render_markup';
-import { categoryMetadata, documentMetadata, profileMetadata } from
+import { categoryMetadata, documentMetadata } from
   '../../utils/render_metadata';
+import { default as userFetchFuncs } from '../fetch_funcs/users'
+import { default as documentFetchFuncs } from '../fetch_funcs/documents';
 
 export const frontEndRoutes = [
   {
@@ -32,20 +34,8 @@ export const frontEndRoutes = [
     exact: true,
     component: FrontProfileDisplay,
     fetchInitialData: async (path) => {
-      var user = await User.findOne({
-          username: path.split('/').pop()
-        }).select({ password: 0, _id: 0 }),
-        { profileTemplate } = await SiteConfig.findOne({});
-
-      if (user) {
-        let rendered = await renderMarkup(profileTemplate, user),
-          metadata = await profileMetadata(user);
-
-        return {
-          rendered, metadata, username: user.username
-        }
-      }
-      else return undefined;
+      return await userFetchFuncs.getUserProfile(null, {
+        username: path.split('/').pop() });
     }
   },
   {
@@ -117,9 +107,7 @@ export const backEndRoutes = [
     exact: true,
     component: EditDocumentPage,
     fetchInitialData: async (path) => {
-      let docType = await DocumentType.findOne({
-        docTypeId: path.split('/').pop()
-      });
+      let docType = await documentFetchFuncs.getType2(path.split('/').pop());
       return { docType };
     }
   },

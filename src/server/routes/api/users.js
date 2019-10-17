@@ -1,14 +1,13 @@
 import passport from 'passport';
 import { Router } from 'express';
-import { User, SiteConfig } from '../../models';
+import { User } from '../../models';
 import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
 import { writeFileSync } from 'fs';
 import path from 'path';
 import { findTheOne } from './utils';
-import renderMarkup from '../../utils/render_markup';
-import { profileMetadata } from '../../utils/render_metadata';
+import { default as userFetchFuncs } from '../fetch_funcs/users';
 
 let router = Router();
 
@@ -20,6 +19,10 @@ router.get('/get', ({ user }, res)  => {
   else res.send(JSON.stringify(null)).end();
 });
 
+router.get('/get_all_users', async function(req, res) {
+  return res.status(200).json(await userFetchFuncs.getAllUsers());
+});
+
 router.get('/logout', function(req, res) {
   req.logout();
   res.redirect('/');
@@ -28,18 +31,12 @@ router.get('/logout', function(req, res) {
 router.get('/get_user_by_username/:username',
   findTheOne(User, { username: 'username' }));
 
-router.get('/get_user_profile/:username', function({ params: { username } },
-  res) {
-  User.findOne({ username }).then(user => {
-    SiteConfig.findOne({ }).then(async ({ profileTemplate }) => {
-      let metadata = await profileMetadata(user), rendered =
-        await renderMarkup(profileTemplate, user);
-      res.status(200).json({
-        metadata, rendered, username
-      });
-    });
-  }).catch(() => res.status(500));
-});
+router.get('/get_user_profile/:username',
+  async function({ params: { username } },
+    res) {
+    return res.status(200).json(await userFetchFuncs.getUserProfile({
+      username }));
+  });
 
 // POST Requests
 router.post('/register', verifyMiddleware, function(req, res, next) {
