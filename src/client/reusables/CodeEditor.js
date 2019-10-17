@@ -11,12 +11,12 @@ let EditorContainer =
   overflow-x: scroll;
   overflow-y: scroll;
   left: 0;
-  height: 100%;
+  height: 85%;
   width: calc(100% - 10px);`, TextInputArea = styled.textarea`
     background-color: white;
     overflow-wrap: break-word;
     left: 0;
-    height: 100%;
+    height: 85%;
     font-family: "Monaco", "Courier New", monospace;
     font-size: 16px;
     width: calc(100% - 10px);
