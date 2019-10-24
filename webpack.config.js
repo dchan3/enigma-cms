@@ -40,7 +40,8 @@ module.exports = [{
         options: {
           babelrc: true,
           comments: false,
-          plugins: ['./babel/rightify', './babel/hashify']
+          plugins: process.env.DEV_MODE ?
+            ['./babel/rightify', './babel/hashify'] : []
         }
       },
       {
@@ -57,7 +58,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: ['./babel/rightify']
+          plugins: process.env.DEV_MODE ?
+            ['./babel/rightify', './babel/hashify'] : []
         }
       },
       {
@@ -66,7 +68,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: ['./babel/rightify']
+          plugins: process.env.DEV_MODE ?
+            ['./babel/rightify', './babel/hashify'] : []
         }
       },
       {
@@ -75,7 +78,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: ['./babel/rightify']
+          plugins: process.env.DEV_MODE ?
+            ['./babel/rightify', './babel/hashify'] : []
         }
       },
     ]
@@ -143,7 +147,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: ['./babel/rightify']
+          plugins: process.env.DEV_MODE ?
+            ['./babel/rightify', './babel/hashify'] : []
         }
       },
       {
@@ -152,7 +157,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: ['./babel/rightify']
+          plugins: process.env.DEV_MODE ?
+            ['./babel/rightify', './babel/hashify'] : []
         }
       }
     ],

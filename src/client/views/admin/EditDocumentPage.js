@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { GeneratedForm } from '../../reusables';
 import { Redirect } from 'react-router-dom';
 import useFrontContext from '../../hooks/useFrontContext';
-import { default as requests } from '../../utils/api_request_async';
 
 function EditDocumentPage() {
-  let { state, setState, apiUrl } = useFrontContext({
+  let { state } = useFrontContext({
       dataParams: ['doc.docNodeId', 'docType.docTypeId'],
       urlParams: ['docNode', 'docTypeId'],
       apiUrl: function({ docTypeId, docNode }) {
@@ -20,13 +19,7 @@ function EditDocumentPage() {
           text: 'No', value: false
         }]
       }
-    };
-
-  useEffect(function() {
-    requests.getRequest(apiUrl, (dataObj) => setState({ dataObj }));
-  }, []);
-
-  let { dataObj } = state;
+    }, { dataObj } = state;
 
   if (dataObj === undefined) {
     return <Redirect to="/admin" />;

@@ -1,30 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { Metamorph } from 'react-metamorph';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 import useFrontContext from '../../hooks/useFrontContext.js';
-import { default as requests } from '../../utils/api_request_async';
 
 function FrontCategoryDisplay() {
-  let { state, setState, apiUrl } = useFrontContext({
+  let { state } = useFrontContext({
     dataParams: ['docTypeNamePlural'],
     urlParams: ['docType'],
     apiUrl: function({ docType }) {
       return `documents/get_rendered_documents_by_type_name/${docType}`;
     }
   });
-
-  function getData() {
-    requests.getRequest(apiUrl, function(dataObj) {
-      setState({ dataObj })
-    });
-  }
-
-  useEffect(function() {
-    if (!state.dataObj) {
-      getData();
-    }
-  }, [state.dataObj]);
 
   let { dataObj } = state;
 

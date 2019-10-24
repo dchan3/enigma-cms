@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import useStaticContext from './useStaticContext.js';
-import useGeneralContext from './useGeneralContext.js';
+import { useState, useEffect } from 'react';
+import useStaticContext from './useStaticContext';
+import useGeneralContext from './useGeneralContext';
+import requests from '../utils/api_request_async';
 import { loget } from '../utils/lofuncs';
 
-export default function useFrontContext({ dataParams, urlParams, apiUrl }) {
+export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
+  initial }) {
   let { generalState } = useGeneralContext(),
     { match: { params } } = generalState,
     { dataObj } = useStaticContext(['dataObj']), initState = {
@@ -16,7 +18,7 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl }) {
       var dt = loget(dataObj, dataParams[d]), ut =
           loget(params, urlParams[d]);
       if ((dt ===  null || dt === undefined) ||
-          (ut === null || ut === undefined) || 
+          (ut === null || ut === undefined) ||
           (dt !== null && dt !== undefined) && (ut !== null && ut !== undefined)
         && dt.toString() !== ut.toString()) {
         initState.dataObj = null;
@@ -27,5 +29,18 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl }) {
   else { initState.dataObj = null; }
 
   let [state, setState] = useState(initState);
+
+  useEffect(function() {
+    if (!state.dataObj) {
+      if (apiUrl(params).length) {
+        requests.getRequest(apiUrl(params), function(dataObj) {
+          if (cb) cb(dataObj, setState, params);
+          else setState({ dataObj });
+        });
+      }
+      else if (initial) setState(initial);
+    }
+  }, []);
+
   return { state, setState, apiUrl: apiUrl(params) };
 }

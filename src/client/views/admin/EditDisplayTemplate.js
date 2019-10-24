@@ -1,22 +1,15 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { GeneratedForm } from '../../reusables';
 import useFrontContext from '../../hooks/useFrontContext';
-import { default as requests } from '../../utils/api_request_async';
 
 function EditDisplayTemplate() {
-  let { state, setState, apiUrl } = useFrontContext({
-    dataParams: ['docTypeId'],
-    urlParams: ['docTypeId'],
-    apiUrl: function({ docTypeId }) {
-      return `documents/get_template/${docTypeId}`;
-    }
-  });
-
-  useEffect(function() {
-    requests.getRequest(apiUrl, (dataObj) => setState({ dataObj }));
-  }, []);
-
-  let { dataObj } = state;
+  let { state } = useFrontContext({
+      dataParams: ['docTypeId'],
+      urlParams: ['docTypeId'],
+      apiUrl: function({ docTypeId }) {
+        return `documents/get_template/${docTypeId}`;
+      }
+    }), { dataObj } = state;
 
   if (dataObj) {
     let { docType, templateBody, categoryTemplateBody } = dataObj;

@@ -1,34 +1,27 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { TablePaginator } from 'react-everafter';
 import styled from 'styled-components';
 import { TextHeader, SamePageAnchor } from '../../reusables';
 import { Redirect } from 'react-router-dom';
-import { default as asyncReqs } from '../../utils/api_request_async';
 import useFrontContext from '../../hooks/useFrontContext';
 import { default as syncReqs } from '../../utils/api_request_sync';
 
 let TableText = styled.p`text-align:center;font-family:sans-serif;`;
 
 function EditDocumentLanding() {
-  let { state, setState, apiUrl } = useFrontContext({
-    dataParams: ['docType.docTypeId'],
-    urlParams: ['docType'],
-    apiUrl: function({ docType }) {
-      return `documents/get_documents/${docType}`;
-    }
-  });
-
   function handleDeleteClick() {
     return function(url) {
       syncReqs.deleteRequestSync(url);
     }
   }
 
-  useEffect(function() {
-    asyncReqs.getRequest(apiUrl, dataObj => setState({ dataObj }));
-  }, []);
-
-  let { dataObj } = state;
+  let { state } = useFrontContext({
+      dataParams: ['docType.docTypeId'],
+      urlParams: ['docType'],
+      apiUrl: function({ docType }) {
+        return `documents/get_documents/${docType}`;
+      }
+    }), { dataObj } = state;
 
   if (dataObj === undefined) return <Redirect to='/admin' />;
   else if (dataObj) {

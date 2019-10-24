@@ -1,6 +1,8 @@
 import React from 'react';
 import App from '../../../client/app/App';
-import { frontEndRoutes, backEndRoutes } from './route_data';
+import { frontEndRoutes, backEndRoutes, loggedOutRoutes } from
+  '../../../lib/routes/route_data';
+import { default as fetchers } from './fetch_data';
 import { SiteConfig, DocumentType } from '../../models';
 import { matchPath, StaticRouter } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
@@ -44,12 +46,13 @@ ${[
 `, ssrRenderer = async ({ path, url: location }, res, next) => {
     let config = await SiteConfig.findOne({}),
       types = await DocumentType.find({}), routes = path.startsWith('/admin') ?
-        backEndRoutes : frontEndRoutes, context = { config, types },
-      { fetchInitialData, key } =
+        backEndRoutes : [frontEndRoutes, loggedOutRoutes].flat(),
+      context = { config, types }, { path: pathMatch } =
         routes.find(route => matchPath(path, route)) || {},
-      promise = fetchInitialData ? fetchInitialData(path) : Promise.resolve();
+      promise = fetchers[pathMatch] ? fetchers[pathMatch](path) :
+        Promise.resolve();
     promise.then(data => {
-      if (data) context[key || 'dataObj'] = data;
+      if (data) context.dataObj = data;
       let sheet = new ServerStyleSheet(), jsx = (
           <StaticRouter {...{ location }}>
             <StaticContextProvider initialVals={context}>

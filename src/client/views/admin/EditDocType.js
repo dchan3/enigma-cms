@@ -1,43 +1,36 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { GeneratedForm } from '../../reusables';
 import { Redirect } from 'react-router-dom';
 import useFrontContext from '../../hooks/useFrontContext';
-import { default as requests } from '../../utils/api_request_async';
 
 let EditDocType = () => {
-  let { state, setState, apiUrl } = useFrontContext({
+  let { state, setState } = useFrontContext({
     dataParams: ['docType.docTypeId'],
     urlParams: ['docTypeId'],
     apiUrl: function(params) {
       if (params && params.docTypeId)
         return `documents/get_type_2/${params.docTypeId}`
       else return '';
+    },
+    initial: {
+      dataObj: {
+        docType: {},
+        optionParams: [{
+          attrName: '',
+          attrType: ''
+        }]
+      }
+    },
+    cb: function(data, fxn) {
+      fxn({ dataObj: data,
+        optionParams: data && data.docType && data.docType.attributes.map(
+          ({ attrName, attrType }) => ({ attrName, attrType })) || [{
+          attrName: '',
+          attrType: ''
+        }]
+      });
     }
   });
-
-  useEffect(function() {
-    if (apiUrl !== '')
-      requests.getRequest(apiUrl, (data) => {
-        setState({ dataObj: data,
-          optionParams: data && data.docType && data.docType.attributes.map(
-            ({ attrName, attrType }) => ({ attrName, attrType })) || [{
-            attrName: '',
-            attrType: ''
-          }]
-        });
-      });
-    else {
-      setState({
-        dataObj: {
-          docType: {},
-          optionParams: [{
-            attrName: '',
-            attrType: ''
-          }]
-        }
-      })
-    }
-  }, []);
 
   let minMax = {
     type: (value) => (value === 'date') ? 'date' : 'number',
@@ -57,7 +50,7 @@ let EditDocType = () => {
   if (dataObj === undefined) return <Redirect to="/admin" />;
   else if (dataObj === null) return null;
   else {
-    let docType = dataObj.docType || {};
+    let { docType } = dataObj || {};
     return <GeneratedForm currentValue={docType} title="Edit Document Type"
       params={{
         docTypeName: {

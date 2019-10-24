@@ -1,14 +1,8 @@
 import { Router } from 'express';
-import { DocumentDisplayTemplate, DocumentType, Document, User }
-  from '../../models';
+import { DocumentDisplayTemplate, DocumentType, Document } from '../../models';
 import slug from 'limax';
 import { default as verifyMiddleware } from '../middleware';
 import { ObjectId } from 'mongodb';
-import { findTheOne } from './utils';
-import renderMarkup, { prepareDocumentsForRender } from
-  '../../utils/render_markup';
-import { categoryMetadata, documentMetadata } from
-  '../../utils/render_metadata';
 import { default as documentFetchFuncs } from '../fetch_funcs/documents';
 
 var router = Router();
@@ -17,99 +11,48 @@ router.get('/get_types', async function (req, res) {
   return res.status(200).json(await documentFetchFuncs.getTypes());
 });
 
-router.get('/get_type/:id',
-  findTheOne(DocumentType, { docTypeId: 'id' }));
+router.get('/get_type/:id', async function(req, res) {
+  let retval = await documentFetchFuncs.getType(parseInt(req.params.id));
+  return res.json(retval);
+});
 
 router.get('/get_type_2/:id', async function(req, res) {
-  let docType = await documentFetchFuncs.getType2(parseInt(req.params.id));
-  return res.json({ docType });
+  let retval = await documentFetchFuncs.getType2(parseInt(req.params.id));
+  return res.json(retval);
 });
 
-router.get('/get_document_and_type_info/:id', function(req, res) {
-  Document.findOne({ docNodeId: req.params.id }).then(doc => {
-    DocumentType.findOne({ docTypeId: doc.docTypeId }).then(docType => {
-      return res.json({
-        docType, doc
-      });
-    });
-  }).catch(() => res.status(500));
+router.get('/get_document_and_type_info/:id', async function(req, res) {
+  let retval = await documentFetchFuncs.getDocumentAndTypeInfo(req.params.id);
+  return res.json(retval);
 });
 
-router.get('/get_rendered_document_by_type_and_slug/:type/:slug', function({
-  params: {
-    type, slug
-  } }, res) {
-  DocumentType.findOne({
-    $or: [
-      { docTypeName: type },
-      { docTypeNamePlural: type }]
-  }).then(({ docTypeId }) => {
-    DocumentDisplayTemplate.findOne({ docTypeId }).then(({ templateBody }) => {
-      Document.findOne({ docTypeId, slug }).then((doc) => {
-        let { creatorId, content, createdAt, editedAt } = doc;
-        User.findOne({ userId: creatorId
-        }).select({ password: 0, _id: 0 }).then(async authorInfo => {
-          let metadata = await documentMetadata(content), rendered =
-            await renderMarkup(templateBody, {
-              ...content, createdAt, editedAt, authorInfo })
-
-          res.status(200).json({
-            slug,
-            editedAt,
-            createdAt,
-            authorInfo,
-            rendered,
-            metadata
-          });
-        });
-      });
-    });
-  }).catch(() => res.status(500));
-});
+router.get('/get_rendered_document_by_type_and_slug/:type/:slug',
+  async function({
+    params: {
+      type, slug
+    } }, res) {
+    let retval =
+      await documentFetchFuncs.getRenderedDocumentByTypeAndSlug(type, slug);
+    return res.json(retval);
+  });
 
 router.get('/get_documents/:id', async function (req, res) {
   let retval = await documentFetchFuncs.getDocuments(parseInt(req.params.id));
   return res.status(200).json(retval);
 });
 
-router.get('/get_rendered_documents_by_type_name/:docTypeNamePlural', ({
+router.get('/get_rendered_documents_by_type_name/:docTypeNamePlural', async ({
   params: { docTypeNamePlural }
-}, res, next) =>
+}, res) =>
 {
-  DocumentType.findOne({
-    docTypeNamePlural
-  }).then(({ docTypeId }) => {
-    DocumentDisplayTemplate.findOne({ docTypeId }).then(
-      ({ categoryTemplateBody }) => {
-        Document.find({ docTypeId, draft: false }).sort({ createdAt: -1 })
-          .then(async docs => {
-            let items = prepareDocumentsForRender(docs),
-              metadata = await categoryMetadata(docTypeNamePlural),
-              rendered = await renderMarkup(categoryTemplateBody, { items });
-
-            res.status(200).json({
-              docTypeNamePlural,
-              rendered,
-              metadata
-            })
-          })
-      })
-  }).catch(err => next(err))
+  let retval =
+    await documentFetchFuncs.getRenderedDocumentsByTypeName(docTypeNamePlural);
+  return res.status(200).json(retval);
 });
 
-router.get('/get_template/:id', (req, res, next) => {
-  DocumentType.findOne({
-    docTypeId: req.params.id
-  }).then(docType => {
-    DocumentDisplayTemplate.findOne({ docTypeId: docType.docTypeId })
-      .then(template => {
-        res.status(200).json({
-          categoryTemplateBody: template ? template.categoryTemplateBody : '',
-          templateBody: template ? template.templateBody : '',
-          docType: docType
-        });
-      })
-  }).catch(err => next(err));
+router.get('/get_template/:id', async (req, res) => {
+  let retval = await documentFetchFuncs.getTemplate(req.params.id);
+  return res.status(200).json(retval);
 });
 
 router.post('/register_type', verifyMiddleware, ({ body }, res, next) => {
