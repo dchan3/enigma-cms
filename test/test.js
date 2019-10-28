@@ -9,6 +9,7 @@ import { default as camelcaseConvert }
 import { default as gensig } from '../src/lib/utils/gensig';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
 import { loget, loset } from '../src/client/utils/lofuncs.js';
+import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import { default as createReverseIndex }
   from '../src/server/utils/create_reverse_index';
 
@@ -411,6 +412,158 @@ describe('Reverse Index function', function() {
   it ('works as desired', function(done) {
     var actual = createReverseIndex('Hello World'),
       expected = { 'Hello': [0], 'World': [6] };
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+});
+
+describe('HTML to JSX', function() {
+  it ('HTML Tree - Single Tag', function(done) {
+    var actual = createHtmlTree('<img src="trolol.jpeg" />'),
+      expected = [{ node: 'tag', name: 'img', attributes: [
+        { name: 'src', value: '"trolol.jpeg"' }
+      ] }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('HTML Tree - Multiple Tags with Multiple Attributes', function(done) {
+    var actual =
+      createHtmlTree(
+        '<link rel="stylesheet" type="text/css" href="style.css" />' +
+        '<meta name="keywords" content="cheese,milk" />'),
+      expected = [{ node: 'tag', name: 'link', attributes: [
+        { name: 'rel', value: '"stylesheet"' },
+        { name: 'type', value: '"text/css"' },
+        { name: 'href', value: '"style.css"' }
+      ] }, { node: 'tag', name: 'meta', attributes: [
+        { name: 'name', value: '"keywords"' },
+        { name: 'content', value: '"cheese,milk"' }
+      ] }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('HTML Tree - Sandwich Tag', function(done) {
+    var actual = createHtmlTree('<h1>Hello World!</h1>'),
+      expected = [{ node: 'tag', name: 'h1', children: [{
+        node: 'text',
+        name: 'Hello World!'
+      }]
+      }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('HTML Tree - Sandwich Tag with Attributes', function(done) {
+    var actual =
+      createHtmlTree('<a target="_self" href="localhost:8080/">Click Here</a>'),
+      expected = [{ node: 'tag', name: 'a',
+        attributes: [{
+          name: 'target', value: '"_self"' }, {
+          name: 'href', value: '"localhost:8080/"'
+        }],
+        children: [{
+          node: 'text',
+          name: 'Click Here'
+        }]
+      }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('HTML Tree - Sandwich Tag with Nested Single Tag', function(done) {
+    var actual =
+      createHtmlTree('<a target="_self" href="localhost:8080/">' +
+      '<img alt="im a meme" src="me.com/" /></a>'),
+      expected = [{ node: 'tag', name: 'a',
+        attributes: [{
+          name: 'target', value: '"_self"' }, {
+          name: 'href', value: '"localhost:8080/"'
+        }],
+        children: [{
+          node: 'tag',
+          name: 'img',
+          attributes: [{
+            name: 'alt', value: '"im a meme"' }, {
+            name: 'src', value: '"me.com/"'
+          }],
+        }]
+      }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('HTML Tree - Mixed Nested Tags', function(done) {
+    var actual =
+      createHtmlTree(
+        '<p>Written by <a href="localhost:8080/dchan3">dchan3</a></p>'),
+      expected = [{ node: 'tag', name: 'p',
+        children: [{
+          node: 'text',
+          name: 'Written by'
+        }, {
+          node: 'tag',
+          name: 'a',
+          attributes: [{
+            name: 'href', value: '"localhost:8080/dchan3"' }],
+          children: [{
+            node: 'text',
+            name: 'dchan3'
+          }]
+        }]
+      }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it('HTML Tree - Text Node Start', function(done) {
+    var actual =
+      createHtmlTree('Hello there.' +
+        '<a target="_self" href="localhost:8080/">Click this link.</a>'),
+      expected = [{
+        node: 'text',
+        name: 'Hello there.'
+      }, { node: 'tag', name: 'a',
+        attributes: [{
+          name: 'target', value: '"_self"' }, {
+          name: 'href', value: '"localhost:8080/"'
+        }],
+        children: [{
+          node: 'text',
+          name: 'Click this link.'
+        }]
+      }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('HTML Tree - JSX Tree', function(done) {
+    var actual =
+      htmlToJsx('<a target="_self" href="localhost:8080/">' +
+      '<img alt="im a meme" src="me.com/" /></a>'),
+      expected = <a target="_self" href="localhost:8080/">
+        <img alt="im a meme" src="me.com/" /></a>;
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('HTML Tree - Style Prop', function(done) {
+    var actual =
+      createHtmlTree(
+        '<p style="font-weight: 900; font-family: sans-serif;">Hello.</p>'),
+      expected = [{ node: 'tag', name: 'p',
+        attributes: [{
+          name: 'style', value: {
+            fontWeight: '900',
+            fontFamily: 'sans-serif'
+          }
+        }],
+        children: [{
+          node: 'text',
+          name: 'Hello.'
+        }]
+      }];
     expect(actual).to.deep.equal(expected);
     done();
   });
