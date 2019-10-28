@@ -5,8 +5,8 @@ const path = require('path'), nodeExternals = require('webpack-node-externals'),
   LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const cssPlugin = new MiniCssExtractPlugin({
-    filename: 'app.style.css'
-  }), loRep = new LodashModuleReplacementPlugin();
+  filename: 'app.style.css'
+}), loRep = new LodashModuleReplacementPlugin();
 
 module.exports = [{
   plugins: process.env.ANALYZER ? [
@@ -40,8 +40,8 @@ module.exports = [{
         options: {
           babelrc: true,
           comments: false,
-          plugins: process.env.DEV_MODE ?
-            ['./babel/rightify', './babel/hashify'] : []
+          plugins: process.env.DEV_MODE ? [] :
+            ['./babel/rightify', './babel/hashify']
         }
       },
       {
@@ -58,8 +58,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: process.env.DEV_MODE ?
-            ['./babel/rightify', './babel/hashify'] : []
+          plugins: process.env.DEV_MODE ? [] :
+            ['./babel/rightify']
         }
       },
       {
@@ -68,8 +68,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: process.env.DEV_MODE ?
-            ['./babel/rightify', './babel/hashify'] : []
+          plugins: process.env.DEV_MODE ? [] :
+            ['./babel/rightify']
         }
       },
       {
@@ -78,8 +78,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: process.env.DEV_MODE ?
-            ['./babel/rightify', './babel/hashify'] : []
+          plugins: process.env.DEV_MODE ? [] :
+            ['./babel/rightify', './babel/hashify']
         }
       },
     ]
@@ -147,8 +147,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: process.env.DEV_MODE ?
-            ['./babel/rightify', './babel/hashify'] : []
+          plugins: process.env.DEV_MODE ? [] :
+            ['./babel/rightify', './babel/hashify']
         }
       },
       {
@@ -157,8 +157,8 @@ module.exports = [{
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: process.env.DEV_MODE ?
-            ['./babel/rightify', './babel/hashify'] : []
+          plugins: process.env.DEV_MODE ? [] :
+            ['./babel/rightify', './babel/hashify']
         }
       }
     ],
