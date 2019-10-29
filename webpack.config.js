@@ -5,8 +5,8 @@ const path = require('path'), nodeExternals = require('webpack-node-externals'),
   LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 const cssPlugin = new MiniCssExtractPlugin({
-  filename: 'app.style.css'
-}), loRep = new LodashModuleReplacementPlugin();
+    filename: 'app.style.css'
+  }), loRep = new LodashModuleReplacementPlugin();
 
 module.exports = [{
   plugins: process.env.ANALYZER ? [
