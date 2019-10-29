@@ -1,6 +1,6 @@
 before_install:
 - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install graphicsmagick -y; fi
-- if [[ "$TRAVIS_OS_NAME" == "osx" && -z $(brew list | grep graphicsmagick) ]]; then brew install graphicsmagick; fi
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then if [[ -z $(brew list | grep graphicsmagick) ]]; then brew install graphicsmagick; fi; fi
 language: node_js
 node_js:
   - node
