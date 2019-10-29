@@ -33,6 +33,8 @@ function MainMenu() {
     url: '/admin/file-mgmt', text: 'Manage Files'
   }, {
     url: '/admin/upload-file', text: 'Upload File'
+  }, {
+    url: '/admin/user-mgmt', text: 'Manage Users'
   });
 
   return <div>
