@@ -3,7 +3,8 @@ import { LoginPage, FrontCategoryDisplay, FrontDocumentDisplay,
   FrontProfileDisplay, NotFound, SearchPage } from '../../client/views/front';
 import { SignupPage, ConfigPage, EditDocumentLanding, EditDocumentPage,
   EditDisplayTemplate, ProfileEditPage, ChangePasswordPage, FileMgmtLanding,
-  UploadFilePage, EditDocType } from '../../client/views/admin';
+  UploadFilePage, EditDocType, UserMgmtLanding }
+  from '../../client/views/admin';
 
 export const frontEndRoutes = [
   {
@@ -119,6 +120,12 @@ export const backEndRoutes = [
     exact: true,
     component: UploadFilePage,
     isAdmin: false
+  },
+  {
+    path: '/admin/user-mgmt',
+    exact: true,
+    component: UserMgmtLanding,
+    isAdmin: true
   },
   {
     path: '/admin',

@@ -35,7 +35,7 @@ let LoggedOutRoute = ({ component, ...rest }) => <Route exact {...rest}
     let { staticContext } = useContext(StaticContext);
     return staticContext.user ? <Redirect to="/admin" /> :
       <TheProvider {...{ history, match, component }} />;
-  }} />
+  }} />;
 
 let UniversalRoute =
   ({ component, ...rest }) => <Route exact {...rest} component={({ history,
