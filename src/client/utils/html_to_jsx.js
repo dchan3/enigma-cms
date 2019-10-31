@@ -48,7 +48,33 @@ function collapseNode(stack) {
 }
 
 export function createHtmlTree(html) {
-  var tree = [], tokenStack = [], tempStr = '';
+  var tree = [], tokenStack = [], tempStr = '', onTagEnd = function() {
+    let idx = tokenStack.map((t, i) => ({ index: i, token: t.token }))
+      .filter(t => t.token === 'tagstart').splice(-1)[0].index;
+    if (tree.length && tree[tree.length - 1].isChild) {
+      let nd = collapseNode(tokenStack.slice(idx));
+      nd.children = [];
+      for (let t = 0; t < tree.length; t++) {
+        if (tree[t].isChild && tree[t].depth === tree[tree.length - 1].depth) {
+          let ps = { node: tree[t].node };
+          if (tree[t].name) ps.name = tree[t].name;
+          if (tree[t].attributes) ps.attributes = tree[t].attributes;
+          if (tree[t].children) ps.children = tree[t].children;
+          nd.children.push(ps);
+          tree[t] = null;
+        }
+      }
+      tree = tree.filter(leaf => leaf !== null);
+      tree.push(nd);
+    }
+    else tree.push(collapseNode(tokenStack.slice(idx)));
+    if (idx > 0) {
+      tree[tree.length - 1].isChild = true;
+      tree[tree.length - 1].depth = tokenStack.filter(
+        t => t.token === 'tagstart').length - 1;
+    }
+    tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
+  }
   for (let c = 0; c < html.length; c++) {
     tempStr += html[c];
     if (tempStr === '<') {
@@ -74,7 +100,6 @@ export function createHtmlTree(html) {
         p.isChild = true;
         p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
       }
-      console.log(p);
       tree.push(p);
       if (html[c + 1] && html[c + 1] === '/') {
         c++;
@@ -165,32 +190,7 @@ export function createHtmlTree(html) {
         if (tokenStack[tokenStack.length - 1].token === 'tagclosebegin') {
           tokenStack.push({ token: 'tagend' });
           tempStr = '';
-          let idx = tokenStack.map((t, i) => ({ index: i, token: t.token }))
-            .filter(t => t.token === 'tagstart').splice(-1)[0].index;
-          if (tree.length && tree[tree.length - 1].isChild) {
-            let nd = collapseNode(tokenStack.slice(idx));
-            nd.children = [];
-            for (let t = 0; t < tree.length; t++) {
-              if (tree[t].isChild && tree[t].depth === tree[tree.length - 1].depth) {
-                let ps = { node: tree[t].node };
-                if (tree[t].name) ps.name = tree[t].name;
-                if (tree[t].attributes) ps.attributes = tree[t].attributes;
-                if (tree[t].children) ps.children = tree[t].children;
-                nd.children.push(ps);
-                tree[t] = null;
-              }
-            }
-            tree = tree.filter(leaf => leaf !== null);
-            console.log(tree, nd);
-            tree.push(nd);
-          }
-          else tree.push(collapseNode(tokenStack.slice(idx)));
-          if (idx > 0) {
-            tree[tree.length - 1].isChild = true;
-            tree[tree.length - 1].depth = tokenStack.filter(
-              t => t.token === 'tagstart').length - 1;
-          }
-          tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
+          onTagEnd();
         }
         else if (tokenStack[tokenStack.length - 1].token === 'tagattr' &&
           tempStr.substring(0, tempStr.length - 1).trim().length) {
@@ -212,62 +212,12 @@ export function createHtmlTree(html) {
         else if (tokenStack[tokenStack.length - 1].token === 'tagsingle') {
           tokenStack.push({ token: 'tagend' });
           tempStr = '';
-          let idx = tokenStack.map((t, i) => ({ index: i, token: t.token }))
-            .filter(t => t.token === 'tagstart').splice(-1)[0].index;
-          if (tree.length && tree[tree.length - 1].isChild) {
-            let nd = collapseNode(tokenStack.slice(idx));
-            nd.children = [];
-            for (let t = 0; t < tree.length; t++) {
-              if (tree[t].isChild && tree[t].depth === tree[tree.length - 1].depth) {
-                let ps = { node: tree[t].node };
-                if (tree[t].name) ps.name = tree[t].name;
-                if (tree[t].attributes) ps.attributes = tree[t].attributes;
-                if (tree[t].children) ps.children = tree[t].children;
-                nd.children.push(ps);
-                tree[t] = null;
-              }
-            }
-            tree = tree.filter(leaf => leaf !== null);
-            console.log(tree, nd);
-            tree.push(nd);
-          }
-          else tree.push(collapseNode(tokenStack.slice(idx)));
-          if (idx > 0) {
-            tree[tree.length - 1].isChild = true;
-            tree[tree.length - 1].depth = tokenStack.filter(
-              t => t.token === 'tagstart').length - 1;
-          }
-          tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
+          onTagEnd();
         }
         else if (tokenStack[tokenStack.length - 1].token === 'tagclosebegin') {
           tokenStack.push({ token: 'tagend' });
           tempStr = '';
-          let idx = tokenStack.map((t, i) => ({ index: i, token: t.token }))
-            .filter(t => t.token === 'tagstart').splice(-1)[0].index;
-          if (tree.length && tree[tree.length - 1].isChild) {
-            let nd = collapseNode(tokenStack.slice(idx));
-            nd.children = [];
-            for (let t = 0; t < tree.length; t++) {
-              if (tree[t].isChild && tree[t].depth === tree[tree.length - 1].depth) {
-                let ps = { node: tree[t].node };
-                if (tree[t].name) ps.name = tree[t].name;
-                if (tree[t].attributes) ps.attributes = tree[t].attributes;
-                if (tree[t].children) ps.children = tree[t].children;
-                nd.children.push(ps);
-                tree[t] = null;
-              }
-            }
-            tree = tree.filter(leaf => leaf !== null);
-            console.log(tree, nd);
-            tree.push(nd);
-          }
-          else tree.push(collapseNode(tokenStack.slice(idx)));
-          if (idx > 0) {
-            tree[tree.length - 1].isChild = true;
-            tree[tree.length - 1].depth = tokenStack.filter(
-              t => t.token === 'tagstart').length - 1;
-          }
-          tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
+          onTagEnd();
         }
       }
     }
