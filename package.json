@@ -6,7 +6,8 @@
     "build": "webpack --progress -w",
     "test": "mocha --require @babel/register test/test.js",
     "start": "nodemon server.bundle.js",
-    "test-with-coverage": "nyc mocha --report lcovonly --reporter=mocha-lcov-reporter --require @babel/register test/test.js | codacy-coverage"
+    "test-with-coverage": "nyc --silent npm run test && npm run send",
+    "send": "nyc report --reporter=lcov --reporter=text && cat ./coverage/lcov.info | codacy-coverage --token $CODACY_PROJECT_TOKEN"
   },
   "dependencies": {
     "@babel/node": "^7.6.3",

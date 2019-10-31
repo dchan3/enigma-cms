@@ -8,3 +8,5 @@ public/profile-pix/
 public/site-icon/
 server.bundle.js*
 /**/.DS_Store
+coverage/
+.nyc_output
