@@ -567,4 +567,21 @@ describe('HTML to JSX', function() {
     expect(actual).to.deep.equal(expected);
     done();
   });
+
+  it ('HTML Tree - Class Prop', function(done) {
+    var actual =
+      createHtmlTree(
+        '<div class="front__menu">Yeah.</div>'),
+      expected = [{ node: 'tag', name: 'div',
+        attributes: [{
+          name: 'className', value: '"front__menu"'
+        }],
+        children: [{
+          node: 'text',
+          name: 'Yeah.'
+        }]
+      }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
 });

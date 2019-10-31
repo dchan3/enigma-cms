@@ -24,7 +24,7 @@ function collapseNode(stack) {
         retval.name = stack[n].name;
       }
       if (stack[n].token === 'tagattr') {
-        tempAttr.name = stack[n].name;
+        tempAttr.name = stack[n].name === 'class' ? 'className' : stack[n].name;
       }
       if (stack[n].token === 'tagval') {
         tempAttr.value = tempAttr.name === 'style' ?
