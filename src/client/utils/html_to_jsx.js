@@ -59,9 +59,11 @@ export function createHtmlTree(html) {
           tokenStack.push({ token: 'tagclosebegin' });
           c++;
         }
-        else tokenStack.push({ token: 'tagstart' });
+        else tokenStack.push({ token: 'tagstart', d:
+          tokenStack.filter(t => t.token === 'tagstart').length });
       }
-      else tokenStack.push({ token: 'tagstart' });
+      else tokenStack.push({ token: 'tagstart', d:
+        tokenStack.filter(t => t.token === 'tagstart').length });
       tempStr = '';
     }
 
@@ -72,6 +74,7 @@ export function createHtmlTree(html) {
         p.isChild = true;
         p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
       }
+      console.log(p);
       tree.push(p);
       if (html[c + 1] && html[c + 1] === '/') {
         c++;
@@ -80,9 +83,11 @@ export function createHtmlTree(html) {
       }
       else if (tokenStack.length === 1) {
         tree.push({ node: 'text', name: tokenStack.pop().name });
-        tokenStack.push({ token: 'tagstart' });
+        tokenStack.push({ token: 'tagstart', d:
+          tokenStack.filter(t => t.token === 'tagstart').length });
       }
-      else tokenStack.push({ token: 'tagstart' });
+      else tokenStack.push({ token: 'tagstart', d:
+        tokenStack.filter(t => t.token === 'tagstart').length });
       tempStr = '';
     }
     else if (tempStr.endsWith('"')) {
@@ -98,15 +103,35 @@ export function createHtmlTree(html) {
       if (tokenStack.length) {
         if (tokenStack[tokenStack.length - 1].token === 'tagstart') {
           tokenStack.push({ token: 'tagname', name: tempStr.trim() });
+          if (html[c + 1] === '/') {
+            c++;
+            tokenStack.push({ token: 'tagsingle' });
+          }
           tempStr = '';
         }
         else if (tokenStack[tokenStack.length - 1].token === 'tagname') {
           tokenStack.push({ token: 'tagattr', name: tempStr.trim() });
           tempStr = '';
         }
+        else if (html[c + 1] && html[c + 1] === '<'){
+          let p = { node: 'text',
+            name: tempStr.substring(0, tempStr.length - 1).trim() };
+          if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
+            p.isChild = true;
+            p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
+          }
+          tree.push(p);
+          tempStr = '';
+        }
       }
       else if (html[c + 1] && html[c + 1] === '<'){
-        tree.push({ node: 'text', name: tempStr.trim() });
+        let p = { node: 'text',
+          name: tempStr.substring(0, tempStr.length - 1).trim() };
+        if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
+          p.isChild = true;
+          p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
+        }
+        tree.push(p);
         tempStr = '';
       }
     }
@@ -137,7 +162,37 @@ export function createHtmlTree(html) {
     }
     else if (tempStr.endsWith('>')) {
       if (tokenStack.length) {
-        if (tokenStack[tokenStack.length - 1].token === 'tagattr' &&
+        if (tokenStack[tokenStack.length - 1].token === 'tagclosebegin') {
+          tokenStack.push({ token: 'tagend' });
+          tempStr = '';
+          let idx = tokenStack.map((t, i) => ({ index: i, token: t.token }))
+            .filter(t => t.token === 'tagstart').splice(-1)[0].index;
+          if (tree.length && tree[tree.length - 1].isChild) {
+            let nd = collapseNode(tokenStack.slice(idx));
+            nd.children = [];
+            for (let t = 0; t < tree.length; t++) {
+              if (tree[t].isChild && tree[t].depth === tree[tree.length - 1].depth) {
+                let ps = { node: tree[t].node };
+                if (tree[t].name) ps.name = tree[t].name;
+                if (tree[t].attributes) ps.attributes = tree[t].attributes;
+                if (tree[t].children) ps.children = tree[t].children;
+                nd.children.push(ps);
+                tree[t] = null;
+              }
+            }
+            tree = tree.filter(leaf => leaf !== null);
+            console.log(tree, nd);
+            tree.push(nd);
+          }
+          else tree.push(collapseNode(tokenStack.slice(idx)));
+          if (idx > 0) {
+            tree[tree.length - 1].isChild = true;
+            tree[tree.length - 1].depth = tokenStack.filter(
+              t => t.token === 'tagstart').length - 1;
+          }
+          tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
+        }
+        else if (tokenStack[tokenStack.length - 1].token === 'tagattr' &&
           tempStr.substring(0, tempStr.length - 1).trim().length) {
           tokenStack.push({ token: 'tagattr', name:
             tempStr.substring(0, tempStr.length - 1).trim() });
@@ -161,24 +216,19 @@ export function createHtmlTree(html) {
             .filter(t => t.token === 'tagstart').splice(-1)[0].index;
           if (tree.length && tree[tree.length - 1].isChild) {
             let nd = collapseNode(tokenStack.slice(idx));
-            nd.children = tree.filter(leaf => {
-              return leaf.isChild && leaf.depth === tree[tree.length - 1].depth;
-            }).map(
-              ({ node, name, attributes, children }) => {
-                let retval = { node };
-                if (name) retval.name = name;
-                if (attributes) retval.attributes = attributes;
-                if (children) retval.children = children;
-                return retval;
-              });
-            tree = tree.filter(leaf => {
-              if (leaf.isChild) {
-                return tree.length === 1 ?
-                  leaf.depth !== tree[0].depth :
-                  leaf.depth < tree[tree.length - 1].depth;
+            nd.children = [];
+            for (let t = 0; t < tree.length; t++) {
+              if (tree[t].isChild && tree[t].depth === tree[tree.length - 1].depth) {
+                let ps = { node: tree[t].node };
+                if (tree[t].name) ps.name = tree[t].name;
+                if (tree[t].attributes) ps.attributes = tree[t].attributes;
+                if (tree[t].children) ps.children = tree[t].children;
+                nd.children.push(ps);
+                tree[t] = null;
               }
-              else return true;
-            });
+            }
+            tree = tree.filter(leaf => leaf !== null);
+            console.log(tree, nd);
             tree.push(nd);
           }
           else tree.push(collapseNode(tokenStack.slice(idx)));
@@ -188,7 +238,6 @@ export function createHtmlTree(html) {
               t => t.token === 'tagstart').length - 1;
           }
           tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
-
         }
         else if (tokenStack[tokenStack.length - 1].token === 'tagclosebegin') {
           tokenStack.push({ token: 'tagend' });
@@ -197,24 +246,19 @@ export function createHtmlTree(html) {
             .filter(t => t.token === 'tagstart').splice(-1)[0].index;
           if (tree.length && tree[tree.length - 1].isChild) {
             let nd = collapseNode(tokenStack.slice(idx));
-            nd.children = tree.filter(leaf => {
-              return leaf.isChild && leaf.depth === tree[tree.length - 1].depth;
-            }).map(
-              ({ node, name, attributes, children }) => {
-                let retval = { node };
-                if (name) retval.name = name;
-                if (attributes) retval.attributes = attributes;
-                if (children) retval.children = children;
-                return retval;
-              });
-            tree = tree.filter(leaf => {
-              if (leaf.isChild) {
-                return tree.length === 1 ?
-                  leaf.depth !== tree[0].depth :
-                  leaf.depth < tree[tree.length - 1].depth;
+            nd.children = [];
+            for (let t = 0; t < tree.length; t++) {
+              if (tree[t].isChild && tree[t].depth === tree[tree.length - 1].depth) {
+                let ps = { node: tree[t].node };
+                if (tree[t].name) ps.name = tree[t].name;
+                if (tree[t].attributes) ps.attributes = tree[t].attributes;
+                if (tree[t].children) ps.children = tree[t].children;
+                nd.children.push(ps);
+                tree[t] = null;
               }
-              else return true;
-            });
+            }
+            tree = tree.filter(leaf => leaf !== null);
+            console.log(tree, nd);
             tree.push(nd);
           }
           else tree.push(collapseNode(tokenStack.slice(idx)));
@@ -259,7 +303,7 @@ function treeToJsx(tree, rpl) {
       }
     }
     jsxTree.push(tree[l].node === 'tag' ?
-      (tree[l].children ?
+      tree[l].name === 'br' ? createElement('br') : (tree[l].children ?
         createElement(rpl && rpl[tree[l].name] || tree[l].name, attrs,
           treeToJsx(tree[l].children, rpl)) :
         createElement(rpl && rpl[tree[l].name] || tree[l].name, attrs)

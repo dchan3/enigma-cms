@@ -584,4 +584,30 @@ describe('HTML to JSX', function() {
     expect(actual).to.deep.equal(expected);
     done();
   });
+
+  it ('HTML Tree - br tag', function(done) {
+    var actual =
+      createHtmlTree(
+        '<p class="front__menu">A paragraph.</p>' +
+        '<br /><p class="front__menu">Another.</p>'),
+      expected = [{ node: 'tag', name: 'p',
+        attributes: [{
+          name: 'className', value: '"front__menu"'
+        }],
+        children: [{
+          node: 'text',
+          name: 'A paragraph.'
+        }]
+      }, { node: 'tag', name: 'br' }, { node: 'tag', name: 'p',
+        attributes: [{
+          name: 'className', value: '"front__menu"'
+        }],
+        children: [{
+          node: 'text',
+          name: 'Another.'
+        }]
+      }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
 });
