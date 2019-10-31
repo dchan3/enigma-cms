@@ -58,6 +58,7 @@
     "babel-plugin-styled-components": "^1.10.6",
     "babel-preset-minify": "^0.5.1",
     "chai": "^4.2.0",
+    "codacy-coverage": "^3.4.0",
     "crypto": "^1.0.1",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
