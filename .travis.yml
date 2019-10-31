@@ -10,3 +10,4 @@ cache:
 os:
 - linux
 - osx
+script: npm run test-with-coverage
