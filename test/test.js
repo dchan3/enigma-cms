@@ -501,7 +501,7 @@ describe('HTML to JSX', function() {
       expected = [{ node: 'tag', name: 'p',
         children: [{
           node: 'text',
-          name: 'Written by'
+          name: 'Written by '
         }, {
           node: 'tag',
           name: 'a',
@@ -610,4 +610,24 @@ describe('HTML to JSX', function() {
     expect(actual).to.deep.equal(expected);
     done();
   });
+
+  it('Multiple Mixed Tags Children', function(done) {
+    var actual = createHtmlTree('<div><code>import React from "react";</code>' +
+    '<br /><code>export default function() { console.log("Hello"); }</code>' +
+    '</div>'),
+      expected = [{
+        node: 'tag', name: 'div', children: [
+          { node: 'tag', name: 'code', children: [
+            { node: 'text',
+              name: 'import React from "react";' }
+          ] },
+          { node: 'tag', name: 'br' },
+          { node: 'tag', name: 'code', children: [
+            { node: 'text',
+              name: 'export default function() { console.log("Hello"); }' }
+          ] }
+        ] }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  })
 });
