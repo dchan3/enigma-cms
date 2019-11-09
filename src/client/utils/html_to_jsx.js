@@ -1,5 +1,19 @@
 import { createElement } from 'react';
 
+let esc =  {
+  'amp': '&',
+  'lt': '<',
+  'gt': '>',
+  'quot': '"',
+  'nbsp': '\u00A0'
+};
+
+function escapeText(text) {
+  return text.replace(/&([a-z]+);/g, function(match, p1) {
+    return esc[p1];
+  })
+}
+
 function camel(str) {
   return str.split('-').map((word, i) => i > 0 ?
     (word[0].toUpperCase() + word.substring(1)) : word).join('');
@@ -106,7 +120,7 @@ export function createHtmlTree(html) {
 
     if (tempStr.endsWith('<')) {
       let p = { node: 'text',
-        name: tempStr.substring(0, tempStr.length - 1) };
+        name: escapeText(tempStr.substring(0, tempStr.length - 1)) };
       if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
         p.isChild = true;
         p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
@@ -118,7 +132,7 @@ export function createHtmlTree(html) {
         tokenStack.push({ token: 'tagclosebegin' });
       }
       else if (tokenStack.length === 1) {
-        tree.push({ node: 'text', name: tokenStack.pop().name });
+        tree.push({ node: 'text', name: escapeText(tokenStack.pop().name) });
         tokenStack.push({ token: 'tagstart', d:
           tokenStack.filter(t => t.token === 'tagstart').length });
       }
@@ -139,7 +153,7 @@ export function createHtmlTree(html) {
       if (tokenStack.length) {
         if (tokenStack[tokenStack.length - 1].token === 'tagopenend') {
           if (html[c + 1] && html[c + 1] === '<') {
-            let p = { node: 'text', name: tempStr };
+            let p = { node: 'text', name: escapeText(tempStr) };
             if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
               p.isChild = true;
               p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
@@ -163,7 +177,7 @@ export function createHtmlTree(html) {
           tempStr = '';
         }
         else if (html[c + 1] && html[c + 1] === '<'){
-          let p = { node: 'text', name: tempStr };
+          let p = { node: 'text', name: escapeText(tempStr) };
           if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
             p.isChild = true;
             p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
@@ -173,7 +187,7 @@ export function createHtmlTree(html) {
         }
       }
       else if (html[c + 1] && html[c + 1] === '<'){
-        let p = { node: 'text', name: tempStr };
+        let p = { node: 'text', name: escapeText(tempStr) };
         if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
           p.isChild = true;
           p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
@@ -279,7 +293,8 @@ export function createHtmlTree(html) {
             tempStr = '';
           }
           else if (html[c + 1] && html[c + 1] === '<'){
-            let p = { node: 'text', name: tempStr.replace(/\n$/, ' ') };
+            let p = { node: 'text',
+              name: escapeText(tempStr.replace(/\n$/, ' ')) };
             if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
               p.isChild = true;
               p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
@@ -289,7 +304,8 @@ export function createHtmlTree(html) {
           }
         }
         else if (html[c + 1] && html[c + 1] === '<'){
-          let p = { node: 'text', name: tempStr.replace(/\n$/, ' ') };
+          let p = { node: 'text',
+            name: escapeText(tempStr.replace(/\n$/, ' ')) };
           if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
             p.isChild = true;
             p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
