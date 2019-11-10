@@ -629,5 +629,17 @@ describe('HTML to JSX', function() {
         ] }];
     expect(actual).to.deep.equal(expected);
     done();
-  })
+  });
+
+  it('HTML Entities', function(done) {
+    var actual =
+      createHtmlTree('<p>&lt;insert funny puns &amp; jokes here&gt;</p>'),
+      expected = [{
+        node: 'tag', name: 'p', children: [
+          { node: 'text',
+            name: '<insert funny puns & jokes here>' }
+        ] }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
 });
