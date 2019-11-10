@@ -501,7 +501,7 @@ describe('HTML to JSX', function() {
       expected = [{ node: 'tag', name: 'p',
         children: [{
           node: 'text',
-          name: 'Written by'
+          name: 'Written by '
         }, {
           node: 'tag',
           name: 'a',
@@ -581,6 +581,64 @@ describe('HTML to JSX', function() {
           name: 'Yeah.'
         }]
       }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('HTML Tree - br tag', function(done) {
+    var actual =
+      createHtmlTree(
+        '<p class="front__menu">A paragraph.</p>' +
+        '<br /><p class="front__menu">Another.</p>'),
+      expected = [{ node: 'tag', name: 'p',
+        attributes: [{
+          name: 'className', value: '"front__menu"'
+        }],
+        children: [{
+          node: 'text',
+          name: 'A paragraph.'
+        }]
+      }, { node: 'tag', name: 'br' }, { node: 'tag', name: 'p',
+        attributes: [{
+          name: 'className', value: '"front__menu"'
+        }],
+        children: [{
+          node: 'text',
+          name: 'Another.'
+        }]
+      }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it('Multiple Mixed Tags Children', function(done) {
+    var actual = createHtmlTree('<div><code>import React from "react";</code>' +
+    '<br /><code>export default function() { console.log("Hello"); }</code>' +
+    '</div>'),
+      expected = [{
+        node: 'tag', name: 'div', children: [
+          { node: 'tag', name: 'code', children: [
+            { node: 'text',
+              name: 'import React from "react";' }
+          ] },
+          { node: 'tag', name: 'br' },
+          { node: 'tag', name: 'code', children: [
+            { node: 'text',
+              name: 'export default function() { console.log("Hello"); }' }
+          ] }
+        ] }];
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it('HTML Entities', function(done) {
+    var actual =
+      createHtmlTree('<p>&lt;insert funny puns &amp; jokes here&gt;</p>'),
+      expected = [{
+        node: 'tag', name: 'p', children: [
+          { node: 'text',
+            name: '<insert funny puns & jokes here>' }
+        ] }];
     expect(actual).to.deep.equal(expected);
     done();
   });
