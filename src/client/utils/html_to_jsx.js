@@ -64,42 +64,45 @@ function collapseNode(stack) {
 }
 
 export function createHtmlTree(html) {
-  var tree = [], tokenStack = [], tempStr = '', onTagEnd = function() {
-    let fil = tokenStack.map((t, i) => ({ index: i, token: t.token })),
-      idx = fil.filter(t => t.token === 'tagstart').splice(-1)[0].index,
-      isSingle = tokenStack.filter(t => t.token === 'tagsingle').length > 0;
-    if (tree.length && tree[tree.length - 1].isChild) {
-      let nd = collapseNode(tokenStack.slice(idx));
-      if (!isSingle) {
-        nd.children = [];
-        for (let t = 0; t < tree.length; t++) {
-          if (tree[t].isChild
-            && tree[t].depth === tree[tree.length - 1].depth) {
-            let ps = { node: tree[t].node };
-            if (tree[t].name) ps.name = tree[t].name;
-            if (tree[t].attributes) ps.attributes = tree[t].attributes;
-            if (tree[t].children) ps.children = tree[t].children;
-            nd.children.push(ps);
-            tree[t] = null;
+  var tree = [], tokenStack = [], tempStr = '',
+    onTagEnd = function() {
+      if (tokenStack.length) {
+        let fil = tokenStack.map((t, i) => ({ index: i, token: t.token })),
+          idx = fil.filter(t => t.token === 'tagstart').splice(-1)[0].index,
+          isSingle = tokenStack.filter(t => t.token === 'tagsingle').length > 0;
+        if (tree.length && tree[tree.length - 1].isChild) {
+          let nd = collapseNode(tokenStack.slice(idx));
+          if (!isSingle) {
+            nd.children = [];
+            for (let t = 0; t < tree.length; t++) {
+              if (tree[t].isChild
+                && tree[t].depth === tree[tree.length - 1].depth) {
+                let ps = { node: tree[t].node };
+                if (tree[t].name) ps.name = tree[t].name;
+                if (tree[t].attributes) ps.attributes = tree[t].attributes;
+                if (tree[t].children) ps.children = tree[t].children;
+                nd.children.push(ps);
+                tree[t] = null;
+              }
+            }
+            tree = tree.filter(leaf => leaf !== null);
+            tree.push(nd);
+          }
+          else {
+            tree.push(collapseNode(tokenStack.slice(idx)));
           }
         }
-        tree = tree.filter(leaf => leaf !== null);
-        tree.push(nd);
+        else {
+          tree.push(collapseNode(tokenStack.slice(idx)));
+        }
+        if (idx > 0) {
+          tree[tree.length - 1].isChild = true;
+          tree[tree.length - 1].depth = tokenStack.filter(
+            t => t.token === 'tagstart').length - 1;
+        }
+        tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
       }
-      else {
-        tree.push(collapseNode(tokenStack.slice(idx)));
-      }
-    }
-    else {
-      tree.push(collapseNode(tokenStack.slice(idx)));
-    }
-    if (idx > 0) {
-      tree[tree.length - 1].isChild = true;
-      tree[tree.length - 1].depth = tokenStack.filter(
-        t => t.token === 'tagstart').length - 1;
-    }
-    tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
-  }
+    };
   for (let c = 0; c < html.length; c++) {
     tempStr += html[c];
     if (tempStr === '<') {
