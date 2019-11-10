@@ -66,7 +66,8 @@ function collapseNode(stack) {
 export function createHtmlTree(html) {
   var tree = [], tokenStack = [], tempStr = '',
     onTagEnd = function() {
-      if (tokenStack.length) {
+      if (tokenStack.length &&
+        tokenStack.filter(t => t.token === 'tagstart').length) {
         let fil = tokenStack.map((t, i) => ({ index: i, token: t.token })),
           idx = fil.filter(t => t.token === 'tagstart').splice(-1)[0].index,
           isSingle = tokenStack.filter(t => t.token === 'tagsingle').length > 0;
