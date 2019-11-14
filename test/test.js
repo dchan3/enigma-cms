@@ -670,7 +670,8 @@ describe('From CSS', function() {
 
   it('Advanced functions', function(done) {
     let Element = fromCss('p',
-        ({ mono }) => `font-family: ${mono === true ? 'monospace' : 'sans-serif'};`, ['mono']),
+        ({ mono }) => `font-family: ${mono === true
+          ? 'monospace' : 'sans-serif'};`, ['mono']),
       actual = render(<Element mono={true}>Hi!</Element>),
       expected = render(<p style={{
         fontFamily: 'monospace'
