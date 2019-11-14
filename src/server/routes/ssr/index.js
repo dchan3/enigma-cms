@@ -46,7 +46,8 @@ ${[
 `, ssrRenderer = async ({ path, url: location }, res, next) => {
     let config = await SiteConfig.findOne({}),
       types = await DocumentType.find({}), routes = path.startsWith('/admin') ?
-        backEndRoutes : [...frontEndRoutes, ...loggedOutRoutes],
+        backEndRoutes : ['/login', '/signup'].includes(path) ? loggedOutRoutes :
+          frontEndRoutes,
       context = { config, types }, { path: pathMatch } =
         routes.find(route => matchPath(path, route)) || {},
       promise = fetchers[pathMatch] ? fetchers[pathMatch](path) :
