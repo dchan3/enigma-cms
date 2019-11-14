@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {  useState } from 'react';
 import {
   string, shape, objectOf, oneOfType, func, object, array, arrayOf, number,
   bool } from 'prop-types';
@@ -8,35 +8,26 @@ import { loget, loset } from '../utils/lofuncs';
 import { default as requests } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
+import fromCss from '../utils/component_from_css';
 
-let FormBackground = styled.form`
-  background-color: cadetblue;
-  width: 45%;
-  margin: auto;
-  text-align: left;`, FormDiv = styled.div`
-    padding: 8px;
-    display: ${({ hidden }) => hidden ? 'none' : 'block'}`, FormInput =
-    styled.input`
-    border-radius: 8px;
-    vertical-align: top;
-    height: 16px;
-    width: calc(100% - 16px);
-    margin-top: 5px;
-    font-family: sans-serif;
-    font-size: 16px;
-    padding: 5px;
-    display: ${({ hidden }) => hidden ? 'none' : 'block'};
-    box-shadow: ${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'};`,
-  FormHeader = styled.h2`
-  text-align: center;
-  font-family: sans-serif;`, FormLabel = styled.label`
+let FormBackground = fromCss('form',
+    'background-color:cadetblue;width:45%;margin:auto;text-align:left;'
+  ), FormDiv = fromCss('div',
+    ({ hidden }) => `padding:8px;display:${hidden ? 'none' : 'block'};`, ['hidden']),
+  FormInput = fromCss('input', ({ hidden, isInvalid }) =>
+    ('border-radius:8px;vertical-align:top;height:16px;width:calc(100% - 16px);' +
+    'margin-top:5px;font-family:sans-serif;font-size:16px;padding:5px;' +
+    `display:${hidden 
+      ? 'none' : 'block'};box-shadow:${isInvalid ? 'red 2px 2px' : 'unset'};`), ['hidden', 'isInvalid']),
+  FormHeader = fromCss('h2', 'text-align:center;font-family:sans-serif;'),
+  FormLabel = styled.label`
     color: white;
     font-size: 16px;
     padding-right: 4px;
     font-family: sans-serif;
     text-transform: uppercase;
     display:${({ hidden }) => hidden ? 'none' : 'block'};
-    text-shadow:${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'};`,
+    text-shadow:${({ isInvalid }) => isInvalid ? 'red 2px 2px' : 'unset'};`,
   FormEnumInput = styled.select`
   font-family: sans-serif;
   font-size: 16px;`, FormEnumInputOption = styled.option`

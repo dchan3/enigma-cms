@@ -12,6 +12,8 @@ import { loget, loset } from '../src/client/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import { default as createReverseIndex }
   from '../src/server/utils/create_reverse_index';
+import fromCss from '../src/client/utils/component_from_css';
+import styleObject from '../src/client/utils/style_object';
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -191,7 +193,7 @@ describe('Form from Obj', function() {
         attributes: {
           value: 'John',
           id: 'guestList.0.firstName',
-          invalid: false,
+          isInvalid: false,
           name: 'guestList.0.firstName',
           onChange: 'handleChange guestList.0.firstName',
           type: 'text',
@@ -210,7 +212,7 @@ describe('Form from Obj', function() {
         attributes: {
           value: 'Doe',
           id: 'guestList.0.lastName',
-          invalid: false,
+          isInvalid: false,
           name: 'guestList.0.lastName',
           onChange: 'handleChange guestList.0.lastName',
           type: 'text',
@@ -231,7 +233,7 @@ describe('Form from Obj', function() {
         attributes: {
           value: 50,
           id: 'guestList.0.age',
-          invalid: false,
+          isInvalid: false,
           name: 'guestList.0.age',
           onChange: 'handleChange guestList.0.age',
           type: 'number',
@@ -255,7 +257,7 @@ describe('Form from Obj', function() {
         component: 'FormInput',
         attributes: {
           value: '123-456-7890',
-          invalid: false,
+          isInvalid: false,
           id: 'guestList.0.contactInformation.phone',
           name: 'guestList.0.contactInformation.phone',
           onChange: 'handleChange guestList.0.contactInformation.phone',
@@ -276,7 +278,7 @@ describe('Form from Obj', function() {
         component: 'FormInput',
         attributes: {
           value: 'john@johndoe.net',
-          invalid: false,
+          isInvalid: false,
           id: 'guestList.0.contactInformation.email',
           name: 'guestList.0.contactInformation.email',
           onChange: 'handleChange guestList.0.contactInformation.email',
@@ -555,7 +557,7 @@ describe('HTML to JSX', function() {
       expected = [{ node: 'tag', name: 'p',
         attributes: [{
           name: 'style', value: {
-            fontWeight: '900',
+            fontWeight: 900,
             fontFamily: 'sans-serif'
           }
         }],
@@ -640,6 +642,42 @@ describe('HTML to JSX', function() {
             name: '<insert funny puns & jokes here>' }
         ] }];
     expect(actual).to.deep.equal(expected);
+    done();
+  });
+});
+
+describe('From CSS', function() {
+  it('To Style Object', function(done) {
+    var actual = styleObject('opacity:1;width:calc(100%-16px);'),
+      expected = {
+        opacity: 1,
+        width: 'calc(100%-16px)'
+      };
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it('Basic functions', function(done) {
+    let Element = fromCss('p', 'font-family: sans-serif;'),
+      actual = render(<Element>Hi!</Element>), expected = render(<p style={{
+        fontFamily: 'sans-serif'
+      }}>Hi!</p>);
+
+    expect(actual.find('p').text()).to.equal(expected.find('p').text());
+    expect(actual.get(0).style).to.deep.equal(expected.get(0).style);
+    done();
+  });
+
+  it('Advanced functions', function(done) {
+    let Element = fromCss('p',
+        ({ mono }) => `font-family: ${mono === true ? 'monospace' : 'sans-serif'};`, ['mono']),
+      actual = render(<Element mono={true}>Hi!</Element>),
+      expected = render(<p style={{
+        fontFamily: 'monospace'
+      }}>Hi!</p>);
+
+    expect(actual.find('p').text()).to.equal(expected.find('p').text());
+    expect(actual.get(0).style).to.deep.equal(expected.get(0).style);
     done();
   });
 });

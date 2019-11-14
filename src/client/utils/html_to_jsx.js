@@ -1,4 +1,5 @@
 import { createElement } from 'react';
+import styleObject from './style_object';
 
 let esc =  {
   'amp': '&',
@@ -12,20 +13,6 @@ function escapeText(text) {
   return text.replace(/&([a-z]+);/g, function(match, p1) {
     return esc[p1];
   })
-}
-
-function camel(str) {
-  return str.split('-').map((word, i) => i > 0 ?
-    (word[0].toUpperCase() + word.substring(1)) : word).join('');
-}
-
-function styleObject(css) {
-  let retval = {}, statements = css.split(';').map(stmt => stmt.trim());
-  for (let s = 0; s < statements.length; s++) {
-    let [attr, val] = statements[s].split(':').map(stmt => stmt.trim());
-    if (attr.length) retval[camel(attr)] = val;
-  }
-  return retval;
 }
 
 function collapseNode(stack) {
