@@ -9,8 +9,6 @@ export default function fromCss(element, css, nonDomAttrs) {
       else if (!nonDomAttrs.includes(p)) domAttrs[p] = rest[p];
     }
 
-    console.log(styleObject(typeof css === 'function' ? css(rest) : css));
-
     return createElement(element, {
       style: styleObject(typeof css === 'function' ? css(rest) : css),
       ...domAttrs

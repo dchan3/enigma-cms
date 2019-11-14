@@ -37,9 +37,7 @@ function MainMenu() {
     url: '/admin/user-mgmt', text: 'Manage Users'
   });
 
-  return <div>
-    {user ? <DropdownMenu {...{ menuNodes }} /> : null}
-  </div>;
+  return user ? <DropdownMenu {...{ menuNodes }} /> : null;
 }
 
 export default MainMenu;
