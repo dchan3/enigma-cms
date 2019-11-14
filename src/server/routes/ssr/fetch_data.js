@@ -16,7 +16,7 @@ export default {
   },
   '/:docType': async (path) => {
     let docTypeNamePlural = path.replace(/\//g, ''), retval = await
-    documentFetchFuncs.getRenderedDocumentsByTypeName( docTypeNamePlural);
+    documentFetchFuncs.getRenderedDocumentsByTypeName(docTypeNamePlural);
 
     return retval;
   },
@@ -40,7 +40,7 @@ export default {
   },
   '/admin/edit-type/:docTypeId': async path => {
     let retval =
-      await documentFetchFuncs.getType2({ docTypeId: path.split('/').pop() });
+      await documentFetchFuncs.getType2(parseInt(path.split('/').pop(), 10));
     return retval;
   },
   '/admin/file-mgmt': async () => {
