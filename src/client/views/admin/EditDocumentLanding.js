@@ -1,12 +1,12 @@
 import React from 'react';
-import { TablePaginator } from 'react-everafter';
-import styled from 'styled-components';
+import TablePaginator from '../../reusables/TablePaginator';
 import { TextHeader, SamePageAnchor } from '../../reusables';
 import { Redirect } from 'react-router-dom';
 import useFrontContext from '../../hooks/useFrontContext';
 import { default as syncReqs } from '../../utils/api_request_sync';
+import fromCss from '../../utils/component_from_css';
 
-let TableText = styled.p`text-align:center;font-family:sans-serif;`;
+let TableText = fromCss('p', 'text-align:center;font-family:sans-serif;');
 
 function EditDocumentLanding() {
   function handleDeleteClick() {

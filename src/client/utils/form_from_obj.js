@@ -56,7 +56,7 @@ const genInputComponent =
         paramSpec.type, attributes = {
         id: keyToUse,
         name: keyToUse,
-        invalid: invalidFields && invalidFields.includes(keyToUse) || false,
+        isInvalid: invalidFields && invalidFields.includes(keyToUse) || false,
         onChange: `handleChange ${keyToUse}`,
         value: valueVar,
         required: paramSpec.required || false,

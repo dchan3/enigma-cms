@@ -1,21 +1,18 @@
 import React from 'react';
-import styled from 'styled-components';
 import SamePageAnchor from './SamePageAnchor';
+import fromCss from '../utils/component_from_css';
 
 let ContainerDiv =
-  styled.div`width:fit-content;margin:auto;text-align:center;`, TopLevelList =
-  styled.ul`list-style-type:none;text-transform:uppercase;padding-left:0;
-font-family:sans-serif;@media(min-width:767px){display:inline-flex;}
-background-color:cadetblue;`, ListItem = styled.li`padding:8px;`, SubList =
-  styled.ul`list-style-type:none;text-transform:uppercase;padding-left:0;
-font-family:sans-serif;`, SubListItem = styled.li`padding:8px 8px 0 8px;`,
-  HoverLink = styled.a`color:white;text-decoration:none;
-  -webkit-transition:font-size .25s;
-  -moz-transition:font-size .25s;
-  -o-transition:font-size .25s;
-  transition:font-size .25s;
-  &:hover{text-decoration:underline;font-size:1.2em;}`,
-  WhiteSpan = styled.span`color:white;`,
+  fromCss('div', 'width:10%;margin:0;text-align:center;vertical-align:top;' +
+    'display:inline-block;overflow-y:scroll;height:100vh;'), TopLevelList =
+  fromCss('ul', 'list-style-type:none;text-transform:uppercase;padding-left:0;'+
+'font-family:sans-serif;display:block;background-color:cadetblue;'), ListItem =
+fromCss('li', 'padding:8px;'), SubList = fromCss('ul',
+    'list-style-type:none;text-transform:uppercase;padding-left:0;'
+  + 'font-family:sans-serif;'),
+  SubListItem = fromCss('li', 'padding:8px 8px 0 8px;'),
+  HoverLink = fromCss('a', 'color:white;text-decoration:none;'),
+  WhiteSpan = fromCss('span', 'color:white;'),
   NodeLinkText = ({ url, text }) => (
     <SamePageAnchor component={HoverLink} href={url}>
       <span>{text}</span></SamePageAnchor>),

@@ -64,16 +64,6 @@ module.exports = [{
       },
       {
         test: /\.jsx?$/,
-        include: /styled-components/,
-        loader: 'babel-loader',
-        options: {
-          comments: false,
-          plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify']
-        }
-      },
-      {
-        test: /\.jsx?$/,
         include: /buffer/,
         loader: 'babel-loader',
         options: {
@@ -93,9 +83,6 @@ module.exports = [{
     alias: {
       handlebars: path.resolve(__dirname, 'node_modules',
         'handlebars/dist/handlebars.min.js'),
-      'styled-components':
-        path.resolve(__dirname, 'node_modules', 'styled-components', 'dist',
-          'styled-components.cjs.js'),
       'react-dom/server': path.resolve(__dirname, 'node_modules', 'react-dom',
         'cjs', 'react-dom-server.browser.production.min.js'),
       'react-router-dom': path.resolve(__dirname, 'node_modules',
@@ -151,16 +138,6 @@ module.exports = [{
             ['./babel/rightify', './babel/hashify']
         }
       },
-      {
-        test: /\.jsx?$/,
-        include: /styled-components/,
-        loader: 'babel-loader',
-        options: {
-          comments: false,
-          plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify', './babel/hashify']
-        }
-      }
     ],
   },
   output: {

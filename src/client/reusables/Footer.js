@@ -1,9 +1,10 @@
 import React from 'react';
-import styled from 'styled-components';
 import SamePageAnchor from './SamePageAnchor';
-let FooterContainer = styled.div`
-text-align:center;font-family:sans-serif;margin:10px;`, FooterText =
-  styled.p`margin:0;`;
+import fromCss from '../utils/component_from_css';
+
+let FooterContainer = fromCss('div',
+    'text-align:center;font-family:sans-serif;margin:10px;'), FooterText =
+  fromCss('p', 'margin:0;');
 import useStaticContext from '../hooks/useStaticContext';
 
 function Footer() {

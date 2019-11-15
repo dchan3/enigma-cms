@@ -54,8 +54,13 @@ let App = () => {
       <FrontEndRoute path='*' component={FrontHeader}/>
     </Switch>
     <Switch>
-      {backEndRoutes.map(({ path, isAdmin, component }) => (
-        <ProtectedRoute {...{ path, isAdmin, component }} />))}
+      {backEndRoutes.map(({ path, isAdmin, component: Component }) => (
+        <ProtectedRoute {...{ path, isAdmin, component: () => <div style={{
+          width: '90%',
+          display: 'inline-block',
+          height: '100vh',
+          overflowY: 'scroll'
+        }}><Component /></div> }} />))}
       {loggedOutRoutes.map(({ path, component }) => (
         <LoggedOutRoute {...{ path, component }} />))}
       {frontEndRoutes.map(({ path, component }) => (

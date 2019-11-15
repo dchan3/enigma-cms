@@ -8,7 +8,6 @@
     "@babel/plugin-syntax-export-default-from",
     "@babel/plugin-transform-strict-mode",
     "@babel/plugin-transform-react-jsx",
-    "babel-plugin-styled-components",
     "./babel/hashify", "./babel/rightify"
   ],
   "comments": false

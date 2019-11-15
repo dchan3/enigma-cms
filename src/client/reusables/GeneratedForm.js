@@ -1,70 +1,46 @@
-import React, { useState } from 'react';
+import React, {  useState } from 'react';
 import {
   string, shape, objectOf, oneOfType, func, object, array, arrayOf, number,
   bool } from 'prop-types';
-import styled from 'styled-components';
 import CodeEditor from './CodeEditor';
 import { loget, loset } from '../utils/lofuncs';
 import { default as requests } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
+import fromCss from '../utils/component_from_css';
 
-let FormBackground = styled.form`
-  background-color: cadetblue;
-  width: 45%;
-  margin: auto;
-  text-align: left;`, FormDiv = styled.div`
-    padding: 8px;
-    display: ${({ hidden }) => hidden ? 'none' : 'block'}`, FormInput =
-    styled.input`
-    border-radius: 8px;
-    vertical-align: top;
-    height: 16px;
-    width: calc(100% - 16px);
-    margin-top: 5px;
-    font-family: sans-serif;
-    font-size: 16px;
-    padding: 5px;
-    display: ${({ hidden }) => hidden ? 'none' : 'block'};
-    box-shadow: ${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'};`,
-  FormHeader = styled.h2`
-  text-align: center;
-  font-family: sans-serif;`, FormLabel = styled.label`
-    color: white;
-    font-size: 16px;
-    padding-right: 4px;
-    font-family: sans-serif;
-    text-transform: uppercase;
-    display:${({ hidden }) => hidden ? 'none' : 'block'};
-    text-shadow:${({ invalid }) => invalid ? 'red 2px 2px' : 'unset'};`,
-  FormEnumInput = styled.select`
-  font-family: sans-serif;
-  font-size: 16px;`, FormEnumInputOption = styled.option`
-  font-family: sans-serif;
-  font-size: 16px;`,FormObjectInputLabel = styled.p`
-  color: white;
-  padding-right: 4px;
-  font-family: sans-serif;
-  text-transform: uppercase;
-  margin: 8px;
-  font-size: 16px;
-  width: calc(100% - 16px);
-  display: ${({ hidden }) => hidden ? 'none' : 'block'};`,
-  FormSubmit = styled.input`font-family:sans-serif;
-  text-transform: uppercase;
-  margin: 8px;
-  border-radius: 8px;
-  font-size: 16px;`, FormErrorMessage = styled.p`font-family: sans-serif;
-  text-transform: uppercase;
-  text-align:center;`,
-  FormSubmitButton = styled.button`font-size:16px;
-  font-family: sans-serif;
-  text-transform: uppercase;
-  padding: 8px;
-  border-radius: 8px;
-  margin: 8px;`, comps = {
-    FormInput, FormLabel, CodeEditor, FormSubmitButton,
-    FormEnumInput, FormEnumInputOption, FormObjectInputLabel
+let FormBackground = fromCss('form',
+    'background-color:cadetblue;width:45%;margin:auto;text-align:left;'
+  ), FormDiv = fromCss('div',
+    ({ hidden }) => `padding:8px;display:${hidden ? 'none' : 'block'};`,
+    ['hidden']),
+  FormHeader = fromCss('h2', 'text-align:center;font-family:sans-serif;'),
+  FormSubmit = fromCss('input', 'font-family:sans-serif;' +
+  'text-transform:uppercase;margin:8px;border-radius:8px;font-size: 16px;'),
+  FormErrorMessage = fromCss('p', 'font-family:sans-serif;' +
+  'text-transform:uppercase;text-align:center;'), comps = {
+    FormInput: fromCss('input', ({ hidden, isInvalid }) =>
+      ('border-radius:8px;vertical-align:top;height:16px;' +
+      'width:calc(100% - 16px);margin-top:5px;font-family:sans-serif;' +
+      'font-size:16px;padding:5px;' + `display:${hidden ? 'none' :
+        'block'};box-shadow:${isInvalid ?
+        'red 2px 2px' : 'unset'};`), ['hidden', 'isInvalid']),
+    FormLabel: fromCss('label', ({ hidden, isInvalid }) => (
+      'color:white;font-size:16px;padding-right:4px;font-family:sans-serif;' +
+      `text-transform:uppercase;display:${hidden ? 'none' : 'block'};` +
+      `text-shadow:${isInvalid ? 'red 2px 2px' : 'unset'};`),
+    ['hidden', 'isInvalid']), CodeEditor,
+    FormSubmitButton: fromCss('button',
+      'font-size:16px;font-family:sans-serif;text-transform:uppercase;' +
+    'padding:8px;border-radius:8px;margin:8px;'),
+    FormEnumInput: fromCss('select',
+      'font-family:sans-serif;font-size:16px;'),
+    FormEnumInputOption: fromCss('option',
+      'font-family:sans-serif;font-size:16px;'),
+    FormObjectInputLabel: fromCss('p', ({ hidden }) => `color:white;
+  padding-right:4px;font-family:sans-serif;text-transform:uppercase;margin:8px;
+  font-size:16px;width:calc(100% - 16px);display:${hidden ? 'none' : 'block'};`,
+    ['hidden'])
   };
 
 function GeneratedForm({ params, parentCallback, method, formAction,
@@ -166,7 +142,7 @@ function GeneratedForm({ params, parentCallback, method, formAction,
 
   let selfFuncs = { handleArrayAdd, handleArrayRemove, handleChange };
 
-  return <div>
+  return <div style={{ width: '100%' }}>
     <FormHeader>{title}</FormHeader>
     {state.errorMessage ?
       <FormErrorMessage>{state.errorMessage}</FormErrorMessage> : null}

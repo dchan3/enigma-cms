@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TablePaginator } from 'react-everafter';
+import TablePaginator from '../../reusables/TablePaginator';
 import { TextHeader, SamePageAnchor } from '../../reusables';
 import { default as asyncReqs } from '../../utils/api_request_async';
 

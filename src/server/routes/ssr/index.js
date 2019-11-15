@@ -6,13 +6,12 @@ import { default as fetchers } from './fetch_data';
 import { SiteConfig, DocumentType } from '../../models';
 import { matchPath, StaticRouter } from 'react-router-dom';
 import { renderToString } from 'react-dom/server';
-import { ServerStyleSheet } from 'styled-components';
 import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
 import { StaticContextProvider } from '../../../client/contexts/StaticContext';
 
 var htmlTemplate =
-  (styleTags, { language, gaTrackingId },
+  ({ language, gaTrackingId },
     { title, meta, link }, dom, data) => `<!DOCTYPE html>
 <html lang="${language}">
   <head>
@@ -29,7 +28,7 @@ var htmlTemplate =
       gtag('config', '${gaTrackingId}');
     </script>` : ''}
 ${[
-    title.toString(),meta.toString(), link.toString(), styleTags,
+    title.toString(),meta.toString(), link.toString()
   ].map(str => str.length ? (`    ${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
     <script>
@@ -54,16 +53,15 @@ ${[
         Promise.resolve();
     promise.then(data => {
       if (data) context.dataObj = data;
-      let sheet = new ServerStyleSheet(), jsx = (
+      let jsx = (
           <StaticRouter {...{ location }}>
             <StaticContextProvider initialVals={context}>
               <App />
             </StaticContextProvider>,
-          </StaticRouter>), markup = renderToString(sheet.collectStyles(jsx)),
-        helmet = Helmet.renderStatic(), styleTags = sheet.getStyleTags();
-      sheet.seal();
+          </StaticRouter>), markup = renderToString(jsx),
+        helmet = Helmet.renderStatic();
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
-      res.end(htmlTemplate(styleTags, config, helmet, markup, context));
+      res.end(htmlTemplate(config, helmet, markup, context));
     }).catch(next)
   };
 
