@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import TablePaginator from '../../reusables/TablePaginator';
-import { TextHeader, SamePageAnchor } from '../../reusables';
+import { TextHeader, SamePageAnchor, TablePaginator } from '../../reusables';
 import useStaticContext from '../../hooks/useStaticContext';
-import { default as syncReqs } from '../../utils/api_request_async';
-import { default as asyncReqs } from '../../utils/api_request_sync';
+import { default as asyncReqs } from '../../utils/api_request_async';
+import { default as syncReqs } from '../../utils/api_request_sync';
 function FileMgmtLanding() {
   let { files } = useStaticContext(['files']);
 
   function handleDeleteClick() {
     return function(url) {
-      asyncReqs.deleteRequestSync(url);
+      syncReqs.deleteRequestSync(url);
     }
   }
 
@@ -22,8 +21,8 @@ function FileMgmtLanding() {
       setState({ files });
     }
     else {
-      syncReqs.getRequest('files/get', (files) => {
-        setState({ files })
+      asyncReqs.getRequest('files/get', (files) => {
+        setState({ files });
       });
     }
   }, []);

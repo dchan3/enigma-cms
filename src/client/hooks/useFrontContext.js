@@ -32,9 +32,9 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
 
   useEffect(function() {
     if (!state.dataObj) {
-      if (apiUrl(params).length) {
-        requests.getRequest(apiUrl(params), function(dataObj) {
-          if (cb) cb(dataObj, setState, params);
+      if (apiUrl(params || {}).length) {
+        requests.getRequest(apiUrl(params || {}), function(dataObj) {
+          if (cb) cb(dataObj, setState, params || {});
           else setState({ dataObj });
         });
       }

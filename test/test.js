@@ -14,6 +14,8 @@ import { default as createReverseIndex }
   from '../src/server/utils/create_reverse_index';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
+import matchThePath,
+{ returnPathKeys } from '../src/client/utils/match_the_path';
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -682,3 +684,23 @@ describe('From CSS', function() {
     done();
   });
 });
+
+describe('Router', function() {
+  it('path matcher 1', function(done) {
+    let actual = returnPathKeys('/profile/:id');
+    expect(actual.keys).to.deep.equal(['id']);
+    done();
+  });
+
+  it('path matcher 2', function(done) {
+    let actual = matchThePath('/profile/:id', { path: '/profile/bruh' });
+    expect(actual).to.deep.equal({
+      path: '/profile/bruh',
+      url: '/profile/bruh',
+      params: {
+        id: 'bruh'
+      }
+    });
+    done();
+  });
+})

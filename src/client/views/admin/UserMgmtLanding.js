@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import TablePaginator from '../../reusables/TablePaginator';
-import { TextHeader, SamePageAnchor } from '../../reusables';
+import { TextHeader, SamePageAnchor, TablePaginator } from '../../reusables';
 import { default as asyncReqs } from '../../utils/api_request_async';
 
 function UserMgmtLanding() {

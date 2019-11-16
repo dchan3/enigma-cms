@@ -28,8 +28,10 @@ export const categoryMetadata = async function (docTypeNamePlural) {
   }
 }
 
-export const profileMetadata = async ({ displayName, username,
-  pictureSrc }) => {
+export const profileMetadata = async (props) => {
+  if (!props) return null;
+  let { displayName, username,
+    pictureSrc } = props;
   let { siteName } = await SiteConfig.findOne({}),
     pref = `${displayName || username}'s Profile`, title =
   `${pref} | ${siteName}`, description = `${pref}.`;

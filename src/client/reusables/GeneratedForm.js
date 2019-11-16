@@ -1,7 +1,4 @@
 import React, {  useState } from 'react';
-import {
-  string, shape, objectOf, oneOfType, func, object, array, arrayOf, number,
-  bool } from 'prop-types';
 import CodeEditor from './CodeEditor';
 import { loget, loset } from '../utils/lofuncs';
 import { default as requests } from '../utils/api_request_async';
@@ -34,13 +31,13 @@ let FormBackground = fromCss('form',
       'font-size:16px;font-family:sans-serif;text-transform:uppercase;' +
     'padding:8px;border-radius:8px;margin:8px;'),
     FormEnumInput: fromCss('select',
-      'font-family:sans-serif;font-size:16px;'),
+      'font-family:sans-serif;font-size:16px;', ['hidden', 'isInvalid']),
     FormEnumInputOption: fromCss('option',
-      'font-family:sans-serif;font-size:16px;'),
+      'font-family:sans-serif;font-size:16px;', ['hidden', 'isInvalid']),
     FormObjectInputLabel: fromCss('p', ({ hidden }) => `color:white;
   padding-right:4px;font-family:sans-serif;text-transform:uppercase;margin:8px;
   font-size:16px;width:calc(100% - 16px);display:${hidden ? 'none' : 'block'};`,
-    ['hidden'])
+    ['hidden', 'isInvalid'])
   };
 
 function GeneratedForm({ params, parentCallback, method, formAction,
@@ -191,34 +188,6 @@ function GeneratedForm({ params, parentCallback, method, formAction,
     </FormBackground>
   </div>;
 }
-
-GeneratedForm.propTypes = {
-  title: string.isRequired,
-  params: objectOf(shape({
-    label: string,
-    type: oneOfType(
-      [string, func]).isRequired,
-    grammar: string,
-    shape: oneOfType(
-      [object, func]),
-    value: oneOfType([string, object, array]),
-    enumList: oneOfType([arrayOf(shape({
-      value: string,
-      text: string
-    })), func]),
-    maximum: oneOfType([number, func]),
-    minimum: oneOfType([number, func]),
-    attrDepends: object,
-    required: bool,
-  })).isRequired,
-  successCallback: func,
-  method: string.isRequired,
-  formAction: string.isRequired,
-  parentCallback: func,
-  fileContent: string,
-  redirectUrl: string,
-  currentValue: object
-};
 
 GeneratedForm.defaultProps =  {
   parentCallback: undefined,
