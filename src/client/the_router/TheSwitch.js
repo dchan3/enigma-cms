@@ -1,4 +1,4 @@
-import React, { cloneElement, useContext } from 'react';
+import React, { cloneElement, isValidElement, useContext } from 'react';
 import TheRouterContext from '../contexts/TheRouterContext';
 import matchThePath from '../../lib/utils/match_the_path';
 
@@ -11,7 +11,7 @@ export default function TheSwitch(props) {
   let element, match;
 
   React.Children.forEach(props.children, (child) => {
-    if (match == null && React.isValidElement(child)) {
+    if (match == null && isValidElement(child)) {
       element = child;
 
       const path = child.props.path || child.props.from;
@@ -22,5 +22,6 @@ export default function TheSwitch(props) {
     }
   });
 
-  return match ? cloneElement(element, { location, computedMatch: match }) : null;
+  return match ? cloneElement(element, {
+    location, computedMatch: match }) : null;
 }
