@@ -46,7 +46,7 @@ export default function matchThePath(pathname, { path, exact }) {
 
   return {
     path,
-    url: path,
+    url: pathname,
     params
   };
 }

@@ -15,7 +15,7 @@ import { default as createReverseIndex }
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
 import matchThePath,
-{ returnPathKeys } from '../src/client/utils/match_the_path';
+{ returnPathKeys } from '../src/lib/utils/match_the_path';
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -693,9 +693,9 @@ describe('Router', function() {
   });
 
   it('path matcher 2', function(done) {
-    let actual = matchThePath('/profile/:id', { path: '/profile/bruh' });
+    let actual = matchThePath('/profile/bruh', { path: '/profile/:id' });
     expect(actual).to.deep.equal({
-      path: '/profile/bruh',
+      path: '/profile/:id',
       url: '/profile/bruh',
       params: {
         id: 'bruh'
@@ -703,4 +703,4 @@ describe('Router', function() {
     });
     done();
   });
-})
+});
