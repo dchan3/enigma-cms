@@ -727,7 +727,8 @@ describe('Template parser', function() {
   });
 
   it('each tag', function(done) {
-    let actual = TemplateParser.compile('<ul>{{#each genres}}<li>{{this}}</li>{{/each}}</ul>')({
+    let actual = TemplateParser.compile(
+        '<ul>{{#each genres}}<li>{{this}}</li>{{/each}}</ul>')({
         genres: ['EDM', 'Rock', 'Misc']
       }), expected = '<ul><li>EDM</li><li>Rock</li><li>Misc</li></ul>';
     expect(actual).to.equal(expected);
