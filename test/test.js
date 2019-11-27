@@ -16,6 +16,7 @@ import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
 import matchThePath,
 { returnPathKeys } from '../src/lib/utils/match_the_path';
+import TemplateParser from '../src/server/utils/template_parser';
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -701,6 +702,35 @@ describe('Router', function() {
         id: 'bruh'
       }
     });
+    done();
+  });
+});
+
+describe('Template parser', function() {
+  it('basics', function(done) {
+    let actual = TemplateParser.compile('<h1>{{message}}</h1>')({
+        message: 'Hello World!'
+      }), expected = '<h1>Hello World!</h1>';
+    expect(actual).to.equal(expected);
+    done();
+  });
+
+  it('helper functions', function(done) {
+    TemplateParser.registerHelper('reverse', function(str) {
+      return str.split('').reverse().join('');
+    });
+    let actual = TemplateParser.compile('<h1>{{reverse message}}</h1>')({
+        message: 'Anna'
+      }), expected = '<h1>annA</h1>';
+    expect(actual).to.equal(expected);
+    done();
+  });
+
+  it('each tag', function(done) {
+    let actual = TemplateParser.compile('<ul>{{#each genres}}<li>{{this}}</li>{{/each}}</ul>')({
+        genres: ['EDM', 'Rock', 'Misc']
+      }), expected = '<ul><li>EDM</li><li>Rock</li><li>Misc</li></ul>';
+    expect(actual).to.equal(expected);
     done();
   });
 });

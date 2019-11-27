@@ -19,7 +19,6 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "gm": "^1.23.1",
-    "handlebars": "^4.5.3",
     "http-proxy": "^1.18.0",
     "limax": "^2.0.0",
     "mongoose": "^5.7.11",
