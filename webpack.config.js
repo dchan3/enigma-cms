@@ -81,8 +81,6 @@ module.exports = [{
   },
   resolve: {
     alias: {
-      handlebars: path.resolve(__dirname, 'node_modules',
-        'handlebars/dist/handlebars.min.js'),
       'react-dom/server': path.resolve(__dirname, 'node_modules', 'react-dom',
         'cjs', 'react-dom-server.browser.production.min.js'),
       'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',

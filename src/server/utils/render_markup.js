@@ -1,4 +1,4 @@
-import Handlebars from 'handlebars';
+import TemplateParser from './template_parser';
 import { SiteConfig } from '../models';
 
 let renderMarkup = async function (templateBody, stuff) {
@@ -6,11 +6,11 @@ let renderMarkup = async function (templateBody, stuff) {
 
   shortcodes.forEach(
     function({ name, args, code }) {
-      Handlebars.registerHelper(name,
+      TemplateParser.registerHelper(name,
         new Function(args.join(','), code));
     });
 
-  let template = Handlebars.compile(templateBody), retval = template(stuff);
+  let template = TemplateParser.compile(templateBody), retval = template(stuff);
 
   return retval;
 }
