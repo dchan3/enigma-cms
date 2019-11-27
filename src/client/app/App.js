@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Route, Redirect, Switch } from 'react-router-dom';
+import TheRedirect from '../the_router/TheRedirect';
 import { MainMenu } from '../views/admin';
 import { loggedOutRoutes, backEndRoutes, frontEndRoutes }
   from '../../lib/routes/route_data';
@@ -8,37 +8,39 @@ import { Footer } from '../reusables';
 import { Metamorph } from 'react-metamorph';
 import { GeneralContextProvider } from '../contexts/GeneralContext';
 import StaticContext from '../contexts/StaticContext';
+import TheRoute from '../the_router/TheRoute';
+import TheSwitch from '../the_router/TheSwitch';
 
 let TheProvider = ({ component: Component, history, match }) => (
   <GeneralContextProvider initialVals={{ history, match }}><Component />
   </GeneralContextProvider>);
 
-let FrontEndRoute = ({ component, ...rest }) => <Route exact {...rest}
+let FrontEndRoute = ({ component, ...rest }) => <TheRoute {...rest}
   component={({ history, match }) => (
     <TheProvider {...{ history, match, component }} />)} />;
 
 let ProtectedRoute = ({ component, isAdmin, ...rest
-}) => <Route exact {...rest} component={({ history, match }) => {
+}) => <TheRoute {...rest} component={({ history, match }) => {
   let { staticContext } = useContext(StaticContext);
 
   if (staticContext.user) {
     if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
       return <TheProvider {...{ history, match, component }} />;
     }
-    else return <Redirect to="/admin" />;
+    else return <TheRedirect to="/admin" />;
   }
-  else return <Redirect to="/login" />;
+  else return <TheRedirect to="/login" />;
 }} />;
 
-let LoggedOutRoute = ({ component, ...rest }) => <Route exact {...rest}
+let LoggedOutRoute = ({ component, ...rest }) => <TheRoute exact {...rest}
   component={({ history, match }) => {
     let { staticContext } = useContext(StaticContext);
-    return staticContext.user ? <Redirect to="/admin" /> :
+    return staticContext.user ? <TheRedirect to="/admin" /> :
       <TheProvider {...{ history, match, component }} />;
   }} />;
 
 let UniversalRoute =
-  ({ component, ...rest }) => <Route exact {...rest} component={({ history,
+  ({ component, ...rest }) => <TheRoute exact {...rest} component={({ history,
     match }) => <TheProvider {...{ history, match, component }} />} />;
 
 let App = () => {
@@ -49,11 +51,11 @@ let App = () => {
     <Metamorph title={siteName || 'My Website'} description={description ||
       'Welcome to my website!'} keywords={keywords && keywords.join(',') || ''}
     image={iconUrl || ''}/>
-    <Switch>
+    <TheSwitch>
       <ProtectedRoute path='/admin' component={MainMenu} isAdmin={false} />
       <FrontEndRoute path='*' component={FrontHeader}/>
-    </Switch>
-    <Switch>
+    </TheSwitch>
+    <TheSwitch>
       {backEndRoutes.map(({ path, isAdmin, component: Component }) => (
         <ProtectedRoute {...{ path, isAdmin, component: () => <div style={{
           width: '90%',
@@ -65,10 +67,10 @@ let App = () => {
         <LoggedOutRoute {...{ path, component }} />))}
       {frontEndRoutes.map(({ path, component }) => (
         <FrontEndRoute {...{ path, component }} />))}
-    </Switch>
-    <Switch>
+    </TheSwitch>
+    <TheSwitch>
       <UniversalRoute path="*" component={Footer} />
-    </Switch>
+    </TheSwitch>
   </div>;
 };
 

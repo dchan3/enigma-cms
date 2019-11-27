@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeneratedForm } from '../../reusables';
-import { Redirect } from 'react-router-dom';
+import TheRedirect from '../../the_router/TheRedirect';
 import useFrontContext from '../../hooks/useFrontContext';
 
 function EditDocumentPage() {
@@ -22,7 +22,7 @@ function EditDocumentPage() {
     }, { dataObj } = state;
 
   if (dataObj === undefined) {
-    return <Redirect to="/admin" />;
+    return <TheRedirect to="/admin" />;
   }
   else if (dataObj) {
     let { docType, doc } = dataObj;

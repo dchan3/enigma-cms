@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import TheRedirect from '../../the_router/TheRedirect';
 import { Metamorph } from 'react-metamorph';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 import useFrontContext from '../../hooks/useFrontContext.js';
@@ -15,7 +15,7 @@ function FrontCategoryDisplay() {
 
   let { dataObj } = state;
 
-  if (dataObj === undefined) return <Redirect to='/not-found' />;
+  if (dataObj === undefined) return <TheRedirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
     return [<Metamorph {...dataObj.metadata} />,
       <div><InnerHtmlRenderer innerHtml={dataObj.rendered} /></div>

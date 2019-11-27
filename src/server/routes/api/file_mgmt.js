@@ -4,13 +4,11 @@ import { default as verifyMiddleware } from '../middleware';
 import fs from 'fs';
 import { resolve } from 'path';
 import { ObjectId } from 'mongodb';
-
+import { default as fileFetchFuncs } from '../fetch_funcs/files';
 var router = express.Router();
 
-router.get('/get', (req, res, next) => {
-  File.find({ }).then(files => {
-    res.status(200).json(files);
-  }).catch(err => next(err));
+router.get('/get', async function (req, res) {
+  return res.status(200).json(await fileFetchFuncs.getAllFiles());
 });
 
 router.post('/upload_file', verifyMiddleware, ({ user: { userId: uploadedBy },

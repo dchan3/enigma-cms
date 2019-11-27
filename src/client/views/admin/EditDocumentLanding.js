@@ -1,7 +1,6 @@
 import React from 'react';
-import TablePaginator from '../../reusables/TablePaginator';
-import { TextHeader, SamePageAnchor } from '../../reusables';
-import { Redirect } from 'react-router-dom';
+import { TextHeader, SamePageAnchor, TablePaginator } from '../../reusables';
+import TheRedirect from '../../the_router/TheRedirect';
 import useFrontContext from '../../hooks/useFrontContext';
 import { default as syncReqs } from '../../utils/api_request_sync';
 import fromCss from '../../utils/component_from_css';
@@ -23,7 +22,7 @@ function EditDocumentLanding() {
       }
     }), { dataObj } = state;
 
-  if (dataObj === undefined) return <Redirect to='/admin' />;
+  if (dataObj === undefined) return <TheRedirect to='/admin' />;
   else if (dataObj) {
     let { docType, documents } = dataObj;
 

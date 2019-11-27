@@ -46,5 +46,9 @@ export default {
   '/admin/file-mgmt': async () => {
     var retval = await File.find({});
     return retval && retval.length > 0 && retval || [];
+  },
+  '/admin/user-mgmt': async () => {
+    var users = await userFetchFuncs.getAllUsers({ });
+    return { users };
   }
 }

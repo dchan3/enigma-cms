@@ -6,7 +6,7 @@ function SamePageAnchor({
   children, href, target, className, id, style, component
 }) {
   let { generalState, setGeneralState } = useGeneralContext(),
-    Anchor = component || fromCss('a', 'font-weight: 900;'),
+    Anchor = component || fromCss('a', 'font-weight:900;'),
     AlreadyOn = fromCss('span', 'text-decoration:underline;font-weight:900;' +
     'margin:0;width:fit-content;height:fit-content;');
 

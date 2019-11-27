@@ -23,9 +23,7 @@ const mapKeysToValues = function(obj) {
 };
 
 const typeVerify = function(typeVar, argsToPass) {
-  return typeof typeVar === 'function' ?
-    typeVar(...argsToPass) :
-    typeVar;
+  return typeof typeVar === 'function' ? typeVar(...argsToPass) : typeVar;
 };
 
 const calcFromDependValues = function(paramSpec, attr, formVal, keyToUse) {

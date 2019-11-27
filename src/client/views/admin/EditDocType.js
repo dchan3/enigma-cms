@@ -1,6 +1,6 @@
 import React from 'react';
 import { GeneratedForm } from '../../reusables';
-import { Redirect } from 'react-router-dom';
+import TheRedirect from '../../the_router/TheRedirect';
 import useFrontContext from '../../hooks/useFrontContext';
 
 let EditDocType = () => {
@@ -47,7 +47,7 @@ let EditDocType = () => {
 
   let { dataObj, optionParams } = state;
 
-  if (dataObj === undefined) return <Redirect to="/admin" />;
+  if (dataObj === undefined) return <TheRedirect to="/admin" />;
   else if (dataObj === null) return null;
   else {
     let { docType } = dataObj || {};

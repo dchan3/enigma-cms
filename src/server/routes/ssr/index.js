@@ -4,7 +4,8 @@ import { frontEndRoutes, backEndRoutes, loggedOutRoutes } from
   '../../../lib/routes/route_data';
 import { default as fetchers } from './fetch_data';
 import { SiteConfig, DocumentType } from '../../models';
-import { matchPath, StaticRouter } from 'react-router-dom';
+import matchThePath from  '../../../lib/utils/match_the_path';
+import TheStaticRouter from '../../../client/the_router/TheStaticRouter';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
 import serialize from 'serialize-javascript';
@@ -46,23 +47,23 @@ ${[
     let config = await SiteConfig.findOne({}),
       types = await DocumentType.find({}), routes = path.startsWith('/admin') ?
         backEndRoutes : ['/login', '/signup'].includes(path) ? loggedOutRoutes :
-          frontEndRoutes,
-      context = { config, types }, { path: pathMatch } =
-        routes.find(route => matchPath(path, route)) || {},
+          frontEndRoutes;
+    let context = { config, types }, { path: pathMatch } =
+        routes.find(route => matchThePath(path, route)) || {},
       promise = fetchers[pathMatch] ? fetchers[pathMatch](path) :
         Promise.resolve();
     promise.then(data => {
       if (data) context.dataObj = data;
       let jsx = (
-          <StaticRouter {...{ location }}>
+          <TheStaticRouter {...{ location }} context={context}>
             <StaticContextProvider initialVals={context}>
               <App />
             </StaticContextProvider>,
-          </StaticRouter>), markup = renderToString(jsx),
+          </TheStaticRouter>), markup = renderToString(jsx),
         helmet = Helmet.renderStatic();
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
       res.end(htmlTemplate(config, helmet, markup, context));
-    }).catch(next)
+    }).catch(next);
   };
 
 export default ssrRenderer;

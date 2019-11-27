@@ -66,9 +66,6 @@ on its own. Eventually I'd want this project to be 100% self-sufficient. (No, no
 So without further ado, here they are. (Maintainers, you might want to thank me for the clout you receive from these
 mentions of your repositories.)
 
--   [Handlebars](https://github.com/wycats/handlebars.js) - because hey, I wouldn't say I can make a templating language
-all on my own
-
 -   [Limax](https://github.com/lovell/limax/issues) - for handling all the slug generation problems thanks in part to
 globalization
 

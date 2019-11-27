@@ -129,7 +129,7 @@ export const backEndRoutes = [
   },
   {
     path: '/admin',
-    exact: false,
+    exact: true,
     component: () => <div />,
     isAdmin: false
   }

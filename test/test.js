@@ -14,6 +14,9 @@ import { default as createReverseIndex }
   from '../src/server/utils/create_reverse_index';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
+import matchThePath,
+{ returnPathKeys } from '../src/lib/utils/match_the_path';
+import TemplateParser from '../src/server/utils/template_parser';
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -679,6 +682,56 @@ describe('From CSS', function() {
 
     expect(actual.find('p').text()).to.equal(expected.find('p').text());
     expect(actual.get(0).style).to.deep.equal(expected.get(0).style);
+    done();
+  });
+});
+
+describe('Router', function() {
+  it('path matcher 1', function(done) {
+    let actual = returnPathKeys('/profile/:id');
+    expect(actual.keys).to.deep.equal(['id']);
+    done();
+  });
+
+  it('path matcher 2', function(done) {
+    let actual = matchThePath('/profile/bruh', { path: '/profile/:id' });
+    expect(actual).to.deep.equal({
+      path: '/profile/:id',
+      url: '/profile/bruh',
+      params: {
+        id: 'bruh'
+      }
+    });
+    done();
+  });
+});
+
+describe('Template parser', function() {
+  it('basics', function(done) {
+    let actual = TemplateParser.compile('<h1>{{message}}</h1>')({
+        message: 'Hello World!'
+      }), expected = '<h1>Hello World!</h1>';
+    expect(actual).to.equal(expected);
+    done();
+  });
+
+  it('helper functions', function(done) {
+    TemplateParser.registerHelper('reverse', function(str) {
+      return str.split('').reverse().join('');
+    });
+    let actual = TemplateParser.compile('<h1>{{reverse message}}</h1>')({
+        message: 'Anna'
+      }), expected = '<h1>annA</h1>';
+    expect(actual).to.equal(expected);
+    done();
+  });
+
+  it('each tag', function(done) {
+    let actual = TemplateParser.compile(
+        '<ul>{{#each genres}}<li>{{this}}</li>{{/each}}</ul>')({
+        genres: ['EDM', 'Rock', 'Misc']
+      }), expected = '<ul><li>EDM</li><li>Rock</li><li>Misc</li></ul>';
+    expect(actual).to.equal(expected);
     done();
   });
 });
