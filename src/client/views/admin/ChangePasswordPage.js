@@ -1,11 +1,11 @@
 import React from 'react';
-import GeneratedForm from '../../reusables/GeneratedForm';
+import { GeneratedForm, AdminFrame } from '../../reusables';
 import useStaticContext from '../../hooks/useStaticContext';
 
 function ChangePasswordPage() {
   let { user: { _id } } = useStaticContext(['user']);
 
-  return <GeneratedForm title="Change Password" params={{
+  return <AdminFrame><GeneratedForm title="Change Password" params={{
     userId: {
       label: 'User ID',
       type: 'text',
@@ -15,7 +15,7 @@ function ChangePasswordPage() {
     currentPassword: { type: 'password' },
     newPassword: { type: 'password' }
   }} formAction='users/change_password' redirectUrl='/admin'
-  />;
+  /></AdminFrame>;
 }
 
 export default ChangePasswordPage;

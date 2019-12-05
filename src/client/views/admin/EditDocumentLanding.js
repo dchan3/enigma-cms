@@ -1,5 +1,6 @@
 import React from 'react';
-import { TextHeader, SamePageAnchor, TablePaginator } from '../../reusables';
+import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame } from
+  '../../reusables';
 import TheRedirect from '../../the_router/TheRedirect';
 import useFrontContext from '../../hooks/useFrontContext';
 import { default as syncReqs } from '../../utils/api_request_sync';
@@ -28,7 +29,7 @@ function EditDocumentLanding() {
 
     if (docType && documents && documents.length) {
       let { docTypeName, docTypeNamePlural, attributes } = docType;
-      return [<TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
+      return <AdminFrame><TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
         <TablePaginator perPage={10} activeTabColor="cadetblue"
           items={documents} truncate={true} columns={[attributes.map(({
             attrName }) => ({
@@ -55,7 +56,7 @@ function EditDocumentLanding() {
             headerText: 'View Live',
             display: ({ slug }) => <SamePageAnchor href={
               `/${docTypeNamePlural}/${slug}`}>View Live</SamePageAnchor>
-          }].flat()} />];
+          }].flat()} /></AdminFrame>;
     }
   }
   return null;

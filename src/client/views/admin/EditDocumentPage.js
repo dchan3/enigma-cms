@@ -1,5 +1,5 @@
 import React from 'react';
-import { GeneratedForm } from '../../reusables';
+import { GeneratedForm, AdminFrame } from '../../reusables';
 import TheRedirect from '../../the_router/TheRedirect';
 import useFrontContext from '../../hooks/useFrontContext';
 
@@ -54,8 +54,8 @@ function EditDocumentPage() {
         draft: doc.draft
       }
 
-      return <GeneratedForm title='Edit Document' {...{ params }} {...obj}
-        redirectUrl='/admin' />;
+      return <AdminFrame><GeneratedForm title='Edit Document' {...{ params }}
+        {...obj} redirectUrl='/admin' /></AdminFrame>;
     }
     else return null;
   }

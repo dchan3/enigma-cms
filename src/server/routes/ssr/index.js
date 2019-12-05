@@ -55,7 +55,7 @@ ${[
     promise.then(data => {
       if (data) context.dataObj = data;
       let jsx = (
-          <TheStaticRouter {...{ location }} context={context}>
+          <TheStaticRouter {...{ location }}>
             <StaticContextProvider initialVals={context}>
               <App />
             </StaticContextProvider>,

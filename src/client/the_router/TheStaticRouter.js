@@ -18,8 +18,8 @@ function makeUrl(location) {
   return typeof location === 'string' ? location : createPath(location);
 }
 
-export default function TheBrowserRouter({
-  basename = '', children, context, location = '/' }) {
+export default function TheStaticRouter({
+  basename = '', children, context = {}, location = '/' }) {
   let history = {
     createHref: (path) => addSlash(basename + makeUrl(path)),
     action: 'POP',

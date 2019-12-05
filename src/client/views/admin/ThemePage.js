@@ -2,7 +2,7 @@ import React from 'react';
 import { GeneratedForm, AdminFrame } from '../../reusables';
 import useStaticContext from '../../hooks/useStaticContext';
 
-function ConfigPage() {
+function ThemePage() {
   let { config } = useStaticContext(['config']);
 
   return <AdminFrame><GeneratedForm title="Site Settings" currentValue={config}
@@ -41,7 +41,7 @@ function ConfigPage() {
           { text: 'English', value: 'en' },
           { text: '中文', value: 'zh' }]
       }
-    }} redirectUrl='/admin' formAction='site_config/update' /></AdminFrame>
+    }} redirectUrl='/admin' formAction='site_theme/update' /></AdminFrame>
 }
 
-export default ConfigPage;
+export default ThemePage;

@@ -1,11 +1,13 @@
 import express from 'express';
 import passport from 'passport';
-import { User, SiteConfig, Document, DocumentType } from './models';
+import { User, SiteConfig, Document, DocumentType, SiteTheme } from './models';
 import { default as SignupStrategy } from './passport/signup';
 import { default as LoginStrategy } from './passport/login';
 import mongoose from 'mongoose';
-import { userRoutes, configRoutes, documentRoutes, fileRoutes, searchRoutes }
-  from './routes/api';
+import {
+  userRoutes, configRoutes, documentRoutes, fileRoutes, searchRoutes,
+  themeRoutes 
+} from './routes/api';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
@@ -22,6 +24,14 @@ mongoose.connect(require('../../config/db.js').url, {}, () => {
     if (!config) {
       let newConfig = new SiteConfig({});
       newConfig.save();
+    }
+    else return;
+  });
+
+  SiteTheme.findOne({}).then(theme => {
+    if (!theme) {
+      let newTheme = new SiteTheme({});
+      newTheme.save();
     }
     else return;
   });
@@ -67,6 +77,7 @@ app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/site_theme', themeRoutes);
 
 app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
   var docTypes = await DocumentType.find({}).select({ docTypeNamePlural: 1,

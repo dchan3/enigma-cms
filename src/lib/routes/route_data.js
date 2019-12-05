@@ -3,7 +3,7 @@ import { LoginPage, FrontCategoryDisplay, FrontDocumentDisplay,
   FrontProfileDisplay, NotFound, SearchPage } from '../../client/views/front';
 import { SignupPage, ConfigPage, EditDocumentLanding, EditDocumentPage,
   EditDisplayTemplate, ProfileEditPage, ChangePasswordPage, FileMgmtLanding,
-  UploadFilePage, EditDocType, UserMgmtLanding }
+  UploadFilePage, EditDocType, UserMgmtLanding, AdminLanding }
   from '../../client/views/admin';
 
 export const frontEndRoutes = [
@@ -130,7 +130,7 @@ export const backEndRoutes = [
   {
     path: '/admin',
     exact: true,
-    component: () => <div />,
+    component: AdminLanding,
     isAdmin: false
   }
 ];

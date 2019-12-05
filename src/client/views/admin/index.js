@@ -1,3 +1,4 @@
+export { default as AdminLanding } from './AdminLanding';
 export { default as ChangePasswordPage } from './ChangePasswordPage';
 export { default as ConfigPage } from './ConfigPage';
 export { default as EditDisplayTemplate } from './EditDisplayTemplate';
