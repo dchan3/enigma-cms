@@ -107,7 +107,7 @@ export function createHtmlTree(html) {
         name: escapeText(tempStr.substring(0, tempStr.length - 1)) };
       if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
         p.isChild = true;
-        p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
+        p.depth = tokenStack.filter(({ token }) => token === 'tagstart').length;
       }
       tree.push(p);
       if (html[c + 1] && html[c + 1] === '/') {
@@ -118,7 +118,7 @@ export function createHtmlTree(html) {
       else if (tokenStack.length === 1) {
         tree.push({ node: 'text', name: escapeText(tokenStack.pop().name) });
         tokenStack.push({ token: 'tagstart', d:
-          tokenStack.filter(t => t.token === 'tagstart').length });
+          tokenStack.filter(({ token }) => token === 'tagstart').length });
       }
       else tokenStack.push({ token: 'tagstart', d:
         tokenStack.filter(t => t.token === 'tagstart').length });
