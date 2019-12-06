@@ -115,13 +115,13 @@ export function createHtmlTree(html) {
         tokenStack.push({ token: 'tagclosestart' });
         tokenStack.push({ token: 'tagclosebegin' });
       }
-      else if (tokenStack.length === 1) {
-        tree.push({ node: 'text', name: escapeText(tokenStack.pop().name) });
+      else {
+        if (tokenStack.length === 1) {
+          tree.push({ node: 'text', name: escapeText(tokenStack.pop().name) });
+        }
         tokenStack.push({ token: 'tagstart', d:
           tokenStack.filter(({ token }) => token === 'tagstart').length });
       }
-      else tokenStack.push({ token: 'tagstart', d:
-        tokenStack.filter(t => t.token === 'tagstart').length });
       tempStr = '';
     }
     else if (tempStr.endsWith('"')) {
@@ -164,7 +164,8 @@ export function createHtmlTree(html) {
           let p = { node: 'text', name: escapeText(tempStr) };
           if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
             p.isChild = true;
-            p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
+            p.depth = tokenStack.filter(({ token }) =>
+              token === 'tagstart').length;
           }
           tree.push(p);
           tempStr = '';
@@ -186,18 +187,11 @@ export function createHtmlTree(html) {
           tokenStack.push({ token: 'tagclosebegin' });
           tempStr = '';
         }
-        else if (peekToken === 'tagattr') {
-          if (html[c + 1] && ['>', ' '].includes(html[c + 1])) {
-            tokenStack.push({ token: 'tagval',
-              name: tempStr === '/' ? true : tempStr });
-            tokenStack.push({ token: 'tagsingle' });
-            tokenStack.push({ token: 'tagend' });
-            onTagEnd();
-            c++;
-            tempStr = '';
-          }
-        }
-        else if (peekToken === 'tagval') {
+        else if ((peekToken === 'tagattr' &&
+          html[c + 1] && ['>', ' '].includes(html[c + 1])) ||
+          peekToken === 'tagval') {
+          if (peekToken === 'tagattr') tokenStack.push({ token: 'tagval',
+            name: tempStr === '/' ? true : tempStr });
           tokenStack.push({ token: 'tagsingle' });
           tokenStack.push({ token: 'tagend' });
           onTagEnd();
