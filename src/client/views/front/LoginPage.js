@@ -1,5 +1,5 @@
 import React from 'react';
-import { GeneratedForm, StyledDiv } from '../../reusables';
+import { GeneratedForm, StyledDiv, SamePageAnchor } from '../../reusables';
 
 function LoginPage() {
   return [<GeneratedForm title="Sign In" params={{
@@ -7,7 +7,8 @@ function LoginPage() {
     password: { type: 'password', required: true }
   }} formAction='users/login' redirectUrl='/admin' />,
   <StyledDiv>
-    <p>Don't have an account? Sign up <a href="/signup">here</a>.</p>
+    <p>Don't have an account? Sign up <SamePageAnchor href="/signup">
+    here</SamePageAnchor>.</p>
   </StyledDiv>];
 }
 
