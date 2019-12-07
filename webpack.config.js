@@ -3,7 +3,6 @@ const path = require('path'), nodeExternals = require('webpack-node-externals'),
   { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'),
   MiniCssExtractPlugin = require('mini-css-extract-plugin'),
   LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-
 const cssPlugin = new MiniCssExtractPlugin({
     filename: 'app.style.css'
   }), loRep = new LodashModuleReplacementPlugin();
@@ -29,7 +28,9 @@ module.exports = [{
       })]
   },
   mode: process.env.DEV_MODE ? 'development' : 'production',
-  entry:  './src/client/app/index.js',
+  entry: {
+    app: './src/client/app/index.js'
+  },
   target: 'web',
   module: {
     rules: [
@@ -40,8 +41,22 @@ module.exports = [{
         options: {
           babelrc: true,
           comments: false,
-          plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify', './babel/hashify']
+          plugins: process.env.DEV_MODE ? ['./babel/unitify-react'] :
+            ['./babel/rightify', './babel/hashify', './babel/unitify-react']
+        }
+      },
+      {
+        test: /\.jsx?$/i,
+        include: /src\/client\/reusables/,
+        loader: 'babel-loader',
+        options: {
+          babelrc: false,
+          comments: false,
+          plugins: [
+            ['./babel/from-css-ify', {
+              'toFile': path.resolve(__dirname, 'public/app.style.css') }],
+            '@babel/plugin-transform-react-jsx', './babel/unitify-react',
+          ]
         }
       },
       {
@@ -77,7 +92,7 @@ module.exports = [{
   output: {
     path: path.resolve( __dirname, 'public' ),
     publicPath: path.resolve( __dirname, 'public' ),
-    filename: 'app.bundle.js'
+    filename: '[name].bundle.js'
   },
   resolve: {
     alias: {
@@ -104,13 +119,12 @@ module.exports = [{
         keep_fnames: true
       },
       test: /\.jsx?$/i,
-    })],
-    splitChunks: {
-      chunks: 'all'
-    }
+    })]
   },
   mode: process.env.DEV_MODE ? 'development' : 'production',
-  entry: './src/server/server.js',
+  entry: {
+    server: './src/server/server.js'
+  },
   target: 'node',
   externals: [nodeExternals()],
   module: {
@@ -122,6 +136,17 @@ module.exports = [{
         options: {
           babelrc: true,
           comments: false
+        }
+      },
+      {
+        test: /\.jsx?$/i,
+        include: /src\/client\/reusables/,
+        loader: 'babel-loader',
+        options: {
+          babelrc: false,
+          comments: false,
+          plugins: ['./babel/from-css-ify', '@babel/plugin-transform-react-jsx',
+            './babel/unitify-react', ]
         }
       },
       {
@@ -138,7 +163,7 @@ module.exports = [{
   },
   output: {
     path: __dirname,
-    filename: 'server.bundle.js',
+    filename: '[name].bundle.js',
     publicPath: '/'
   },
   resolve: {

@@ -54,39 +54,31 @@ function collapseNode(stack) {
 
 export function createHtmlTree(html) {
   var tree = [], tokenStack = [], tempStr = '',
-    isTokenTag = (str) => (t => t.token === `tag${str}`),
-    onTagEnd = function() {
-
-      if (tokenStack.length &&
-        tokenStack.filter(isTokenTag('start')).length) {
-        let fil = tokenStack.map((t, i) => ({ index: i, token: t.token })),
-          idx = fil.filter(isTokenTag('start')).splice(-1)[0].index,
-          isSingle = tokenStack.filter(isTokenTag('single')).length > 0;
-        if (tree.length && tree[tree.length - 1].isChild) {
-          let nd = collapseNode(tokenStack.slice(idx));
-          if (!isSingle) {
-            nd.children = [];
-            for (let t = 0; t < tree.length; t++) {
-              if (tree[t].isChild
-                && tree[t].depth === tree[tree.length - 1].depth) {
-                let ps = { node: tree[t].node };
-                if (tree[t].name) ps.name = tree[t].name;
-                if (tree[t].attributes) ps.attributes = tree[t].attributes;
-                if (tree[t].children) ps.children = tree[t].children;
-                nd.children.push(ps);
-                tree[t] = null;
+    isTokenTag = (str) => (({ token }) => token === `tag${str}`),
+    isTokenStart = isTokenTag('start'), onTagEnd = function() {
+      if (tokenStack.length && tokenStack.filter(isTokenStart).length) {
+        let fil = tokenStack.map(({ token }, i) => ({ index: i, token })),
+          idx = fil.filter(isTokenStart).splice(-1)[0].index,
+          isSingle = tokenStack.filter(isTokenTag('single')).length > 0,
+          collapsed = collapseNode(tokenStack.slice(idx));
+        if (tree.length && tree[tree.length - 1].isChild && !isSingle) {
+          collapsed.children = [];
+          for (let t = 0; t < tree.length; t++) {
+            if (tree[t].isChild
+              && tree[t].depth === tree[tree.length - 1].depth) {
+              let ps = { node: tree[t].node };
+              for (var kiz in tree[t]) {
+                if (['name', 'attributes', 'children'].includes(kiz)) {
+                  ps[kiz] = tree[t][kiz];
+                }
               }
+              collapsed.children.push(ps);
+              tree[t] = null;
             }
-            tree = tree.filter(leaf => leaf !== null);
-            tree.push(nd);
           }
-          else {
-            tree.push(collapseNode(tokenStack.slice(idx)));
-          }
+          tree = tree.filter(leaf => leaf !== null);
         }
-        else {
-          tree.push(collapseNode(tokenStack.slice(idx)));
-        }
+        tree.push(collapsed);
         if (idx > 0) {
           tree[tree.length - 1].isChild = true;
           tree[tree.length - 1].depth = tokenStack.filter(
@@ -100,17 +92,13 @@ export function createHtmlTree(html) {
       tokenStack[tokenStack.length - 1].token || null;
     tempStr += html[c];
     if (tempStr === '<') {
-      if (peekToken === 'tagopenend') {
-        if (html[c + 1] === '/') {
-          tokenStack.push({ token: 'tagclosestart' });
-          tokenStack.push({ token: 'tagclosebegin' });
-          c++;
-        }
-        else tokenStack.push({ token: 'tagstart', d:
-          tokenStack.filter(t => t.token === 'tagstart').length });
+      if (peekToken === 'tagopenend' && html[c + 1] === '/') {
+        tokenStack.push({ token: 'tagclosestart' });
+        tokenStack.push({ token: 'tagclosebegin' });
+        c++;
       }
       else tokenStack.push({ token: 'tagstart', d:
-        tokenStack.filter(t => t.token === 'tagstart').length });
+        tokenStack.filter(({ token }) => token === 'tagstart').length });
       tempStr = '';
     }
 
@@ -119,7 +107,7 @@ export function createHtmlTree(html) {
         name: escapeText(tempStr.substring(0, tempStr.length - 1)) };
       if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
         p.isChild = true;
-        p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
+        p.depth = tokenStack.filter(({ token }) => token === 'tagstart').length;
       }
       tree.push(p);
       if (html[c + 1] && html[c + 1] === '/') {
@@ -127,13 +115,13 @@ export function createHtmlTree(html) {
         tokenStack.push({ token: 'tagclosestart' });
         tokenStack.push({ token: 'tagclosebegin' });
       }
-      else if (tokenStack.length === 1) {
-        tree.push({ node: 'text', name: escapeText(tokenStack.pop().name) });
+      else {
+        if (tokenStack.length === 1) {
+          tree.push({ node: 'text', name: escapeText(tokenStack.pop().name) });
+        }
         tokenStack.push({ token: 'tagstart', d:
-          tokenStack.filter(t => t.token === 'tagstart').length });
+          tokenStack.filter(({ token }) => token === 'tagstart').length });
       }
-      else tokenStack.push({ token: 'tagstart', d:
-        tokenStack.filter(t => t.token === 'tagstart').length });
       tempStr = '';
     }
     else if (tempStr.endsWith('"')) {
@@ -176,7 +164,8 @@ export function createHtmlTree(html) {
           let p = { node: 'text', name: escapeText(tempStr) };
           if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
             p.isChild = true;
-            p.depth = tokenStack.filter(t => t.token === 'tagstart').length;
+            p.depth = tokenStack.filter(({ token }) =>
+              token === 'tagstart').length;
           }
           tree.push(p);
           tempStr = '';
@@ -198,18 +187,11 @@ export function createHtmlTree(html) {
           tokenStack.push({ token: 'tagclosebegin' });
           tempStr = '';
         }
-        else if (peekToken === 'tagattr') {
-          if (html[c + 1] && ['>', ' '].includes(html[c + 1])) {
-            tokenStack.push({ token: 'tagval',
-              name: tempStr === '/' ? true : tempStr });
-            tokenStack.push({ token: 'tagsingle' });
-            tokenStack.push({ token: 'tagend' });
-            onTagEnd();
-            c++;
-            tempStr = '';
-          }
-        }
-        else if (peekToken === 'tagval') {
+        else if ((peekToken === 'tagattr' &&
+          html[c + 1] && ['>', ' '].includes(html[c + 1])) ||
+          peekToken === 'tagval') {
+          if (peekToken === 'tagattr') tokenStack.push({ token: 'tagval',
+            name: tempStr === '/' ? true : tempStr });
           tokenStack.push({ token: 'tagsingle' });
           tokenStack.push({ token: 'tagend' });
           onTagEnd();

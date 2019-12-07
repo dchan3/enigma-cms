@@ -37,6 +37,7 @@ ${[
     </script>
     <script src='/app.bundle.js' defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="/app.style.css" />
     <link rel="stylesheet" type="text/css" href="/style.css" />
   </head>
   <body>

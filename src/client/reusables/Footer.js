@@ -5,7 +5,7 @@ import useStaticContext from '../hooks/useStaticContext';
 
 let FooterContainer = fromCss('div',
     'text-align:center;font-family:sans-serif;margin:10px;'), FooterText =
-  fromCss('p', 'margin:0;');
+  fromCss('p', 'margin:0px;');
 
 function Footer() {
   let { user } = useStaticContext(['user']);

@@ -38,14 +38,14 @@ function truncatePageList(
 }
 
 const PaginatorContainer = fromCss(
-    'div', 'clear:both;width:100%;margin:0 auto;'),
+    'div', 'clear:both;width:100%;margin:0px auto;'),
   PaginatorButton = fromCss('li', ({ isActive, activeTabColor }) =>
     ('text-align:center;border:thin grey solid;padding:5px;width:35px;' +
   'height:35px;display:inline-block;font-size:1.15em;' +
   `${isActive ? `background-color:${activeTabColor};color: white;` : ''}`), [
     'isActive', 'activeTabColor'
   ]), PaginatorList = fromCss('ul',
-    'list-style:none;padding-left:0;display:inline;', [
+    'list-style:none;padding-left:0px;display:inline;', [
       'isActive', 'activeTabColor']),
   PaginatorNumber = fromCss('a', 'color:inherit;font-size:inherit;', [
     'isActive', 'activeTabColor']);
