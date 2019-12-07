@@ -3,6 +3,7 @@ build/
 .idea/
 dist/
 public/app*.js*
+public/app*.css*
 public/uploads/
 public/profile-pix/
 public/site-icon/

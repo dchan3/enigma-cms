@@ -1,3 +1,4 @@
+import React from 'react';
 import fromCss from '../utils/component_from_css';
 
 export const StyledDiv = fromCss('div',

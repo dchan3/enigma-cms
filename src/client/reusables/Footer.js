@@ -4,7 +4,7 @@ import fromCss from '../utils/component_from_css';
 
 let FooterContainer = fromCss('div',
     'text-align:center;font-family:sans-serif;margin:10px;'), FooterText =
-  fromCss('p', 'margin:0;');
+  fromCss('p', 'margin:0px;');
 import useStaticContext from '../hooks/useStaticContext';
 
 function Footer() {
