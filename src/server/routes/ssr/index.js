@@ -3,7 +3,7 @@ import App from '../../../client/app/App';
 import { frontEndRoutes, backEndRoutes, loggedOutRoutes } from
   '../../../lib/routes/route_data';
 import { default as fetchers } from './fetch_data';
-import { SiteConfig, DocumentType } from '../../models';
+import { SiteConfig, DocumentType, SiteTheme } from '../../models';
 import matchThePath from  '../../../lib/utils/match_the_path';
 import TheStaticRouter from '../../../client/the_router/TheStaticRouter';
 import { renderToString } from 'react-dom/server';
@@ -46,10 +46,11 @@ ${[
 </html>
 `, ssrRenderer = async ({ path, url: location }, res, next) => {
     let config = await SiteConfig.findOne({}),
+      theme = await SiteTheme.findOne({}),
       types = await DocumentType.find({}), routes = path.startsWith('/admin') ?
         backEndRoutes : ['/login', '/signup'].includes(path) ? loggedOutRoutes :
           frontEndRoutes;
-    let context = { config, types }, { path: pathMatch } =
+    let context = { config, types, theme }, { path: pathMatch } =
         routes.find(route => matchThePath(path, route)) || {},
       promise = fetchers[pathMatch] ? fetchers[pathMatch](path) :
         Promise.resolve();

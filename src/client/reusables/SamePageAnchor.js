@@ -6,9 +6,8 @@ function SamePageAnchor({
   children, href, target, className, id, style
 }) {
   let { generalState, setGeneralState } = useGeneralContext(),
-    Anchor = fromCss('a', 'font-weight:900;'),
-    AlreadyOn = fromCss('span',
-    'text-decoration:underline;font-weight:900;margin:0;width:fit-content;height:fit-content;');
+    Anchor = fromCss('a', 'font-weight:900;'), AlreadyOn = fromCss('span',
+      'text-decoration:underline;font-weight:900;margin:0;width:fit-content;height:fit-content;');
 
   function handleClick(event) {
     if (generalState && href.startsWith('/')) {

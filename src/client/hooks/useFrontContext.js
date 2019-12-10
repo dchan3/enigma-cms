@@ -35,7 +35,8 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
       if (apiUrl(params || {}).length) {
         requests.getRequest(apiUrl(params || {}), function(dataObj) {
           if (cb) cb(dataObj, setState, params || {});
-          else setState({ dataObj });
+          else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
+            undefined });
         });
       }
       else if (initial) setState(initial);

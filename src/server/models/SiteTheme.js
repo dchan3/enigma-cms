@@ -5,19 +5,23 @@ let { Schema, model } = mongoose;
 const SiteThemeSchema = new Schema({
   header: {
     type: String,
-    required: false
+    required: false,
+    defaultValue: ''
   },
   menuBar: {
     type: String,
-    required: false
+    required: false,
+    defaultValue: ''
   },
   menuLink: {
     type: String,
-    required: false
+    required: false,
+    defaultValue: ''
   },
   overall: {
     type: String,
-    required: false
+    required: false,
+    defaultValue: ''
   }
 });
 

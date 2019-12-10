@@ -11,6 +11,7 @@ async function getUserProfile({ username }) {
   let config = await SiteConfig.findOne({});
   let { profileTemplate } = config;
   let user = await User.findOne({ username });
+  if (!user) return {};
   let metadata = await profileMetadata(user);
   let rendered = await renderMarkup(profileTemplate, user);
   return {

@@ -15,6 +15,7 @@ export default function TheRouter({
   return <TheRouteContextProvider value={{
     history,
     location,
+    setLocation,
     basename,
     match: {
       path: '/',

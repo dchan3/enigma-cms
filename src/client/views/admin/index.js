@@ -9,5 +9,6 @@ export { default as FileMgmtLanding } from './FileMgmtLanding';
 export { default as MainMenu } from './MainMenu';
 export { default as ProfileEditPage } from './ProfileEditPage';
 export { default as SignupPage } from './SignupPage';
+export { default as ThemePage } from './ThemePage';
 export { default as UploadFilePage } from './UploadFilePage';
 export { default as UserMgmtLanding } from './UserMgmtLanding';
