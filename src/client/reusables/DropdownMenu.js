@@ -3,7 +3,7 @@ import SamePageAnchor from './SamePageAnchor';
 import fromCss from '../utils/component_from_css';
 
 let ContainerDiv = fromCss('div',
-  'width:10%;margin:0;text-align:center;vertical-align:top;display:inline-block;overflow-y:scroll;height:100vh;'),
+    'width:10%;margin:0;text-align:center;vertical-align:top;display:inline-block;overflow-y:scroll;height:100vh;'),
   TopLevelList = fromCss('ul',
     'list-style-type:none;text-transform:uppercase;padding-left:0;font-family:sans-serif;display:block;background-color:cadetblue;'),
   ListItem = fromCss('li', 'padding:8px;'), SubList = fromCss('ul',

@@ -20,7 +20,7 @@
     "react/display-name": "off",
     "indent": ["error", 2],
     "prefer-template":  "error",
-    "max-len": ["error", 160, 2],
+    "max-len": ["error", 300, 2],
     "object-curly-spacing": ["error", "always"],
     "quotes": ["error", "single"],
     "no-extra-boolean-cast": "off",
