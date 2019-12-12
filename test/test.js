@@ -704,6 +704,20 @@ describe('Router', function() {
     });
     done();
   });
+
+  it('path matcher 3', function(done) {
+    let actual = matchThePath('/post/what-up', {
+      path: ['/post/:slug', '/posts/:slug']
+    });
+    expect(actual).to.deep.equal({
+      path: '/post/:slug',
+      url: '/post/what-up',
+      params: {
+        slug: 'what-up'
+      }
+    });
+    done();
+  });
 });
 
 describe('Template parser', function() {
