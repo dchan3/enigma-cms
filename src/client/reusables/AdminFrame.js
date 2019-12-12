@@ -1,3 +1,4 @@
+import React from 'react';
 import fromCss from '../utils/component_from_css';
 
 let AdminFrame = fromCss('div',

@@ -15,6 +15,7 @@
     "mocha": true
   },
   "rules": {
+    "no-unused-vars": ["error", {"varsIgnorePattern": "React"}],
     "react/jsx-key": "off",
     "react/prop-types": "off",
     "react/display-name": "off",
