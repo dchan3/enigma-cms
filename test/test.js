@@ -38,31 +38,33 @@ describe('Reusable UI Components - Generated Form', function() {
 
   it('renders recursively without error', function(done) {
     var parameters = {
-      guestList: {
-        type: '[object]',
-        shape: {
-          firstName: {
-            type: 'text'
-          },
-          lastName: {
-            type: 'text'
-          },
-          age: {
-            type: 'number'
-          },
-          contactInformation: {
-            type: 'object',
-            shape: {
-              phone: {
-                type: 'text'
-              },
-              email: {
-                type: 'text'
+        guestList: {
+          type: '[object]',
+          shape: {
+            firstName: {
+              type: 'text'
+            },
+            lastName: {
+              type: 'text'
+            },
+            age: {
+              type: 'number'
+            },
+            contactInformation: {
+              type: 'object',
+              shape: {
+                phone: {
+                  type: 'text'
+                },
+                email: {
+                  type: 'text'
+                }
               }
             }
           }
-        },
-        value: [{
+        }
+      }, currentValue = {
+        guestList: [{
           firstName: 'John',
           lastName: 'Doe',
           age: 50,
@@ -71,9 +73,9 @@ describe('Reusable UI Components - Generated Form', function() {
             email: 'john@johndoe.net'
           }
         }]
-      }
-    };
+      };
     const wrapper = render(<GeneratedForm params={parameters}
+      currentValue={currentValue}
       title="Event Summary" method="post" formAction="" />);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);

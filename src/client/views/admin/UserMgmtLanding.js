@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame } from
+import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame, ProfileImage } from
   '../../reusables';
 import { default as asyncReqs } from '../../utils/api_request_async';
 
@@ -22,8 +22,7 @@ function UserMgmtLanding() {
       items={users} truncate={true} columns={[
         {
           headerText: 'Picture',
-          display: ({ pictureSrc }) => <div>
-            <img style={{ maxWidth: '100px' }} src={pictureSrc} /></div>
+          display: ({ pictureSrc }) => <div><ProfileImage src={pictureSrc} /></div>
         },
         {
           headerText: 'Username',
