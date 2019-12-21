@@ -4,7 +4,7 @@ import { MainMenu } from '../views/admin';
 import { loggedOutRoutes, backEndRoutes, frontEndRoutes }
   from '../../lib/routes/route_data';
 import { FrontHeader } from '../views/front';
-import { Metamorph } from 'react-metamorph';
+import Fedora from '../reusables/Fedora';
 import { GeneralContextProvider } from '../contexts/GeneralContext';
 import StaticContext from '../contexts/StaticContext';
 import TheRoute from '../the_router/TheRoute';
@@ -44,9 +44,9 @@ let App = () => {
   let { config } = staticContext,
     { description, keywords, siteName, iconUrl } = config;
   return <div>
-    <Metamorph title={siteName || 'My Website'} description={description ||
+    <Fedora title={siteName || 'My Website'} description={description ||
       'Welcome to my website!'} keywords={keywords && keywords.join(',') || ''}
-    image={iconUrl || ''}/>
+    image={iconUrl || ''} />
     <TheSwitch>
       <FrontEndRoute path='*' component={FrontHeader}/>
     </TheSwitch>

@@ -1,8 +1,12 @@
 import React from 'react';
-import { GeneratedForm, StyledDiv, SamePageAnchor } from '../../reusables';
+import { GeneratedForm, StyledDiv, SamePageAnchor, Fedora } from '../../reusables';
+import useStaticContext from '../../hooks/useStaticContext';
 
 function LoginPage() {
-  return [<GeneratedForm title="Sign In" params={{
+  let { config: { siteName } } = useStaticContext(['config']);
+
+  return [<Fedora title={`Sign In | ${siteName}`}
+    description={`Sign into ${siteName}`} />,<GeneratedForm title="Sign In" params={{
     username: { label: 'Username or Email', type: 'text', required: true },
     password: { type: 'password', required: true }
   }} formAction='users/login' redirectUrl='/admin' />,

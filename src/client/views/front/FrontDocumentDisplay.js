@@ -1,6 +1,6 @@
 import React from 'react';
 import TheRedirect from '../../the_router/TheRedirect';
-import { Metamorph } from 'react-metamorph';
+import Fedora from '../../reusables/Fedora';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 import useFrontContext from '../../hooks/useFrontContext.js';
 
@@ -16,7 +16,7 @@ function FrontDocumentDisplay() {
 
   if (dataObj === undefined) return <TheRedirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
-    return [<Metamorph {...dataObj.metadata} />, <div><InnerHtmlRenderer
+    return [<Fedora {...dataObj.metadata} />, <div><InnerHtmlRenderer
       innerHtml={dataObj.rendered} /></div>];
   }
   return null;

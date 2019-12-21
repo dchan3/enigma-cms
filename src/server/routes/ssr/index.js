@@ -7,7 +7,7 @@ import { SiteConfig, DocumentType, SiteTheme } from '../../models';
 import matchThePath from  '../../../lib/utils/match_the_path';
 import TheStaticRouter from '../../../client/the_router/TheStaticRouter';
 import { renderToString } from 'react-dom/server';
-import { Helmet } from 'react-helmet';
+import { HeadContextProvider } from '../../../client/contexts/HeadContext';
 import serialize from 'serialize-javascript';
 import { StaticContextProvider } from '../../../client/contexts/StaticContext';
 
@@ -29,7 +29,7 @@ var htmlTemplate =
       gtag('config', '${gaTrackingId}');
     </script>` : ''}
 ${[
-    title.toString(),meta.toString(), link.toString()
+    title, meta, link
   ].map(str => str.length ? (`    ${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
     <script>
@@ -56,15 +56,26 @@ ${[
         Promise.resolve();
     promise.then(data => {
       if (data) context.dataObj = data;
-      let jsx = (
-          <TheStaticRouter {...{ location }}>
-            <StaticContextProvider initialVals={context}>
-              <App />
-            </StaticContextProvider>,
-          </TheStaticRouter>), markup = renderToString(jsx),
-        helmet = Helmet.renderStatic();
+
+      let title = `<title>${data && data.metadata.title || config.siteName}</title>`;
+
+      let meta = `<meta property="og:title" content="${data && data.metadata.title || config.siteName}" />` +
+        `<meta property="og:description" content="${data && data.metadata.description || config.description}" />`;
+
+      let jsx = (<HeadContextProvider value={{
+        title: data && data.metadata.title || config.siteName,
+        description: data && data.metadata.description || config.description,
+        image: '' }}>
+        <TheStaticRouter {...{ location }}>
+          <StaticContextProvider initialVals={context}>
+            <App />
+          </StaticContextProvider>
+        </TheStaticRouter>
+      </HeadContextProvider>);
+      let markup = renderToString(jsx);
+
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
-      res.end(htmlTemplate(config, helmet, markup, context));
+      res.end(htmlTemplate(config, { title, meta, link: '' }, markup, context));
     }).catch(next);
   };
 
