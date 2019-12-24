@@ -28,8 +28,6 @@
     "passport-local-mongoose": "^5.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-helmet": "^5.2.1",
-    "react-metamorph": "^1.0.0",
     "serialize-javascript": "^2.1.1",
     "sha1": "^1.1.1",
     "typescript": "^3.7.3",

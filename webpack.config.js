@@ -1,5 +1,5 @@
 const path = require('path'), nodeExternals = require('webpack-node-externals'),
-  UglifyJsPlugin = require('uglifyjs-webpack-plugin'),
+  TerserPlugin = require('terser-webpack-plugin'),
   { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'),
   MiniCssExtractPlugin = require('mini-css-extract-plugin'),
   LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
@@ -14,8 +14,8 @@ module.exports = [{
   ] : [cssPlugin, loRep],
   optimization: {
     minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
+      new TerserPlugin({
+        terserOptions: {
           output: {
             comments: false,
           },
@@ -108,8 +108,8 @@ module.exports = [{
     new BundleAnalyzerPlugin()
   ] : [],
   optimization: {
-    minimizer: [new UglifyJsPlugin({
-      uglifyOptions: {
+    minimizer: [new TerserPlugin({
+      terserOptions: {
         output: {
           comments: false,
         },

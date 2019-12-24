@@ -10,30 +10,36 @@ const { Provider } = HeadContext;
 export const HeadContextProvider = (props) => {
   let [state, setState] = useState(props.value || initialState);
 
-  useEffect(function() {
-    document.title = state.title;
-    if (document.querySelector('meta[property="og:title"]') === null) {
+  function setMeta(type, attr, content) {
+    let fullSelector = `meta[${type}="${attr}"]`;
+    if (document.querySelector(fullSelector) === null) {
       let node = document.createElement('meta');
-      node.setAttribute('property', 'og:title');
+      node.setAttribute(type, attr);
       document.querySelector('head').appendChild(node);
     }
-    document.querySelector('meta[property="og:title"]').content = state.title;
+    document.querySelector(fullSelector).content = content;
+  }
+
+  useEffect(function() {
+    setMeta('name', 'twitter:card', 'summary');
+  }, []);
+
+  useEffect(function() {
+    document.title = state.title;
+    setMeta('property', 'og:title', state.title);
+    setMeta('name', 'twitter:title', state.title);
+
   }, [state.title]);
 
   useEffect(function() {
-    if (document.querySelector('meta[property="og:description"]') === null) {
-      let node = document.createElement('meta');
-      node.setAttribute('property', 'og:description');
-      document.querySelector('head').appendChild(node);
-    }
-    document.querySelector('meta[property="og:description"]').content = state.description;
-    if (document.querySelector('meta[property="og:image"]') === null) {
-      let node = document.createElement('meta');
-      node.setAttribute('property', 'og:image');
-      document.querySelector('head').appendChild(node);
-    }
-    document.querySelector('meta[property="og:image"]').content = state.image;
-  }, [state.description, state.image]);
+    setMeta('property', 'og:description', state.description);
+    setMeta('name', 'twitter:description', state.description);
+  }, [state.description]);
+
+  useEffect(function() {
+    setMeta('property', 'og:image', state.image);
+    setMeta('name', 'twitter:image', state.image);
+  }, [state.image]);
 
   return <Provider value={{ state, setState }}>{props.children}</Provider>;
 };

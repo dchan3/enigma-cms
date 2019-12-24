@@ -18,16 +18,16 @@ var htmlTemplate =
   <head>
   ${gaTrackingId ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=${
+  <script async src="https://www.googletagmanager.com/gtag/js?id=${
   gaTrackingId}">
-    </script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+  </script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-      gtag('config', '${gaTrackingId}');
-    </script>` : ''}
+    gtag('config', '${gaTrackingId}');
+  </script>` : ''}
 ${[
     title, meta, link
   ].map(str => str.length ? (`    ${str}`) : '')
@@ -56,16 +56,44 @@ ${[
         Promise.resolve();
     promise.then(data => {
       if (data) context.dataObj = data;
+      let value = {}, title = `<title>${config.siteName}</title>`, meta = '';
 
-      let title = `<title>${data && data.metadata.title || config.siteName}</title>`;
+      let makeMeta = (type, attr, content) => `<meta ${type}="${attr}" content="${content}" />`;
 
-      let meta = `<meta property="og:title" content="${data && data.metadata.title || config.siteName}" />` +
-        `<meta property="og:description" content="${data && data.metadata.description || config.description}" />`;
+      if (data && data.metadata) {
+        title = `<title>${data.metadata.title}</title>`;
 
-      let jsx = (<HeadContextProvider value={{
-        title: data && data.metadata.title || config.siteName,
-        description: data && data.metadata.description || config.description,
-        image: '' }}>
+        meta = makeMeta('property', 'og:title', data.metadata.title) +
+          makeMeta('name', 'twitter:title', data.metadata.title) +
+        makeMeta('property', 'og:description', data.metadata.description) +
+        makeMeta('name', 'twitter:description', data.metadata.description) +
+        (data.metadata.image && (makeMeta('property', 'og:image', data.metadata.image) +
+      makeMeta('name', 'twitter:image', data.metadata.image)) || '');
+
+        value = {
+          title: data.metadata.title,
+          description: data.metadata.description,
+          image: data.metadata.image || config.iconUrl || ''
+        };
+      }
+      else {
+        title = `<title>${config.siteName}</title>`;
+
+        meta = makeMeta('property', 'og:title', config.siteName) +
+          makeMeta('name', 'twitter:title', config.siteName) +
+        makeMeta('property', 'og:description', config.description) +
+        makeMeta('name', 'twitter:description', config.description) +
+        (config.iconUrl && (makeMeta('property', 'og:image', config.iconUrl) +
+      makeMeta('name', 'twitter:image', config.iconUrl)) || '');
+
+        value = {
+          title: config.siteName,
+          description: config.description,
+          image: config.iconUrl || ''
+        };
+      }
+
+      let jsx = (<HeadContextProvider value={value}>
         <TheStaticRouter {...{ location }}>
           <StaticContextProvider initialVals={context}>
             <App />
