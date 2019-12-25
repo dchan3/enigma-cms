@@ -52,7 +52,7 @@ module.exports = [{
         options: {
           babelrc: false,
           comments: false,
-          plugins: [
+          plugins: ['./babel/rightify', './babel/hashify',
             ['./babel/from-css-ify', {
               'toFile': path.resolve(__dirname, 'public/app.style.css') }],
             '@babel/plugin-transform-react-jsx', './babel/unitify-react',
@@ -145,7 +145,7 @@ module.exports = [{
         options: {
           babelrc: false,
           comments: false,
-          plugins: ['./babel/from-css-ify', '@babel/plugin-transform-react-jsx',
+          plugins: ['./babel/rightify', './babel/hashify', './babel/from-css-ify', '@babel/plugin-transform-react-jsx',
             './babel/unitify-react', ]
         }
       },
@@ -156,7 +156,7 @@ module.exports = [{
         options: {
           comments: false,
           plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify', './babel/hashify']
+            ['./babel/rightify']
         }
       },
     ],
