@@ -15,7 +15,7 @@ function PreviewBox() {
     { state, setState } = useContext(CodeEditorContext);
 
   function handlePreviewChange({ target: { innerHTML: value } }) {
-    var newVal = value.replace(/<br>/g, '<br />');
+    var newVal = value.replace(/<(img|br)[^<>]*>/g, (m, p1) => `<${p1} />`);
 
     setState({ value: newVal });
   }
