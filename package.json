@@ -4,7 +4,7 @@
   "scripts": {
     "lint": "eslint .",
     "build": "webpack --progress -w",
-    "test": "mocha --require @babel/register test/test.js",
+    "test": "mocha --require @babel/register --file test/*.js",
     "start": "nodemon server.bundle.js",
     "test-with-coverage": "nyc --silent npm run test && npm run send",
     "send": "nyc report --reporter=lcov --reporter=text && cat ./coverage/lcov.info | codacy-coverage --token $CODACY_PROJECT_TOKEN"

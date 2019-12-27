@@ -6,8 +6,8 @@ let ToolbarIconFrame = fromCss('div', 'min-height:40px;max-height:40px;min-width
   BoldIconSpan = fromCss('span', 'font-weight:900;font-size:18px;'),
   ItalicIconSpan = fromCss('span', 'font-style:italic;font-size:18px;'),
   UnderlineIconSpan = fromCss('span', 'text-decoration:underline;font-size:18px;'),
-  StrikeThroughIconSpan = fromCss('span', 'font-style:strike-through;font-size:18px'),
-  ToolbarWhole = fromCss('ul', 'list-style:none;display:inline-block;'),
+  StrikeThroughIconSpan = fromCss('span', 'font-style:strike-through;font-size:18px;'),
+  ToolbarWhole = fromCss('ul', 'list-style:none;display:inline-block;margin-bottom:0;'),
   ToolbarButton = fromCss('li', 'display:inline-block;');
 
 function ToolbarIcon({ command, component: Component, label }) {
