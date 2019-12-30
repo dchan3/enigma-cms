@@ -7,8 +7,8 @@ const HeadContext = createContext(initialState);
 export default HeadContext;
 
 const { Provider } = HeadContext;
-export const HeadContextProvider = (props) => {
-  let [state, setState] = useState(props.value || initialState);
+export const HeadContextProvider = ({ value, children }) => {
+  let [{ title, description, image }, setState] = useState(value || initialState);
 
   function setMeta(type, attr, content) {
     let fullSelector = `meta[${type}="${attr}"]`;
@@ -25,21 +25,21 @@ export const HeadContextProvider = (props) => {
   }, []);
 
   useEffect(function() {
-    document.title = state.title;
-    setMeta('property', 'og:title', state.title);
-    setMeta('name', 'twitter:title', state.title);
+    document.title = title;
+    setMeta('property', 'og:title', title);
+    setMeta('name', 'twitter:title', title);
 
-  }, [state.title]);
-
-  useEffect(function() {
-    setMeta('property', 'og:description', state.description);
-    setMeta('name', 'twitter:description', state.description);
-  }, [state.description]);
+  }, [title]);
 
   useEffect(function() {
-    setMeta('property', 'og:image', state.image);
-    setMeta('name', 'twitter:image', state.image);
-  }, [state.image]);
+    setMeta('property', 'og:description', description);
+    setMeta('name', 'twitter:description', description);
+  }, [description]);
 
-  return <Provider value={{ state, setState }}>{props.children}</Provider>;
+  useEffect(function() {
+    setMeta('property', 'og:image', image);
+    setMeta('name', 'twitter:image', image);
+  }, [image]);
+
+  return <Provider value={{ state: { title, image, description }, setState }}>{children}</Provider>;
 };

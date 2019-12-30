@@ -170,8 +170,6 @@ module.exports = [{
     alias: {
       'react-dom/server': path.resolve(__dirname, 'node_modules', 'react-dom',
         'cjs', 'react-dom-server.node.production.min.js'),
-      'prop-types': path.resolve(__dirname, 'node_modules', 'prop-types',
-        'prop-types.min.js'),
       'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',
         'history.min.js')
     }

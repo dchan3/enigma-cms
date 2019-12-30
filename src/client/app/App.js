@@ -39,6 +39,8 @@ let LoggedOutRoute = ({ component, ...rest }) => <TheRoute exact {...rest}
       <TheProvider {...{ history, match, component }} />;
   }} />;
 
+let mapRoutes = (Component) => (routeInfo) => <Component {...routeInfo} />;
+
 let App = () => {
   let { staticContext } = useContext(StaticContext);
   let { config } = staticContext,
@@ -51,12 +53,9 @@ let App = () => {
       <FrontEndRoute path='*' component={FrontHeader}/>
     </TheSwitch>
     <TheSwitch>
-      {backEndRoutes.map(({ path, isAdmin, component }) => (
-        <ProtectedRoute {...{ path, isAdmin, component }} />))}
-      {loggedOutRoutes.map(({ path, component }) => (
-        <LoggedOutRoute {...{ path, component }} />))}
-      {frontEndRoutes.map(({ path, component }) => (
-        <FrontEndRoute {...{ path, component }} />))}
+      {backEndRoutes.map(mapRoutes(ProtectedRoute))}
+      {loggedOutRoutes.map(mapRoutes(LoggedOutRoute))}
+      {frontEndRoutes.map(mapRoutes(FrontEndRoute))}
     </TheSwitch>
   </div>;
 };

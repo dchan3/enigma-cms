@@ -104,7 +104,22 @@ export function createHtmlTree(html) {
     }
   for (let c = 0; c < html.length; c++) {
     let peekToken = tokenStack[tokenStack.length - 1] &&
-      tokenStack[tokenStack.length - 1].token || null;
+      tokenStack[tokenStack.length - 1].token || null, tagStartOrName =
+      function(peekToken, name) {
+        if (peekToken === 'tagstart') {
+          tokenStack.push({ token: 'tagname', name });
+          if (html[c + 1] === '/' && html[c + 2] === '>') {
+            c += 2;
+            markSingleTag();
+            onTagEnd();
+          }
+          tempStr = '';
+        }
+        else if (peekToken === 'tagname') {
+          tokenStack.push({ token: 'tagattr', name });
+          tempStr = '';
+        }
+      }
     tempStr += html[c];
     if (tempStr === '<') {
       if (peekToken === 'tagopenend' && html[c + 1] === '/') {
@@ -142,19 +157,7 @@ export function createHtmlTree(html) {
     else if (tempStr.endsWith(' ')) {
       if (tokenStack.length && ['tagstart', 'tagname'].includes(peekToken)) {
         let trimmed = tempStr.trim();
-        if (peekToken === 'tagstart') {
-          tokenStack.push({ token: 'tagname', name: trimmed });
-          if (html[c + 1] === '/' && html[c + 2] === '>') {
-            c += 2;
-            markSingleTag();
-            onTagEnd();
-          }
-          tempStr = '';
-        }
-        else if (peekToken === 'tagname') {
-          tokenStack.push({ token: 'tagattr', name: trimmed });
-          tempStr = '';
-        }
+        tagStartOrName(peekToken, trimmed);
       }
       else if (html[c + 1] && html[c + 1] === '<'){
         let p = makeTextNode(escapeText(tempStr));
@@ -220,19 +223,7 @@ export function createHtmlTree(html) {
       else if (tempStr.length > 1) {
         let trimmed = tempStr.trim();
         if (tokenStack.length && ['tagstart', 'tagname'].includes(peekToken)) {
-          if (peekToken === 'tagstart') {
-            tokenStack.push({ token: 'tagname', name: trimmed });
-            if (html[c + 1] === '/' && html[c + 2] === '>') {
-              c += 2;
-              markSingleTag();
-              onTagEnd();
-            }
-            tempStr = '';
-          }
-          else if (peekToken === 'tagname') {
-            tokenStack.push({ token: 'tagattr', name: trimmed });
-            tempStr = '';
-          }
+          tagStartOrName(peekToken, trimmed);
         }
         else if (html[c + 1] && html[c + 1] === '<'){
           let p = makeTextNode(escapeText(tempStr.replace(/\n$/, ' ')));
