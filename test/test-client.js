@@ -20,8 +20,8 @@ describe('Reusable UI Components - Generated Form', function() {
         type: 'text'
       }
     };
-    const wrapper = render(<GeneratedForm params={parameters}
-      title="Find User" method="post" formAction="" />);
+    const wrapper = render(<GeneratedForm params={parameters} title="Find User"
+      method="post" formAction="" />);
     expect(wrapper.find('h2')).to.have.lengthOf(1);
     expect(wrapper.find('h2').text()).to.equal('Find User');
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
@@ -68,9 +68,8 @@ describe('Reusable UI Components - Generated Form', function() {
           }
         }]
       };
-    const wrapper = render(<GeneratedForm params={parameters}
-      currentValue={currentValue}
-      title="Event Summary" method="post" formAction="" />);
+    const wrapper = render(<GeneratedForm params={parameters} formAction=""
+      currentValue={currentValue} title="Event Summary" method="post" />);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
