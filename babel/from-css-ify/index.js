@@ -1,7 +1,18 @@
 let t = require('@babel/types'), fs = require('fs');
 
 module.exports = function () {
-  let styles = {}, fn = '';
+  let styles = {}, fn = '', funcMaker = function(element, classNameValue) {
+    return t.functionExpression(null,
+      [t.identifier('props')],
+      t.blockStatement([t.returnStatement(t.callExpression(
+        t.identifier('React.createElement'),
+        [t.stringLiteral(element),
+          t.objectExpression([
+            t.spreadElement(t.identifier('props')),
+            t.objectProperty(
+              t.stringLiteral('className'), classNameValue)
+          ]), t.identifier('props.children')]))]));
+  }
 
   return {
     visitor: {
@@ -17,86 +28,43 @@ module.exports = function () {
 
           if (compName.length && element.length && css.length) {
             styles[`${element}.${compName}`] = css;
-            path.replaceWith(t.functionExpression(null, [t.identifier('props')],
-              t.blockStatement([t.returnStatement(t.callExpression(
-                t.identifier('React.createElement'),
-                [t.stringLiteral(element),
-                  t.objectExpression([
-                    t.spreadElement(t.identifier('props')),
-                    t.objectProperty(t.stringLiteral('className'),
-                      t.stringLiteral(compName))
-                  ]), t.identifier('props.children')]))])));
+            path.replaceWith(funcMaker(element, t.stringLiteral(compName)));
           }
           else if (path.node.arguments[1].type === 'ArrowFunctionExpression') {
-            let paramList = {};
+            let paramList = {}, pushToListIfTemplate = function(thaNode) {
+              let attr = thaNode.quasis[0].value.raw,
+                {
+                  test: { name: param },
+                  consequent: { value: ifTrue },
+                  alternate: { value: ifFalse }
+                } = thaNode.expressions[0];
+              styles[`${element}.${compName}.${param}True`] =
+                `${attr}${ifTrue};`;
+              styles[`${element}.${compName}.${param}False`] =
+                `${attr}${ifFalse};`;
+
+              if (!paramList[compName]) paramList[compName] = [];
+              paramList[compName].push({ attr, param });
+            };
             paramList[compName] = [];
 
             if (path.node.arguments[1].body.type === 'BinaryExpression') {
-              if (path.node.arguments[1].body.left.type ===
-                'BinaryExpression') {
-                if (path.node.arguments[1].body.left.left.type ===
-                  'StringLiteral') {
+              if (path.node.arguments[1].body.left.type === 'BinaryExpression') {
+                if (path.node.arguments[1].body.left.left.type === 'StringLiteral') {
                   styles[`${element}.${compName}`] =
                     path.node.arguments[1].body.left.left.value;
 
-                  if (path.node.arguments[1].body.left.right.type ===
-                    'TemplateLiteral') {
-                    let attr = path.node.arguments[1].body.left.right.quasis[0]
-                        .value.raw,
-                      {
-                        test: { name: param },
-                        consequent: { value: ifTrue },
-                        alternate: { value: ifFalse }
-                      } = path.node.arguments[1].body.left.right.expressions[0];
-                    styles[`${element}.${compName}.${param}True`] =
-                      `${attr}${ifTrue};`;
-                    styles[`${element}.${compName}.${param}False`] =
-                      `${attr}${ifFalse};`;
-
-                    if (!paramList[compName]) paramList[compName] = [];
-                    paramList[compName].push({ attr, param });
+                  if (path.node.arguments[1].body.left.right.type === 'TemplateLiteral') {
+                    pushToListIfTemplate(path.node.arguments[1].body.left.right);
                   }
                 }
-
-                if (path.node.arguments[1].body.right.type
-                  === 'TemplateLiteral') {
-                  let attr =
-                    path.node.arguments[1].body.right.quasis[0].value.raw,
-                    {
-                      test: { name: param },
-                      consequent: { value: ifTrue },
-                      alternate: { value: ifFalse }
-                    } = path.node.arguments[1].body.right.expressions[0];
-                  styles[`${element}.${compName}.${param}True`] =
-                    `${attr}${ifTrue};`;
-                  styles[`${element}.${compName}.${param}False`] =
-                    `${attr}${ifFalse};`;
-
-                  if (!paramList[compName]) paramList[compName] = [];
-                  paramList[compName].push({ attr, param });
-                }
               }
-              else if (path.node.arguments[1].body.left.type
-                === 'StringLiteral') {
-                styles[`${element}.${compName}`] =
-                  path.node.arguments[1].body.left.value;
-                if (path.node.arguments[1].body.right.type
-                  === 'TemplateLiteral') {
-                  let attr =
-                    path.node.arguments[1].body.right.quasis[0].value.raw,
-                    {
-                      test: { name: param },
-                      consequent: { value: ifTrue },
-                      alternate: { value: ifFalse }
-                    } = path.node.arguments[1].body.right.expressions[0];
-                  styles[`${element}.${compName}.${param}True`] =
-                    `${attr}${ifTrue};`;
-                  styles[`${element}.${compName}.${param}False`] =
-                    `${attr}${ifFalse};`;
+              else if (path.node.arguments[1].body.left.type === 'StringLiteral') {
+                styles[`${element}.${compName}`] = path.node.arguments[1].body.left.value;
+              }
 
-                  if (!paramList[compName]) paramList[compName] = [];
-                  paramList[compName].push({ attr, param });
-                }
+              if (path.node.arguments[1].body.right.type === 'TemplateLiteral') {
+                pushToListIfTemplate(path.node.arguments[1].body.right);
               }
 
               let daTemplate = paramList[compName].map(function({ param }) {
@@ -114,23 +82,15 @@ module.exports = function () {
                   )
                 });
 
-              path.replaceWith(t.functionExpression(null,
-                [t.identifier('props')],
-                t.blockStatement([t.returnStatement(t.callExpression(
-                  t.identifier('React.createElement'),
-                  [t.stringLiteral(element),
-                    t.objectExpression([
-                      t.spreadElement(t.identifier('props')),
-                      t.objectProperty(
-                        t.stringLiteral('className'),
-                        t.templateLiteral([
-                          t.templateElement(
-                            {
-                              raw: compName,
-                              cooked: compName
-                            }, false
-                          ), ...quazis],
-                        daTemplate))]), t.identifier('props.children')]))])));
+              path.replaceWith(funcMaker(element,
+                t.templateLiteral([
+                  t.templateElement(
+                    {
+                      raw: compName,
+                      cooked: compName
+                    }, false
+                  ), ...quazis],
+                daTemplate)));
             }
           }
         }
