@@ -1,55 +1,16 @@
-import React, {  useState } from 'react';
-import CodeEditor from './CodeEditor';
+import React, { useContext } from 'react';
+import GeneratedFormContext, { GeneratedFormContextProvider } from './GeneratedFormContext';
 import { loget, loset } from '../utils/lofuncs';
 import { default as requests } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
-import fromCss from '../utils/component_from_css';
+import { default as comps, FormContainer, FormHeader, FormErrorMessage,
+  FormBackground, FormDiv, FormSubmit } from './formComps';
 
-let FormBackground = fromCss('form',
-    'background-color:cadetblue;width:45%;margin:auto;text-align:left;'
-  ), FormDiv = fromCss('div',
-    ({ hidden }) => `padding:8px;display:${hidden ? 'none' : 'block'};`,
-    ['hidden']),
-  FormHeader = fromCss('h2', 'text-align:center;font-family:sans-serif;'),
-  FormSubmit = fromCss('input', 'font-family:sans-serif;' +
-  'text-transform:uppercase;margin:8px;border-radius:8px;font-size: 16px;'),
-  FormErrorMessage = fromCss('p', 'font-family:sans-serif;' +
-  'text-transform:uppercase;text-align:center;'), comps = {
-    FormInput: fromCss('input', ({ hidden, isInvalid }) =>
-      ('border-radius:8px;vertical-align:top;height:16px;' +
-      'width:calc(100% - 16px);margin-top:5px;font-family:sans-serif;' +
-      'font-size:16px;padding:5px;' + `display:${hidden ? 'none' :
-        'block'};box-shadow:${isInvalid ?
-        'red 2px 2px' : 'unset'};`), ['hidden', 'isInvalid']),
-    FormLabel: fromCss('label', ({ hidden, isInvalid }) => (
-      'color:white;font-size:16px;padding-right:4px;font-family:sans-serif;' +
-      `text-transform:uppercase;display:${hidden ? 'none' : 'block'};` +
-      `text-shadow:${isInvalid ? 'red 2px 2px' : 'unset'};`),
-    ['hidden', 'isInvalid']), CodeEditor,
-    FormSubmitButton: fromCss('button',
-      'font-size:16px;font-family:sans-serif;text-transform:uppercase;' +
-    'padding:8px;border-radius:8px;margin:8px;'),
-    FormEnumInput: fromCss('select',
-      'font-family:sans-serif;font-size:16px;', ['hidden', 'isInvalid']),
-    FormEnumInputOption: fromCss('option',
-      'font-family:sans-serif;font-size:16px;', ['hidden', 'isInvalid']),
-    FormObjectInputLabel: fromCss('p', ({ hidden }) => `color:white;
-  padding-right:4px;font-family:sans-serif;text-transform:uppercase;margin:8px;
-  font-size:16px;width:calc(100% - 16px);display:${hidden ? 'none' : 'block'};`,
-    ['hidden', 'isInvalid'])
-  };
-
-function GeneratedForm({ params, parentCallback, method, formAction,
-  successCallback, redirectUrl, title, fileContent, currentValue }) {
-  let values = {};
-  if (currentValue) Object.assign(values, currentValue);
-  for (let n in params) {
-    let paramVal = loget(params, n);
-    if (paramVal && paramVal.value) loset(values, n, paramVal.value);
-  }
-  let [state, setState] = useState({
-    values, errorMessage: '', invalidFields: [] });
+function GeneratedFormContents() {
+  let { state, setState, params, parentCallback, method, formAction,
+    successCallback, redirectUrl, title, fileContent
+  } = useContext(GeneratedFormContext);
 
   function readFile(file) {
     let rdr = new FileReader();
@@ -139,7 +100,7 @@ function GeneratedForm({ params, parentCallback, method, formAction,
 
   let selfFuncs = { handleArrayAdd, handleArrayRemove, handleChange };
 
-  return <div style={{ width: '100%' }}>
+  return <FormContainer>
     <FormHeader>{title}</FormHeader>
     {state.errorMessage ?
       <FormErrorMessage>{state.errorMessage}</FormErrorMessage> : null}
@@ -186,7 +147,13 @@ function GeneratedForm({ params, parentCallback, method, formAction,
         })
       } <FormSubmit type="submit" value="Submit" onClick={handleSubmit} />
     </FormBackground>
-  </div>;
+  </FormContainer>;
+}
+
+function GeneratedForm(props) {
+  return <GeneratedFormContextProvider {...props}>
+    <GeneratedFormContents />
+  </GeneratedFormContextProvider>
 }
 
 GeneratedForm.defaultProps =  {

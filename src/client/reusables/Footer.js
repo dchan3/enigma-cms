@@ -1,11 +1,11 @@
 import React from 'react';
 import SamePageAnchor from './SamePageAnchor';
 import fromCss from '../utils/component_from_css';
+import useStaticContext from '../hooks/useStaticContext';
 
 let FooterContainer = fromCss('div',
     'text-align:center;font-family:sans-serif;margin:10px;'), FooterText =
-  fromCss('p', 'margin:0;');
-import useStaticContext from '../hooks/useStaticContext';
+  fromCss('p', 'margin:0px;');
 
 function Footer() {
   let { user } = useStaticContext(['user']);

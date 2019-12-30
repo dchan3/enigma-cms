@@ -6,17 +6,11 @@ Enzyme.configure({ adapter: new Adapter() });
 import { GeneratedForm, CodeEditor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
-import { default as gensig } from '../src/lib/utils/gensig';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
 import { loget, loset } from '../src/client/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
-import { default as createReverseIndex }
-  from '../src/server/utils/create_reverse_index';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
-import matchThePath,
-{ returnPathKeys } from '../src/lib/utils/match_the_path';
-import TemplateParser from '../src/server/utils/template_parser';
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -26,8 +20,8 @@ describe('Reusable UI Components - Generated Form', function() {
         type: 'text'
       }
     };
-    const wrapper = render(<GeneratedForm params={parameters}
-      title="Find User" method="post" formAction="" />);
+    const wrapper = render(<GeneratedForm params={parameters} title="Find User"
+      method="post" formAction="" />);
     expect(wrapper.find('h2')).to.have.lengthOf(1);
     expect(wrapper.find('h2').text()).to.equal('Find User');
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
@@ -38,31 +32,33 @@ describe('Reusable UI Components - Generated Form', function() {
 
   it('renders recursively without error', function(done) {
     var parameters = {
-      guestList: {
-        type: '[object]',
-        shape: {
-          firstName: {
-            type: 'text'
-          },
-          lastName: {
-            type: 'text'
-          },
-          age: {
-            type: 'number'
-          },
-          contactInformation: {
-            type: 'object',
-            shape: {
-              phone: {
-                type: 'text'
-              },
-              email: {
-                type: 'text'
+        guestList: {
+          type: '[object]',
+          shape: {
+            firstName: {
+              type: 'text'
+            },
+            lastName: {
+              type: 'text'
+            },
+            age: {
+              type: 'number'
+            },
+            contactInformation: {
+              type: 'object',
+              shape: {
+                phone: {
+                  type: 'text'
+                },
+                email: {
+                  type: 'text'
+                }
               }
             }
           }
-        },
-        value: [{
+        }
+      }, currentValue = {
+        guestList: [{
           firstName: 'John',
           lastName: 'Doe',
           age: 50,
@@ -71,10 +67,9 @@ describe('Reusable UI Components - Generated Form', function() {
             email: 'john@johndoe.net'
           }
         }]
-      }
-    };
-    const wrapper = render(<GeneratedForm params={parameters}
-      title="Event Summary" method="post" formAction="" />);
+      };
+    const wrapper = render(<GeneratedForm params={parameters} formAction=""
+      currentValue={currentValue} title="Event Summary" method="post" />);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
@@ -108,14 +103,6 @@ describe('Camel Case String Conversion', function() {
   it('three words', function(done) {
     expect(camelcaseConvert('threeLeggedDog'))
       .to.equal('Three Legged Dog');
-    done();
-  });
-});
-
-describe('Signature Generator', function () {
-  it('generates signatures correctly', function (done) {
-    var obj = { a: 5, b: 4 }, regex = /#[\da-f]{6} #[\da-f]{6}/;
-    expect(gensig(obj)).to.match(regex);
     done();
   });
 });
@@ -413,15 +400,6 @@ describe('Num Key to Shape Key function', function() {
   });
 });
 
-describe('Reverse Index function', function() {
-  it ('works as desired', function(done) {
-    var actual = createReverseIndex('Hello World'),
-      expected = { 'Hello': [0], 'World': [6] };
-    expect(actual).to.deep.equal(expected);
-    done();
-  });
-});
-
 describe('HTML to JSX', function() {
   it ('HTML Tree - Single Tag', function(done) {
     var actual = createHtmlTree('<img src="trolol.jpeg" />'),
@@ -647,6 +625,81 @@ describe('HTML to JSX', function() {
     expect(actual).to.deep.equal(expected);
     done();
   });
+
+  it('real-world scenario', function(done) {
+    let html =
+      `<p>It's not an uncommon peeve for a single-page app in React to make browsers refresh upon clicking on a link, regardless of where it leads. This happens often in WordPress themes made with React, and many MERN stack apps as well. Contrary to many of the answers I've come across, there seems to be a workaround, assuming you're using React Router and the React Hooks API.</p>
+<p>My solution involves <b>preventing the default behavior of anchor tags</b> and <b>pushing to the browser history object</b>, therefore <b>access to the history object needs to be provided to the tags.</b> My initial solution involved prop-drilling, the most common solution to which is to <b>use a context</b>, as follows:</p>
+<h3>GeneralContext.js</h3>
+<div style="background-color: #e0e0e0;"><code>import React, { useState, createContext } from 'react';</code><br /><code>let initialState = ({ history }) =&gt; ({ history });</code><br /><code>const GeneralContext = createContext(initialState);</code><br /><br /><code>export default GeneralContext;</code><br /><br /><code>const { Provider } = GeneralContext;</code><code>export const GeneralContextProvider = ({ children, initialVals }) =&gt; {</code><br /><code>  let iState = Object.assign({}, initialState(initialVals)), [generalState, setGeneralState] = useState(iState);</code><br /><code>  return &lt;Provider value={{ generalState, setGeneralState }}&gt;{children}&lt;/Provider&gt;;<br />};</code></div><p>Wherever in the code you specify your routes, create a functional component that returns a <code>Route</code> with the <code>GeneralContextProvider</code> and the component nested inside, then refactor accordingly:</p><div style="background-color: #e0e0e0;"><code>import React from 'react';import { Route } from 'react-router-dom';</code><br /><br /><code>let GeneralRoute = ({ component: Component, ...rest }) =&gt; &lt;Route  exact {...rest} component={({ history }) =&gt; (</code><br /><code>&lt;GeneralContextProvider initialVals={{ history, match }}&gt;</code><br /><code>      &lt;Component /&gt;&lt;/GeneralContextProvider&gt;</code><br /><code>)} /&gt;;</code></div><p>As you can see, the <code>GeneralContext</code> is provided the browser history object by means of the <code>Route</code> component attribute. Anything in this attribute will be passed an object with a <code>location</code>, <code>history</code>, and <code>match</code> attributes.</p><p>Now, for the actual link itself (don't mind the use of <code>styled-components</code>):</p><div style="background-color: #e0e0e0;"><code>import React, { useContext } from 'react';</code><br /><code>import GeneralContext from './GeneralContext';</code><br /><br /><code>function SamePageAnchor({  children, href, target, className, id, style, component}) {</code><br /><code>  let { generalState, setGeneralState } = useContext(GeneralContext),    Anchor = component || styled.a\`\`, AlreadyOn = styled.span\`    text-decoration: underline;    font-weight: 900;↵    margin: 0;↵    width: fit-content;   height: fit-content;  \`;</code><br /><br /><code>  function handleClick(event) {</code><br /><code>    if (href.startsWith('/')) {</code><br /><code>      let newState = Object.assign({}, generalState);</code><br /><code>      event.preventDefault();</code><br /><code>      newState.history.push(href);</code><br /><code>      setGeneralState(newState);</code><br /><code>    }</code><br /><code>  }</code><br /><br /><code>  return (generalState.history &&generalState.history.location.pathname !== href) ?    &lt;Anchor {...{ href, target, className, id, style     }} onClick={handleClick}&gt;{children}&lt;/Anchor&gt; :    &lt;AlreadyOn&gt;{children}&lt;/AlreadyOn&gt;;<br />}<br /><br />export default SamePageAnchor;</code></div><p>Now you should be good to go. Make sure that wherever in your code used, it has access to a <code>GeneralContext</code>.</p>`,
+      actual = htmlToJsx(html),
+      expected = [
+        <p>{
+          'It\'s not an uncommon peeve for a single-page app in React to make browsers refresh upon clicking on a link, regardless of where it leads. This happens often in WordPress themes made with React, and many MERN stack apps as well. Contrary to many of the answers I\'ve come across, there seems to be a workaround, assuming you\'re using React Router and the React Hooks API.'}</p>,
+        <p>My solution involves <b>
+          preventing the default behavior of anchor tags
+        </b> and <b>pushing to the browser history object</b>, therefore <b>access to the history object needs to be provided to the tags.</b> My initial solution involved prop-drilling, the most common solution to which is to <b>use a context</b>, as follows:</p>,
+        <h3>GeneralContext.js</h3>,
+        <div style={{ backgroundColor: '#e0e0e0' }}>
+          <code>{'import React, { useState, createContext } from \'react\';'}</code>
+          <br />
+          <code>{'let initialState = ({ history }) => ({ history });'}</code>
+          <br />
+          <code>const GeneralContext = createContext(initialState);</code>
+          <br /><br />
+          <code>export default GeneralContext;</code>
+          <br /><br />
+          <code>{'const { Provider } = GeneralContext;'}</code>
+          <code>{'export const GeneralContextProvider = ({ children, initialVals }) => {'}</code>
+          <br />
+          <code>{'  let iState = Object.assign({}, initialState(initialVals)), [generalState, setGeneralState] = useState(iState);'}</code>
+          <br />
+          <code>{'  return <Provider value={{ generalState, setGeneralState }}>{children}</Provider>;'}<br />
+            {'};'}</code>
+        </div>,
+        <p>Wherever in the code you specify your routes, create a functional component that returns a <code>Route</code> with the <code>GeneralContextProvider</code> and the component nested inside, then refactor accordingly:</p>,
+        <div style={{ backgroundColor: '#e0e0e0' }}>
+          <code>{'import React from \'react\';import { Route } from \'react-router-dom\';'}</code>
+          <br /><br />
+          <code>{'let GeneralRoute = ({ component: Component, ...rest }) => <Route  exact {...rest} component={({ history }) => ('}</code><br />
+          <code>{'<GeneralContextProvider initialVals={{ history, match }}>'}</code>
+          <br />
+          <code>{'      <Component /></GeneralContextProvider>'}</code>
+          <br />
+          <code>{')} />;'}</code>
+        </div>,
+        <p>As you can see, the <code>GeneralContext</code> is provided the browser history object by means of the <code>Route</code> component attribute. Anything in this attribute will be passed an object with a <code>location</code>, <code>history</code>, and <code>match</code> attributes.</p>,
+        <p>Now, for the actual link itself (don't mind the use of <code>styled-components</code>):</p>,
+        <div style={{ backgroundColor: '#e0e0e0' }}>
+          <code>{'import React, { useContext } from \'react\';'}</code>
+          <br />
+          <code>import GeneralContext from './GeneralContext';</code>
+          <br /><br />
+          <code>{'function SamePageAnchor({  children, href, target, className, id, style, component}) {'}</code>
+          <br />
+          <code>{'  let { generalState, setGeneralState } = useContext(GeneralContext),    Anchor = component || styled.a``, AlreadyOn = styled.span`    text-decoration: underline;    font-weight: 900;↵    margin: 0;↵    width: fit-content;   height: fit-content;  `;'}</code>
+          <br /><br /><code>{'  function handleClick(event) {'}</code>
+          <br />
+          <code>{'    if (href.startsWith(\'/\')) {'}</code>
+          <br />
+          <code>{'      let newState = Object.assign({}, generalState);'}</code>
+          <br />
+          <code>{'      event.preventDefault();'}</code>
+          <br />
+          <code>{'      newState.history.push(href);'}</code>
+          <br />
+          <code>{'      setGeneralState(newState);'}</code>
+          <br />
+          <code>{'    }'}</code><br />
+          <code>{'  }'}</code><br /><br />
+          <code>{'  return (generalState.history &&generalState.history.location.pathname !== href) ?    <Anchor {...{ href, target, className, id, style     }} onClick={handleClick}>{children}</Anchor> :    <AlreadyOn>{children}</AlreadyOn>;'}
+            <br />{'}'}<br /><br />
+            {'export default SamePageAnchor;'}</code>
+        </div>,
+        <p>Now you should be good to go. Make sure that wherever in your code used, it has access to a <code>GeneralContext</code>.</p>];
+    expect(actual).to.deep.equal(expected);
+    done();
+  })
 });
 
 describe('From CSS', function() {
@@ -682,56 +735,6 @@ describe('From CSS', function() {
 
     expect(actual.find('p').text()).to.equal(expected.find('p').text());
     expect(actual.get(0).style).to.deep.equal(expected.get(0).style);
-    done();
-  });
-});
-
-describe('Router', function() {
-  it('path matcher 1', function(done) {
-    let actual = returnPathKeys('/profile/:id');
-    expect(actual.keys).to.deep.equal(['id']);
-    done();
-  });
-
-  it('path matcher 2', function(done) {
-    let actual = matchThePath('/profile/bruh', { path: '/profile/:id' });
-    expect(actual).to.deep.equal({
-      path: '/profile/:id',
-      url: '/profile/bruh',
-      params: {
-        id: 'bruh'
-      }
-    });
-    done();
-  });
-});
-
-describe('Template parser', function() {
-  it('basics', function(done) {
-    let actual = TemplateParser.compile('<h1>{{message}}</h1>')({
-        message: 'Hello World!'
-      }), expected = '<h1>Hello World!</h1>';
-    expect(actual).to.equal(expected);
-    done();
-  });
-
-  it('helper functions', function(done) {
-    TemplateParser.registerHelper('reverse', function(str) {
-      return str.split('').reverse().join('');
-    });
-    let actual = TemplateParser.compile('<h1>{{reverse message}}</h1>')({
-        message: 'Anna'
-      }), expected = '<h1>annA</h1>';
-    expect(actual).to.equal(expected);
-    done();
-  });
-
-  it('each tag', function(done) {
-    let actual = TemplateParser.compile(
-        '<ul>{{#each genres}}<li>{{this}}</li>{{/each}}</ul>')({
-        genres: ['EDM', 'Rock', 'Misc']
-      }), expected = '<ul><li>EDM</li><li>Rock</li><li>Misc</li></ul>';
-    expect(actual).to.equal(expected);
     done();
   });
 });

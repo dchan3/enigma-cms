@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { TextHeader, SamePageAnchor, TablePaginator } from '../../reusables';
+import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame, PreviewImage } from
+  '../../reusables';
 import useStaticContext from '../../hooks/useStaticContext';
 import { default as asyncReqs } from '../../utils/api_request_async';
 import { default as syncReqs } from '../../utils/api_request_sync';
+
 function FileMgmtLanding() {
   let { files } = useStaticContext(['files']);
 
@@ -29,10 +31,10 @@ function FileMgmtLanding() {
 
   let { files: stateFiles } = state;
 
-  return [
-    <TextHeader>Manage Files</TextHeader>,
-    <SamePageAnchor href='/admin/upload-file'>Upload File</SamePageAnchor>,
-    stateFiles.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
+  return <AdminFrame>
+    <TextHeader>Manage Files</TextHeader>
+    <SamePageAnchor href='/admin/upload-file'>Upload File</SamePageAnchor>
+    {stateFiles.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
       items={stateFiles} truncate={true} columns={[
         {
           headerText: 'File Name',
@@ -46,8 +48,7 @@ function FileMgmtLanding() {
           headerText: 'Preview',
           display: ({ fileType, fileName }) => {
             if (fileType === 'image')
-              return <img style={{ height: '100px', width: 'auto' }}
-                src={`/uploads/${fileType}/${fileName}`} />;
+              return <PreviewImage src={`/uploads/${fileType}/${fileName}`} />;
             else if (fileType === 'audio')
               return <audio controls>
                 <source src={`/uploads/${fileType}/${fileName}`} />
@@ -70,8 +71,8 @@ function FileMgmtLanding() {
           headerText: 'Date Created',
           display: ({ createdDate }) => <p>{createdDate.toString()}</p>
         }
-      ]} /> : null
-  ];
+      ]} /> : null}
+  </AdminFrame>;
 }
 
 export default FileMgmtLanding;

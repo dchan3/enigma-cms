@@ -5,7 +5,7 @@ let crypto = require('crypto'),
   cap = str => str.replace(/^[a-z]/, match => match.toUpperCase()),
   renameToHash = (path, key, capit) => {
     let thing = path.node[key];
-    if (thing) {
+    if (thing && thing.type === 'Identifier') {
       let { name } = thing, hashed = hashifyName(name);
       path.scope.rename(name, capit ? cap(hashed) : hashed);
     }

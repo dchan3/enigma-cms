@@ -1,7 +1,7 @@
 import React from 'react';
-import { GeneratedForm } from '../../reusables';
+import { GeneratedForm, AdminFrame } from '../../reusables';
 
-export default () => <GeneratedForm title='Upload File' params={{
+export default () => <AdminFrame><GeneratedForm title='Upload File' params={{
   fileToUpload: { type: 'file' },
   fileContent: { type: 'string', hidden: true },
   fileType: {
@@ -11,4 +11,5 @@ export default () => <GeneratedForm title='Upload File' params={{
       text: 'Audio', value: 'audio' }, {
       text: 'Video', value: 'video' }, {
       text: 'Other', value: 'other' }],
-  } }} formAction='files/upload_file' redirectUrl="/admin/file-mgmt" />;
+  } }} formAction='files/upload_file' redirectUrl="/admin/file-mgmt" />
+</AdminFrame>;

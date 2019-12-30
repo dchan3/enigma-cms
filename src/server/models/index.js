@@ -6,4 +6,5 @@ export { default as Privilege } from './Privilege';
 export { default as ReverseIndex } from './ReverseIndex';
 export { default as Role } from './Role';
 export { default as SiteConfig } from './SiteConfig';
+export { default as SiteTheme } from './SiteTheme';
 export { default as User } from './User';

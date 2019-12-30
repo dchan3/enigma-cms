@@ -29,14 +29,19 @@ async function getType2(docTypeId) {
 }
 
 async function getRenderedDocumentByTypeAndSlug(type, slug) {
-  let { docTypeId } = await DocumentType.findOne({
-      $or: [
-        { docTypeName: type },
-        { docTypeNamePlural: type }]
-    }),
+  let docType = await DocumentType.findOne({
+    $or: [
+      { docTypeName: type },
+      { docTypeNamePlural: type }]
+  });
+  if (!docType) return {};
+  let { docTypeId } = docType,
     { templateBody } = await DocumentDisplayTemplate.findOne({ docTypeId }),
-    { creatorId, content, createdAt, editedAt } =
-      await Document.findOne({ docTypeId, slug }),
+    doc =
+      await Document.findOne({ docTypeId, slug });
+
+  if (!doc) return {};
+  let { creatorId, content, createdAt, editedAt } = doc,
     authorInfo = await User.findOne({ userId: creatorId })
       .select({ password: 0, _id: 0 }),
     metadata = await documentMetadata(content),
@@ -54,9 +59,12 @@ async function getRenderedDocumentByTypeAndSlug(type, slug) {
 }
 
 async function getRenderedDocumentsByTypeName(docTypeNamePlural) {
-  let { docTypeId } = await DocumentType.findOne({
-      docTypeNamePlural
-    }), { categoryTemplateBody } =
+  let docType = await DocumentType.findOne({
+    docTypeNamePlural
+  });
+
+  if (!docType) return {};
+  let { docTypeId } = docType, { categoryTemplateBody } =
     await DocumentDisplayTemplate.findOne({ docTypeId }),
     docs = await Document.find({ docTypeId, draft: false }).sort({
       createdAt: -1 }),
@@ -87,7 +95,7 @@ async function getTemplate(docTypeId) {
   return {
     categoryTemplateBody: template ? template.categoryTemplateBody : '',
     templateBody: template ? template.templateBody : '',
-    docType: docType
+    docType
   };
 }
 

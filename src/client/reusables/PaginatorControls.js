@@ -37,18 +37,13 @@ function truncatePageList(
     .concat(currentPage + quarter < numberOfPages ? [null, numberOfPages] : []);
 }
 
-const PaginatorContainer = fromCss(
-    'div', 'clear:both;width:100%;margin:0 auto;'),
-  PaginatorButton = fromCss('li', ({ isActive, activeTabColor }) =>
-    ('text-align:center;border:thin grey solid;padding:5px;width:35px;' +
-  'height:35px;display:inline-block;font-size:1.15em;' +
-  `${isActive ? `background-color:${activeTabColor};color: white;` : ''}`), [
-    'isActive', 'activeTabColor'
-  ]), PaginatorList = fromCss('ul',
-    'list-style:none;padding-left:0;display:inline;', [
-      'isActive', 'activeTabColor']),
-  PaginatorNumber = fromCss('a', 'color:inherit;font-size:inherit;', [
-    'isActive', 'activeTabColor']);
+const PaginatorContainer = fromCss('div',
+    'clear:both;width:100%;margin:0px auto;'), PaginatorButton = fromCss('li',
+    ({ isActive }) => 'text-align:center;border:thin grey solid;padding:5px;width:35px;height:35px;display:inline-block;font-size:1.15em;color:white;' +
+  `background-color:${isActive ? 'black' : 'cadetblue'};`,
+    ['isActive', 'activeTabColor']),
+  PaginatorList = fromCss('ul', 'list-style:none;padding-left:0px;display:inline;'),
+  PaginatorNumber = fromCss('a', 'color:inherit;font-size:inherit;');
 export default function PaginatorControls() {
   let { state, dispatch } = useContext(PaginatorControlContext),
     { maxPages, maxPageTabs, currentPage, truncate, activeTabColor, pages } =

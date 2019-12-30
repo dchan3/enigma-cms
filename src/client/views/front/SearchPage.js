@@ -12,7 +12,7 @@ function SearchPage() {
   }, [query])
 
   function handleChange(evt) {
-    setQuery(evt.target.value)
+    setQuery(evt.target.value);
   }
 
   return <div>

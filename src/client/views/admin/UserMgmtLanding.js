@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { TextHeader, SamePageAnchor, TablePaginator } from '../../reusables';
+import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame, ProfileImage } from
+  '../../reusables';
 import { default as asyncReqs } from '../../utils/api_request_async';
 
 function UserMgmtLanding() {
@@ -15,14 +16,13 @@ function UserMgmtLanding() {
 
   let { users } = state;
 
-  return [
-    <TextHeader>Manage Users</TextHeader>,
-    users.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
+  return <AdminFrame>
+    <TextHeader>Manage Users</TextHeader>
+    {users.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
       items={users} truncate={true} columns={[
         {
           headerText: 'Picture',
-          display: ({ pictureSrc }) => <div>
-            <img style={{ maxWidth: '100px' }} src={pictureSrc} /></div>
+          display: ({ pictureSrc }) => <div><ProfileImage src={pictureSrc} /></div>
         },
         {
           headerText: 'Username',
@@ -38,8 +38,8 @@ function UserMgmtLanding() {
           headerText: 'Display name',
           display: ({ displayName }) => <p>{displayName}</p>
         }
-      ]} /> : null
-  ];
+      ]} /> : null}
+  </AdminFrame>;
 }
 
 export default UserMgmtLanding;

@@ -4,8 +4,7 @@ import { MainMenu } from '../views/admin';
 import { loggedOutRoutes, backEndRoutes, frontEndRoutes }
   from '../../lib/routes/route_data';
 import { FrontHeader } from '../views/front';
-import { Footer } from '../reusables';
-import { Metamorph } from 'react-metamorph';
+import Fedora from '../reusables/Fedora';
 import { GeneralContextProvider } from '../contexts/GeneralContext';
 import StaticContext from '../contexts/StaticContext';
 import TheRoute from '../the_router/TheRoute';
@@ -19,13 +18,14 @@ let FrontEndRoute = ({ component, ...rest }) => <TheRoute {...rest}
   component={({ history, match }) => (
     <TheProvider {...{ history, match, component }} />)} />;
 
-let ProtectedRoute = ({ component, isAdmin, ...rest
+let ProtectedRoute = ({ component: Component, isAdmin, ...rest
 }) => <TheRoute {...rest} component={({ history, match }) => {
   let { staticContext } = useContext(StaticContext);
 
   if (staticContext.user) {
     if ((isAdmin && staticContext.user.roleId === 0) || !isAdmin) {
-      return <TheProvider {...{ history, match, component }} />;
+      return <TheProvider {...{ history, match, component: () => [
+        <MainMenu />, <Component />] }} />;
     }
     else return <TheRedirect to="/admin" />;
   }
@@ -39,37 +39,23 @@ let LoggedOutRoute = ({ component, ...rest }) => <TheRoute exact {...rest}
       <TheProvider {...{ history, match, component }} />;
   }} />;
 
-let UniversalRoute =
-  ({ component, ...rest }) => <TheRoute exact {...rest} component={({ history,
-    match }) => <TheProvider {...{ history, match, component }} />} />;
+let mapRoutes = (Component) => (routeInfo) => <Component {...routeInfo} />;
 
 let App = () => {
   let { staticContext } = useContext(StaticContext);
   let { config } = staticContext,
     { description, keywords, siteName, iconUrl } = config;
   return <div>
-    <Metamorph title={siteName || 'My Website'} description={description ||
+    <Fedora title={siteName || 'My Website'} description={description ||
       'Welcome to my website!'} keywords={keywords && keywords.join(',') || ''}
-    image={iconUrl || ''}/>
+    image={iconUrl || ''} />
     <TheSwitch>
-      <ProtectedRoute path='/admin' component={MainMenu} isAdmin={false} />
       <FrontEndRoute path='*' component={FrontHeader}/>
     </TheSwitch>
     <TheSwitch>
-      {backEndRoutes.map(({ path, isAdmin, component: Component }) => (
-        <ProtectedRoute {...{ path, isAdmin, component: () => <div style={{
-          width: '90%',
-          display: 'inline-block',
-          height: '100vh',
-          overflowY: 'scroll'
-        }}><Component /></div> }} />))}
-      {loggedOutRoutes.map(({ path, component }) => (
-        <LoggedOutRoute {...{ path, component }} />))}
-      {frontEndRoutes.map(({ path, component }) => (
-        <FrontEndRoute {...{ path, component }} />))}
-    </TheSwitch>
-    <TheSwitch>
-      <UniversalRoute path="*" component={Footer} />
+      {backEndRoutes.map(mapRoutes(ProtectedRoute))}
+      {loggedOutRoutes.map(mapRoutes(LoggedOutRoute))}
+      {frontEndRoutes.map(mapRoutes(FrontEndRoute))}
     </TheSwitch>
   </div>;
 };

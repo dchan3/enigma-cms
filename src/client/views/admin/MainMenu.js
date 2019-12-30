@@ -7,7 +7,8 @@ function MainMenu() {
 
   let isAdmin = user && user.roleId === 0 || false, menuNodes = [];
   if (isAdmin) menuNodes.push({ url: '/admin/edit-config',
-    text: 'Site Settings' }, { url: '/admin/register-type',
+    text: 'Site Settings' }, { url: '/admin/edit-theme',
+    text: 'Theme Settings' }, { url: '/admin/register-type',
     text: 'Register Document Type' }, {
     url: '', text: 'Edit Document Type...', childNodes:
       types.map(({ docTypeId, docTypeName }) => {
