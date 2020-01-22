@@ -14,8 +14,9 @@ import { StaticContextProvider } from '../../../client/contexts/StaticContext';
 var htmlTemplate =
   ({ language, gaTrackingId },
     { title, meta, link }, dom, data) => `<!DOCTYPE html>
-<html lang="${language}">
+<html lang="${language}" amp>
   <head>
+  <meta charset="utf-8" />
   ${gaTrackingId ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=${
@@ -35,6 +36,74 @@ ${[
     <script>
       window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
     </script>
+    ${data.dataObj.createdAt ? `<script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "${data.dataObj.metadata.title}",
+        "description": "${data.dataObj.metadata.description}",
+        "image": "${data.dataObj.metadata.image}",
+        "datePublished": "${data.dataObj.createdAt.toISOString()}",
+        "inLanguage": "${language}"
+      }
+    </script>` : ''}
+    <style amp-boilerplate>
+      body {
+        -webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+        -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+        -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+        animation: -amp-start 8s steps(1, end) 0s 1 normal both;
+      }
+      @-webkit-keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+      @-moz-keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+      @-ms-keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+      @-o-keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+      @keyframes -amp-start {
+        from {
+          visibility: hidden;
+        }
+        to {
+          visibility: visible;
+        }
+      }
+    </style>
+    <noscript><style amp-boilerplate>
+        body {
+          -webkit-animation: none;
+          -moz-animation: none;
+          -ms-animation: none;
+          animation: none;
+        }
+      </style></noscript>
+    <script async src="https://cdn.ampproject.org/v0.js"></script
     <script src='/app.bundle.js' defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="/app.style.css" />
@@ -63,7 +132,9 @@ ${[
       if (data && data.metadata) {
         title = `<title>${data.metadata.title}</title>`;
 
-        meta = makeMeta('property', 'og:title', data.metadata.title) +
+        meta = makeMeta('name', 'description', data.metadata.description) +
+          makeMeta('name', 'keywords', data.metadata.keywords) +
+          makeMeta('property', 'og:title', data.metadata.title) +
           makeMeta('name', 'twitter:title', data.metadata.title) +
         makeMeta('property', 'og:description', data.metadata.description) +
         makeMeta('name', 'twitter:description', data.metadata.description) +
@@ -79,7 +150,10 @@ ${[
       else {
         title = `<title>${config.siteName}</title>`;
 
-        meta = makeMeta('property', 'og:title', config.siteName) +
+        meta = makeMeta('name', 'description', config.description) +
+          makeMeta('name', 'keywords', config.keywords) +
+          makeMeta('name', 'news_keywords', config.keywords) +
+          makeMeta('property', 'og:title', config.siteName) +
           makeMeta('name', 'twitter:title', config.siteName) +
         makeMeta('property', 'og:description', config.description) +
         makeMeta('name', 'twitter:description', config.description) +
@@ -103,7 +177,7 @@ ${[
       let markup = renderToString(jsx);
 
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
-      res.end(htmlTemplate(config, { title, meta, link: '' }, markup, context));
+      res.end(htmlTemplate(config, { title, meta, link: `<link rel="canonical" href="${location}" />` }, markup, context));
     }).catch(next);
   };
 

@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-const initialState = { title: '', description: '', image: '' };
+const initialState = { title: '', description: '', image: '', keywords: '' };
 
 const HeadContext = createContext(initialState);
 
@@ -8,7 +8,7 @@ export default HeadContext;
 
 const { Provider } = HeadContext;
 export const HeadContextProvider = ({ value, children }) => {
-  let [{ title, description, image }, setState] = useState(value || initialState);
+  let [{ title, description, image, keywords }, setState] = useState(value || initialState);
 
   function setMeta(type, attr, content) {
     let fullSelector = `meta[${type}="${attr}"]`;
@@ -32,6 +32,7 @@ export const HeadContextProvider = ({ value, children }) => {
   }, [title]);
 
   useEffect(function() {
+    setMeta('name', 'description', description);
     setMeta('property', 'og:description', description);
     setMeta('name', 'twitter:description', description);
   }, [description]);
@@ -41,5 +42,10 @@ export const HeadContextProvider = ({ value, children }) => {
     setMeta('name', 'twitter:image', image);
   }, [image]);
 
-  return <Provider value={{ state: { title, image, description }, setState }}>{children}</Provider>;
+  useEffect(function() {
+    setMeta('name', 'keywords', keywords);
+    setMeta('name', 'news_keywords', keywords);
+  });
+
+  return <Provider value={{ state: { title, image, description, keywords }, setState }}>{children}</Provider>;
 };

@@ -15,19 +15,20 @@ export const documentMetadata = async function (content) {
   attrs.description += attrs.description.length ? attrs.description : description;
   attrs.image += attrs.image.length ? attrs.image : (iconUrl || '');
   attrs.keywords = typeof attrs.keywords === 'string' ?
-    [attrs.keywords, ...keywords] : [attrs.keywords, ...keywords];
+    [attrs.keywords, ...keywords].join(',') : (attrs.keywords.length ? [...attrs.keywords, ...keywords] : [keywords]).join(',');
 
   return attrs;
 }
 
 export const categoryMetadata = async function (docTypeNamePlural) {
-  let { siteName, iconUrl } = await SiteConfig.findOne({});
+  let { siteName, iconUrl, keywords } = await SiteConfig.findOne({});
   return {
     title: `${docTypeNamePlural.charAt(0).toUpperCase() +
       docTypeNamePlural.slice(1)} | ${siteName}`,
     description: `${docTypeNamePlural.charAt(0).toUpperCase() +
       docTypeNamePlural.slice(1)} on ${siteName}`,
-    image: iconUrl || ''
+    image: iconUrl || '',
+    keywords: keywords.join(',')
   }
 }
 
