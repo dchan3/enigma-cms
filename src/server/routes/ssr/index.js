@@ -19,6 +19,8 @@ var htmlTemplate =
 <html lang="${language}" amp>
   <head>
   <meta charset="utf-8" />
+  <script async src="https://cdn.ampproject.org/v0.js"></script>
+  <script async custom-element="amp-script" src="https://cdn.ampproject.org/v0/amp-script-0.1.js"></script>
   ${gaTrackingId ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->
   <amp-script async src="https://www.googletagmanager.com/gtag/js?id=${
@@ -108,7 +110,6 @@ ${[
     <style amp-custom>
       ${fs.readFileSync(path.resolve(__dirname, 'assets/app.style.css'))}
     </style>
-    <script async src="https://cdn.ampproject.org/v0.js"></script
     <amp-script src='/app.bundle.js' defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
