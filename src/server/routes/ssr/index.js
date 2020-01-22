@@ -1,5 +1,7 @@
 import React from 'react';
 import App from '../../../client/app/App';
+import fs from 'fs';
+import path from 'path';
 import { frontEndRoutes, backEndRoutes, loggedOutRoutes } from
   '../../../lib/routes/route_data';
 import { default as fetchers } from './fetch_data';
@@ -19,23 +21,23 @@ var htmlTemplate =
   <meta charset="utf-8" />
   ${gaTrackingId ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=${
+  <amp-script async src="https://www.googletagmanager.com/gtag/js?id=${
   gaTrackingId}">
-  </script>
-  <script>
+  </amp-script>
+  <amp-script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
 
     gtag('config', '${gaTrackingId}');
-  </script>` : ''}
+  </amp-script>` : ''}
 ${[
     title, meta, link
   ].map(str => str.length ? (`    ${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
-    <script>
+    <amp-script>
       window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
-    </script>
+    </amp-script>
     ${data.dataObj.createdAt ? `<script type="application/ld+json">
       {
         "@context": "http://schema.org",
@@ -103,11 +105,12 @@ ${[
           animation: none;
         }
       </style></noscript>
+    <style amp-custom>
+      ${fs.readFileSync(path.resolve(__dirname, 'assets/app.style.css'))}
+    </style>
     <script async src="https://cdn.ampproject.org/v0.js"></script
-    <script src='/app.bundle.js' defer></script>
+    <amp-script src='/app.bundle.js' defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="/app.style.css" />
-    <link rel="stylesheet" type="text/css" href="/style.css" />
   </head>
   <body>
     <div id="root">${dom}</div>

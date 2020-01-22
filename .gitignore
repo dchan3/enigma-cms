@@ -4,6 +4,7 @@ build/
 dist/
 public/app*.js*
 public/app*.css*
+assets/app*.css*
 public/uploads/
 public/profile-pix/
 public/site-icon/

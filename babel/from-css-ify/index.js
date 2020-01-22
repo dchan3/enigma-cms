@@ -102,7 +102,10 @@ module.exports = function () {
         for (let selector in styles) {
           fileStr += `${selector}{${styles[selector]}}`;
         }
-        fs.writeFileSync(fn, fileStr);
+        if (typeof fn === 'string') fs.writeFileSync(fn, fileStr);
+        else fn.forEach(function(f) {
+          fs.writeFileSync(f, fileStr);
+        });
       }
     }
   };

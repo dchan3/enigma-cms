@@ -54,7 +54,8 @@ module.exports = [{
           comments: false,
           plugins: ['./babel/rightify', './babel/hashify',
             ['./babel/from-css-ify', {
-              'toFile': path.resolve(__dirname, 'public/app.style.css') }],
+              'toFile': [path.resolve(__dirname, 'public/app.style.css'),
+                path.resolve(__dirname, 'assets/app.style.css')] }],
             '@babel/plugin-transform-react-jsx', './babel/unitify-react',
           ]
         }
