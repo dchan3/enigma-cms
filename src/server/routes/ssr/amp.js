@@ -35,7 +35,9 @@ var htmlTemplate =
         "description": "${data.dataObj.metadata.description}",
         "image": "${data.dataObj.metadata.image}",
         "datePublished": "${data.dataObj.createdAt.toISOString()}",
-        "inLanguage": "${language}"
+        "inLanguage": "${language}",
+        "author": ${data.dataObj.authorInfo.displayName},
+        "publisher": ${data.dataObj.authorInfo.displayName}
       }
     </script>` : ''}
     <style amp-boilerplate>

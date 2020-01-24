@@ -1,7 +1,7 @@
 import { h } from 'preact'; /** @jsx h **/
 import { expect } from 'chai';
 import Enzyme, { render } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
+import Adapter from 'enzyme-adapter-preact-pure';
 Enzyme.configure({ adapter: new Adapter() });
 import { GeneratedForm, CodeEditor } from '../src/client/reusables';
 import { default as camelcaseConvert }
