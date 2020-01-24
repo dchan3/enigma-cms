@@ -1,11 +1,11 @@
-import React from 'react';
-import { GeneratedForm, AdminFrame } from '../../reusables';
+import { h } from 'preact'; /** @jsx h **/
+import { GeneratedForm } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext';
 
 function ConfigPage() {
   let { config } = useStaticContext(['config']);
 
-  return <AdminFrame><GeneratedForm title="Site Settings" currentValue={config}
+  return <GeneratedForm title="Site Settings" currentValue={config}
     params={{
       siteName: { type: 'text' },
       iconFile: { type: 'file' },
@@ -41,7 +41,7 @@ function ConfigPage() {
           { text: 'English', value: 'en' },
           { text: '中文', value: 'zh' }]
       }
-    }} redirectUrl='/admin' formAction='site_config/update' /></AdminFrame>
+    }} redirectUrl='/admin' formAction='site_config/update' />
 }
 
 export default ConfigPage;

@@ -25,17 +25,23 @@ export default function matchThePath(pathname, { path, exact }) {
       params: {}
     };
   }
-  if (path === '/' && pathname === '/') {
-    return {
-      path: '/',
-      url: pathname,
-      params: {}
-    };
+  if (path === '/') {
+    if (pathname === '/') {
+      return {
+        path: '/',
+        url: pathname,
+        params: {}
+      }
+    }
+    else if (pathname.length) {
+      return null;
+    }
   }
-  if (path === '/' && pathname.length) {
+  let { regex, keys } = returnPathKeys(path);
+  if (!keys.length && pathname !== path) {
     return null;
   }
-  let { regex, keys } = returnPathKeys(path), params = {},
+  let params = {},
     res = pathname.match(regex);
 
   if (!res) return null;

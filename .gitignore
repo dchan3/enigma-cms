@@ -3,6 +3,7 @@ build/
 .idea/
 dist/
 public/app*.js*
+public/dashboard*.js*
 public/app*.css*
 assets/app*.css*
 public/uploads/

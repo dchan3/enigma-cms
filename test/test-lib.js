@@ -43,4 +43,12 @@ describe('Router', function() {
     });
     done();
   });
+
+  it('path matcher 4', function(done) {
+    let actual = matchThePath('/admin/configbruh', {
+      path: '/admin/config'
+    });
+    expect(actual).to.equal(null);
+    done();
+  });
 });

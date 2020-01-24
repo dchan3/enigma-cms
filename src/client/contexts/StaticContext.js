@@ -1,4 +1,7 @@
-import React, { createContext, useState } from 'react';
+import { h, createContext } from 'preact';
+import { useState } from 'preact/hooks';
+
+/** @jsx h **/
 
 let initialState = staticContext => staticContext;
 const StaticContext = createContext(initialState);

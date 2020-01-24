@@ -9,7 +9,7 @@ const cssPlugin = new MiniCssExtractPlugin({
 
 module.exports = [{
   plugins: process.env.ANALYZER ? [
-    new BundleAnalyzerPlugin(),
+    new BundleAnalyzerPlugin({ analyzerPort: 9001 }),
     cssPlugin, loRep
   ] : [cssPlugin, loRep],
   optimization: {
@@ -29,7 +29,8 @@ module.exports = [{
   },
   mode: process.env.DEV_MODE ? 'development' : 'production',
   entry: {
-    app: './src/client/app/index.js'
+    app: './src/client/app/index.js',
+    dashboard: './src/client/dashboard/index.js'
   },
   target: 'web',
   module: {
@@ -42,7 +43,7 @@ module.exports = [{
           babelrc: true,
           comments: false,
           plugins: process.env.DEV_MODE ? ['./babel/unitify-react'] :
-            ['./babel/rightify', './babel/hashify', './babel/unitify-react']
+            ['./babel/rightify', './babel/hashify', './babel/unitify-react', './babel/unconcatify']
         }
       },
       {
@@ -97,8 +98,6 @@ module.exports = [{
   },
   resolve: {
     alias: {
-      'react-dom/server': path.resolve(__dirname, 'node_modules', 'react-dom',
-        'cjs', 'react-dom-server.browser.production.min.js'),
       'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',
         'history.min.js')
     }
@@ -106,7 +105,7 @@ module.exports = [{
   devtool: 'source-map'
 }, {
   plugins: process.env.ANALYZER ? [
-    new BundleAnalyzerPlugin()
+    new BundleAnalyzerPlugin({ analyzerPort: 9002 })
   ] : [],
   optimization: {
     minimizer: [new TerserPlugin({

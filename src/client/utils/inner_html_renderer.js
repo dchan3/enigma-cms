@@ -1,4 +1,4 @@
-import { SamePageAnchor } from '../reusables';
+import { SamePageAnchor } from '../reusables/front_exports';
 import { default as parse } from './html_to_jsx';
 
 function InnerHtmlRenderer({ innerHtml }) {

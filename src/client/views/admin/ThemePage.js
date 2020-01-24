@@ -1,11 +1,11 @@
-import React from 'react';
-import { GeneratedForm, AdminFrame } from '../../reusables';
+import { h } from 'preact' /** @jsx h **/
+import { GeneratedForm } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext';
 
 function ThemePage() {
   let { theme } = useStaticContext(['theme']);
 
-  return <AdminFrame><GeneratedForm title="Site Settings" currentValue={theme ||
+  return <GeneratedForm title="Site Settings" currentValue={theme ||
   {
     header: '',
     menuBar: '',
@@ -17,7 +17,7 @@ function ThemePage() {
     menuBar: { type: 'text', grammar: 'css' },
     menuLink: { type: 'text', grammar: 'css' },
     overall: { type: 'text', grammar: 'css' },
-  }} redirectUrl='/admin' formAction='site_theme/update' /></AdminFrame>
+  }} redirectUrl='/admin' formAction='site_theme/update' />;
 }
 
 export default ThemePage;

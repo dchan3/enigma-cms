@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame, PreviewImage } from
-  '../../reusables';
+import { h } from 'preact'; /** @jsx h **/
+import { useEffect, useState } from 'preact/hooks';
+import { TextHeader, SamePageAnchor, TablePaginator, PreviewImage } from
+  '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext';
-import { default as asyncReqs } from '../../utils/api_request_async';
+import { getRequest } from '../../utils/api_request_async';
 import { default as syncReqs } from '../../utils/api_request_sync';
 
 function FileMgmtLanding() {
@@ -23,7 +24,7 @@ function FileMgmtLanding() {
       setState({ files });
     }
     else {
-      asyncReqs.getRequest('files/get', (files) => {
+      getRequest('files/get', (files) => {
         setState({ files });
       });
     }
@@ -31,10 +32,10 @@ function FileMgmtLanding() {
 
   let { files: stateFiles } = state;
 
-  return <AdminFrame>
-    <TextHeader>Manage Files</TextHeader>
-    <SamePageAnchor href='/admin/upload-file'>Upload File</SamePageAnchor>
-    {stateFiles.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
+  return [
+    <TextHeader>Manage Files</TextHeader>,
+    <SamePageAnchor href='/admin/upload-file'>Upload File</SamePageAnchor>,
+    stateFiles.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
       items={stateFiles} truncate={true} columns={[
         {
           headerText: 'File Name',
@@ -47,17 +48,18 @@ function FileMgmtLanding() {
         {
           headerText: 'Preview',
           display: ({ fileType, fileName }) => {
+            let url = `/uploads/${fileType}/${fileName}`;
             if (fileType === 'image')
-              return <PreviewImage src={`/uploads/${fileType}/${fileName}`} />;
+              return <PreviewImage src={url} />;
             else if (fileType === 'audio')
               return <audio controls>
-                <source src={`/uploads/${fileType}/${fileName}`} />
+                <source src={url} />
               </audio>;
             else if (fileType === 'video')
               return <video controls>
-                <source src={`/uploads/${fileType}/${fileName}`} />
+                <source src={url} />
               </video>;
-            return <a href= {`/uploads/${fileType}/${fileName}`}>
+            return <a href= {url}>
               Download</a>;
           }
         },
@@ -71,8 +73,7 @@ function FileMgmtLanding() {
           headerText: 'Date Created',
           display: ({ createdDate }) => <p>{createdDate.toString()}</p>
         }
-      ]} /> : null}
-  </AdminFrame>;
+      ]} /> : null];
 }
 
 export default FileMgmtLanding;

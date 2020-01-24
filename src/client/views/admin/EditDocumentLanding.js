@@ -1,7 +1,7 @@
-import React from 'react';
-import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame } from
-  '../../reusables';
-import TheRedirect from '../../the_router/TheRedirect';
+import { h } from 'preact'; /** @jsx h **/
+import { TextHeader, SamePageAnchor, TablePaginator } from
+  '../../reusables/back_exports';
+import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 import { default as syncReqs } from '../../utils/api_request_sync';
 import fromCss from '../../utils/component_from_css';
@@ -29,34 +29,34 @@ function EditDocumentLanding() {
 
     if (docType && documents && documents.length) {
       let { docTypeName, docTypeNamePlural, attributes } = docType;
-      return <AdminFrame><TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
-        <TablePaginator perPage={10} activeTabColor="cadetblue"
-          items={documents} truncate={true} columns={[attributes.map(({
-            attrName }) => ({
-            headerText: attrName,
-            display: ({ content }) => (
-              <TableText>{content[attrName]}</TableText>)
-          })),
-          {
-            headerText: 'Draft',
-            display: ({ draft }) => <p>{draft ? 'Yes' : 'No'}</p>
-          },
-          {
-            headerText: 'Edit',
-            display: ({ docNodeId }) =>
-              <SamePageAnchor href={`/admin/edit-document/${docNodeId}`}>Edit
-              </SamePageAnchor>
-          }, {
-            headerText: 'Delete',
-            display: ({ docTypeId, _id }) =>
-              <button onClick={() => handleDeleteClick()(
-                `documents/delete_document/${docTypeId}/${_id}`
-              )}>Delete</button>
-          }, {
-            headerText: 'View Live',
-            display: ({ slug }) => <SamePageAnchor href={
-              `/${docTypeNamePlural}/${slug}`}>View Live</SamePageAnchor>
-          }].flat()} /></AdminFrame>;
+      return <TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
+      <TablePaginator perPage={10} activeTabColor="cadetblue"
+        items={documents} truncate={true} columns={[attributes.map(({
+          attrName }) => ({
+          headerText: attrName,
+          display: ({ content }) => (
+            <TableText>{content[attrName]}</TableText>)
+        })),
+        {
+          headerText: 'Draft',
+          display: ({ draft }) => <p>{draft ? 'Yes' : 'No'}</p>
+        },
+        {
+          headerText: 'Edit',
+          display: ({ docNodeId }) =>
+            <SamePageAnchor href={`/admin/edit-document/${docNodeId}`}>Edit
+            </SamePageAnchor>
+        }, {
+          headerText: 'Delete',
+          display: ({ docTypeId, _id }) =>
+            <button onClick={() => handleDeleteClick()(
+              `documents/delete_document/${docTypeId}/${_id}`
+            )}>Delete</button>
+        }, {
+          headerText: 'View Live',
+          display: ({ slug }) => <SamePageAnchor href={
+            `/${docTypeNamePlural}/${slug}`}>View Live</SamePageAnchor>
+        }].flat()} />;
     }
   }
   return null;

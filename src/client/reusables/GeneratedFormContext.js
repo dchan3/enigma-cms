@@ -1,4 +1,5 @@
-import React, { useState, createContext } from 'react';
+import { h, createContext } from 'preact'; /** @jsx h **/
+import { useState } from 'preact/hooks';
 
 const GeneratedFormContext = createContext();
 

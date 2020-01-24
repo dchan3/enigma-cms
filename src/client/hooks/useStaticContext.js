@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext } from 'preact/hooks';
 import StaticContext from '../contexts/StaticContext.js';
 
 export default function useStaticContext(keys) {

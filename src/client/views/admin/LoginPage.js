@@ -1,5 +1,5 @@
-import React from 'react';
-import { GeneratedForm, StyledDiv, SamePageAnchor, Fedora } from '../../reusables';
+import { h } from 'preact'; /** @jsx h **/
+import { GeneratedForm, StyledDiv, SamePageAnchor, Fedora } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext';
 
 function LoginPage() {

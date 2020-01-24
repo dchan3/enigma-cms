@@ -1,4 +1,4 @@
-import React from 'react';
+import { createElement } from 'preact'; /** @jsx h **/
 import fromCss from '../utils/component_from_css';
 import CodeEditor from './CodeEditor';
 

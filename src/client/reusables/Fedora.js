@@ -1,5 +1,8 @@
-import React, { useContext, useEffect } from 'react';
+import { h } from 'preact';
+import { useContext, useEffect } from 'preact/hooks';
 import HeadContext, { HeadContextProvider } from '../contexts/HeadContext';
+
+/** @jsx h **/
 
 function Fedora(props) {
   let { state, setState } = useContext(HeadContext);

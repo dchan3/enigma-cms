@@ -61,20 +61,18 @@ const genInputComponent =
         hidden: paramSpec.hidden || false,
       };
 
+    attributes = { ...paramSpec, ...attributes };
+
+    if (paramSpec.maximum) {
+      if (theType.match(/text/)) {
+        delete attributes.maximum;
+        attributes.maxLength = paramSpec.maximum;
+      }
+    }
+
     if (!theType.match(/enum/)) {
       attributes.type = theType.match(/[a-z]+/)[0];
       attributes.noValidate = true;
-    }
-
-    if (paramSpec.grammar) {
-      attributes.grammar = paramSpec.grammar;
-    }
-    if (paramSpec.maximum) {
-      if (theType.match(/text/)) attributes.maxLength = paramSpec.maximum;
-      else attributes.maximum = paramSpec.maximum
-    }
-    if (paramSpec.minimum) {
-      attributes.minimum = paramSpec.minimum;
     }
 
     let retval = {

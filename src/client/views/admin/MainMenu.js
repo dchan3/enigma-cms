@@ -1,5 +1,5 @@
-import React from 'react';
-import { DropdownMenu } from '../../reusables';
+import { h } from 'preact'; /** @jsx h **/
+import { DropdownMenu } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext.js';
 
 function MainMenu() {

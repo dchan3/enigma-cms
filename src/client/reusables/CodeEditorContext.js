@@ -1,4 +1,7 @@
-import React, { useState, createContext, useReducer } from 'react';
+import { h, createContext } from 'preact';
+import { useState, useReducer } from 'preact/hooks';
+
+/** @jsx h **/
 
 const CodeEditorContext = createContext();
 

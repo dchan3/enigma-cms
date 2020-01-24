@@ -1,5 +1,6 @@
-import React, { createContext, useReducer } from 'react';
-import { renderToString } from 'react-dom/server';
+import { h, createContext } from 'preact'; /** @jsx h **/
+import renderToString from 'preact-render-to-string';
+import { useReducer } from 'preact/hooks';
 
 const strQuery = (str, query) => query.split(' ').reduce(
   (acc, cur) => acc && !!str.match(new RegExp(cur, 'i')), true);

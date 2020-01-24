@@ -1,4 +1,7 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { h, createContext } from 'preact';
+import { useState, useEffect } from 'preact/hooks';
+
+/** @jsx h **/
 
 const initialState = { title: '', description: '', image: '', keywords: '' };
 
@@ -8,7 +11,7 @@ export default HeadContext;
 
 const { Provider } = HeadContext;
 export const HeadContextProvider = ({ value, children }) => {
-  let [{ title, description, image, keywords }, setState] = useState(value || initialState);
+  let [state, setState] = useState(value || initialState);
 
   function setMeta(type, attr, content) {
     let fullSelector = `meta[${type}="${attr}"]`;
@@ -20,26 +23,29 @@ export const HeadContextProvider = ({ value, children }) => {
     document.querySelector(fullSelector).content = content;
   }
 
+  function bulkUpdate(str) {
+    setMeta('property', `og:${str}`, state[str]);
+    setMeta('name', `twitter:${str}`, state[str]);
+  }
+
   useEffect(function() {
     setMeta('name', 'twitter:card', 'summary');
   }, []);
 
+  let { title, image, description, keywords } = state;
+
   useEffect(function() {
     document.title = title;
-    setMeta('property', 'og:title', title);
-    setMeta('name', 'twitter:title', title);
-
+    bulkUpdate('title');
   }, [title]);
 
   useEffect(function() {
     setMeta('name', 'description', description);
-    setMeta('property', 'og:description', description);
-    setMeta('name', 'twitter:description', description);
+    bulkUpdate('description');
   }, [description]);
 
   useEffect(function() {
-    setMeta('property', 'og:image', image);
-    setMeta('name', 'twitter:image', image);
+    bulkUpdate('image');
   }, [image]);
 
   useEffect(function() {
@@ -47,5 +53,5 @@ export const HeadContextProvider = ({ value, children }) => {
     setMeta('name', 'news_keywords', keywords);
   });
 
-  return <Provider value={{ state: { title, image, description, keywords }, setState }}>{children}</Provider>;
+  return <Provider value={{ state, setState }}>{children}</Provider>;
 };

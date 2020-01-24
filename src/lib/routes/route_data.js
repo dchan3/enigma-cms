@@ -1,60 +1,10 @@
-import React from 'react';
-import { LoginPage, FrontCategoryDisplay, FrontDocumentDisplay,
-  FrontProfileDisplay, NotFound, SearchPage } from '../../client/views/front';
-import { SignupPage, ConfigPage, EditDocumentLanding, EditDocumentPage,
+import { h } from 'preact'; /** @jsx h **/
+import { ConfigPage, EditDocumentLanding, EditDocumentPage,
   EditDisplayTemplate, ProfileEditPage, ChangePasswordPage, FileMgmtLanding,
   UploadFilePage, EditDocType, UserMgmtLanding, AdminLanding, ThemePage }
   from '../../client/views/admin';
 
-export const frontEndRoutes = [
-  {
-    path: '/profile/:username',
-    exact: true,
-    component: FrontProfileDisplay
-  },
-  {
-    path: '/:docType/:docNode',
-    exact: true,
-    component: FrontDocumentDisplay,
-  },
-  {
-    path: '/not-found',
-    exact: true,
-    component: NotFound
-  },
-  {
-    path: '/search',
-    exact: true,
-    component: SearchPage
-  },
-  {
-    path: '/:docType',
-    exact: true,
-    component: FrontCategoryDisplay
-  }, {
-    path: '/',
-    exact: true,
-    component: () => <div />
-  }, {
-    path: '*',
-    exact: true,
-    component: NotFound
-  }];
-
-export const loggedOutRoutes = [
-  {
-    path: '/login',
-    exact: true,
-    component: LoginPage,
-  },
-  {
-    path: '/signup',
-    exact: true,
-    component: SignupPage,
-  },
-];
-
-export const backEndRoutes = [
+export default [
   {
     path: '/admin/new/:docTypeId',
     exact: true,

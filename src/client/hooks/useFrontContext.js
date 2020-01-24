@@ -1,39 +1,35 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'preact/hooks';
 import useStaticContext from './useStaticContext';
-import useGeneralContext from './useGeneralContext';
-import requests from '../utils/api_request_async';
+import useTheRouterContext from './useTheRouterContext';
+import { getRequest } from '../utils/api_request_async';
 import { loget } from '../utils/lofuncs';
 
 export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
   initial }) {
-  let { generalState } = useGeneralContext(),
-    { match: { params } } = generalState,
-    { dataObj } = useStaticContext(['dataObj']), initState = {
-      dataObj
-    };
+  let { match: { params } } = useTheRouterContext(),
+    { dataObj } = useStaticContext(['dataObj']);
 
   if (dataObj) {
     let d = 0;
-    while (d < dataParams.length && initState.dataObj) {
+    while (d < dataParams.length && dataObj) {
       var dt = loget(dataObj, dataParams[d]), ut =
           loget(params, urlParams[d]);
       if ((dt ===  null || dt === undefined) ||
-          (ut === null || ut === undefined) ||
-          (dt !== null && dt !== undefined) && (ut !== null && ut !== undefined)
+          (ut === null || ut === undefined) || (dt && ut)
         && dt.toString() !== ut.toString()) {
-        initState.dataObj = null;
+        dataObj = null;
       }
       else d++;
     }
   }
-  else { initState.dataObj = null; }
+  else { dataObj = null; }
 
-  let [state, setState] = useState(initState);
+  let [state, setState] = useState({ dataObj });
 
   useEffect(function() {
     if (!state.dataObj) {
       if (apiUrl(params || {}).length) {
-        requests.getRequest(apiUrl(params || {}), function(dataObj) {
+        getRequest(apiUrl(params || {}), function(dataObj) {
           if (cb) cb(dataObj, setState, params || {});
           else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
             undefined });

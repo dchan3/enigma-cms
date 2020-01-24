@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import { h, createElement } from 'preact'; /** @jsx h **/
+import { useContext } from 'preact/hooks';
 import PaginatorControls from './PaginatorControls';
 import PaginatorControlContext, {
   PaginatorControlProvider } from './PaginatorControlContext';

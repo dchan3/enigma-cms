@@ -6,11 +6,12 @@ import { default as LoginStrategy } from './passport/login';
 import mongoose from 'mongoose';
 import {
   userRoutes, configRoutes, documentRoutes, fileRoutes, searchRoutes,
-  themeRoutes 
+  themeRoutes
 } from './routes/api';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
+import { default as ampRoutes } from './routes/ssr/amp';
 import { createProxyServer } from 'http-proxy';
 import path from 'path';
 
@@ -101,6 +102,9 @@ app.get('/style.css', (req, res) => {
   });
 });
 app.use('/', express.static(path.join(__dirname, '/public')));
-app.get('/*', ssrRoutes);
+app.get('/*', function(req, res, next) {
+  if (req.query.amp) return ampRoutes(req, res, next);
+  return ssrRoutes(req, res, next);
+});
 
 app.listen(port);

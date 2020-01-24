@@ -1,16 +1,17 @@
-import React, { cloneElement, isValidElement, useContext } from 'react';
-import TheRouterContext from '../contexts/TheRouterContext';
+import { cloneElement, isValidElement } from 'preact'; /** @jsx h **/
+import React from 'preact/compat';
+import useTheRouterContext from '../hooks/useTheRouterContext';
 import matchThePath from '../../lib/utils/match_the_path';
 
 export default function TheSwitch(props) {
-  let context = useContext(TheRouterContext);
+  let context = useTheRouterContext();
 
   let location = props.location || context.location;
   let { basename } = context;
 
   let element, match;
 
-  React.Children.forEach(props.children, (child) => {
+  React.Children.forEach(props.children.length ? props.children : [props.children], (child) => {
     if (match == null && isValidElement(child)) {
       element = child;
 

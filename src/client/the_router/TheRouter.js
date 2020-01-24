@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { h } from 'preact'; /** @jsx h **/
+import { useState, useEffect } from 'preact/hooks';
 import { TheRouteContextProvider } from '../contexts/TheRouterContext';
 
 export default function TheRouter({

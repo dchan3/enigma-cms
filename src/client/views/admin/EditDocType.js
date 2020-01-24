@@ -1,6 +1,6 @@
-import React from 'react';
-import { GeneratedForm, AdminFrame } from '../../reusables';
-import TheRedirect from '../../the_router/TheRedirect';
+import { h } from 'preact'; /** @jsx h **/
+import { GeneratedForm } from '../../reusables/back_exports';
+import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 
 let EditDocType = () => {
@@ -51,7 +51,7 @@ let EditDocType = () => {
   else if (dataObj === null) return null;
   else {
     let { docType } = dataObj || {};
-    return <AdminFrame><GeneratedForm currentValue={docType}
+    return <GeneratedForm currentValue={docType}
       title="Edit Document Type" params={{
         docTypeName: {
           label: 'Document Type Name',
@@ -123,7 +123,7 @@ let EditDocType = () => {
         } }} parentCallback={updateParams} redirectUrl='/admin'
       formAction={`documents/${(docType && docType.docTypeId) ?
         `update_type/${docType.docTypeId}`
-        : 'register_type'}`} /></AdminFrame>;
+        : 'register_type'}`} />;
   }
 };
 

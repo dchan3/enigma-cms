@@ -1,4 +1,4 @@
-import React from 'react';
+import { h, createElement } from 'preact'; /** @jsx h **/
 import SamePageAnchor from './SamePageAnchor';
 import fromCss from '../utils/component_from_css';
 

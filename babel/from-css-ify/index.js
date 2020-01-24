@@ -5,7 +5,7 @@ module.exports = function () {
     return t.functionExpression(null,
       [t.identifier('props')],
       t.blockStatement([t.returnStatement(t.callExpression(
-        t.identifier('React.createElement'),
+        t.identifier('createElement'),
         [t.stringLiteral(element),
           t.objectExpression([
             t.spreadElement(t.identifier('props')),
