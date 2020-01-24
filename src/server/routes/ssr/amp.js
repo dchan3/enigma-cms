@@ -37,7 +37,14 @@ var htmlTemplate =
         "datePublished": "${data.dataObj.createdAt.toISOString()}",
         "inLanguage": "${language}",
         "author": "${data.dataObj.authorInfo.displayName}",
-        "publisher": "${data.dataObj.authorInfo.displayName}"
+        "publisher": {
+          "@type": "Organization",
+          "name": "${data.dataObj.authorInfo.displayName}",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "${process.env.HOST && `https://${process.env.HOST}` || 'http://localhost:8080'}/favicon.ico"
+          }
+        }
       }
     </script>` : ''}
     <style amp-boilerplate>
