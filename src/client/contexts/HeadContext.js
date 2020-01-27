@@ -11,7 +11,7 @@ export default HeadContext;
 
 const { Provider } = HeadContext;
 export const HeadContextProvider = ({ value, children }) => {
-  let [state, setState] = useState(value || initialState);
+  let [{ title, image, description, keywords }, setState] = useState(value || initialState);
 
   function setMeta(type, attr, content) {
     let fullSelector = `meta[${type}="${attr}"]`;
@@ -23,35 +23,35 @@ export const HeadContextProvider = ({ value, children }) => {
     document.querySelector(fullSelector).content = content;
   }
 
-  function bulkUpdate(str) {
-    setMeta('property', `og:${str}`, state[str]);
-    setMeta('name', `twitter:${str}`, state[str]);
+  function bulkUpdate(str, val) {
+    setMeta('property', `og:${str}`, val);
+    setMeta('name', `twitter:${str}`, val);
   }
 
   useEffect(function() {
     setMeta('name', 'twitter:card', 'summary');
   }, []);
 
-  let { title, image, description, keywords } = state;
-
   useEffect(function() {
     document.title = title;
-    bulkUpdate('title');
+    bulkUpdate('title', title);
   }, [title]);
 
   useEffect(function() {
     setMeta('name', 'description', description);
-    bulkUpdate('description');
+    bulkUpdate('description', description);
   }, [description]);
 
   useEffect(function() {
-    bulkUpdate('image');
+    bulkUpdate('image', image);
   }, [image]);
 
   useEffect(function() {
     setMeta('name', 'keywords', keywords);
     setMeta('name', 'news_keywords', keywords);
-  });
+  }, [keywords]);
 
-  return <Provider value={{ state, setState }}>{children}</Provider>;
+  return <Provider value={{ state: {
+    title, image, description, keywords
+  }, setState }}>{children}</Provider>;
 };
