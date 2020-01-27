@@ -27,17 +27,15 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
   let [state, setState] = useState({ dataObj });
 
   useEffect(function() {
-    if (!state.dataObj) {
-      if (apiUrl(params || {}).length) {
-        getRequest(apiUrl(params || {}), function(dataObj) {
-          if (cb) cb(dataObj, setState, params || {});
-          else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
-            undefined });
-        });
-      }
-      else if (initial) setState(initial);
+    if (apiUrl(params || {}).length) {
+      getRequest(apiUrl(params || {}), function(dataObj) {
+        if (cb) cb(dataObj, setState, params || {});
+        else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
+          undefined });
+      });
     }
-  }, []);
+    else if (initial) setState(initial);
+  }, [params]);
 
   return { state, setState, apiUrl: apiUrl(params) };
 }

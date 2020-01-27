@@ -1,15 +1,21 @@
 import { h } from 'preact'; /** @jsx h **/
+import { useEffect, useState } from 'preact/hooks';
 import { TheRedirect } from '../../the_router';
 import { Fedora } from '../../reusables/front_exports';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 import useFrontContext from '../../hooks/useFrontContext';
+import useTheRouterContext from '../../hooks/useTheRouterContext';
 
 function FrontDisplay({ dataParams, urlParams, apiUrl }) {
   let { state: { dataObj } } = useFrontContext({
-    dataParams,
-    urlParams,
-    apiUrl
-  });
+      dataParams,
+      urlParams,
+      apiUrl
+    }), { match: { params } } = useTheRouterContext(), [,setP] = useState(params);
+
+  useEffect(function() {
+    setP(params);
+  }, [params]);
 
   if (dataObj === undefined) return <TheRedirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
