@@ -84,12 +84,15 @@ app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
   var docTypes = await DocumentType.find({}).select({ docTypeNamePlural: 1,
       docTypeId: 1 }), documents = await Document.find({ draft: false }).sort({
       docType: 1, createdAt: -1 }).select({ slug: 1, docTypeId: 1, _id: -1 }),
-    docTypeMap = {}, slugs = [`${protocol}://${host}/`];
+    docTypeMap = {}, slugs = [`${protocol}://${host}/`, `${protocol}://${host}/?amp=true`];
   docTypes.forEach(({ docTypeNamePlural, docTypeId }) => {
-    slugs.push(`${protocol}://${host}/${docTypeNamePlural}`);
+    slugs.push(`${protocol}://${host}/${docTypeNamePlural}`,
+      `${protocol}://${host}/${docTypeNamePlural}?amp=true`);
     docTypeMap[docTypeId] = docTypeNamePlural; });
   slugs.push(...documents.map(({ docTypeId, slug }) =>
     `${protocol}://${host}/${docTypeMap[docTypeId]}/${slug}`));
+  slugs.push(...documents.map(({ docTypeId, slug }) =>
+    `${protocol}://${host}/${docTypeMap[docTypeId]}/${slug}?amp=true`));
   slugs.sort();
   res.header('Content-Type', 'text/plain');
   res.send(slugs.join('\n'));
