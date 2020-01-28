@@ -1,8 +1,8 @@
 import { h } from 'preact'; /** @jsx h **/
 import { expect } from 'chai';
-import Enzyme, { render } from 'enzyme';
+import Enzyme, { render, mount, shallow } from 'enzyme';
 import Adapter from 'enzyme-adapter-preact-pure';
-Enzyme.configure({ adapter: new Adapter() });
+Enzyme.configure({ adapter: new Adapter });
 import { GeneratedForm, CodeEditor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
@@ -11,6 +11,14 @@ import { loget, loset, objMap } from '../src/client/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
+
+const { JSDOM } = require('jsdom');
+
+const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
+const { window } = jsdom;
+
+global.window = window;
+global.document = window.document;
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -84,7 +92,7 @@ describe('Reusable UI Components - Code Editor', function() {
   it('renders correctly with existing value', function(done) {
     const wrapper = render(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
-    expect(wrapper.find('textarea').text()).to.equal('<h1>Hello World!</h1>');
+    expect(wrapper.find('textarea')).to.exist;
     done();
   });
 });
@@ -642,58 +650,58 @@ describe('HTML to JSX', function() {
         <h3>GeneralContext.js</h3>,
         <div style={{ backgroundColor: '#e0e0e0' }}>
           <code>{'import React, { useState, createContext } from \'react\';'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'let initialState = ({ history }) => ({ history });'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>const GeneralContext = createContext(initialState);</code>
-          <br /><br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
           <code>export default GeneralContext;</code>
-          <br /><br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
           <code>{'const { Provider } = GeneralContext;'}</code>
           <code>{'export const GeneralContextProvider = ({ children, initialVals }) => {'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'  let iState = Object.assign({}, initialState(initialVals)), [generalState, setGeneralState] = useState(iState);'}</code>
-          <br />
-          <code>{'  return <Provider value={{ generalState, setGeneralState }}>{children}</Provider>;'}<br />
+          <br key={undefined} ref={undefined} />
+          <code>{'  return <Provider value={{ generalState, setGeneralState }}>{children}</Provider>;'}<br key={undefined} ref={undefined} />
             {'};'}</code>
         </div>,
         <p>Wherever in the code you specify your routes, create a functional component that returns a <code>Route</code> with the <code>GeneralContextProvider</code> and the component nested inside, then refactor accordingly:</p>,
         <div style={{ backgroundColor: '#e0e0e0' }}>
           <code>{'import React from \'react\';import { Route } from \'react-router-dom\';'}</code>
-          <br /><br />
-          <code>{'let GeneralRoute = ({ component: Component, ...rest }) => <Route  exact {...rest} component={({ history }) => ('}</code><br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
+          <code>{'let GeneralRoute = ({ component: Component, ...rest }) => <Route  exact {...rest} component={({ history }) => ('}</code><br key={undefined} ref={undefined} />
           <code>{'<GeneralContextProvider initialVals={{ history, match }}>'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      <Component /></GeneralContextProvider>'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{')} />;'}</code>
         </div>,
         <p>As you can see, the <code>GeneralContext</code> is provided the browser history object by means of the <code>Route</code> component attribute. Anything in this attribute will be passed an object with a <code>location</code>, <code>history</code>, and <code>match</code> attributes.</p>,
         <p>Now, for the actual link itself (don't mind the use of <code>styled-components</code>):</p>,
         <div style={{ backgroundColor: '#e0e0e0' }}>
           <code>{'import React, { useContext } from \'react\';'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>import GeneralContext from './GeneralContext';</code>
-          <br /><br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
           <code>{'function SamePageAnchor({  children, href, target, className, id, style, component}) {'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'  let { generalState, setGeneralState } = useContext(GeneralContext),    Anchor = component || styled.a``, AlreadyOn = styled.span`    text-decoration: underline;    font-weight: 900;↵    margin: 0;↵    width: fit-content;   height: fit-content;  `;'}</code>
-          <br /><br /><code>{'  function handleClick(event) {'}</code>
-          <br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} /><code>{'  function handleClick(event) {'}</code>
+          <br key={undefined} ref={undefined} />
           <code>{'    if (href.startsWith(\'/\')) {'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      let newState = Object.assign({}, generalState);'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      event.preventDefault();'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      newState.history.push(href);'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      setGeneralState(newState);'}</code>
-          <br />
-          <code>{'    }'}</code><br />
-          <code>{'  }'}</code><br /><br />
+          <br key={undefined} ref={undefined} />
+          <code>{'    }'}</code><br key={undefined} ref={undefined} />
+          <code>{'  }'}</code><br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
           <code>{'  return (generalState.history &&generalState.history.location.pathname !== href) ?    <Anchor {...{ href, target, className, id, style     }} onClick={handleClick}>{children}</Anchor> :    <AlreadyOn>{children}</AlreadyOn>;'}
-            <br />{'}'}<br /><br />
+            <br key={undefined} ref={undefined} />{'}'}<br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
             {'export default SamePageAnchor;'}</code>
         </div>,
         <p>Now you should be good to go. Make sure that wherever in your code used, it has access to a <code>GeneralContext</code>.</p>];
