@@ -28,7 +28,8 @@ const typeVerify = function(typeVar, argsToPass) {
 
 const calcFromDependValues = function(paramSpec, attr, formVal, keyToUse) {
   let args = paramSpec.attrDepends[attr].map(function(valVar) {
-    let index = keyToUse.match(/\.(\d+(?!\w))/g).pop().substring(1);
+    let idxMtch = keyToUse.match(/\.(\d+(?!\w))/g), index = undefined;
+    if (idxMtch) index = idxMtch.pop().substring(1);
     return loget(formVal, index !== undefined ?
       valVar.replace('$', index.toString()) : valVar);
   });

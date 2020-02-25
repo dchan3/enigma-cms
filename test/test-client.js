@@ -362,6 +362,36 @@ describe('Form from Obj', function() {
       'guestList.1.lastName']);
     done();
   });
+
+  it('function types', function(done) {
+    var parameters = {
+        data: {
+          type: function(value) {
+            return value;
+          },
+          attrDepends: { type: ['dataType'] }
+        },
+        dataType: {
+          type: 'enum',
+          enumList: [
+            { 'text': 'Text', 'value': 'text' },
+            { 'text': 'Datetime', 'value': 'date' },
+            { 'text': 'Select', 'value': 'enum' },
+            { 'text': 'Number', 'value': 'number' },
+            { 'text': 'Email', 'value': 'email' },
+            { 'text': 'URL', 'value': 'url' },
+            { 'text': 'Color', 'value': 'color' }
+          ]
+        }
+      }, currentValue = {
+        dataType: 'number',
+        data: ''
+      };
+    const wrapper = render(<GeneratedForm params={parameters} formAction=""
+      currentValue={currentValue} title="Event Summary" method="post" />);
+    expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    done();
+  });
 });
 
 describe('loget and loset functions', function() {
