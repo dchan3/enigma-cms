@@ -35,7 +35,7 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
       });
     }
     else if (initial) setState(initial);
-  }, [params]);
+  }, Object.values(params));
 
   return { state, setState, apiUrl: apiUrl(params) };
 }
