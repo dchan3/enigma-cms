@@ -101,7 +101,25 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
   let retval = [],
     realParamsObj = Object.assign({}, (extra && extra.parentKey) ?
       loget(paramsObj,`${numKeyToShapeKey(extra.parentKey)}.shape`) :
-      paramsObj);
+      paramsObj), pushFunc = function(actualKey, i = null) {
+      let par = { parentKey: actualKey };
+      if (i) par.iteration = i;
+      retval.push(
+        ...formFromObj(paramsObj, valuesObj, par, invalidFields));
+    }, genComp = function(actualKey, i = null) {
+      let thaKey = actualKey + (i ? `.${i}` : '');
+
+      retval.push(genInputComponent(paramsObj, loget(paramsObj,
+        numKeyToShapeKey(actualKey)), loget(valuesObj, thaKey), thaKey,
+      i && undefined , valuesObj, invalidFields));
+    }, arrayRemPush = function(actualKey, i) {
+      retval.push({
+        component: 'FormSubmitButton',
+        innerText: 'Remove',
+        attributes: { onClick: `handleArrayRemove ${actualKey} ${i}` }
+      });
+    }
+
   for (var key in realParamsObj) {
     var { label } = realParamsObj[key],
       paramType = typeVerify(realParamsObj[key].type, [valuesObj[key]]),
@@ -126,45 +144,14 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
       });
     }
 
-    if (isObj) {
-      if (!isArray) {
-        retval.push(
-          ...formFromObj(paramsObj, valuesObj, { parentKey: actualKey },
-            invalidFields))
-      }
-      else {
-        for (let i in valuesObj[key]) {
-          retval.push(
-            ...formFromObj(paramsObj, valuesObj,
-              { parentKey: actualKey, iteration: i }, invalidFields));
-          retval.push({
-            component: 'FormSubmitButton',
-            innerText: 'Remove',
-            attributes: { onClick: `handleArrayRemove ${actualKey} ${i}` }
-          });
-        }
+    if (isArray) {
+      for (let i in isObj ? valuesObj[key] : loget(valuesObj, actualKey)) {
+        isObj ? pushFunc(actualKey, i) : genComp(actualKey, i);
+        arrayRemPush(actualKey, i);
       }
     }
-    else  {
-      if (!isArray) {
-        retval.push(genInputComponent(paramsObj, loget(paramsObj,
-          numKeyToShapeKey(actualKey)), loget(valuesObj, actualKey), actualKey,
-        undefined, valuesObj, invalidFields));
-      }
-      else {
-        for (let i in loget(valuesObj, actualKey)) {
-          retval.push(
-            genInputComponent(paramsObj, loget(paramsObj,
-              numKeyToShapeKey(actualKey)),
-            loget(valuesObj, `${actualKey}.${i}`),
-            `${actualKey}.${i}`, i, valuesObj, invalidFields));
-          retval.push({
-            component: 'FormSubmitButton',
-            innerText: 'Remove',
-            attributes: { onClick: `handleArrayRemove ${actualKey} ${i}` }
-          });
-        }
-      }
+    else {
+      isObj ? pushFunc(actualKey) : genComp(actualKey);
     }
   }
   return retval;
