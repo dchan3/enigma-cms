@@ -20,6 +20,11 @@ const { window } = jsdom;
 global.window = window;
 global.document = window.document;
 
+let renderForm = function(title, params, currentValue = null) {
+  return render(<GeneratedForm params={params} title={title}
+    currentValue={currentValue} method="post" formAction="" />);
+}
+
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
     var parameters = {
@@ -28,8 +33,7 @@ describe('Reusable UI Components - Generated Form', function() {
         type: 'text'
       }
     };
-    const wrapper = render(<GeneratedForm params={parameters} title="Find User"
-      method="post" formAction="" />);
+    const wrapper = renderForm('Find User', parameters);
     expect(wrapper.find('h2')).to.have.lengthOf(1);
     expect(wrapper.find('h2').text()).to.equal('Find User');
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
@@ -76,8 +80,7 @@ describe('Reusable UI Components - Generated Form', function() {
           }
         }]
       };
-    const wrapper = render(<GeneratedForm params={parameters} formAction=""
-      currentValue={currentValue} title="Event Summary" method="post" />);
+    const wrapper = renderForm('Event Summary', parameters, currentValue);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
@@ -364,7 +367,7 @@ describe('Form from Obj', function() {
   });
 
   it('function types', function(done) {
-    var parameters = {
+    let parameters = {
         data: {
           type: function(value) {
             return value;
@@ -387,9 +390,32 @@ describe('Form from Obj', function() {
         dataType: 'number',
         data: ''
       };
-    const wrapper = render(<GeneratedForm params={parameters} formAction=""
-      currentValue={currentValue} title="Event Summary" method="post" />);
+    let wrapper = renderForm('Data Entry', parameters, currentValue);
     expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    done();
+  });
+
+  it('maximum - text', function(done) {
+    var parameters = {
+      username: {
+        type: 'text',
+        maximum: 12
+      }
+    };
+    let wrapper = renderForm('Sign Up', parameters);
+    expect(wrapper.find('input[maxlength="12"]')).to.have.lengthOf(1);
+    done();
+  });
+
+  it('maximum - non-text', function(done) {
+    var parameters = {
+      username: {
+        type: 'number',
+        maximum: 9000
+      }
+    };
+    let wrapper = renderForm('Pick a number', parameters);
+    expect(wrapper.find('input[maximum="9000"]')).to.have.lengthOf(1);
     done();
   });
 });
