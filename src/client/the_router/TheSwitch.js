@@ -1,4 +1,5 @@
 import { cloneElement, isValidElement } from 'preact'; /** @jsx h **/
+import { useState, useEffect } from 'preact/hooks';
 import React from 'preact/compat';
 import useTheRouterContext from '../hooks/useTheRouterContext';
 import matchThePath from '../../lib/utils/match_the_path';
@@ -6,7 +7,12 @@ import matchThePath from '../../lib/utils/match_the_path';
 export default function TheSwitch(props) {
   let context = useTheRouterContext();
 
-  let location = props.location || context.location;
+  useEffect(function() {
+    setSwitchLocation(context.location);
+  }, [context.location])
+
+  let [switchLocation, setSwitchLocation] =
+    useState(props.location || context.location);
   let { basename } = context;
 
   let element, match;
@@ -18,11 +24,11 @@ export default function TheSwitch(props) {
       const path = child.props.path || child.props.from;
 
       match = path
-        ? matchThePath(location.pathname.replace(basename, ''),
+        ? matchThePath(switchLocation.pathname.replace(basename, ''),
           { ...child.props, path }) : context.match;
     }
   });
 
   return match ? cloneElement(element, {
-    location, computedMatch: match }) : null;
+    switchLocation, computedMatch: match }) : null;
 }

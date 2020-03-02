@@ -1,7 +1,7 @@
 let t = require('@babel/types');
 
 module.exports = function () {
-  let recBin = function(nodes) {
+  let recBin = function (nodes) {
     if (nodes.length === 2) {
       let [left, right] = nodes;
       if (left.type === 'TemplateElement') {
@@ -12,29 +12,27 @@ module.exports = function () {
       }
       return t.binaryExpression('+', left, right);
     }
-    else {
-      let last = nodes.slice(-1)[0]
-      return t.binaryExpression('+', recBin(nodes.slice(0, -1)),
-        last.type === 'TemplateElement' ? t.stringLiteral(last.value.cooked) : last);
-    }
+    let last = nodes.slice(-1)[0];
+    return t.binaryExpression('+', recBin(nodes.slice(0, -1)),
+      last.type === 'TemplateElement' ?
+        t.stringLiteral(last.value.cooked) : last);
   };
 
   return {
     visitor: {
       TemplateLiteral(path) {
         let { node: { expressions, quasis } } = path,
-          arr = [...expressions, ...quasis];
-        if (arr.slice(-1)[0].value.cooked === '') {
-          arr = arr.slice(0,-1);
+          arr = [];
+        for (let q = 0; q < quasis.length; q++) {
+          arr.push(quasis[q]);
+          if (!quasis[q].tail) arr.push(expressions[q]);
         }
-        arr.sort(function(a,b) {
-          if (a.start < b.start) return -1
-          if (a.start > b.start) return 1;
-          return 0;
-        });
+        if (arr.slice(-1)[0].value.cooked === '') {
+          arr = arr.slice(0, -1);
+        }
 
-        path.replaceWith(recBin(arr));
+        path.replaceWith(arr.length > 1 ? recBin(arr) : t.stringLiteral(arr[0].value.cooked));
       }
     }
   };
-}
+};

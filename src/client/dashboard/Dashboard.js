@@ -16,8 +16,8 @@ let ProtectedRoute = ({ component: Component, isAdmin, ...rest
     if ((isAdmin && user.roleId === 0) || !isAdmin) {
       return [<MainMenu />, <Component />];
     }
-    else return <TheRedirect to="/admin" />;
   }
+  return <TheRedirect to="/login" />;
 }} />;
 
 let mapRoutes = (Component) => (routeInfo) => <Component {...routeInfo} />;
@@ -30,9 +30,9 @@ let Dashboard = () => {
     image={iconUrl || ''} />
     <AdminFrame>
       <TheSwitch>
+        {backEndRoutes.map(mapRoutes(ProtectedRoute))}
         <TheRoute path="/login" component={LoginPage} />
         <TheRoute path="/signup" component={SignupPage} />
-        {backEndRoutes.map(mapRoutes(ProtectedRoute))}
         <TheRoute path="*" component={() => <div><h1>NOT FOUND</h1></div>} />
       </TheSwitch>
     </AdminFrame>

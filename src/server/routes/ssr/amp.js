@@ -107,7 +107,7 @@ var htmlTemplate =
       ${fs.readFileSync(path.resolve(__dirname, 'assets/app.style.css'))}
       ${stylesheet}
     </style>
-    ${gaTrackingId ?
+    ${(gaTrackingId && !back) ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->
     <script id="gainit" type='text/plain' target="amp-script">
       window.dataLayer = window.dataLayer || [];

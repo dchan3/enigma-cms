@@ -16,10 +16,8 @@ export const TheRouterContextProvider = ({ value, children }) => {
     createHistory({ basename: value.basename, forceRefresh: false }));
 
   useEffect(function() {
-    if (!value.staticContext) {
-      history.listen(loc => setLocation(loc));
-    }
-  }, [location]);
+    history.listen(loc => setLocation(loc));
+  }, []);
 
   return <Provider value={{ ...value, history, setHistory,
     location, setLocation, basename: value.basename }}>{children}</Provider>;

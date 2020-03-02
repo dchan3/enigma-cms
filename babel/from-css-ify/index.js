@@ -16,6 +16,11 @@ module.exports = function () {
 
   return {
     visitor: {
+      ImportSpecifier(path) {
+        if (path.node.imported.name === 'fromCss') {
+          path.remove();
+        }
+      },
       CallExpression(path, state) {
         if (fn === '') {
           if (state.opts && state.opts.toFile) fn = state.opts.toFile;

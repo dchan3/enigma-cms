@@ -17,7 +17,7 @@ var htmlTemplate =
     { title, meta, link }, dom, data, back) => `<!DOCTYPE html>
 <html lang="${language}">
   <head>
-  ${gaTrackingId ?
+  ${(gaTrackingId && !back) ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=${
   gaTrackingId}">
@@ -45,7 +45,7 @@ ${[
     <div id="root">${dom}</div>
   </body>
 </html>
-`, ssrRenderer = async ({ path, url: location }, res, next) => {
+`, ssrRenderer = async ({ path, url: location, user }, res, next) => {
     let config = await SiteConfig.findOne({}),
       theme = await SiteTheme.findOne({}),
       types = await DocumentType.find({}), routes = (path.startsWith('/admin') || ['/login', '/signup'].includes(path)) ?
@@ -100,8 +100,8 @@ ${[
       }
 
       let jsx = (<HeadContextProvider value={value}>
-        <TheStaticRouter {...{ location }}>
-          <StaticContextProvider initialVals={context}>
+        <TheStaticRouter location={location}>
+          <StaticContextProvider initialVals={{ ...context, user }}>
             <Comp />
           </StaticContextProvider>
         </TheStaticRouter>

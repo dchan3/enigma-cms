@@ -1,17 +1,11 @@
 const path = require('path'), nodeExternals = require('webpack-node-externals'),
   TerserPlugin = require('terser-webpack-plugin'),
-  { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'),
-  MiniCssExtractPlugin = require('mini-css-extract-plugin'),
-  LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
-const cssPlugin = new MiniCssExtractPlugin({
-    filename: 'app.style.css'
-  }), loRep = new LodashModuleReplacementPlugin();
+  { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = [{
   plugins: process.env.ANALYZER ? [
     new BundleAnalyzerPlugin({ analyzerPort: 9001 }),
-    cssPlugin, loRep
-  ] : [cssPlugin, loRep],
+  ] : [],
   optimization: {
     minimizer: [
       new TerserPlugin({
@@ -55,19 +49,10 @@ module.exports = [{
           comments: false,
           plugins: ['./babel/rightify', './babel/hashify',
             ['./babel/from-css-ify', {
-              'toFile': [path.resolve(__dirname, 'public/app.style.css'),
-                path.resolve(__dirname, 'assets/app.style.css')] }],
+              'toFile': path.resolve(__dirname, 'public/app.style.css') }],
             '@babel/plugin-transform-react-jsx', './babel/unitify-react',
           ]
         }
-      },
-      {
-        test: /\.css$/i,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader
-          }
-        ]
       },
       {
         test: /\.jsx?$/,
