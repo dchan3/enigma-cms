@@ -36,17 +36,14 @@ async function getRenderedDocumentByTypeAndSlug(type, slug) {
   });
   if (!docType) return {};
   let { docTypeId } = docType,
-    { templateBody } = await DocumentDisplayTemplate.findOne({ docTypeId }),
-    doc =
-      await Document.findOne({ docTypeId, slug });
+    doc = await Document.findOne({ docTypeId, slug });
 
   if (!doc) return {};
-  let { creatorId, content, createdAt, editedAt } = doc,
+
+  let { creatorId, content, createdAt, editedAt, rendered } = doc,
     authorInfo = await User.findOne({ userId: creatorId })
       .select({ password: 0, _id: 0 }),
-    metadata = await documentMetadata(content),
-    rendered = await renderMarkup(templateBody, {
-      ...content, createdAt, editedAt, authorInfo });
+    metadata = await documentMetadata(content);
 
   return {
     slug,

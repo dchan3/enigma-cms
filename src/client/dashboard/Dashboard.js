@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { MainMenu } from '../views/admin';
 import backEndRoutes from '../../lib/routes/route_data';
 import { LoginPage, SignupPage } from '../../client/views/admin';
-import { Fedora, AdminFrame } from '../reusables/back_exports';
+import { Fedora, AdminFrame, AdminContainer } from '../reusables/back_exports';
 import { TheRoute, TheSwitch, TheRedirect } from '../the_router';
 import useStaticContext from '../hooks/useStaticContext';
 
@@ -14,7 +14,7 @@ let ProtectedRoute = ({ component: Component, isAdmin, ...rest
 
   if (user) {
     if ((isAdmin && user.roleId === 0) || !isAdmin) {
-      return [<MainMenu />, <Component />];
+      return <AdminContainer><Component /></AdminContainer>;
     }
   }
   return <TheRedirect to="/login" />;
@@ -29,6 +29,7 @@ let Dashboard = () => {
       'Welcome to my website!'} keywords={keywords && keywords.join(',') || ''}
     image={iconUrl || ''} />
     <AdminFrame>
+      <TheRoute path="/admin" component={MainMenu} exact={false} />
       <TheSwitch>
         {backEndRoutes.map(mapRoutes(ProtectedRoute))}
         <TheRoute path="/login" component={LoginPage} />

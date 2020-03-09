@@ -48,7 +48,6 @@ let EditDocType = () => {
   let { dataObj, optionParams } = state;
 
   if (dataObj === undefined) return <TheRedirect to="/admin" />;
-  else if (dataObj === null) return null;
   else {
     let { docType } = dataObj || {};
     return <GeneratedForm currentValue={docType}

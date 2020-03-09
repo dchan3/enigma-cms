@@ -6,20 +6,22 @@ import { loget } from '../utils/lofuncs';
 
 export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
   initial }) {
-  let { match: { params } } = useTheRouterContext(),
+  let { match } = useTheRouterContext(),
     { dataObj } = useStaticContext(['dataObj']);
 
-  if (dataObj) {
-    let d = 0;
-    while (d < dataParams.length && dataObj) {
-      var dt = loget(dataObj, dataParams[d]), ut =
-          loget(params, urlParams[d]);
-      if ((dt ===  null || dt === undefined) ||
-          (ut === null || ut === undefined) || (dt && ut)
-        && dt.toString() !== ut.toString()) {
-        dataObj = null;
+  if (dataObj && match) {
+    let d = 0, { params } = match;
+    if (params) {
+      while (d < dataParams.length && dataObj) {
+        var dt = loget(dataObj, dataParams[d]), ut =
+            loget(params, urlParams[d]);
+        if ((dt ===  null || dt === undefined) ||
+            (ut === null || ut === undefined) || (dt && ut)
+          && dt.toString() !== ut.toString()) {
+          dataObj = null;
+        }
+        else d++;
       }
-      else d++;
     }
   }
   else { dataObj = null; }
@@ -27,15 +29,17 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
   let [state, setState] = useState({ dataObj });
 
   useEffect(function() {
-    if (apiUrl(params || {}).length) {
-      getRequest(apiUrl(params || {}), function(dataObj) {
-        if (cb) cb(dataObj, setState, params || {});
-        else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
-          undefined });
-      });
+    if (match) {
+      if (apiUrl(match.params || {}).length) {
+        getRequest(apiUrl(match.params || {}), function(dataObj) {
+          if (cb) cb(dataObj, setState, match.aparams || {});
+          else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
+            undefined });
+        });
+      }
     }
     else if (initial) setState(initial);
-  }, Object.values(params));
+  }, match && match.params && Object.values(match.params) && []);
 
-  return { state, setState, apiUrl: apiUrl(params) };
+  return { state, setState, apiUrl: match && match.params && apiUrl(match.params) && null };
 }

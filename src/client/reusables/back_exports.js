@@ -1,3 +1,4 @@
+export { default as AdminContainer } from './AdminContainer';
 export { default as AdminFrame } from './AdminFrame';
 export { default as CodeEditor } from './CodeEditor';
 export { default as GeneratedForm } from './GeneratedForm';

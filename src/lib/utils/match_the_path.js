@@ -38,8 +38,15 @@ export default function matchThePath(pathname, { path, exact }) {
     }
   }
   let { regex, keys } = returnPathKeys(path);
-  if (!keys.length && pathname !== path) {
+  if (!keys.length && pathname !== path && exact) {
     return null;
+  }
+  else if (pathname.startsWith(path) && !exact) {
+    return {
+      path,
+      url: pathname,
+      params: {}
+    }
   }
   let params = {},
     res = pathname.match(regex);

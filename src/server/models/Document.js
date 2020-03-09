@@ -2,7 +2,10 @@ import mongoose, { Schema, model } from 'mongoose';
 import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 import ReverseIndex from './ReverseIndex.js';
+import DocumentDisplayTemplate from './DocumentDisplayTemplate.js';
+import User from './User';
 import createReverseIndex from '../utils/create_reverse_index';
+import renderMarkup from '../utils/render_markup';
 var conn = mongoose.createConnection(
   require('../../../config/db.js').url, {}, () => { });
 
@@ -25,8 +28,17 @@ DocumentSchema.plugin(autoIncrementPlugin,
   { model: 'Document', field: 'docNodeId', startAt: 0, incrementBy: 1 });
 
 DocumentSchema.pre('save', async function saveHook(next) {
-  const doc = this, content = doc.get('content'), { docNodeId } = doc,
+  const doc = this, { docNodeId, docTypeId,
+      createdAt, editedAt, creatorId, content } = doc,
     thaMap = {};
+
+  let { templateBody } = await DocumentDisplayTemplate.findOne({ docTypeId });
+
+  let authorInfo = await User.findOne({ userId: creatorId });
+
+  doc.rendered = await renderMarkup(templateBody, {
+    createdAt, editedAt, creatorId, ...content, authorInfo
+  });
 
   for (let attribute in content) {
     if (attribute !== '') {
