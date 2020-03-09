@@ -39,7 +39,7 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
       }
     }
     else if (initial) setState(initial);
-  }, match && match.params && Object.values(match.params) && []);
+  }, match && match.params && Object.values(match.params) || []);
 
   return { state, setState, apiUrl: match && match.params && apiUrl(match.params) && null };
 }

@@ -12,12 +12,12 @@ function FrontDisplay({ dataParams, urlParams, apiUrl }) {
       dataParams,
       urlParams,
       apiUrl
-    }), { match: { params } } = useTheRouterContext(),
-    [, setP] = useState(params), { setState: setMeta } = useContext(HeadContext);
+    }), { match } = useTheRouterContext(),
+    [, setP] = useState(match ? match.params : []), { setState: setMeta } = useContext(HeadContext);
 
   useEffect(function() {
-    setP(params);
-  }, [params]);
+    setP(match ? match.params : []);
+  }, [match && match.params || null]);
 
   useEffect(function() {
     if (dataObj) setMeta({
