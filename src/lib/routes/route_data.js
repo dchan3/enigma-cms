@@ -32,7 +32,7 @@ export default [
   {
     path: '/admin/edit-type/:docTypeId',
     exact: true,
-    component: EditDocType,
+    component: () => <EditDocType isNew={false} />,
     isAdmin: false
   },
   {
@@ -56,8 +56,8 @@ export default [
   {
     path: '/admin/register-type',
     exact: true,
-    component: EditDocType,
-    isAdmin: true
+    component: () => <EditDocType isNew={true} />,
+    isAdmin: true,
   },
   {
     path: '/admin/change-password',

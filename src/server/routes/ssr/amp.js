@@ -124,11 +124,9 @@ var htmlTemplate =
   <body>
     <amp-script script="gainit"></amp-script>
     <amp-script script="ctx"></amp-script>
-    <amp-script src='${process.env.HOST && `https://${process.env.HOST}` || 'http://localhost:8080'}/${`${back ? 'dashboard' : 'app'}.bundle.js`}'>
-      <div id="root">
-        ${dom}
-      </div>
-    </amp-script>
+    <div id="root">
+      ${dom}
+    </div>
     <amp-script src="https://www.googletagmanager.com/gtag/js?id=${gaTrackingId}">
     </amp-script>
   </body>

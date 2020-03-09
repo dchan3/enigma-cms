@@ -3,7 +3,7 @@ import { GeneratedForm } from '../../reusables/back_exports';
 import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 
-let EditDocType = () => {
+let EditDocType = ({ isNew }) => {
   let { state, setState } = useFrontContext({
     dataParams: ['docType.docTypeId'],
     urlParams: ['docTypeId'],
@@ -19,7 +19,8 @@ let EditDocType = () => {
           attrName: '',
           attrType: ''
         }]
-      }
+      },
+      loaded: false
     },
     cb: function(data, fxn) {
       fxn({ dataObj: data,
@@ -27,7 +28,8 @@ let EditDocType = () => {
           ({ attrName, attrType }) => ({ attrName, attrType })) || [{
           attrName: '',
           attrType: ''
-        }]
+        }],
+        loaded: true
       });
     }
   });
@@ -48,8 +50,10 @@ let EditDocType = () => {
   let { dataObj, optionParams } = state;
 
   if (dataObj === undefined) return <TheRedirect to="/admin" />;
-  else {
-    let { docType } = dataObj || {};
+  else if (dataObj === null && !isNew) return null;
+  else if ((dataObj === null && isNew) || dataObj) {
+    let docType = {};
+    if (dataObj !== null) docType = dataObj.docType;
     return <GeneratedForm currentValue={docType}
       title="Edit Document Type" params={{
         docTypeName: {
