@@ -30,8 +30,10 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
 
   useEffect(function() {
     if (match) {
-      if (apiUrl(match.params || {}).length) {
-        getRequest(apiUrl(match.params || {}), function(dataObj) {
+      let reqUrl = apiUrl(match.params || {});
+
+      if (reqUrl.length) {
+        getRequest(reqUrl, function(dataObj) {
           if (cb) cb(dataObj, setState, match.aparams || {});
           else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
             undefined });

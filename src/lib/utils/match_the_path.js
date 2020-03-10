@@ -60,6 +60,12 @@ export default function matchThePath(pathname, { path, exact }) {
     params[keys[k]] = res[k + 1];
   }
 
+  for (let ky in params) {
+    if (params[ky].indexOf('/') >= 0) {
+      return null;
+    }
+  }
+
   return {
     path,
     url: pathname,

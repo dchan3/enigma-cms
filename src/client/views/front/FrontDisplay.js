@@ -17,7 +17,7 @@ function FrontDisplay({ dataParams, urlParams, apiUrl }) {
 
   useEffect(function() {
     setP(match ? match.params : []);
-  }, [match && match.params || null]);
+  }, []);
 
   useEffect(function() {
     if (dataObj) setMeta({
