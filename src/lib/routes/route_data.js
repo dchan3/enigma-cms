@@ -1,8 +1,9 @@
 import { h } from 'preact'; /** @jsx h **/
 import { ConfigPage, EditDocumentLanding, EditDocumentPage,
   EditDisplayTemplate, ProfileEditPage, ChangePasswordPage, FileMgmtLanding,
-  UploadFilePage, EditDocType, UserMgmtLanding, AdminLanding, ThemePage }
-  from '../../client/views/admin';
+  UploadFilePage, EditDocType, UserMgmtLanding, AdminLanding, ThemePage,
+  LoginPage, SignupPage
+} from '../../client/views/admin';
 
 export default [
   {
@@ -88,5 +89,19 @@ export default [
     exact: true,
     component: AdminLanding,
     isAdmin: false
+  },
+  {
+    path: '/login',
+    exact: true,
+    component: LoginPage,
+    isAdmin: false,
+    isOutRoute: true
+  },
+  {
+    path: '/signup',
+    exact: true,
+    component: SignupPage,
+    isAdmin: false,
+    isOutRoute: true
   }
 ];
