@@ -2,6 +2,8 @@ import mongoose from 'mongoose';
 import bcrypt, { hash, genSalt } from 'bcrypt';
 import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
+import renderMarkup from '../utils/render_markup';
+import SiteConfig from './SiteConfig';
 
 var conn = mongoose.createConnection(
   require('../../../config/db.js').url, {}, () => { });
@@ -49,14 +51,21 @@ var UserSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  rendered: {
+    type: String
+  }
 });
 
 UserSchema.methods.comparePassword = function comparePassword(password) {
   return bcrypt.compareSync(password, this.password);
 };
 
-UserSchema.pre('save', function saveHook(next) {
+UserSchema.pre('save', async function saveHook(next) {
   const user = this;
+
+  var profileTemplate = await SiteConfig.findOne({ }, 'profileTemplate', r => r).then(({ profileTemplate }) => profileTemplate);
+
+  user.rendered = await renderMarkup(profileTemplate, user);
 
   // proceed further only if the password is modified or the user is new
   if (!user.isModified('password')) return next();

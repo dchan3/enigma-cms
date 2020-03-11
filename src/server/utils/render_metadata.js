@@ -21,6 +21,20 @@ export const documentMetadata = async function (content, appendSite = true) {
   return attrs;
 }
 
+export const documentMetadataSync = function (content) {
+  let attrs = {
+    title: content['title'] || content['name'] || '',
+    description: content['description'] || content['summary'] ||
+      content['synopsis'] || '',
+    image: content['image'] || content['img'] || content['picture'] ||
+     content['pic'] || content['photo'] || '',
+    keywords: content['tags'] || content['keywords'] ||
+      content['buzzwords'] || ''
+  };
+
+  return attrs;
+}
+
 export const categoryMetadata = async function (docTypeNamePlural) {
   let { siteName, iconUrl, keywords } = await SiteConfig.findOne({});
   return {
@@ -40,6 +54,16 @@ export const profileMetadata = async (props) => {
   let { siteName } = await SiteConfig.findOne({}),
     pref = `${displayName || username}'s Profile`, title =
   `${pref} | ${siteName}`, description = `${pref}.`;
+  return {
+    title, description, image: pictureSrc
+  };
+}
+
+export const profileMetadataSync = (props) => {
+  if (!props) return null;
+  let { displayName, username, pictureSrc } = props,
+    pref = `${displayName || username}'s Profile`, title = `${pref}`,
+    description = `${pref}.`;
   return {
     title, description, image: pictureSrc
   };

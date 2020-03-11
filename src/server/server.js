@@ -37,6 +37,10 @@ mongoose.connect(require('../../config/db.js').url, {}, () => {
     else return;
   });
 
+  User.find().then(users => {
+    users.forEach(u => { u.save(); });
+  });
+
   Document.find({}).then(docs => {
     docs.forEach(doc => { doc.save(); });
   });

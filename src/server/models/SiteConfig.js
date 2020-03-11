@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import ShortcodeSchema from './ShortcodeSchema';
+import User from './User';
 
 let { Schema, model } = mongoose;
 
@@ -66,6 +67,12 @@ const SiteConfigSchema = new Schema({
     enum: ['en', 'zh'],
     default: 'en'
   }
+});
+
+SiteConfigSchema.post('save', function() {
+  User.find({ }).then(users => {
+    users.forEach(user => { user.save(); });
+  });
 });
 
 export default model('SiteConfig', SiteConfigSchema);

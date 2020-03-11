@@ -1,5 +1,4 @@
-import { User, SiteConfig } from '../../../models';
-import renderMarkup from '../../../utils/render_markup';
+import { User } from '../../../models';
 import { profileMetadata } from '../../../utils/render_metadata';
 
 async function getAllUsers() {
@@ -8,15 +7,13 @@ async function getAllUsers() {
 }
 
 async function getUserProfile({ username }) {
-  let config = await SiteConfig.findOne({});
-  let { profileTemplate } = config;
-  let user = await User.findOne({ username });
-  if (!user) return {};
-  let metadata = await profileMetadata(user);
-  let rendered = await renderMarkup(profileTemplate, user);
-  return {
-    metadata, rendered, username
-  }
+  return User.findOne({ username }).then(async user => {
+    if (!user) return {};
+    let metadata = await profileMetadata(user);
+    let { rendered } = user;
+    return {
+      metadata, rendered, username
+    }
+  });
 }
-
 export default { getAllUsers, getUserProfile };
