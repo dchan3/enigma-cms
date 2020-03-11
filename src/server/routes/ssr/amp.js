@@ -27,81 +27,46 @@ var htmlTemplate =
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
   <script async src="https://cdn.ampproject.org/v0.js"></script>
   <script async custom-element="amp-script" src="https://cdn.ampproject.org/v0/amp-script-0.1.js"></script>
-    ${(data.dataObj && data.dataObj.createdAt) ? `<script type="application/ld+json">
-      {
-        "@context": "http://schema.org",
-        "@type": "BlogPosting",
-        "headline": "${data.dataObj.metadata.title}",
-        "description": "${data.dataObj.metadata.description}",
-        "image": "${data.dataObj.metadata.image}",
-        "datePublished": "${data.dataObj.createdAt.toISOString()}",
-        "inLanguage": "${language}",
-        "author": "${data.dataObj.authorInfo.displayName}",
-        "publisher": {
-          "@type": "Organization",
-          "name": "${data.dataObj.authorInfo.displayName}",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "${process.env.HOST && `https://${process.env.HOST}` || 'http://localhost:8080'}/favicon.ico"
-          }
-        }
-      }
+    ${(data.dataObj && data.dataObj.createdAt) ? `<script type="application/ld+json">{
+        "@context":"http://schema.org",
+        "@type":"BlogPosting",
+        "headline":"${data.dataObj.metadata.title}",
+        "description":"${data.dataObj.metadata.description}",
+        "image":"${data.dataObj.metadata.image}",
+        "datePublished":"${data.dataObj.createdAt.toISOString()}",
+        "inLanguage":"${language}",
+        "author":"${data.dataObj.authorInfo.displayName}",
+        "publisher":{
+          "@type":"Organization",
+          "name":"${data.dataObj.authorInfo.displayName}",
+          "logo":{
+            "@type":"ImageObject",
+            "url":"${process.env.HOST && `https://${process.env.HOST}` || 'http://localhost:8080'}/favicon.ico"}}}
     </script>` : ''}
     <style amp-boilerplate>
-      body {
-        -webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
-        -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
-        -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
-        animation: -amp-start 8s steps(1, end) 0s 1 normal both;
-      }
-      @-webkit-keyframes -amp-start {
-        from {
-          visibility: hidden;
-        }
-        to {
-          visibility: visible;
-        }
-      }
-      @-moz-keyframes -amp-start {
-        from {
-          visibility: hidden;
-        }
-        to {
-          visibility: visible;
-        }
-      }
-      @-ms-keyframes -amp-start {
-        from {
-          visibility: hidden;
-        }
-        to {
-          visibility: visible;
-        }
-      }
-      @-o-keyframes -amp-start {
-        from {
-          visibility: hidden;
-        }
-        to {
-          visibility: visible;
-        }
-      }
-      @keyframes -amp-start {
-        from {
-          visibility: hidden;
-        }
-        to {
-          visibility: visible;
-        }
-      }
+      body{
+        -webkit-animation:-amp-start 8s steps(1, end) 0s 1 normal both;
+        -moz-animation:-amp-start 8s steps(1, end) 0s 1 normal both;
+        -ms-animation:-amp-start 8s steps(1, end) 0s 1 normal both;
+        animation:-amp-start 8s steps(1, end) 0s 1 normal both;}
+      @-webkit-keyframes -amp-start{
+        from{visibility:hidden;}
+        to{visibility: visible;}}
+      @-moz-keyframes -amp-start{
+        from {visibility: hidden;}
+        to{visibility: visible;}}
+      @-ms-keyframes -amp-start{
+        from{visibility:hidden;}
+        to{visibility:visible;}}
+      @-o-keyframes -amp-start{
+        from{visibility:hidden;}
+        to{visibility:visible;}}
+      @keyframes -amp-start{
+        from{visibility:hidden;}
+        to{visibility:visible;}}
     </style>
     <noscript><style amp-boilerplate>
-        body {
-          -webkit-animation: none;
-          -moz-animation: none;
-          -ms-animation: none;
-          animation: none;
-        }
+        body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none;}
       </style></noscript>
     <style amp-custom>
       ${fs.readFileSync(path.resolve(__dirname, 'assets/app.style.css'))}
@@ -110,15 +75,13 @@ var htmlTemplate =
     ${(gaTrackingId && !back) ?
     `<!-- Global site tag (gtag.js) - Google Analytics -->
     <script id="gainit" type='text/plain' target="amp-script">
-      window.dataLayer = window.dataLayer || [];
+      window.dataLayer=window.dataLayer||[];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', '${gaTrackingId}');
-    </script>` : ''}
+      gtag('js',new Date());
+      gtag('config','${gaTrackingId}');</script>` : ''}
       <script id="ctx" type='text/plain' target="amp-script">
-        document.querySelector('#falseroot').innerHTML = '';
-        window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
+        document.querySelector('#falseroot').innerHTML='';
+        window.__INITIAL_DATA__=${serialize(data, { unsafe: true })};
       </script>
   </head>
   <body>

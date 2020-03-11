@@ -23,18 +23,17 @@ var htmlTemplate =
   gaTrackingId}">
   </script>
   <script>
-    window.dataLayer = window.dataLayer || [];
+    window.dataLayer=window.dataLayer||[];
     function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', '${gaTrackingId}');
+    gtag('js',new Date());
+    gtag('config','${gaTrackingId}');
   </script>` : ''}
 ${[
     title, meta, link
   ].map(str => str.length ? (`${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
     <script>
-      window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
+      window.__INITIAL_DATA__=${serialize(data, { unsafe: true })};
     </script>
     <script src='/${back ? 'dashboard' : 'app'}.bundle.js' defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
