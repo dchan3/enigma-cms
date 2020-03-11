@@ -5,3 +5,4 @@ dist/
 public/*.js
 public/uploads/
 server.bundle.js
+test/
