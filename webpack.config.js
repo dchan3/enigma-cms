@@ -136,12 +136,11 @@ module.exports = [{
       },
       {
         test: /\.jsx?$/,
-        include: /react/,
+        include: /src\/server\/routes\/ssr/,
         loader: 'babel-loader',
         options: {
           comments: false,
-          plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify']
+          plugins: ['./babel/unconcatify', './babel/autominify']
         }
       },
     ],

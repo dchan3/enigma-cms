@@ -23,7 +23,7 @@ var htmlTemplate =
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   ${[
     title, meta, link
-  ].map(str => str.length ? (`    ${str}`) : '')
+  ].map(str => str.length ? (`${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
   <script async src="https://cdn.ampproject.org/v0.js"></script>
   <script async custom-element="amp-script" src="https://cdn.ampproject.org/v0/amp-script-0.1.js"></script>

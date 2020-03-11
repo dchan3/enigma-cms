@@ -31,7 +31,7 @@ var htmlTemplate =
   </script>` : ''}
 ${[
     title, meta, link
-  ].map(str => str.length ? (`    ${str}`) : '')
+  ].map(str => str.length ? (`${str}`) : '')
     .join('\n').replace(/\n{2,}/g, '\n').replace(/\n$/, '')}
     <script>
       window.__INITIAL_DATA__ = ${serialize(data, { unsafe: true })};
