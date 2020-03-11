@@ -59,7 +59,7 @@ function FileMgmtLanding() {
               return <video controls>
                 <source src={url} />
               </video>;
-            return <a href= {url}>
+            return <a href={url}>
               Download</a>;
           }
         },

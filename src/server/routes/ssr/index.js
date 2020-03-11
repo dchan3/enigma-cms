@@ -50,9 +50,12 @@ ${[
       theme = await SiteTheme.findOne({}),
       types = await DocumentType.find({}), routes = (path.startsWith('/admin') || ['/login', '/signup'].includes(path)) ?
         backEndRoutes :  frontEndRoutes, Comp = (path.startsWith('/admin') || ['/login', '/signup'].includes(path)) ?
-        Dashboard : App
-    let context = { config, types, theme }, { path: pathMatch } =
-        routes.find(route => matchThePath(path, route)) || {},
+        Dashboard : App;
+    console.log(routes.find(route => matchThePath(path, route)));
+    let context = { config, types, theme }, foundRoutes =
+      routes.find(route => matchThePath(path, route));
+    let pathMatch = typeof foundRoutes.path === 'string' ? foundRoutes.path :
+        foundRoutes.path[0],
       promise = fetchers[pathMatch] ? fetchers[pathMatch](path) :
         Promise.resolve();
     promise.then(data => {

@@ -6,7 +6,7 @@ import { default as LoginStrategy } from './passport/login';
 import mongoose from 'mongoose';
 import {
   userRoutes, configRoutes, documentRoutes, fileRoutes, searchRoutes,
-  themeRoutes
+  sitemapRoutes, themeRoutes
 } from './routes/api';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
@@ -78,6 +78,7 @@ app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/sitemap', sitemapRoutes);
 app.use('/api/site_theme', themeRoutes);
 
 app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
