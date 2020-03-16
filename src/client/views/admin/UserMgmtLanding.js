@@ -4,7 +4,7 @@ import { TextHeader, SamePageAnchor, TablePaginator, ProfileImage } from
   '../../reusables/back_exports';
 import { getRequest } from '../../utils/api_request_async';
 
-function UserMgmtLanding() {
+export default function UserMgmtLanding() {
   let [state, setState] = useState({
     users: []
   });
@@ -41,5 +41,3 @@ function UserMgmtLanding() {
         }
       ]} /> : null];
 }
-
-export default UserMgmtLanding;

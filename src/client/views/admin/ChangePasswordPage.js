@@ -2,7 +2,7 @@ import { h } from 'preact'; /** @jsx h **/
 import { GeneratedForm } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext';
 
-function ChangePasswordPage() {
+export default function ChangePasswordPage() {
   let { user: { _id } } = useStaticContext(['user']);
 
   return <GeneratedForm title="Change Password" params={{
@@ -17,5 +17,3 @@ function ChangePasswordPage() {
   }} formAction='users/change_password' redirectUrl='/admin'
   />;
 }
-
-export default ChangePasswordPage;

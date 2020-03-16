@@ -2,7 +2,7 @@ import { h } from 'preact'; /** @jsx h **/
 import { GeneratedForm } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext.js';
 
-function ProfileEditPage() {
+export default function ProfileEditPage() {
   let { user } = useStaticContext(['user']);
 
   return <GeneratedForm title='Edit Profile' currentValue={user}
@@ -14,5 +14,3 @@ function ProfileEditPage() {
       bio: { type: 'text', grammar: 'html' }
     }} redirectUrl='/admin' formAction='users/update' />;
 }
-
-export default ProfileEditPage;

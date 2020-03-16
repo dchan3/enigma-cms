@@ -6,7 +6,7 @@ import useStaticContext from '../../hooks/useStaticContext';
 import { getRequest } from '../../utils/api_request_async';
 import { default as syncReqs } from '../../utils/api_request_sync';
 
-function FileMgmtLanding() {
+export default function FileMgmtLanding() {
   let { files } = useStaticContext(['files']);
 
   function handleDeleteClick() {
@@ -75,5 +75,3 @@ function FileMgmtLanding() {
         }
       ]} /> : null];
 }
-
-export default FileMgmtLanding;

@@ -21,9 +21,9 @@ module.exports = function () {
           path.remove();
         }
       },
-      CallExpression(path, state) {
+      CallExpression(path, { opts }) {
         if (fn === '') {
-          if (state.opts && state.opts.toFile) fn = state.opts.toFile;
+          if (opts && opts.toFile) fn = opts.toFile;
         }
         if (path.node.callee.name === 'fromCss') {
           var element = path.node.arguments[0].value,
@@ -105,12 +105,12 @@ module.exports = function () {
       if (fn.length) {
         let fileStr = '';
         for (let selector in styles) {
-          fileStr += `${selector}{${styles[selector]}}`;
+          fileStr += selector + '{' + styles[selector] + '}';
         }
         if (typeof fn === 'string') fs.writeFileSync(fn, fileStr);
-        else fn.forEach(function(f) {
-          fs.writeFileSync(f, fileStr);
-        });
+        else for (let f = 0; f < fn.length; f++) {
+          fs.writeFileSync(fn[f], fileStr);
+        }
       }
     }
   };

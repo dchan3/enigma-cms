@@ -3,7 +3,7 @@ import { GeneratedForm } from '../../reusables/back_exports';
 import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 
-let EditDocType = ({ isNew }) => {
+export default function EditDocType({ isNew }) {
   let { state, setState } = useFrontContext({
     dataParams: ['docType.docTypeId'],
     urlParams: ['docTypeId'],
@@ -128,6 +128,4 @@ let EditDocType = ({ isNew }) => {
         `update_type/${docType.docTypeId}`
         : 'register_type'}`} />;
   }
-};
-
-export default EditDocType;
+}

@@ -36,7 +36,7 @@ export default [
   {
     path: '/',
     exact: true,
-    component: () => <div />
+    component: () => null
   }, {
     path: '*',
     exact: true,

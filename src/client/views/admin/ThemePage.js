@@ -2,7 +2,7 @@ import { h } from 'preact' /** @jsx h **/
 import { GeneratedForm } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext';
 
-function ThemePage() {
+export default function ThemePage() {
   let { theme } = useStaticContext(['theme']);
 
   return <GeneratedForm title="Site Settings" currentValue={theme ||
@@ -19,5 +19,3 @@ function ThemePage() {
     overall: { type: 'text', grammar: 'css' },
   }} redirectUrl='/admin' formAction='site_theme/update' />;
 }
-
-export default ThemePage;

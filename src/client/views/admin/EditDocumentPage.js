@@ -3,7 +3,7 @@ import { GeneratedForm } from '../../reusables/back_exports';
 import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 
-function EditDocumentPage() {
+export default function EditDocumentPage() {
   let { state } = useFrontContext({
       dataParams: ['doc.docNodeId', 'docType.docTypeId'],
       urlParams: ['docNode', 'docTypeId'],
@@ -61,5 +61,3 @@ function EditDocumentPage() {
   }
   else return null;
 }
-
-export default EditDocumentPage;

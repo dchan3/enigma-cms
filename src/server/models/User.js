@@ -68,8 +68,9 @@ UserSchema.pre('save', async function saveHook(next) {
   user.rendered = await renderMarkup(profileTemplate, user);
 
   // proceed further only if the password is modified or the user is new
-  if (!user.isModified('password')) return next();
-
+  if (!user.isModified('password')) {
+    if (next && typeof next === 'function') return next();
+  }
 
   return genSalt((saltError, salt) => {
     if (saltError) { return next(saltError); }
@@ -80,7 +81,8 @@ UserSchema.pre('save', async function saveHook(next) {
       // replace a password string with hash value
       user.password = hash;
 
-      return next();
+      if (next && typeof next === 'function') return next();
+      return;
     });
   });
 });

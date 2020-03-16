@@ -82,8 +82,8 @@ DocumentSchema.pre('save', async function saveHook(next) {
       index.save();
     });
   }
-
-  return next();
+  if (next && typeof next === 'function') return next();
+  return;
 });
 
 export default model('Document', DocumentSchema);

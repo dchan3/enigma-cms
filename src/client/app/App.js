@@ -10,18 +10,16 @@ let FrontEndRoute = props => <TheRoute {...props} />;
 
 let mapRoutes = (Component) => (routeInfo) => <Component {...routeInfo} />;
 
-let App = () => {
+export default function App() {
   let { config: { description, keywords, siteName, iconUrl } } = useStaticContext(['config']);
-  return <div>
+  return [
     <Fedora title={siteName} description={description}
-      keywords={keywords && keywords.join(',') || ''} image={iconUrl} />
+      keywords={keywords && keywords.join(',') || ''} image={iconUrl} />,
     <TheSwitch>
       <FrontEndRoute path='*' component={FrontHeader}/>
-    </TheSwitch>
+    </TheSwitch>,
     <TheSwitch>
       {frontEndRoutes.map(mapRoutes(FrontEndRoute))}
-    </TheSwitch>
-  </div>;
-};
-
-export default App;
+    </TheSwitch>,
+  ];
+}

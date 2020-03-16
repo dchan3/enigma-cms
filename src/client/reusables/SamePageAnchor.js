@@ -2,7 +2,7 @@ import { h, createElement } from 'preact'; /** @jsx h **/
 import useTheRouterContext from '../hooks/useTheRouterContext';
 import fromCss from '../utils/component_from_css';
 
-function SamePageAnchor({
+export default function SamePageAnchor({
   children, href, target, className, id, style
 }) {
   let { history } = useTheRouterContext(),
@@ -21,5 +21,3 @@ function SamePageAnchor({
       style={style} onClick={handleClick}>{children}</Anchor> :
     <AlreadyOn>{children}</AlreadyOn>;
 }
-
-export default SamePageAnchor;

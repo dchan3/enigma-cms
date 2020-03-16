@@ -1,12 +1,9 @@
 const path = require('path'), nodeExternals = require('webpack-node-externals'),
-  TerserPlugin = require('terser-webpack-plugin'),
-  { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+  MinifyPlugin = require('babel-minify-webpack-plugin'),
+  TerserPlugin = require('terser-webpack-plugin'), WrapperPlugin = require('wrapper-webpack-plugin'),
+  kwTable = require('./babel/common-strings/kw-table.js');
 
-module.exports = [{
-  plugins: process.env.ANALYZER ? [
-    new BundleAnalyzerPlugin({ analyzerPort: 9001 }),
-  ] : [],
-  optimization: {
+let optimization = {
     minimizer: [
       new TerserPlugin({
         terserOptions: {
@@ -14,14 +11,35 @@ module.exports = [{
             comments: false,
           },
           mangle: {
-            toplevel: true
+            toplevel: true,
+            reserved: Object.values(kwTable)
           },
           keep_fnames: false
         },
         test: /\.jsx?$/i
       })]
-  },
-  mode: process.env.DEV_MODE ? 'development' : 'production',
+  }, resolve = {
+    alias: {
+      'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',
+        'history.min.js')
+    }
+  }, filename = '[name].bundle.js',
+  pubPath = path.resolve( __dirname, 'public' ),
+  mode = process.env.DEV_MODE ? 'development' : 'production', test = /\.jsx?$/i,
+  loader = 'babel-loader', comments = false, exclude = /node_modules/, babelrc = true,
+  presets = [
+    ['@babel/preset-env', { 'modules': 'cjs' }],
+    '@babel/preset-react'], topPlugins = [
+    new MinifyPlugin({}, {
+      comments
+    }), new WrapperPlugin({
+      header: 'const ' + Object.keys(kwTable).map(k => kwTable[k] + '="' + k + '"').join(',') + ';'
+    })
+  ]
+module.exports = [{
+  plugins: topPlugins,
+  optimization,
+  mode,
   entry: {
     app: './src/client/app/index.js',
     dashboard: './src/client/dashboard/index.js'
@@ -30,83 +48,63 @@ module.exports = [{
   module: {
     rules: [
       {
-        test: /\.jsx?$/i,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
+        test,
+        exclude,
+        loader,
         options: {
-          babelrc: true,
-          comments: false,
-          plugins: process.env.DEV_MODE ? ['./babel/unitify-react'] :
-            ['./babel/rightify', './babel/hashify', './babel/unitify-react', './babel/unconcatify']
+          babelrc,
+          comments,
+          presets,
+          plugins: process.env.DEV_MODE ? [] :
+            ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/common-strings']
         }
       },
       {
-        test: /\.jsx?$/i,
+        test,
         include: /src\/client\/reusables/,
-        loader: 'babel-loader',
+        loader,
         options: {
-          babelrc: false,
-          comments: false,
-          plugins: ['./babel/rightify', './babel/hashify',
+          babelrc,
+          comments,
+          presets,
+          plugins: ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify',  './babel/unconcatify', './babel/common-strings',
             ['./babel/from-css-ify', {
-              'toFile': path.resolve(__dirname, 'public/app.style.css') }],
-            '@babel/plugin-transform-react-jsx', './babel/unitify-react',
+              'toFile': path.resolve(__dirname, 'public/app.style.css') }]
           ]
         }
       },
       {
-        test: /\.jsx?$/,
+        test,
         include: /react/,
-        loader: 'babel-loader',
+        loader,
         options: {
-          comments: false,
+          comments,
           plugins: process.env.DEV_MODE ? [] :
             ['./babel/rightify']
         }
       },
       {
-        test: /\.jsx?$/,
+        test,
         include: /buffer/,
         loader: 'babel-loader',
         options: {
-          comments: false,
+          comments,
           plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify', './babel/hashify']
+            ['./babel/rightify', './babel/hashify', './babel/common-strings']
         }
       },
     ]
   },
   output: {
-    path: path.resolve( __dirname, 'public' ),
-    publicPath: path.resolve( __dirname, 'public' ),
-    filename: '[name].bundle.js'
+    path: pubPath,
+    publicPath: pubPath,
+    filename
   },
-  resolve: {
-    alias: {
-      'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',
-        'history.min.js')
-    }
-  },
-  devtool: 'source-map'
+  resolve,
 }, {
-  plugins: process.env.ANALYZER ? [
-    new BundleAnalyzerPlugin({ analyzerPort: 9002 })
-  ] : [],
-  optimization: {
-    minimizer: [new TerserPlugin({
-      terserOptions: {
-        output: {
-          comments: false,
-        },
-        mangle: {
-          toplevel: true
-        },
-        keep_fnames: true
-      },
-      test: /\.jsx?$/i,
-    })]
-  },
-  mode: process.env.DEV_MODE ? 'development' : 'production',
+  optimization,
+  mode,
+  plugins: topPlugins,
   entry: {
     server: './src/server/server.js'
   },
@@ -115,49 +113,47 @@ module.exports = [{
   module: {
     rules: [
       {
-        test: /\.jsx?$/i,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
+        test,
+        exclude,
+        loader,
         options: {
-          babelrc: true,
-          comments: false
+          babelrc,
+          comments,
+          presets,
+          plugins: process.env.DEV_MODE ? [] :
+            ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/common-strings']
+
         }
       },
       {
-        test: /\.jsx?$/i,
+        test,
         include: /src\/client\/reusables/,
-        loader: 'babel-loader',
+        loader,
         options: {
-          babelrc: false,
-          comments: false,
-          plugins: ['./babel/rightify', './babel/hashify', './babel/from-css-ify', '@babel/plugin-transform-react-jsx',
-            './babel/unitify-react', ]
+          babelrc,
+          comments,
+          presets,
+          plugins: [ '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify',  './babel/unconcatify', './babel/from-css-ify' ]
         }
       },
       {
-        test: /\.jsx?$/,
+        test,
         include: /src\/server\/routes\/ssr/,
-        loader: 'babel-loader',
+        loader,
         options: {
-          comments: false,
-          plugins: ['./babel/unconcatify', './babel/autominify']
+          babelrc,
+          comments,
+          presets,
+          plugins: ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/autominify', './babel/common-strings']
         }
       },
     ],
   },
   output: {
     path: __dirname,
-    filename: '[name].bundle.js',
+    filename,
     publicPath: '/'
   },
-  resolve: {
-    alias: {
-      'react-dom/server': path.resolve(__dirname, 'node_modules', 'react-dom',
-        'cjs', 'react-dom-server.node.production.min.js'),
-      'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',
-        'history.min.js')
-    }
-  },
-  devtool: 'source-map',
+  resolve,
   node: { __dirname: false }
 }];

@@ -8,7 +8,7 @@ import fromCss from '../../utils/component_from_css';
 
 let TableText = fromCss('p', 'text-align:center;font-family:sans-serif;');
 
-function EditDocumentLanding() {
+export default function EditDocumentLanding() {
   function handleDeleteClick() {
     return function(url) {
       syncReqs.deleteRequestSync(url);
@@ -69,5 +69,3 @@ function EditDocumentLanding() {
   }
   return null;
 }
-
-export default EditDocumentLanding;

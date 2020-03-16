@@ -2,7 +2,7 @@ import { h } from 'preact'; /** @jsx h **/
 import { GeneratedForm } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext';
 
-function ConfigPage() {
+export default function ConfigPage() {
   let { config } = useStaticContext(['config']);
 
   return <GeneratedForm title="Site Settings" currentValue={config}
@@ -43,5 +43,3 @@ function ConfigPage() {
       }
     }} redirectUrl='/admin' formAction='site_config/update' />
 }
-
-export default ConfigPage;

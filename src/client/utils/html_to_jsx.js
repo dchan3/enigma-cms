@@ -2,12 +2,12 @@ import { createElement } from 'preact';
 import styleObject from './style_object';
 
 let esc =  {
-  'amp': '&',
-  'lt': '<',
-  'gt': '>',
-  'quot': '"',
-  'nbsp': '\u00A0'
-};
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    nbsp: '\u00A0'
+  }, kw = { class: 'className', for: 'htmlFor' };
 
 function escapeText(text) {
   return text.replace(/&([a-z]+);/g, function(match, p1) {
@@ -26,9 +26,7 @@ function collapseNode(stack) {
         retval.name = nthName;
         break;
       case 'attr':
-        tempAttr.name = ['class', 'for'].includes(nthName)
-          ? { 'class': 'className', 'for': 'htmlFor' }[nthName]
-          : nthName;
+        tempAttr.name = kw[nthName] || nthName;
         break;
       case 'val':
         tempAttr.value = tempAttr.name === 'style' ?

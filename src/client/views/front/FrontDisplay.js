@@ -31,7 +31,7 @@ function FrontDisplay({ dataParams, urlParams, apiUrl }) {
   if (dataObj === undefined) return <TheRedirect to='/not-found' />;
   else if (dataObj && dataObj.metadata && dataObj.rendered) {
     return [<Fedora {...dataObj.metadata} />,
-      <div><InnerHtmlRenderer innerHtml={dataObj.rendered} /></div>];
+      <InnerHtmlRenderer innerHtml={dataObj.rendered} />];
   }
   return null;
 }

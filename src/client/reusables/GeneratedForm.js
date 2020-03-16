@@ -151,16 +151,13 @@ function GeneratedFormContents() {
   </FormContainer>;
 }
 
-function GeneratedForm(props) {
-  return <GeneratedFormContextProvider {...props}>
+export default function GeneratedForm({
+  parentCallback = undefined, fileContent = 'fileContent', method = 'post',
+  ...rest
+}) {
+  return <GeneratedFormContextProvider {...{
+    parentCallback, fileContent, method
+  }} {...rest}>
     <GeneratedFormContents />
   </GeneratedFormContextProvider>
 }
-
-GeneratedForm.defaultProps =  {
-  parentCallback: undefined,
-  fileContent: 'fileContent',
-  method: 'post'
-};
-
-export default GeneratedForm;

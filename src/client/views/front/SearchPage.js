@@ -4,7 +4,7 @@ import { getRequest } from '../../utils/api_request_async';
 import { SamePageAnchor } from '../../reusables/front_exports';
 import { objMap } from '../../utils/lofuncs';
 
-function SearchPage() {
+export default function SearchPage() {
   let [query, setQuery] = useState(''), [results, setResults] = useState({});
 
   useEffect(function() {
@@ -17,9 +17,9 @@ function SearchPage() {
     setQuery(evt.target.value);
   }
 
-  return <div>
-    <input type="search" value={query} onChange={handleChange} />
-    {Object.keys(results).length ? objMap(results,
+  return  [
+    <input type="search" value={query} onChange={handleChange} />,
+    Object.keys(results).length ? objMap(results,
       function(r) {
         var { typeInfo: { docTypeNamePlural, slugFrom },
           docInfo: { slug, content } } = this[r];
@@ -28,8 +28,5 @@ function SearchPage() {
             `/${docTypeNamePlural}/${slug}`}>{content[slugFrom]}</SamePageAnchor>
         </div>;
       }
-    ) : <p>No results.</p>}
-  </div>;
+    ) : <p>No results.</p>];
 }
-
-export default SearchPage;

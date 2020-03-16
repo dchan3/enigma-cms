@@ -23,16 +23,13 @@ let ContainerDiv = fromCss('div',
     </SubList>
   </ListItem>;
 
-function DropdownMenu({ menuNodes }) {
-  function renderNode(node) {
-    let L = !!node.childNodes ? SubMenu : LinkNode;
-    return <L {...node} />;
-  }
+function renderNode(node) {
+  let L = !!node.childNodes ? SubMenu : LinkNode;
+  return <L {...node} />;
+}
 
+export default function DropdownMenu({ menuNodes }) {
   return <ContainerDiv>
     <TopLevelList>{menuNodes.map(node => renderNode(node))}</TopLevelList>
   </ContainerDiv>;
 }
-
-
-export default DropdownMenu;

@@ -2,7 +2,7 @@ import { h } from 'preact'; /** @jsx h **/
 import { GeneratedForm } from '../../reusables/back_exports';
 import useFrontContext from '../../hooks/useFrontContext';
 
-function EditDisplayTemplate() {
+export default function EditDisplayTemplate() {
   let { state } = useFrontContext({
       dataParams: ['docTypeId'],
       urlParams: ['docTypeId'],
@@ -33,5 +33,3 @@ function EditDisplayTemplate() {
   }
   return null;
 }
-
-export default EditDisplayTemplate;
