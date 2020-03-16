@@ -6,3 +6,5 @@ public/*.js
 public/uploads/
 server.bundle.js
 test/
+babel/
+webpack.config.js

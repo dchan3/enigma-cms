@@ -1,26 +1,5 @@
 import { SiteConfig } from '../models';
 
-export const documentMetadata = async function (content, appendSite = true) {
-  let { siteName, keywords, iconUrl, description } =  await SiteConfig.findOne({}), attrs = {
-    title: content['title'] || content['name'] || '',
-    description: content['description'] || content['summary'] ||
-      content['synopsis'] || '',
-    image: content['image'] || content['img'] || content['picture'] ||
-     content['pic'] || content['photo'] || '',
-    keywords: content['tags'] || content['keywords'] ||
-      content['buzzwords'] || ''
-  };
-
-  if (appendSite) {
-    attrs.title += attrs.title.length ? ` | ${siteName}` : siteName;
-    attrs.description += attrs.description.length ? attrs.description : description;
-    attrs.image += attrs.image.length ? attrs.image : (iconUrl || '');
-    attrs.keywords = typeof attrs.keywords === 'string' ?
-      [attrs.keywords, ...keywords].join(',') : (attrs.keywords.length ? [...attrs.keywords, ...keywords] : [keywords]).join(',');
-  }
-  return attrs;
-}
-
 export const documentMetadataSync = function (content) {
   let attrs = {
     title: content['title'] || content['name'] || '',
@@ -32,6 +11,20 @@ export const documentMetadataSync = function (content) {
       content['buzzwords'] || ''
   };
 
+  return attrs;
+}
+
+export const documentMetadata = async function (content, appendSite = true) {
+  let { siteName, keywords, iconUrl, description } =  await SiteConfig.findOne({}),
+    attrs = documentMetadataSync(content);
+
+  if (appendSite) {
+    attrs.title += attrs.title.length ? ` | ${siteName}` : siteName;
+    attrs.description += attrs.description.length ? attrs.description : description;
+    attrs.image += attrs.image.length ? attrs.image : (iconUrl || '');
+    attrs.keywords = typeof attrs.keywords === 'string' ?
+      [attrs.keywords, ...keywords].join(',') : (attrs.keywords.length ? [...attrs.keywords, ...keywords] : [keywords]).join(',');
+  }
   return attrs;
 }
 
