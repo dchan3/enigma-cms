@@ -33,7 +33,11 @@ let optimization = {
     new MinifyPlugin({}, {
       comments
     }), new WrapperPlugin({
-      header: 'const ' + Object.keys(kwTable).map(k => kwTable[k] + '="' + k + '"').join(',') + ';'
+      header: 'const ' + Object.keys(kwTable).map(
+        (k) => {
+          return k.match(/^\d+$/) ? (kwTable[k] + '=' + k)
+          : (kwTable[k] + '="' + k + '"');
+        }).join(',') + ';'
     })
   ]
 module.exports = [{
@@ -80,7 +84,7 @@ module.exports = [{
         options: {
           comments,
           plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify']
+            ['./babel/rightify', './babel/common-strings']
         }
       },
       {
@@ -133,7 +137,7 @@ module.exports = [{
           babelrc,
           comments,
           presets,
-          plugins: [ '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify',  './babel/unconcatify', './babel/from-css-ify' ]
+          plugins: [ '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify',  './babel/unconcatify', './babel/from-css-ify', './babel/common-strings' ]
         }
       },
       {

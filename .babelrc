@@ -9,8 +9,7 @@
     "@babel/plugin-transform-strict-mode",
     "@babel/plugin-transform-react-jsx",
     "./babel/unconcatify", "./babel/hashify",
-    "./babel/rightify", "./babel/unitify-react",
-    "./babel/common-strings"
+    "./babel/rightify", "./babel/unitify-react"
   ],
   "comments": false
 }

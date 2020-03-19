@@ -33,9 +33,6 @@ module.exports = {
   'checked': '勾',
   'checkbox': '盒',
   'href': '處',
-  '1073741823': '那',
-  'white': '白',
-  'black': '黑',
   'useFrontContext': '前',
   'useRouterContext': '路',
   'td': '格',
@@ -47,12 +44,12 @@ module.exports = {
   'result': '效',
   'radio': '收',
   'select': '選',
-  'keyup': '放',
-  'keydown': '壓',
+  'option': '擇',
   'Fedora': '帽',
   'pathname': '街',
   'history': '歷',
   'location': '點',
   'className': '類',
-  'defaultProps': '設'
+  'defaultProps': '設',
+  'default': '定'
 }
