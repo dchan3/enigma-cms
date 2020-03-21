@@ -12,6 +12,7 @@ import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
+import { strQuery, shallowSearch } from '../src/client/reusables/PaginatorControlContext';
 
 const { JSDOM } = require('jsdom');
 
@@ -835,9 +836,23 @@ describe('Paginator Controls', function() {
     done();
   });
 
-  // numberOfPages, maxPageTabs, currentPage
   it('truncated page list 2', function(done) {
     expect(truncatePageList(7,5,1)).to.deep.equal([1,2,3,null,6,7]);
+    done();
+  });
+
+  it('shallow search 1', function(done) {
+    expect(strQuery('boogie man', 'boogie')).to.equal(true);
+    done();
+  });
+
+  it('shallow search 2', function(done) {
+    expect(strQuery('alpha', 'alpha male')).to.equal(false);
+    done();
+  });
+
+  it('shallow search 3', function(done) {
+    expect(shallowSearch(['alpha', 'bravo', 'charlie', 'alphabet'], 'alpha')).to.deep.equal(['alpha', 'alphabet']);
     done();
   });
 });

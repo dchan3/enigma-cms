@@ -2,10 +2,10 @@ import { h, createContext } from 'preact'; /** @jsx h **/
 import renderToString from 'preact-render-to-string';
 import { useReducer } from 'preact/hooks';
 
-const strQuery = (str, query) => query.split(' ').reduce(
+export const strQuery = (str, query) => query.split(' ').reduce(
   (acc, cur) => acc && !!str.match(new RegExp(cur, 'i')), true);
 
-function shallowSearch(items, query) {
+export function shallowSearch(items, query) {
   var retval = [];
   if (query === '') return items;
   items.forEach(item => {
