@@ -21,7 +21,10 @@ mongoose.Promise = global.Promise;
 var app = express(), port = process.env.SERVER_PORT || 8080,
   apiProxy = createProxyServer();
 
-mongoose.connect(require('../../config/db.js').url, {}, () => {
+mongoose.connect(require('../../config/db.js').url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}, () => {
   SiteConfig.findOne({}).then(config => {
     if (!fs.existsSync(path.join(__dirname, 'site-files'))) {
       fs.mkdirSync(path.join(__dirname, 'site-files'));
@@ -55,7 +58,8 @@ mongoose.connect(require('../../config/db.js').url, {}, () => {
   });
 
   DocumentType.find({ }).then(types => {
-    var protocol = process.env.PROTOCOL || 'http', host = process.env.HOST || 'localhost:8080';
+    var protocol = process.env.PROTOCOL || (process.env.HOST ?
+        'https' : 'http'), host = process.env.HOST || 'localhost:8080';
 
     var slugs = [`${protocol}://${host}/`, `${protocol}://${host}/?amp=true`];
 

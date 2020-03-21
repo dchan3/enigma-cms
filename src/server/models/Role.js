@@ -3,7 +3,10 @@ import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 
 var conn =
-  mongoose.createConnection(require('../../../config/db.js').url, {}, () => {});
+  mongoose.createConnection(require('../../../config/db.js').url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, () => {});
 
 autoIncrement.initialize(conn);
 

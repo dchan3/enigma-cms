@@ -10,8 +10,12 @@ import renderMarkup from '../utils/render_markup';
 import { documentMetadataSync } from '../utils/render_metadata';
 import fs from 'fs';
 import path from 'path';
+
 var conn = mongoose.createConnection(
-  require('../../../config/db.js').url, {}, () => { });
+  require('../../../config/db.js').url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, () => { });
 
 autoIncrement.initialize(conn);
 
