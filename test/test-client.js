@@ -12,7 +12,7 @@ import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
-import { strQuery, shallowSearch } from '../src/client/reusables/PaginatorControlContext';
+import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
 
 const { JSDOM } = require('jsdom');
 
@@ -853,6 +853,17 @@ describe('Paginator Controls', function() {
 
   it('shallow search 3', function(done) {
     expect(shallowSearch(['alpha', 'bravo', 'charlie', 'alphabet'], 'alpha')).to.deep.equal(['alpha', 'alphabet']);
+    done();
+  });
+
+  // items, per, maxPages
+  it('results pagination', function(done) {
+    expect(pages([1,2,3,4,5,6,7], 3, 2)).to.deep.equal([[1,2,3], [4,5,6]]);
+    done();
+  });
+
+  it('results pagination', function(done) {
+    expect(pages([1,2,3,4,5], 4, 2)).to.deep.equal([[1,2,3,4], [5]]);
     done();
   });
 });

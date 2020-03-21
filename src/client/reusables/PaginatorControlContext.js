@@ -26,7 +26,7 @@ export function shallowSearch(items, query) {
   return retval;
 }
 
-const pages = function(items, per, maxPages) {
+export function pages(items, per, maxPages) {
   let retval = [], page = 0, counter = 0;
   for (let i in items) {
     if (!!maxPages) {
@@ -45,7 +45,7 @@ const pages = function(items, per, maxPages) {
     }
   }
   return retval;
-};
+}
 
 var initialState = ({
   items, useListElement, activeTabColor, truncate, maxPageTabs,
