@@ -51,4 +51,32 @@ describe('Router', function() {
     expect(actual).to.equal(null);
     done();
   });
+
+  it('path matcher 5', function(done) {
+    let actual = matchThePath('/lol', {
+      path: '*'
+    });
+    expect(actual).to.deep.equal({
+      path: '*',
+      url: '/lol',
+      params: {}
+    });
+    done();
+  });
+
+  it('path matcher 6', function(done) {
+    let actual = matchThePath('/dude', {
+      path: '/'
+    });
+    expect(actual).to.equal(null);
+    done();
+  });
+
+  it('path matcher 7', function(done) {
+    let actual = matchThePath('/:slug', {
+      path: '/documents/lol'
+    });
+    expect(actual).to.equal(null);
+    done();
+  });
 });
