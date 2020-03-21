@@ -13,3 +13,6 @@ server.bundle.js*
 /**/.DS_Store
 coverage/
 .nyc_output
+documents/**/*.enigma
+profiles/*.enigma
+sitemap/*.enigma

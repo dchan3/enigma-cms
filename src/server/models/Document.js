@@ -4,8 +4,12 @@ import autoIncrement, { plugin as autoIncrementPlugin } from
 import ReverseIndex from './ReverseIndex.js';
 import DocumentDisplayTemplate from './DocumentDisplayTemplate.js';
 import User from './User';
+import DocumentType from './DocumentType';
 import createReverseIndex from '../utils/create_reverse_index';
 import renderMarkup from '../utils/render_markup';
+import { documentMetadataSync } from '../utils/render_metadata';
+import fs from 'fs';
+import path from 'path';
 var conn = mongoose.createConnection(
   require('../../../config/db.js').url, {}, () => { });
 
@@ -82,6 +86,10 @@ DocumentSchema.pre('save', async function saveHook(next) {
       index.save();
     });
   }
+  DocumentType.findOne({ docTypeId: doc.docTypeId }).then(({ docTypeNamePlural }) => {
+    let data = { rendered: doc.rendered, metadata: documentMetadataSync(doc.content) };
+    fs.writeFileSync(path.join(__dirname, `documents/${docTypeNamePlural}/${doc.slug}.enigma`), JSON.stringify(data));
+  });
   if (next && typeof next === 'function') return next();
   return;
 });

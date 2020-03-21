@@ -4,6 +4,8 @@ import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 import renderMarkup from '../utils/render_markup';
 import SiteConfig from './SiteConfig';
+import fs from 'fs';
+import path from 'path';
 
 var conn = mongoose.createConnection(
   require('../../../config/db.js').url, {}, () => { });
@@ -66,6 +68,16 @@ UserSchema.pre('save', async function saveHook(next) {
   var profileTemplate = await SiteConfig.findOne({ }, 'profileTemplate', r => r).then(({ profileTemplate }) => profileTemplate);
 
   user.rendered = await renderMarkup(profileTemplate, user);
+
+  fs.writeFileSync(path.join(__dirname, `profiles/${user.username}.enigma`), JSON.stringify({
+    rendered: user.rendered,
+    metadata: {
+      title: `${user.username}'s Profile`,
+      image: user.pictureSrc,
+      description: `Profile of ${user.username}`
+    }
+  }));
+
 
   // proceed further only if the password is modified or the user is new
   if (!user.isModified('password')) {

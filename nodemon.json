@@ -1,4 +1,4 @@
 {
   "verbose": true,
-  "ignore": ["test/**/", "public/**/"]
+  "ignore": ["test/**/", "public/**/", "documents/**/*.enigma", "profiles/**/*.enigma"]
 }

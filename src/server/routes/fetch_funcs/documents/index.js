@@ -1,9 +1,11 @@
-import { Document, DocumentType, DocumentDisplayTemplate, User }
+import { Document, DocumentType, DocumentDisplayTemplate }
   from '../../../models';
 import renderMarkup, { prepareDocumentsForRender }
   from '../../../utils/render_markup';
 import { categoryMetadata,
   documentMetadata } from '../../../utils/render_metadata';
+import fs from 'fs';
+import path from 'path';
 
 async function getTypes() {
   let types = await DocumentType.find({ });
@@ -29,30 +31,32 @@ async function getType2(docTypeId) {
 }
 
 async function getRenderedDocumentByTypeAndSlug(type, slug) {
-  let docType = await DocumentType.findOne({
-    $or: [
-      { docTypeName: type },
-      { docTypeNamePlural: type }]
-  });
-  if (!docType) return {};
-  let { docTypeId } = docType,
-    doc = await Document.findOne({ docTypeId, slug });
+  let filename = path.join(__dirname, type, `${slug}.enigma`), data = '', retval;
+  try {
+    if (!fs.exists(filename)) throw '';
 
-  if (!doc) return {};
+    data = fs.readFileSync(filename);
+    if (!data) throw '';
 
-  let { creatorId, content, createdAt, editedAt, rendered } = doc,
-    authorInfo = await User.findOne({ userId: creatorId })
-      .select({ password: 0, _id: 0 }),
-    metadata = await documentMetadata(content);
+    retval = JSON.parse(data);
+    if (!retval) throw '';
+  } catch {
+    let docType = await DocumentType.findOne({
+      $or: [
+        { docTypeName: type },
+        { docTypeNamePlural: type }]
+    });
+    if (!docType) return {};
+    let { docTypeId } = docType,
+      doc = await Document.findOne({ docTypeId, slug });
 
-  return {
-    slug,
-    editedAt,
-    createdAt,
-    authorInfo,
-    rendered,
-    metadata
-  };
+    if (!doc) return {};
+
+    let { rendered, content } = doc,
+      metadata = await documentMetadata(content);
+    retval = { rendered, metadata }
+  }
+  return retval;
 }
 
 async function getRenderedDocumentsByTypeName(docTypeNamePlural) {

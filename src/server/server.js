@@ -14,6 +14,7 @@ import { default as ssrRoutes } from './routes/ssr';
 import { default as ampRoutes } from './routes/ssr/amp';
 import { createProxyServer } from 'http-proxy';
 import path from 'path';
+import fs from 'fs';
 
 mongoose.Promise = global.Promise;
 
@@ -37,12 +38,29 @@ mongoose.connect(require('../../config/db.js').url, {}, () => {
     else return;
   });
 
+  if (!fs.existsSync(path.join(__dirname, 'documents'))) {
+    fs.mkdirSync(path.join(__dirname, 'documents'));
+  }
+
+  if (!fs.existsSync(path.join(__dirname, 'profiles'))) {
+    fs.mkdirSync(path.join(__dirname, 'profiles'));
+  }
+
   User.find().then(users => {
     users.forEach(u => { u.save(); });
   });
 
-  Document.find({}).then(docs => {
-    docs.forEach(doc => { doc.save(); });
+  DocumentType.find({ }).then(types => {
+    types.forEach(function({ docTypeNamePlural, docTypeId }) {
+      if (!fs.existsSync(path.join(__dirname, `documents/${docTypeNamePlural}`))) {
+        fs.mkdirSync(path.join(__dirname, `documents/${docTypeNamePlural}`));
+      }
+      Document.find({ docTypeId }).then(docs => {
+        docs.forEach((doc) => {
+          doc.save();
+        });
+      });
+    });
   });
 });
 
