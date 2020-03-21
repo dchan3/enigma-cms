@@ -11,6 +11,7 @@ import { loget, loset, objMap } from '../src/client/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
+import { generateArray } from '../src/client/reusables/PaginatorControls';
 
 const { JSDOM } = require('jsdom');
 
@@ -812,6 +813,19 @@ describe('obj map', function() {
     }, function(k) {
       return Number.parseInt(this[k]);
     })).to.deep.equal([1,2,3]);
+    done();
+  });
+});
+
+
+describe('Paginator Controls', function() {
+  it('array generation from 1 to n', function(done) {
+    expect(generateArray(5)).to.deep.equal([1,2,3,4,5]);
+    done();
+  });
+
+  it('array generation from n to k', function(done) {
+    expect(generateArray(4,7)).to.deep.equal([4,5,6,7]);
     done();
   });
 });

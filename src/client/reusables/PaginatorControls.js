@@ -3,7 +3,7 @@ import { useContext } from 'preact/hooks';
 import fromCss from '../utils/component_from_css';
 import PaginatorControlContext from './PaginatorControlContext';
 
-var generateArray = function() {
+export function generateArray() {
   let retval = [], n = arguments[0], k = arguments[1];
 
   for (let i = (k !== undefined ? n : 1); i <= (k !== undefined ? k : n); i++) {
@@ -11,9 +11,9 @@ var generateArray = function() {
   }
 
   return retval;
-};
+}
 
-function truncatePageList(
+export function truncatePageList(
   numberOfPages, maxPageTabs, currentPage) {
   if (numberOfPages <= maxPageTabs) {
     return generateArray(numberOfPages);
