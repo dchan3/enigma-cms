@@ -4,13 +4,15 @@ import TheStaticRouter from '../../../client/the_router/TheStaticRouter';
 import { HeadContextProvider } from '../../../client/contexts/HeadContext';
 import { StaticContextProvider } from '../../../client/contexts/StaticContext';
 import { default as fetchers } from './fetch_data';
-import { SiteConfig, DocumentType } from '../../models';
+import { DocumentType } from '../../models';
 import matchThePath from  '../../../lib/utils/match_the_path';
 import App from '../../../client/app/App';
 import Dashboard from '../../../client/dashboard/Dashboard';
 import frontEndRoutes from '../../../lib/routes/front_routes';
 import backEndRoutes from '../../../lib/routes/route_data';
 import serialize from 'serialize-javascript';
+import fs from 'fs';
+import path from 'path';
 
 function makeMeta(type, attr, content) {
   return `<meta ${type}="${attr}" content="${content}"/>`;
@@ -51,16 +53,15 @@ export function renderString(props) {
 }
 
 export function ssrGen(htmlTemplate) {
-  return async function ssrRenderer({ path, url: location, user }, res, next) {
-    let isDash = path.startsWith('/admin') || ['/login', '/signup'].includes(path);
-    let config = await SiteConfig.findOne({}),
-      types = await DocumentType.find({}), routes = isDash ?
+  return async function ssrRenderer({ path: p, url: location, user }, res, next) {
+    let isDash = p.startsWith('/admin') || ['/login', '/signup'].includes(p);
+    let config = JSON.parse(fs.readFileSync(path.join(__dirname, 'site-files/config.enigma'))), routes = isDash ?
         backEndRoutes :  frontEndRoutes, component = isDash ? Dashboard : App;
-    let context = { config, types }, foundRoutes =
-      routes.find(route => matchThePath(path, route));
+    let context = isDash ? { config, types: await DocumentType.find({}) } : { config }, foundRoutes =
+      routes.find(route => matchThePath(p, route));
     let pathMatch = foundRoutes && (typeof foundRoutes.path === 'string' ? foundRoutes.path :
         foundRoutes.path[0]) || '',
-      promise = (pathMatch.length && fetchers[pathMatch]) ? fetchers[pathMatch](path) :
+      promise = (pathMatch.length && fetchers[pathMatch]) ? fetchers[pathMatch](p) :
         Promise.resolve();
     promise.then(data => {
       if (data) context.dataObj = data;

@@ -6,7 +6,7 @@ import path from 'path';
 const css1 = ['-webkit-', '-moz', '-ms-', ''], css2 = ['-webkit-', '-moz', '-ms-', '-o', ''];
 
 var htmlTemplate =
-  ({ language, gaTrackingId, stylesheet },
+  ({ language, gaTrackingId },
     head, dom, data, back) => {
     let { dataObj } = data, renderable = gaTrackingId && !back;
     return `<!DOCTYPE html>
@@ -42,7 +42,7 @@ var htmlTemplate =
     body{${css1.map(str => `${str}animation:none;`)}}</style></noscript>
     <style amp-custom>
       ${fs.readFileSync(path.resolve(__dirname, 'public/app.style.css'))}
-      ${stylesheet}</style>
+      ${fs.readFileSync(path.resolve(__dirname, 'public/style.css'))}</style>
     ${renderable ?
     gaScript('id="gainit" type="text/plain" target="amp-script"') : ''}
     ${staticScript('id="ctx" type="text/plain" target="amp-script"', data)}</head><body>

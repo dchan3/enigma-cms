@@ -4,9 +4,10 @@ build/
 dist/
 public/app*.js*
 public/dashboard*.js*
-public/app*.css*
+public/*.css
 assets/app*.css*
 public/uploads/
+public/sitemap.txt
 public/profile-pix/
 public/site-icon/
 server.bundle.js*
@@ -16,3 +17,4 @@ coverage/
 documents/**/*.enigma
 profiles/*.enigma
 sitemap/*.enigma
+site-files/*.enigma

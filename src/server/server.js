@@ -23,11 +23,15 @@ var app = express(), port = process.env.SERVER_PORT || 8080,
 
 mongoose.connect(require('../../config/db.js').url, {}, () => {
   SiteConfig.findOne({}).then(config => {
+    if (!fs.existsSync(path.join(__dirname, 'site-files'))) {
+      fs.mkdirSync(path.join(__dirname, 'site-files'));
+    }
+
     if (!config) {
       let newConfig = new SiteConfig({});
       newConfig.save();
     }
-    else return;
+    else config.save();
   });
 
   SiteTheme.findOne({}).then(theme => {
@@ -51,14 +55,24 @@ mongoose.connect(require('../../config/db.js').url, {}, () => {
   });
 
   DocumentType.find({ }).then(types => {
+    var protocol = process.env.PROTOCOL || 'http', host = process.env.HOST || 'localhost:8080';
+
+    var slugs = [`${protocol}://${host}/`, `${protocol}://${host}/?amp=true`];
+
     types.forEach(function({ docTypeNamePlural, docTypeId }) {
       if (!fs.existsSync(path.join(__dirname, `documents/${docTypeNamePlural}`))) {
         fs.mkdirSync(path.join(__dirname, `documents/${docTypeNamePlural}`));
       }
+      slugs.push(`${protocol}://${host}/${docTypeNamePlural}`,
+        `${protocol}://${host}/${docTypeNamePlural}?amp=true`);
       Document.find({ docTypeId }).then(docs => {
         docs.forEach((doc) => {
+          slugs.push(`${protocol}://${host}/${docTypeNamePlural}/${doc.slug}`);
+          slugs.push(`${protocol}://${host}/${docTypeNamePlural}/${doc.slug}?amp=true`);
           doc.save();
         });
+        slugs.sort();
+        fs.writeFileSync(path.join(__dirname, 'public/sitemap.txt'), slugs.join('\n'));
       });
     });
   });
@@ -103,30 +117,6 @@ app.use('/api/search', searchRoutes);
 app.use('/api/sitemap', sitemapRoutes);
 app.use('/api/site_theme', themeRoutes);
 
-app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
-  var docTypes = await DocumentType.find({}).select({ docTypeNamePlural: 1,
-      docTypeId: 1 }), documents = await Document.find({ draft: false }).sort({
-      docType: 1, createdAt: -1 }).select({ slug: 1, docTypeId: 1, _id: -1 }),
-    docTypeMap = {}, slugs = [`${protocol}://${host}/`, `${protocol}://${host}/?amp=true`];
-  docTypes.forEach(({ docTypeNamePlural, docTypeId }) => {
-    slugs.push(`${protocol}://${host}/${docTypeNamePlural}`,
-      `${protocol}://${host}/${docTypeNamePlural}?amp=true`);
-    docTypeMap[docTypeId] = docTypeNamePlural; });
-  slugs.push(...documents.map(({ docTypeId, slug }) =>
-    `${protocol}://${host}/${docTypeMap[docTypeId]}/${slug}`));
-  slugs.push(...documents.map(({ docTypeId, slug }) =>
-    `${protocol}://${host}/${docTypeMap[docTypeId]}/${slug}?amp=true`));
-  slugs.sort();
-  res.header('Content-Type', 'text/plain');
-  res.send(slugs.join('\n'));
-});
-
-app.get('/style.css', (req, res) => {
-  SiteConfig.findOne({ }).then(({ stylesheet }) => {
-    res.header('Content-Type', 'text/css');
-    res.send(`${stylesheet}\n`);
-  });
-});
 app.use('/', express.static(path.join(__dirname, '/public')));
 app.get('/*', function(req, res, next) {
   if (req.query.amp) return ampRoutes(req, res, next);

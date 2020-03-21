@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import ShortcodeSchema from './ShortcodeSchema';
 import User from './User';
+import fs from 'fs';
+import path from 'path';
 
 let { Schema, model } = mongoose;
 
@@ -73,6 +75,18 @@ SiteConfigSchema.post('save', function() {
   User.find({ }).then(users => {
     users.forEach(user => { user.save(); });
   });
+
+  var {
+    siteName, description, aboutBody, gaTrackingId, language,
+    keywords, iconUrl, profileTemplate, menuLinks, stylesheet
+  } = this;
+
+  fs.writeFileSync(path.join(__dirname, 'site-files/config.enigma'), JSON.stringify({
+    siteName, description, aboutBody, gaTrackingId, language,
+    keywords, iconUrl, profileTemplate, menuLinks
+  }));
+
+  fs.writeFileSync(path.join(__dirname, 'public/style.css'), stylesheet);
 });
 
 export default model('SiteConfig', SiteConfigSchema);
