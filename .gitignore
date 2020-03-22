@@ -17,4 +17,4 @@ coverage/
 documents/**/*.enigma
 profiles/*.enigma
 sitemap/*.enigma
-site-files/*.enigma
+site-files/

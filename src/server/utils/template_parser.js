@@ -48,8 +48,8 @@ export default (function() {
           });
       };
     },
-    registerHelper(name, fxn) {
-      helpers[name] = fxn;
+    registerHelper(keyName, fxn) {
+      helpers[keyName] = fxn;
     }
   }
 })();

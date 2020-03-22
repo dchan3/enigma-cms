@@ -1,15 +1,11 @@
 import TemplateParser from './template_parser';
-import { SiteConfig } from '../models';
 
 let renderMarkup = async function (templateBody, stuff) {
-  let { shortcodes } = await SiteConfig.findOne({ });
+  let shortcodes = require('../../../site-files/shortcodes.js');
 
-  shortcodes.forEach(
-    function({ name, args, code }) {
-      TemplateParser.registerHelper(name,
-        new Function(args.join(','), code));
-    });
-
+  for (let key in shortcodes) {
+    TemplateParser.registerHelper(key, shortcodes[key]);
+  }
   let template = TemplateParser.compile(templateBody), retval = template(stuff);
 
   return retval;

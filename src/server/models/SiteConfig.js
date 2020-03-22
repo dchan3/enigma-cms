@@ -78,7 +78,8 @@ SiteConfigSchema.post('save', function() {
 
   var {
     siteName, description, aboutBody, gaTrackingId, language,
-    keywords, iconUrl, profileTemplate, menuLinks, stylesheet
+    keywords, iconUrl, profileTemplate, menuLinks, stylesheet,
+    shortcodes
   } = this;
 
   fs.writeFileSync(path.join(__dirname, 'site-files/config.enigma'), JSON.stringify({
@@ -87,6 +88,18 @@ SiteConfigSchema.post('save', function() {
   }));
 
   fs.writeFileSync(path.join(__dirname, 'public/style.css'), stylesheet);
+
+  let shortcodeData = 'var obj = {};\n';
+
+  shortcodes.forEach(({ name, args, code }) => {
+    if (name.length && code.length) {
+      shortcodeData += `obj.${name} = function(${ args.join(', ')}) {\n${code}\n};\n`
+    }
+  });
+
+  shortcodeData += 'module.exports = obj;\n'
+
+  fs.writeFileSync(path.join(__dirname, 'site-files/shortcodes.js'), shortcodeData);
 });
 
 export default model('SiteConfig', SiteConfigSchema);
