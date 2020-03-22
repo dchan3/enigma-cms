@@ -31,7 +31,7 @@ async function getType2(docTypeId) {
 }
 
 async function getRenderedDocumentByTypeAndSlug(type, slug) {
-  let filename = path.join(__dirname, type, `${slug}.enigma`), data = '', retval;
+  let filename = path.join(__dirname, `documents/${type}/${slug}.enigma`), data = '', retval;
   try {
     if (!fs.exists(filename)) throw '';
 
@@ -54,7 +54,7 @@ async function getRenderedDocumentByTypeAndSlug(type, slug) {
 
     let { rendered, content } = doc,
       metadata = await documentMetadata(content);
-    retval = { rendered, metadata }
+    retval = { rendered, metadata, slug }
   }
   return retval;
 }

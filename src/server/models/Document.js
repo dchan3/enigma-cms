@@ -91,7 +91,7 @@ DocumentSchema.pre('save', async function saveHook(next) {
     });
   }
   DocumentType.findOne({ docTypeId: doc.docTypeId }).then(({ docTypeNamePlural }) => {
-    let data = { rendered: doc.rendered, metadata: documentMetadataSync(doc.content) };
+    let data = { rendered: doc.rendered, metadata: documentMetadataSync(doc.content), slug: doc.slug };
     fs.writeFileSync(path.join(__dirname, `documents/${docTypeNamePlural}/${doc.slug}.enigma`), JSON.stringify(data));
   });
   if (next && typeof next === 'function') return next();

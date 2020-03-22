@@ -12,7 +12,7 @@ export default {
     let [ docTypeNamePlural, slug ] = path.split('/').slice(-2),
       retval = await documentFetchFuncs.getRenderedDocumentByTypeAndSlug(
         docTypeNamePlural, slug
-      )
+      );
     return retval;
   },
   '/sitemap': async () => {

@@ -24,7 +24,7 @@ async function getUserProfile({ username }) {
       let metadata = await profileMetadata(user);
       let { rendered } = user;
       retval = {
-        metadata, rendered
+        metadata, rendered, username
       }
     });
   }

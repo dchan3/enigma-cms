@@ -78,7 +78,8 @@ UserSchema.pre('save', async function saveHook(next) {
       title: `${user.username}'s Profile`,
       image: user.pictureSrc,
       description: `Profile of ${user.username}`
-    }
+    },
+    username: user.username
   }));
 
 

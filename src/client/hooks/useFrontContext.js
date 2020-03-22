@@ -29,7 +29,7 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
   let [state, setState] = useState({ dataObj });
 
   useEffect(function() {
-    if (match) {
+    if (match && !dataObj) {
       let reqUrl = apiUrl(match.params || {});
 
       if (reqUrl.length) {

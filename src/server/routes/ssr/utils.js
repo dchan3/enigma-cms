@@ -58,10 +58,10 @@ export function ssrGen(htmlTemplate) {
     let config = JSON.parse(fs.readFileSync(path.join(__dirname, 'site-files/config.enigma'))), routes = isDash ?
         backEndRoutes :  frontEndRoutes, component = isDash ? Dashboard : App;
     let context = isDash ? { config, types: await DocumentType.find({}) } : { config }, foundRoutes =
-      routes.find(route => matchThePath(p, route));
+      routes.find(route => matchThePath(p.replace('?amp=true', ''), route));
     let pathMatch = foundRoutes && (typeof foundRoutes.path === 'string' ? foundRoutes.path :
         foundRoutes.path[0]) || '',
-      promise = (pathMatch.length && fetchers[pathMatch]) ? fetchers[pathMatch](p) :
+      promise = (pathMatch.length && fetchers[pathMatch]) ? fetchers[pathMatch](p.replace('?amp=true')) :
         Promise.resolve();
     promise.then(data => {
       if (data) context.dataObj = data;
