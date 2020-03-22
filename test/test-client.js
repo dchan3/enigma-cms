@@ -7,7 +7,7 @@ import { GeneratedForm, CodeEditor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
-import { loget, loset, objMap } from '../src/client/utils/lofuncs.js';
+import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';

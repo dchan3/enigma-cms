@@ -2,7 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import useStaticContext from './useStaticContext';
 import useTheRouterContext from './useTheRouterContext';
 import { getRequest } from '../utils/api_request_async';
-import { loget } from '../utils/lofuncs';
+import { loget } from '../../lib/utils/lofuncs';
 
 export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
   initial }) {

@@ -1,7 +1,7 @@
 import { h } from 'preact'; /** @jsx h **/
 import { useContext } from 'preact/hooks';
 import GeneratedFormContext, { GeneratedFormContextProvider } from './GeneratedFormContext';
-import { loget, loset } from '../utils/lofuncs';
+import { loget, loset } from '../../lib/utils/lofuncs';
 import { getRequest, postRequest } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';

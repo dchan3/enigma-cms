@@ -2,7 +2,7 @@ import { h } from 'preact'; /** @jsx h **/
 import { useEffect, useState } from 'preact/hooks';
 import { getRequest } from '../../utils/api_request_async';
 import { SamePageAnchor } from '../../reusables/front_exports';
-import { objMap } from '../../utils/lofuncs';
+import { objMap } from '../../../lib/utils/lofuncs';
 
 export default function SearchPage() {
   let [query, setQuery] = useState(''), [results, setResults] = useState({});

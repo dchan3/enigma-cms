@@ -1,11 +1,4 @@
-let loget = function(obj, keyString) {
-  if (keyString.indexOf('.') <= -1) return obj[keyString];
-  var keys = keyString.split('.'), temp = Object.assign({}, obj);
-  for (var k = 0; k < keys.length && temp !== undefined; k++) {
-    temp = temp[keys[k]];
-  }
-  return temp ? temp : undefined;
-}
+import { loget } from '../../lib/utils/lofuncs';
 
 export default (function() {
   let helpers = {};
