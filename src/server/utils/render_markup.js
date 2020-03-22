@@ -1,7 +1,10 @@
 import TemplateParser from './template_parser';
+import fs from 'fs';
+import path from 'path';
 
 let renderMarkup = async function (templateBody, stuff) {
-  let shortcodes = require('../../../site-files/shortcodes.js');
+  let shortcodes = {}, code = fs.readFileSync(path.join(__dirname, 'site-files/shortcodes.js'), 'utf8');
+  shortcodes = eval(`(function() { return ${code}; })()`);
 
   for (let key in shortcodes) {
     TemplateParser.registerHelper(key, shortcodes[key]);

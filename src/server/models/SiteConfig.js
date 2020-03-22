@@ -89,15 +89,16 @@ SiteConfigSchema.post('save', function() {
 
   fs.writeFileSync(path.join(__dirname, 'public/style.css'), stylesheet);
 
-  let shortcodeData = 'var obj = {};\n';
+  let shortcodeData = '{\n';
 
-  shortcodes.forEach(({ name, args, code }) => {
+  shortcodeData += shortcodes.map(({ name, args, code }) => {
     if (name.length && code.length) {
-      shortcodeData += `obj.${name} = function(${ args.join(', ')}) {\n${code}\n};\n`
+      return `${name}: new Function(${ args.map(arg => `"${arg}"`).join(', ')}, "${code}")`
     }
-  });
+    else return null;
+  }).filter(i => i || false).join(',\n');
 
-  shortcodeData += 'module.exports = obj;\n'
+  shortcodeData += '};\n'
 
   fs.writeFileSync(path.join(__dirname, 'site-files/shortcodes.js'), shortcodeData);
 });

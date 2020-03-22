@@ -105,6 +105,7 @@ module.exports = function () {
       if (fn.length) {
         let fileStr = '';
         for (let selector in styles) {
+          // eslint-disable-next-line prefer-template
           fileStr += selector + '{' + styles[selector] + '}';
         }
         if (typeof fn === 'string') fs.writeFileSync(fn, fileStr);
