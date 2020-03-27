@@ -70,7 +70,15 @@ UserSchema.pre('save', async function saveHook(next) {
 
   var profileTemplate = await SiteConfig.findOne({ }, 'profileTemplate', r => r).then(({ profileTemplate }) => profileTemplate);
 
-  user.rendered = await renderMarkup(profileTemplate, user);
+  let r = await renderMarkup(profileTemplate, {
+    displayName: user.displayName,
+    bio: user.bio,
+    username: user.username,
+    email: user.email,
+    pictureSrc: user.pictureSrc
+  });
+
+  user.rendered = r;
 
   fs.writeFileSync(path.join(__dirname, `profiles/${user.username}.enigma`), JSON.stringify({
     rendered: user.rendered,
