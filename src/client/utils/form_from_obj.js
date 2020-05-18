@@ -98,21 +98,35 @@ const numKeyToShapeKey = function(key) {
     .replace(/\.\d+\./g, '.shape.').replace('.shape.shape.', '.shape.')
 };
 
+const emptyValuesObj = function(paramsObj) {
+  let retval = {};
+  for (let k in paramsObj) {
+    retval[k] = paramsObj[k].children ? (emptyValuesObj(
+      paramsObj[k].children)) :
+      (paramsObj[k].type.startsWith('[') ? [] : '');
+  }
+  return retval;
+}
+
 const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
   let retval = [],
     realParamsObj = Object.assign({}, (extra && extra.parentKey) ?
       loget(paramsObj,`${numKeyToShapeKey(extra.parentKey)}.shape`) :
-      paramsObj), pushFunc = function(actualKey, i = null) {
+      paramsObj), realValuesObj = valuesObj && Object.keys(valuesObj).length ?
+      valuesObj : {}, pushFunc = function(actualKey, i = null) {
       let par = { parentKey: actualKey };
       if (i) par.iteration = i;
+      if (!Object.keys(valuesObj).length) {
+        realValuesObj = emptyValuesObj(paramsObj);
+      }
       retval.push(
-        ...formFromObj(paramsObj, valuesObj, par, invalidFields));
+        ...formFromObj(paramsObj, realValuesObj, par, invalidFields));
     }, genComp = function(actualKey, i = null) {
       let thaKey = actualKey + (i ? `.${i}` : '');
 
       retval.push(genInputComponent(paramsObj, loget(paramsObj,
-        numKeyToShapeKey(actualKey)), loget(valuesObj, thaKey), thaKey,
-      i && undefined , valuesObj, invalidFields));
+        numKeyToShapeKey(actualKey)), loget(realValuesObj, thaKey), thaKey,
+      i && undefined , realValuesObj, invalidFields));
     }, arrayRemPush = function(actualKey, i) {
       retval.push({
         component: 'FormSubmitButton',
@@ -123,7 +137,7 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
 
   for (var key in realParamsObj) {
     var { label } = realParamsObj[key],
-      paramType = typeVerify(realParamsObj[key].type, [valuesObj[key]]),
+      paramType = typeVerify(realParamsObj[key].type, [realValuesObj[key]]),
       isArray = paramType.match(/\[.+\]/), isObj = paramType.match(/object/),
       keyConstruct = [];
     if (!label) label = camelcaseConvert(key);
@@ -146,7 +160,7 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
     }
 
     if (isArray) {
-      for (let i in isObj ? valuesObj[key] : loget(valuesObj, actualKey)) {
+      for (let i in isObj ? realValuesObj[key] : loget(realValuesObj, actualKey)) {
         isObj ? pushFunc(actualKey, i) : genComp(actualKey, i);
         arrayRemPush(actualKey, i);
       }
