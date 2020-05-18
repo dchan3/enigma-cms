@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { h } from 'preact'; /** @jsx h **/
 import { expect } from 'chai';
 import Enzyme, { render } from 'enzyme';
