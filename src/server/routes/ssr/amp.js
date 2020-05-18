@@ -34,13 +34,11 @@ var htmlTemplate =
             "url":"${process.env.HOST && `https://${process.env.HOST}` || 'http://localhost:8080'}/favicon.ico"}}}
     </script>` : ''}
     <style amp-boilerplate>
-      body{
-        ${css1.map(str => `${str}animation:-amp-start 8s steps(1, end) 0s 1 normal both;`)}
-        @${css2.map(str => `${str}keyframes -amp-start{from{visibility:hidden;}to{visibility:visible;}}`)}
-    </style>
-    <noscript><style amp-boilerplate>
-    body{${css1.map(str => `${str}animation:none;`)}}</style></noscript>
-    <style amp-custom>
+      body{${css1.map(str => `${str
+  }animation:-amp-start 8s steps(1, end) 0s 1 normal both;`).join('')}@${
+  css2.map(str => `${str}keyframes -amp-start{from{visibility:hidden;}to{visibility:visible;}}`)
+}</style><noscript><style amp-boilerplate>body{${css1.map(str =>
+  `${str}animation:none;`).join('')}}</style></noscript><style amp-custom>
       ${fs.readFileSync(path.resolve(__dirname, 'public/app.style.css'))}
       ${fs.readFileSync(path.resolve(__dirname, 'public/style.css'))}</style>
     ${renderable ?
