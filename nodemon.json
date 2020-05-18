@@ -1,9 +1,10 @@
 {
-  "verbose": true,
   "ignore": [
     "test/",
     "public/",
     "documents/**/*.enigma",
-    "profiles/", "site-files/"
-  ]
+    "profiles/",
+    "site-files/"
+  ],
+  "verbose": true
 }
