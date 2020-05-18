@@ -83,12 +83,13 @@ SiteConfigSchema.post('save', function() {
   var {
     siteName, description, aboutBody, gaTrackingId, language,
     keywords, iconUrl, profileTemplate, menuLinks, stylesheet,
-    shortcodes
+    shortcodes, themeColor
   } = this;
 
   fs.writeFileSync(path.join(__dirname, 'site-files/config.enigma'), JSON.stringify({
     siteName, description, aboutBody, gaTrackingId, language,
-    keywords, iconUrl, profileTemplate, menuLinks
+    keywords, iconUrl, profileTemplate, menuLinks, themeColor,
+    stylesheet
   }));
 
   fs.writeFileSync(path.join(__dirname, 'public/style.css'), stylesheet);
