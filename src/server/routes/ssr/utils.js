@@ -69,7 +69,7 @@ export function ssrGen(htmlTemplate) {
       let markup = renderString({ value, location, initialVals: { ...context, user }, component });
 
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
-      res.end(htmlTemplate(config, { title: headTitle, meta, link: `<link ref="canonical" href="${`${location}?amp=true`}" />` }, markup, context, isDash));
+      res.end(htmlTemplate(config, { title: headTitle, meta, link: `<link rel="canonical" href="${`${location}?amp=true`}" />` }, markup, context, isDash));
     }).catch(next);
   }
 }
