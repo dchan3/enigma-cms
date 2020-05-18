@@ -3,7 +3,8 @@ import { ssrGen, renderHead, gaScript, gaUrl, staticScript } from './utils';
 import fs from 'fs';
 import path from 'path';
 
-const css1 = ['-webkit-', '-moz', '-ms-', ''], css2 = ['-webkit-', '-moz', '-ms-', '-o', ''];
+const css1 = ['-webkit-', '-moz-', '-ms-', ''],
+  css2 = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
 
 var htmlTemplate =
   ({ language, gaTrackingId },
