@@ -68,6 +68,10 @@ const SiteConfigSchema = new Schema({
     type: String,
     enum: ['en', 'zh'],
     default: 'en'
+  },
+  themeColor: {
+    type: String,
+    default: 'cadetblue'
   }
 });
 

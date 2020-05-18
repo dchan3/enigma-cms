@@ -3,7 +3,8 @@ import fromCss from '../utils/component_from_css';
 
 /** @jsx h **/
 
-let ToolbarIconFrame = fromCss('div', 'min-height:40px;max-height:40px;min-width:40px;max-width:40px;'),
+let ToolbarIconFrame = fromCss('div',
+    'min-height:40px;max-height:40px;min-width:40px;max-width:40px;'),
   IconContent = fromCss('button', 'width:100%;height:100%;'),
   BoldIconSpan = fromCss('span', 'font-weight:900;font-size:18px;'),
   ItalicIconSpan = fromCss('span', 'font-style:italic;font-size:18px;'),

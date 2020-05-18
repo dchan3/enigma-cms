@@ -18,7 +18,7 @@ function GeneratedFormContents() {
     return new Promise((resolve, reject) => {
       rdr.onload = ({ target: { result } }) => resolve(result);
       rdr.onerror = error => reject(error);
-      rdr.readAsArrayBuffer(file);
+      rdr.readAsDataURL(file);
     });
   }
 
@@ -31,8 +31,9 @@ function GeneratedFormContents() {
       loset(newState.values, param, value);
 
       if (type === 'file') {
-        let [fileStuff] = files, contents = await readFile(fileStuff),
-          sixfour = Buffer.from(contents).toString('base64');
+        let [fileStuff] = files,
+          sixfour = await readFile(fileStuff);
+        sixfour = sixfour.replace(/^data:.+;base64,/, '');
         loset(newState.values, fileContent, sixfour);
       }
 
@@ -134,8 +135,8 @@ function GeneratedFormContents() {
               </NodeComponent></FormDiv>;
             } else if (children) {
               return <FormDiv><NodeComponent {...attrObj}>
-                {children.map(({ component, attributes, innerText }) => {
-                  let ChildComponent = comps[component];
+                {children.map(({ component: c, attributes, innerText }) => {
+                  let ChildComponent = comps[c];
                   return <ChildComponent {...attributes}>
                     {innerText}
                   </ChildComponent>;

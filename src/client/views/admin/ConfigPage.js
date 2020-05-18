@@ -40,6 +40,9 @@ export default function ConfigPage() {
         enumList: [
           { text: 'English', value: 'en' },
           { text: '中文', value: 'zh' }]
+      },
+      themeColor: {
+        type: 'color'
       }
     }} redirectUrl='/admin' formAction='site_config/update' />
 }

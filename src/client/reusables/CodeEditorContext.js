@@ -8,9 +8,9 @@ const CodeEditorContext = createContext();
 export default CodeEditorContext;
 
 const { Provider } = CodeEditorContext;
-export const CodeEditorContextProvider = ({ value, children }) => {
+export const CodeEditorContextProvider = ({ value = '', children }) => {
   let [state, setState] = useState({
-      value: value || ''
+      value
     }), [view, toggleView] = useReducer(function(curr) {
       return !curr;
     }, false);

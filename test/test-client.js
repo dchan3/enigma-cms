@@ -394,6 +394,8 @@ describe('Form from Obj', function() {
       };
     let wrapper = renderForm('Data Entry', parameters, currentValue);
     expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    expect(wrapper.find('select')).to.have.lengthOf(1);
+    expect(wrapper.find('option')).to.have.lengthOf(7);
     done();
   });
 

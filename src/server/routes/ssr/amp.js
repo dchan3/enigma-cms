@@ -7,7 +7,7 @@ const css1 = ['-webkit-', '-moz-', '-ms-', ''],
   css2 = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
 
 var htmlTemplate =
-  ({ language, gaTrackingId },
+  ({ language, gaTrackingId, themeColor },
     head, dom, data, back) => {
     let { dataObj } = data, renderable = gaTrackingId && !back;
     return `<!DOCTYPE html>
@@ -15,6 +15,7 @@ var htmlTemplate =
   <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="${themeColor}"/>
   ${renderHead(head)}
   <script async src="https://cdn.ampproject.org/v0.js"></script>
   <script async custom-element="amp-script" src="https://cdn.ampproject.org/v0/amp-script-0.1.js"></script>
