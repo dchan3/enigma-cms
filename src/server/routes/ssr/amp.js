@@ -43,8 +43,8 @@ var htmlTemplate =
       ${fs.readFileSync(path.resolve(__dirname, 'public/app.style.css'))}
       ${fs.readFileSync(path.resolve(__dirname, 'public/style.css'))}</style>
     ${renderable ?
-    gaScript('id="gainit" type="text/plain" target="amp-script"') : ''}
-    ${staticScript('id="ctx" type="text/plain" target="amp-script"', data)}</head><body>
+    gaScript(gaTrackingId, 'id="gainit" type="text/plain" target="amp-script"') : ''}
+    ${staticScript(data, 'id="ctx" type="text/plain" target="amp-script"')}</head><body>
     <amp-script script="gainit"></amp-script><amp-script script="ctx"></amp-script>
     <div id="root">${dom}</div>
     ${renderable ?
