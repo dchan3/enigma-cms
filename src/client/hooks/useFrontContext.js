@@ -11,7 +11,7 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
 
   if (dataObj && match) {
     let d = 0, { params } = match;
-    if (params) {
+    if (params && params.length) {
       while (d < dataParams.length && dataObj) {
         var dt = loget(dataObj, dataParams[d]), ut =
             loget(params, urlParams[d]);
@@ -23,19 +23,20 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
         else d++;
       }
     }
+    else dataObj = null;
   }
-  else { dataObj = null; }
+  else dataObj = null;
 
   let [state, setState] = useState({ dataObj });
 
   useEffect(function() {
-    if (match && !dataObj) {
+    if (match && match.params && !dataObj) {
       let reqUrl = apiUrl(match.params || {});
 
       if (reqUrl.length) {
-        getRequest(reqUrl, function(dataObj) {
-          if (cb) cb(dataObj, setState, match.aparams || {});
-          else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
+        getRequest(reqUrl, function(d) {
+          if (cb) cb(d, setState, match.params || {});
+          else setState({ dataObj: Object.keys(d).length ? d :
             undefined });
         });
       }
