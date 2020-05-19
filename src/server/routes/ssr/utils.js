@@ -61,7 +61,7 @@ export function ssrGen(htmlTemplate) {
       routes.find(route => matchThePath(p.replace('?amp=true', ''), route));
     let pathMatch = foundRoutes && (typeof foundRoutes.path === 'string' ? foundRoutes.path :
         foundRoutes.path[0]) || '',
-      promise = (pathMatch.length && fetchers[pathMatch]) ? fetchers[pathMatch](p.replace('?amp=true')) :
+      promise = (pathMatch.length && fetchers[pathMatch]) ? fetchers[pathMatch](p.replace('?amp=true', '')) :
         Promise.resolve();
     promise.then(data => {
       if (data) context.dataObj = data;
