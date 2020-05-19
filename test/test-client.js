@@ -14,14 +14,25 @@ import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
 import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
+import { StaticContextProvider } from '../src/client/contexts/StaticContext';
+import { TheRouterContextProvider } from '../src/client/contexts/TheRouterContext';
+import Footer from '../src/client/reusables/Footer';
+import { createMemoryHistory as createHistory } from 'history';
+import CodeEditorToolbar from '../src/client/reusables/CodeEditorToolbar';
+import LoginPage from '../src/client/views/admin/LoginPage';
 
 const { JSDOM } = require('jsdom');
 
-const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
+const jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
+  pretendToBeVisible: true
+});
 const { window } = jsdom;
 
 global.window = window;
 global.document = window.document;
+global.history = window.history;
+global.requestAnimationFrame = () => {};
+global.cancelAnimationFrame = () => {};
 
 let renderForm = function(title, params, currentValue = null) {
   return render(<GeneratedForm params={params} title={title}
@@ -117,6 +128,50 @@ describe('Camel Case String Conversion', function() {
   it('three words', function(done) {
     expect(camelcaseConvert('threeLeggedDog'))
       .to.equal('Three Legged Dog');
+    done();
+  });
+});
+
+let renderWithDom = function(component, staticVal) {
+  return render(<TheRouterContextProvider value={{
+    history: createHistory({
+      basename: 'localhost:8080'
+    }),
+    basename: 'localhost:8080'
+  }}>
+  <StaticContextProvider initialVals={staticVal}>
+    {component}
+  </StaticContextProvider>
+  </TheRouterContextProvider>);
+}
+
+describe('Footer', function() {
+  it('when user exists', function(done) {
+    let wrapper = renderWithDom(<Footer />, { user: { username: 'my_user' }});
+    expect(wrapper.find('a')).to.have.lengthOf(5);
+    done();
+  });
+
+  it('when user does not exist', function(done) {
+    let wrapper = renderWithDom(<Footer />, { });;
+    expect(wrapper.find('a')).to.have.lengthOf(3);
+    done();
+  });
+});
+
+describe('Code Editor Toolbar', function() {
+  it('displays correctly', function(done) {
+    let wrapper = render(<CodeEditorToolbar />);
+    expect(wrapper.find('button')).to.have.lengthOf(4);
+    done();
+  });
+});
+
+describe('Login Page', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<LoginPage />,
+      { config: { siteName: 'My Website '}});
+    expect(wrapper.find('a')).to.have.lengthOf(1);
     done();
   });
 });
