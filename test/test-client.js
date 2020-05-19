@@ -20,7 +20,8 @@ import Footer from '../src/client/reusables/Footer';
 import { createMemoryHistory as createHistory } from 'history';
 import CodeEditorToolbar from '../src/client/reusables/CodeEditorToolbar';
 import LoginPage from '../src/client/views/admin/LoginPage';
-
+import SignupPage from '../src/client/views/admin/SignupPage';
+import ChangePasswordPage from '../src/client/views/admin/ChangePasswordPage';
 const { JSDOM } = require('jsdom');
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
@@ -145,6 +146,14 @@ let renderWithDom = function(component, staticVal) {
   </TheRouterContextProvider>);
 }
 
+describe('Change Password Page', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<ChangePasswordPage />, { user: { username: 'my_user'}});
+    expect(wrapper.find('input[type="password"]')).to.have.lengthOf(2);
+    done();
+  });
+});
+
 describe('Footer', function() {
   it('when user exists', function(done) {
     let wrapper = renderWithDom(<Footer />, { user: { username: 'my_user' }});
@@ -170,6 +179,15 @@ describe('Code Editor Toolbar', function() {
 describe('Login Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<LoginPage />,
+      { config: { siteName: 'My Website '}});
+    expect(wrapper.find('a')).to.have.lengthOf(1);
+    done();
+  });
+});
+
+describe('Signup Page', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<SignupPage />,
       { config: { siteName: 'My Website '}});
     expect(wrapper.find('a')).to.have.lengthOf(1);
     done();
