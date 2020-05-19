@@ -1,8 +1,11 @@
-import React, { useContext, useMemo, useState } from 'react';
+import { h, createElement } from 'preact';
+import { useContext, useMemo, useState } from 'preact/hooks';
 import fromCss from '../utils/component_from_css';
 import CodeEditorContext, { CodeEditorContextProvider } from './CodeEditorContext';
 import CodeEditorToolbar from './CodeEditorToolbar';
 import htmlToJsx from '../utils/html_to_jsx';
+
+/** @jsx h **/
 
 let EditorContainer = fromCss('div', 'height:250px;text-align:left;'),
   PreviewContainer = fromCss('div',

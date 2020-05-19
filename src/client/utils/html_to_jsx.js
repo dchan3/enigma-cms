@@ -1,13 +1,13 @@
-import { createElement } from 'react';
+import { createElement } from 'preact';
 import styleObject from './style_object';
 
 let esc =  {
-  'amp': '&',
-  'lt': '<',
-  'gt': '>',
-  'quot': '"',
-  'nbsp': '\u00A0'
-};
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    nbsp: '\u00A0'
+  }, kw = { class: 'className', for: 'htmlFor' };
 
 function escapeText(text) {
   return text.replace(/&([a-z]+);/g, function(match, p1) {
@@ -17,21 +17,18 @@ function escapeText(text) {
 
 function collapseNode(stack) {
   let retval = null, tempAttr = {};
-  if (stack[0].token === 'tagstart' &&
-    stack[stack.length - 1].token === 'tagend') {
+  if (stack[0].token === 'start' && stack[stack.length - 1].token === 'end') {
     retval = { node: 'tag' };
     for (let n = 1; n < stack.length - 1; n++) {
       let { name: nthName, token: nthToken } = stack[n];
-
-      if (nthToken === 'tagname') {
+      switch (nthToken) {
+      case 'name':
         retval.name = nthName;
-      }
-      if (nthToken === 'tagattr') {
-        tempAttr.name = ['class', 'for'].includes(nthName)
-          ? { 'class': 'className', 'for': 'htmlFor' }[nthName]
-          : nthName;
-      }
-      if (nthToken === 'tagval') {
+        break;
+      case 'attr':
+        tempAttr.name = kw[nthName] || nthName;
+        break;
+      case 'val':
         tempAttr.value = tempAttr.name === 'style' ?
           styleObject(nthName.substring(1, nthName.length - 1))
           : nthName;
@@ -40,12 +37,13 @@ function collapseNode(stack) {
         }
         retval.attributes.push(tempAttr);
         tempAttr = {};
-      }
-      if (nthToken === 'text') {
+        break;
+      case 'text':
         if (!retval.children) {
           retval.children = [];
         }
         retval.children.push({ node: 'text', name: nthName });
+        break;
       }
     }
   }
@@ -54,7 +52,7 @@ function collapseNode(stack) {
 
 export function createHtmlTree(html) {
   var tree = [], tokenStack = [], tempStr = '',
-    isTokenTag = (str) => (({ token }) => token === `tag${str}`),
+    isTokenTag = (str) => (({ token }) => token === str),
     isTokenStart = isTokenTag('start'), onTagEnd = function() {
       if (tokenStack.length && tokenStack.filter(isTokenStart).length) {
         let fil = tokenStack.map(({ token }, i) => ({ index: i, token })),
@@ -87,16 +85,16 @@ export function createHtmlTree(html) {
         tokenStack = idx === 0 ? [] : tokenStack.slice(0, idx);
       }
     }, markTagClose = function() {
-      tokenStack.push({ token: 'tagclosestart' });
-      tokenStack.push({ token: 'tagclosebegin' });
+      tokenStack.push({ token: 'closestart' });
+      tokenStack.push({ token: 'closebegin' });
     }, markSingleTag = function() {
-      tokenStack.push({ token: 'tagsingle' });
-      tokenStack.push({ token: 'tagend' });
+      tokenStack.push({ token: 'single' });
+      tokenStack.push({ token: 'end' });
     }, getDepth = function() {
       return tokenStack.filter(isTokenStart).length;
     }, makeTextNode = function(name) {
       let p = { node: 'text', name };
-      if (!!tokenStack.length && tokenStack[0].token === 'tagstart') {
+      if (!!tokenStack.length && tokenStack[0].token === 'start') {
         p.isChild = true;
         p.depth = getDepth();
       }
@@ -106,8 +104,8 @@ export function createHtmlTree(html) {
     let peekToken = tokenStack[tokenStack.length - 1] &&
       tokenStack[tokenStack.length - 1].token || null, tagStartOrName =
       function(peekToken, name) {
-        if (peekToken === 'tagstart') {
-          tokenStack.push({ token: 'tagname', name });
+        if (peekToken === 'start') {
+          tokenStack.push({ token: 'name', name });
           if (html[c + 1] === '/' && html[c + 2] === '>') {
             c += 2;
             markSingleTag();
@@ -115,24 +113,25 @@ export function createHtmlTree(html) {
           }
           tempStr = '';
         }
-        else if (peekToken === 'tagname') {
-          tokenStack.push({ token: 'tagattr', name });
+        else if (peekToken === 'name') {
+          tokenStack.push({ token: 'attr', name });
           tempStr = '';
         }
       }
     tempStr += html[c];
     if (tempStr === '<') {
-      if (peekToken === 'tagopenend' && html[c + 1] === '/') {
+      if (peekToken === 'openend' && html[c + 1] === '/') {
         markTagClose();
         c++;
       }
-      else tokenStack.push({ token: 'tagstart', d: getDepth() });
+      else tokenStack.push({ token: 'start', d: getDepth() });
       tempStr = '';
     }
 
-    if (tempStr.endsWith('<')) {
-      let p = makeTextNode(escapeText(tempStr.substring(0, tempStr.length - 1)));
-      tree.push(p);
+
+    switch(tempStr.slice(-1)[0]) {
+    case '<':
+      tree.push(makeTextNode(escapeText(tempStr.substring(0, tempStr.length - 1))));
       if (html[c + 1] && html[c + 1] === '/') {
         markTagClose();
         c++;
@@ -141,21 +140,21 @@ export function createHtmlTree(html) {
         if (tokenStack.length === 1) {
           tree.push({ node: 'text', name: escapeText(tokenStack.pop().name) });
         }
-        tokenStack.push({ token: 'tagstart', d: getDepth() });
+        tokenStack.push({ token: 'start', d: getDepth() });
       }
       tempStr = '';
-    }
-    else if (tempStr.endsWith('"')) {
+      break;
+    case '"':
       if (tokenStack.length) {
         let thaName = tempStr.trim();
-        if (peekToken === 'tagattr' && thaName.length > 1 && tempStr.startsWith('"')) {
-          tokenStack.push({ token: 'tagval', name: thaName });
+        if (peekToken === 'attr' && thaName.length > 1 && tempStr.startsWith('"')) {
+          tokenStack.push({ token: 'val', name: thaName });
           tempStr = '';
         }
       }
-    }
-    else if (tempStr.endsWith(' ')) {
-      if (tokenStack.length && ['tagstart', 'tagname'].includes(peekToken)) {
+      break;
+    case ' ':
+      if (tokenStack.length && ['start', 'name'].includes(peekToken)) {
         let trimmed = tempStr.trim();
         tagStartOrName(peekToken, trimmed);
       }
@@ -164,17 +163,17 @@ export function createHtmlTree(html) {
         tree.push(p);
         tempStr = '';
       }
-    }
-    else if (tempStr.endsWith('/')) {
+      break;
+    case '/':
       if (tokenStack.length) {
-        if (peekToken === 'tagclosestart') {
-          tokenStack.push({ token: 'tagclosebegin' });
+        if (peekToken === 'closestart') {
+          tokenStack.push({ token: 'closebegin' });
           tempStr = '';
         }
-        else if ((peekToken === 'tagattr' &&
+        else if ((peekToken === 'attr' &&
           html[c + 1] && ['>', ' '].includes(html[c + 1])) ||
-          peekToken === 'tagval') {
-          if (peekToken === 'tagattr') tokenStack.push({ token: 'tagval',
+          peekToken === 'val') {
+          if (peekToken === 'attr') tokenStack.push({ token: 'val',
             name: tempStr === '/' ? true : tempStr });
           markSingleTag();
           onTagEnd();
@@ -186,43 +185,43 @@ export function createHtmlTree(html) {
         markTagClose();
         tempStr = '';
       }
-    }
-    else if (tempStr.endsWith('>')) {
+      break;
+    case '>':
       if (tokenStack.length) {
         let trimmed = tempStr.substring(0, tempStr.length - 1).trim();
-        if (peekToken === 'tagattr' && trimmed.length) {
-          tokenStack.push({ token: 'tagattr', name: trimmed });
-          tokenStack.push({ token: 'tagval', name: true });
+        if (peekToken === 'attr' && trimmed.length) {
+          tokenStack.push({ token: 'attr', name: trimmed });
+          tokenStack.push({ token: 'val', name: true });
           tempStr = '';
         }
-        else if (['tagstart', 'tagval'].includes(peekToken)) {
-          if (peekToken === 'tagstart') {
-            tokenStack.push({ token: 'tagname', name: trimmed });
+        else if (['start', 'val'].includes(peekToken)) {
+          if (peekToken === 'start') {
+            tokenStack.push({ token: 'name', name: trimmed });
           }
-          tokenStack.push({ token: 'tagopenend' });
+          tokenStack.push({ token: 'openend' });
           tempStr = '';
         }
-        else if (['tagsingle', 'tagclosebegin' ].includes(peekToken)) {
-          tokenStack.push({ token: 'tagend' });
+        else if (['single', 'closebegin' ].includes(peekToken)) {
+          tokenStack.push({ token: 'end' });
           tempStr = '';
           onTagEnd();
         }
       }
-    }
-    else if (tempStr.endsWith('=')) {
+      break;
+    case '=':
       if (tokenStack.length) {
         let trimmed = tempStr.substring(0, tempStr.length - 1).trim();
-        if (['tagname', 'tagval'].includes(peekToken) && trimmed.length) {
-          tokenStack.push({ token: 'tagattr', name: trimmed });
+        if (['name', 'val'].includes(peekToken) && trimmed.length) {
+          tokenStack.push({ token: 'attr', name: trimmed });
           tempStr = '';
         }
       }
-    }
-    else if (tempStr.endsWith('\n')) {
+      break;
+    case '\n':
       if (tempStr === '\n') tempStr = '';
       else if (tempStr.length > 1) {
         let trimmed = tempStr.trim();
-        if (tokenStack.length && ['tagstart', 'tagname'].includes(peekToken)) {
+        if (tokenStack.length && ['start', 'name'].includes(peekToken)) {
           tagStartOrName(peekToken, trimmed);
         }
         else if (html[c + 1] && html[c + 1] === '<'){
@@ -231,6 +230,7 @@ export function createHtmlTree(html) {
           tempStr = '';
         }
       }
+      break;
     }
   }
   return tree;

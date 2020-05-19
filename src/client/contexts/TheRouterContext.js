@@ -1,10 +1,24 @@
-import React, { createContext } from 'react';
+import { h, createContext } from 'preact';
+import { useState, useEffect } from 'preact/hooks';
+import { createBrowserHistory as createHistory } from 'history';
 
-const TheRouteContext = createContext();
+/** @jsx h **/
 
-export default TheRouteContext;
+const TheRouterContext = createContext();
 
-const { Provider } = TheRouteContext;
-export const TheRouteContextProvider = ({ value, children }) => {
-  return <Provider value={value}>{children}</Provider>;
+export default TheRouterContext;
+
+const { Provider } = TheRouterContext;
+export const TheRouterContextProvider = ({ value, children }) => {
+  let [location, setLocation] = useState(value.location || null);
+
+  let [history, setHistory] = useState(value.history ||
+    createHistory({ basename: value.basename, forceRefresh: false }));
+
+  useEffect(function() {
+    history.listen(loc => setLocation(loc));
+  }, []);
+
+  return <Provider value={{ ...value, history, setHistory,
+    location, setLocation, basename: value.basename }}>{children}</Provider>;
 };

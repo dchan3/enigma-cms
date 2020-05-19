@@ -1,4 +1,4 @@
-import React from 'react';
+import { createElement } from 'preact'; /** @jsx h **/
 import fromCss from '../utils/component_from_css';
 import CodeEditor from './CodeEditor';
 
@@ -30,7 +30,7 @@ let FormInput = fromCss('input', ({ hidden, isInvalid }) => (
     'isInvalid']), FormSubmitButton = fromCss('button',
     'font-size:16px;font-family:sans-serif;text-transform:uppercase;padding:8px;border-radius:8px;margin:8px;'),
   FormEnumInput = fromCss('select', 'font-family:sans-serif;font-size:16px;',
-    ['hidden', 'isInvalid']), FormEnumInputOption = fromCss('option',
+    ['hidden', 'isInvalid', 'enumList', 'type']), FormEnumInputOption = fromCss('option',
     'font-family:sans-serif;font-size:16px;', ['hidden', 'isInvalid']),
   FormObjectInputLabel = fromCss('p', ({ hidden }) =>
     'color:white;padding-right:4px;font-family:sans-serif;text-transform:uppercase;margin:8px;font-size:16px;width:calc(100% - 16px);' +

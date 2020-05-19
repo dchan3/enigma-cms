@@ -1,11 +1,9 @@
-import { useContext } from 'react';
-import TheRouterContext from '../contexts/TheRouterContext';
+import useTheRouterContext from '../hooks/useTheRouterContext';
 
 export default function Redirect({ to }) {
-  let { history, setLocation } = useContext(TheRouterContext);
+  let { history } = useTheRouterContext();
 
   history.replace(to);
-  setLocation(history.location);
 
   return null;
 }

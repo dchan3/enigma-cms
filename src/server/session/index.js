@@ -1,5 +1,5 @@
 import session from 'express-session';
-import uuid from 'uuid/v4';
+import { v4 as uuid } from 'uuid';
 import { default as secret } from '../../../config/secret';
 
 export default session({

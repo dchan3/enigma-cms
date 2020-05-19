@@ -1,28 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { TheRouteContextProvider } from '../contexts/TheRouterContext';
+import { h } from 'preact'; /** @jsx h **/
+import { TheRouterContextProvider } from '../contexts/TheRouterContext';
 
 export default function TheRouter({
-  children, history, staticContext, basename
+  children, staticContext, basename, history = null
 }) {
-  let [location, setLocation] = useState(history.location);
-
-  useEffect(function () {
-    if (!staticContext) {
-      history.listen(loc => setLocation(loc));
-    }
-  }, []);
-
-  return <TheRouteContextProvider value={{
+  return <TheRouterContextProvider value={{
     history,
-    location,
-    setLocation,
+    location: history.location,
     basename,
     match: {
       path: '/',
       url: '/',
       params: {},
-      isExact: location.pathname === '/'
+      isExact: false
     },
     staticContext
-  }}>{children || null}</TheRouteContextProvider>;
+  }}>{children || null}</TheRouterContextProvider>;
 }

@@ -1,4 +1,4 @@
-import { createElement } from 'react';
+import { createElement } from 'preact';
 import styleObject from './style_object';
 
 export default function fromCss(element, css, nonDomAttrs) {

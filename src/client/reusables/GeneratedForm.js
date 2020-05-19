@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import { h } from 'preact'; /** @jsx h **/
+import { useContext } from 'preact/hooks';
 import GeneratedFormContext, { GeneratedFormContextProvider } from './GeneratedFormContext';
-import { loget, loset } from '../utils/lofuncs';
-import { default as requests } from '../utils/api_request_async';
+import { loget, loset } from '../../lib/utils/lofuncs';
+import { getRequest, postRequest } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
 import { default as comps, FormContainer, FormHeader, FormErrorMessage,
@@ -17,7 +18,7 @@ function GeneratedFormContents() {
     return new Promise((resolve, reject) => {
       rdr.onload = ({ target: { result } }) => resolve(result);
       rdr.onerror = error => reject(error);
-      rdr.readAsArrayBuffer(file);
+      rdr.readAsDataURL(file);
     });
   }
 
@@ -30,8 +31,9 @@ function GeneratedFormContents() {
       loset(newState.values, param, value);
 
       if (type === 'file') {
-        let [fileStuff] = files, contents = await readFile(fileStuff),
-          sixfour = Buffer.from(contents).toString('base64');
+        let [fileStuff] = files,
+          sixfour = await readFile(fileStuff);
+        sixfour = sixfour.replace(/^data:.+;base64,/, '');
         loset(newState.values, fileContent, sixfour);
       }
 
@@ -86,8 +88,8 @@ function GeneratedFormContents() {
           else if (redirectUrl) window.location.href = redirectUrl;
         };
       method.match('/^get$/i') ?
-        requests.getRequest(formAction, cbFunc, config) :
-        requests.postRequest(formAction, JSON.stringify({
+        getRequest(formAction, cbFunc, config) :
+        postRequest(formAction, JSON.stringify({
           ...requestBody, sig }), cbFunc, config);
     }
     else {
@@ -133,8 +135,8 @@ function GeneratedFormContents() {
               </NodeComponent></FormDiv>;
             } else if (children) {
               return <FormDiv><NodeComponent {...attrObj}>
-                {children.map(({ component, attributes, innerText }) => {
-                  let ChildComponent = comps[component];
+                {children.map(({ component: c, attributes, innerText }) => {
+                  let ChildComponent = comps[c];
                   return <ChildComponent {...attributes}>
                     {innerText}
                   </ChildComponent>;
@@ -150,16 +152,13 @@ function GeneratedFormContents() {
   </FormContainer>;
 }
 
-function GeneratedForm(props) {
-  return <GeneratedFormContextProvider {...props}>
+export default function GeneratedForm({
+  parentCallback = undefined, fileContent = 'fileContent', method = 'post',
+  ...rest
+}) {
+  return <GeneratedFormContextProvider {...{
+    parentCallback, fileContent, method
+  }} {...rest}>
     <GeneratedFormContents />
   </GeneratedFormContextProvider>
 }
-
-GeneratedForm.defaultProps =  {
-  parentCallback: undefined,
-  fileContent: 'fileContent',
-  method: 'post'
-};
-
-export default GeneratedForm;

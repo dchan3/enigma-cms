@@ -6,6 +6,7 @@ export { default as EditDocType } from './EditDocType';
 export { default as EditDocumentLanding } from './EditDocumentLanding';
 export { default as EditDocumentPage } from './EditDocumentPage';
 export { default as FileMgmtLanding } from './FileMgmtLanding';
+export { default as LoginPage } from './LoginPage';
 export { default as MainMenu } from './MainMenu';
 export { default as ProfileEditPage } from './ProfileEditPage';
 export { default as SignupPage } from './SignupPage';

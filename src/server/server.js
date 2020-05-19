@@ -6,26 +6,35 @@ import { default as LoginStrategy } from './passport/login';
 import mongoose from 'mongoose';
 import {
   userRoutes, configRoutes, documentRoutes, fileRoutes, searchRoutes,
-  themeRoutes 
+  sitemapRoutes, themeRoutes
 } from './routes/api';
 import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
+import { default as ampRoutes } from './routes/ssr/amp';
 import { createProxyServer } from 'http-proxy';
 import path from 'path';
+import fs from 'fs';
 
 mongoose.Promise = global.Promise;
 
 var app = express(), port = process.env.SERVER_PORT || 8080,
   apiProxy = createProxyServer();
 
-mongoose.connect(require('../../config/db.js').url, {}, () => {
+mongoose.connect(require('../../config/db.js').url, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}, () => {
   SiteConfig.findOne({}).then(config => {
+    if (!fs.existsSync(path.join(__dirname, 'site-files'))) {
+      fs.mkdirSync(path.join(__dirname, 'site-files'));
+    }
+
     if (!config) {
       let newConfig = new SiteConfig({});
       newConfig.save();
     }
-    else return;
+    else config.save();
   });
 
   SiteTheme.findOne({}).then(theme => {
@@ -36,8 +45,40 @@ mongoose.connect(require('../../config/db.js').url, {}, () => {
     else return;
   });
 
-  Document.find({}).then(docs => {
-    docs.forEach(doc => { doc.save(); });
+  if (!fs.existsSync(path.join(__dirname, 'documents'))) {
+    fs.mkdirSync(path.join(__dirname, 'documents'));
+  }
+
+  if (!fs.existsSync(path.join(__dirname, 'profiles'))) {
+    fs.mkdirSync(path.join(__dirname, 'profiles'));
+  }
+
+  User.find().then(users => {
+    users.forEach(u => { u.save(); });
+  });
+
+  DocumentType.find({ }).then(types => {
+    var protocol = process.env.PROTOCOL || (process.env.HOST ?
+        'https' : 'http'), host = process.env.HOST || 'localhost:8080';
+
+    var slugs = [`${protocol}://${host}/`, `${protocol}://${host}/?amp=true`];
+
+    types.forEach(function({ docTypeNamePlural, docTypeId }) {
+      if (!fs.existsSync(path.join(__dirname, `documents/${docTypeNamePlural}`))) {
+        fs.mkdirSync(path.join(__dirname, `documents/${docTypeNamePlural}`));
+      }
+      slugs.push(`${protocol}://${host}/${docTypeNamePlural}`,
+        `${protocol}://${host}/${docTypeNamePlural}?amp=true`);
+      Document.find({ docTypeId }).then(docs => {
+        docs.forEach((doc) => {
+          slugs.push(`${protocol}://${host}/${docTypeNamePlural}/${doc.slug}`);
+          slugs.push(`${protocol}://${host}/${docTypeNamePlural}/${doc.slug}?amp=true`);
+          doc.save();
+        });
+        slugs.sort();
+        fs.writeFileSync(path.join(__dirname, 'public/sitemap.txt'), slugs.join('\n'));
+      });
+    });
   });
 });
 
@@ -77,30 +118,13 @@ app.use('/api/site_config', configRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/files', fileRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/sitemap', sitemapRoutes);
 app.use('/api/site_theme', themeRoutes);
 
-app.get('/sitemap.txt', async ({ headers: { host }, protocol }, res) => {
-  var docTypes = await DocumentType.find({}).select({ docTypeNamePlural: 1,
-      docTypeId: 1 }), documents = await Document.find({ draft: false }).sort({
-      docType: 1, createdAt: -1 }).select({ slug: 1, docTypeId: 1, _id: -1 }),
-    docTypeMap = {}, slugs = [`${protocol}://${host}/`];
-  docTypes.forEach(({ docTypeNamePlural, docTypeId }) => {
-    slugs.push(`${protocol}://${host}/${docTypeNamePlural}`);
-    docTypeMap[docTypeId] = docTypeNamePlural; });
-  slugs.push(...documents.map(({ docTypeId, slug }) =>
-    `${protocol}://${host}/${docTypeMap[docTypeId]}/${slug}`));
-  slugs.sort();
-  res.header('Content-Type', 'text/plain');
-  res.send(slugs.join('\n'));
-});
-
-app.get('/style.css', (req, res) => {
-  SiteConfig.findOne({ }).then(({ stylesheet }) => {
-    res.header('Content-Type', 'text/css');
-    res.send(`${stylesheet}\n`);
-  });
-});
 app.use('/', express.static(path.join(__dirname, '/public')));
-app.get('/*', ssrRoutes);
+app.get('/*', function(req, res, next) {
+  if (req.query.amp) return ampRoutes(req, res, next);
+  return ssrRoutes(req, res, next);
+});
 
 app.listen(port);

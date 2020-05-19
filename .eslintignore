@@ -5,3 +5,6 @@ dist/
 public/*.js
 public/uploads/
 server.bundle.js
+test/
+babel/**/*.js
+webpack.config.js

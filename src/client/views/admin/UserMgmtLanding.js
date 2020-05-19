@@ -1,24 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame, ProfileImage } from
-  '../../reusables';
-import { default as asyncReqs } from '../../utils/api_request_async';
+import { h } from 'preact'; /** @jsx h **/
+import { useEffect, useState } from 'preact/hooks';
+import { TextHeader, SamePageAnchor, TablePaginator, ProfileImage } from
+  '../../reusables/back_exports';
+import { getRequest } from '../../utils/api_request_async';
 
-function UserMgmtLanding() {
+export default function UserMgmtLanding() {
   let [state, setState] = useState({
     users: []
   });
 
   useEffect(function() {
-    asyncReqs.getRequest('users/get_all_users', (users) => {
+    getRequest('users/get_all_users', (users) => {
       setState({ users })
     });
   }, []);
 
   let { users } = state;
 
-  return <AdminFrame>
-    <TextHeader>Manage Users</TextHeader>
-    {users.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
+  return [
+    <TextHeader>Manage Users</TextHeader>,
+    users.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
       items={users} truncate={true} columns={[
         {
           headerText: 'Picture',
@@ -38,8 +39,5 @@ function UserMgmtLanding() {
           headerText: 'Display name',
           display: ({ displayName }) => <p>{displayName}</p>
         }
-      ]} /> : null}
-  </AdminFrame>;
+      ]} /> : null];
 }
-
-export default UserMgmtLanding;

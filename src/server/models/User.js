@@ -2,9 +2,16 @@ import mongoose from 'mongoose';
 import bcrypt, { hash, genSalt } from 'bcrypt';
 import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
+import renderMarkup from '../utils/render_markup';
+import SiteConfig from './SiteConfig';
+import fs from 'fs';
+import path from 'path';
 
 var conn = mongoose.createConnection(
-  require('../../../config/db.js').url, {}, () => { });
+  require('../../../config/db.js').url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, () => { });
 
 autoIncrement.initialize(conn);
 
@@ -49,18 +56,45 @@ var UserSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  rendered: {
+    type: String
+  }
 });
 
 UserSchema.methods.comparePassword = function comparePassword(password) {
   return bcrypt.compareSync(password, this.password);
 };
 
-UserSchema.pre('save', function saveHook(next) {
+UserSchema.pre('save', async function saveHook(next) {
   const user = this;
 
-  // proceed further only if the password is modified or the user is new
-  if (!user.isModified('password')) return next();
+  var profileTemplate = await SiteConfig.findOne({ }, 'profileTemplate', r => r).then(({ profileTemplate }) => profileTemplate);
 
+  let r = await renderMarkup(profileTemplate, {
+    displayName: user.displayName,
+    bio: user.bio,
+    username: user.username,
+    email: user.email,
+    pictureSrc: user.pictureSrc
+  });
+
+  user.rendered = r;
+
+  fs.writeFileSync(path.join(__dirname, `profiles/${user.username}.enigma`), JSON.stringify({
+    rendered: user.rendered,
+    metadata: {
+      title: `${user.username}'s Profile`,
+      image: user.pictureSrc,
+      description: `Profile of ${user.username}`
+    },
+    username: user.username
+  }));
+
+
+  // proceed further only if the password is modified or the user is new
+  if (!user.isModified('password')) {
+    if (next && typeof next === 'function') return next();
+  }
 
   return genSalt((saltError, salt) => {
     if (saltError) { return next(saltError); }
@@ -71,7 +105,8 @@ UserSchema.pre('save', function saveHook(next) {
       // replace a password string with hash value
       user.password = hash;
 
-      return next();
+      if (next && typeof next === 'function') return next();
+      return;
     });
   });
 });

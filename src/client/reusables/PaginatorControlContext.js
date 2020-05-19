@@ -1,10 +1,11 @@
-import React, { createContext, useReducer } from 'react';
-import { renderToString } from 'react-dom/server';
+import { h, createContext } from 'preact'; /** @jsx h **/
+import renderToString from 'preact-render-to-string';
+import { useReducer } from 'preact/hooks';
 
-const strQuery = (str, query) => query.split(' ').reduce(
+export const strQuery = (str, query) => query.split(' ').reduce(
   (acc, cur) => acc && !!str.match(new RegExp(cur, 'i')), true);
 
-function shallowSearch(items, query) {
+export function shallowSearch(items, query) {
   var retval = [];
   if (query === '') return items;
   items.forEach(item => {
@@ -25,7 +26,7 @@ function shallowSearch(items, query) {
   return retval;
 }
 
-const pages = function(items, per, maxPages) {
+export function pages(items, per, maxPages) {
   let retval = [], page = 0, counter = 0;
   for (let i in items) {
     if (!!maxPages) {
@@ -44,7 +45,7 @@ const pages = function(items, per, maxPages) {
     }
   }
   return retval;
-};
+}
 
 var initialState = ({
   items, useListElement, activeTabColor, truncate, maxPageTabs,

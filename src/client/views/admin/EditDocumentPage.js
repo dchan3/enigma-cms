@@ -1,9 +1,9 @@
-import React from 'react';
-import { GeneratedForm, AdminFrame } from '../../reusables';
-import TheRedirect from '../../the_router/TheRedirect';
+import { h } from 'preact'; /** @jsx h **/
+import { GeneratedForm } from '../../reusables/back_exports';
+import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 
-function EditDocumentPage() {
+export default function EditDocumentPage() {
   let { state } = useFrontContext({
       dataParams: ['doc.docNodeId', 'docType.docTypeId'],
       urlParams: ['docNode', 'docTypeId'],
@@ -54,12 +54,10 @@ function EditDocumentPage() {
         draft: doc.draft
       }
 
-      return <AdminFrame><GeneratedForm title='Edit Document' {...{ params }}
-        {...obj} redirectUrl='/admin' /></AdminFrame>;
+      return <GeneratedForm title='Edit Document' {...{ params }}
+        {...obj} redirectUrl='/admin' />;
     }
     else return null;
   }
   else return null;
 }
-
-export default EditDocumentPage;

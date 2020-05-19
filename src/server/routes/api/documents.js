@@ -4,6 +4,8 @@ import slug from 'limax';
 import { default as verifyMiddleware } from '../middleware';
 import { ObjectId } from 'mongodb';
 import { default as documentFetchFuncs } from '../fetch_funcs/documents';
+import fs from 'fs';
+import path from 'path';
 
 var router = Router();
 
@@ -189,11 +191,19 @@ router.post('/update_document/:node_id', verifyMiddleware, (
 
 router.delete('/delete_document/:docType/:id',
   ({ user, params: { docType: docTypeId, id } }, res, next) => {
-    if (user) return Document.findOneAndDelete({
-      _id: ObjectId(id), docTypeId
-    }).then(
-      () => res.redirect(`/admin/edit/${docTypeId}`))
-      .catch(err => next(err));
+    if (user) {
+      return Document.findOneAndDelete({
+        _id: ObjectId(id), docTypeId
+      }).then(
+        ({ slug }) => {
+          try {
+            DocumentType.findOne({ docTypeId }).then(({ docTypeNamePlural }) =>
+              fs.unlinkSync(path.join(__dirname, `documents/${docTypeNamePlural}/${slug}.enigma`)))
+          } finally {
+            res.redirect(`/admin/edit/${docTypeId}`);
+          }
+        }).catch(err => next(err)); }
+
     else
       return res.status(500).redirect('/login').end();
   });

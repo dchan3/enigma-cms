@@ -1,9 +1,9 @@
-import React from 'react';
-import { GeneratedForm, AdminFrame } from '../../reusables';
-import TheRedirect from '../../the_router/TheRedirect';
+import { h } from 'preact'; /** @jsx h **/
+import { GeneratedForm } from '../../reusables/back_exports';
+import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 
-let EditDocType = () => {
+export default function EditDocType({ isNew }) {
   let { state, setState } = useFrontContext({
     dataParams: ['docType.docTypeId'],
     urlParams: ['docTypeId'],
@@ -19,7 +19,8 @@ let EditDocType = () => {
           attrName: '',
           attrType: ''
         }]
-      }
+      },
+      loaded: false
     },
     cb: function(data, fxn) {
       fxn({ dataObj: data,
@@ -27,7 +28,8 @@ let EditDocType = () => {
           ({ attrName, attrType }) => ({ attrName, attrType })) || [{
           attrName: '',
           attrType: ''
-        }]
+        }],
+        loaded: true
       });
     }
   });
@@ -48,10 +50,11 @@ let EditDocType = () => {
   let { dataObj, optionParams } = state;
 
   if (dataObj === undefined) return <TheRedirect to="/admin" />;
-  else if (dataObj === null) return null;
-  else {
-    let { docType } = dataObj || {};
-    return <AdminFrame><GeneratedForm currentValue={docType}
+  else if (dataObj === null && !isNew) return null;
+  else if ((dataObj === null && isNew) || dataObj) {
+    let docType = {};
+    if (dataObj !== null) docType = dataObj.docType;
+    return <GeneratedForm currentValue={docType}
       title="Edit Document Type" params={{
         docTypeName: {
           label: 'Document Type Name',
@@ -123,8 +126,6 @@ let EditDocType = () => {
         } }} parentCallback={updateParams} redirectUrl='/admin'
       formAction={`documents/${(docType && docType.docTypeId) ?
         `update_type/${docType.docTypeId}`
-        : 'register_type'}`} /></AdminFrame>;
+        : 'register_type'}`} />;
   }
-};
-
-export default EditDocType;
+}

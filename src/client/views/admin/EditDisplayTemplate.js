@@ -1,8 +1,8 @@
-import React from 'react';
-import { GeneratedForm, AdminFrame } from '../../reusables';
+import { h } from 'preact'; /** @jsx h **/
+import { GeneratedForm } from '../../reusables/back_exports';
 import useFrontContext from '../../hooks/useFrontContext';
 
-function EditDisplayTemplate() {
+export default function EditDisplayTemplate() {
   let { state } = useFrontContext({
       dataParams: ['docTypeId'],
       urlParams: ['docTypeId'],
@@ -17,7 +17,7 @@ function EditDisplayTemplate() {
     if (docType !== null && templateBody !== null
       && categoryTemplateBody !== null) {
       let { docTypeName, docTypeId } = docType;
-      return <AdminFrame><GeneratedForm title={
+      return <GeneratedForm title={
         `Edit ${docTypeName} Display Template`}
       currentValue={{ ...{ templateBody, categoryTemplateBody } }}params={{
         templateBody: {
@@ -28,11 +28,8 @@ function EditDisplayTemplate() {
           type: 'text',
           grammar: 'html'
         } }} redirectUrl='/admin'
-      formAction={`documents/update_template/${docTypeId}`} /></AdminFrame>;
+      formAction={`documents/update_template/${docTypeId}`} />;
     }
-    else return null;
   }
-  else return null;
+  return null;
 }
-
-export default EditDisplayTemplate;

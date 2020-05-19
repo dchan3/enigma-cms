@@ -1,14 +1,14 @@
-import React from 'react';
-import { TextHeader, SamePageAnchor, TablePaginator, AdminFrame } from
-  '../../reusables';
-import TheRedirect from '../../the_router/TheRedirect';
+import { h } from 'preact'; /** @jsx h **/
+import { TextHeader, SamePageAnchor, TablePaginator } from
+  '../../reusables/back_exports';
+import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 import { default as syncReqs } from '../../utils/api_request_sync';
 import fromCss from '../../utils/component_from_css';
 
 let TableText = fromCss('p', 'text-align:center;font-family:sans-serif;');
 
-function EditDocumentLanding() {
+export default function EditDocumentLanding() {
   function handleDeleteClick() {
     return function(url) {
       syncReqs.deleteRequestSync(url);
@@ -29,7 +29,7 @@ function EditDocumentLanding() {
 
     if (docType && documents && documents.length) {
       let { docTypeName, docTypeNamePlural, attributes } = docType;
-      return <AdminFrame><TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
+      return [<TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
         <TablePaginator perPage={10} activeTabColor="cadetblue"
           items={documents} truncate={true} columns={[attributes.map(({
             attrName }) => ({
@@ -56,10 +56,16 @@ function EditDocumentLanding() {
             headerText: 'View Live',
             display: ({ slug }) => <SamePageAnchor href={
               `/${docTypeNamePlural}/${slug}`}>View Live</SamePageAnchor>
-          }].flat()} /></AdminFrame>;
+          }].flat()} />];
+    }
+    else if (docType) {
+      let { docTypeName, docTypeNamePlural, docTypeId } = docType;
+
+      return [<TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
+        <p>No {docTypeNamePlural} created. Create one <SamePageAnchor
+          href={`/admin/new/${docTypeId}`}>
+        here.</SamePageAnchor></p>]
     }
   }
   return null;
 }
-
-export default EditDocumentLanding;

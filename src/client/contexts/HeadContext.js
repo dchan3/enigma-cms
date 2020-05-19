@@ -1,6 +1,9 @@
-import React, { createContext, useState, useEffect } from 'react';
+import { h, createContext } from 'preact';
+import { useState, useEffect } from 'preact/hooks';
 
-const initialState = { title: '', description: '', image: '' };
+/** @jsx h **/
+
+const initialState = { title: '', description: '', image: '', keywords: '' };
 
 const HeadContext = createContext(initialState);
 
@@ -8,7 +11,7 @@ export default HeadContext;
 
 const { Provider } = HeadContext;
 export const HeadContextProvider = ({ value, children }) => {
-  let [{ title, description, image }, setState] = useState(value || initialState);
+  let [{ title, image, description, keywords }, setState] = useState(value || initialState);
 
   function setMeta(type, attr, content) {
     let fullSelector = `meta[${type}="${attr}"]`;
@@ -20,26 +23,35 @@ export const HeadContextProvider = ({ value, children }) => {
     document.querySelector(fullSelector).content = content;
   }
 
+  function bulkUpdate(str, val) {
+    setMeta('property', `og:${str}`, val);
+    setMeta('name', `twitter:${str}`, val);
+  }
+
   useEffect(function() {
     setMeta('name', 'twitter:card', 'summary');
   }, []);
 
   useEffect(function() {
     document.title = title;
-    setMeta('property', 'og:title', title);
-    setMeta('name', 'twitter:title', title);
-
+    bulkUpdate('title', title);
   }, [title]);
 
   useEffect(function() {
-    setMeta('property', 'og:description', description);
-    setMeta('name', 'twitter:description', description);
+    setMeta('name', 'description', description);
+    bulkUpdate('description', description);
   }, [description]);
 
   useEffect(function() {
-    setMeta('property', 'og:image', image);
-    setMeta('name', 'twitter:image', image);
+    bulkUpdate('image', image);
   }, [image]);
 
-  return <Provider value={{ state: { title, image, description }, setState }}>{children}</Provider>;
+  useEffect(function() {
+    setMeta('name', 'keywords', keywords);
+    setMeta('name', 'news_keywords', keywords);
+  }, [keywords]);
+
+  return <Provider value={{ state: {
+    title, image, description, keywords
+  }, setState }}>{children}</Provider>;
 };

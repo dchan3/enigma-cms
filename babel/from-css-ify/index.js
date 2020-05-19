@@ -5,7 +5,7 @@ module.exports = function () {
     return t.functionExpression(null,
       [t.identifier('props')],
       t.blockStatement([t.returnStatement(t.callExpression(
-        t.identifier('React.createElement'),
+        t.identifier('createElement'),
         [t.stringLiteral(element),
           t.objectExpression([
             t.spreadElement(t.identifier('props')),
@@ -16,9 +16,14 @@ module.exports = function () {
 
   return {
     visitor: {
-      CallExpression(path, state) {
+      ImportSpecifier(path) {
+        if (path.node.imported.name === 'fromCss') {
+          path.remove();
+        }
+      },
+      CallExpression(path, { opts }) {
         if (fn === '') {
-          if (state.opts && state.opts.toFile) fn = state.opts.toFile;
+          if (opts && opts.toFile) fn = opts.toFile;
         }
         if (path.node.callee.name === 'fromCss') {
           var element = path.node.arguments[0].value,
@@ -100,9 +105,13 @@ module.exports = function () {
       if (fn.length) {
         let fileStr = '';
         for (let selector in styles) {
-          fileStr += `${selector}{${styles[selector]}}`;
+          // eslint-disable-next-line prefer-template
+          fileStr += selector + '{' + styles[selector] + '}';
         }
-        fs.writeFileSync(fn, fileStr);
+        if (typeof fn === 'string') fs.writeFileSync(fn, fileStr);
+        else for (let f = 0; f < fn.length; f++) {
+          fs.writeFileSync(fn[f], fileStr);
+        }
       }
     }
   };

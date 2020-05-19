@@ -1,7 +1,5 @@
-export { default as FrontCategoryDisplay } from './FrontCategoryDisplay';
-export { default as FrontDocumentDisplay } from './FrontDocumentDisplay';
+export { FrontCategoryDisplay, FrontDocumentDisplay, FrontProfileDisplay } from './FrontDisplay';
 export { default as FrontHeader } from './FrontHeader';
-export { default as FrontProfileDisplay } from './FrontProfileDisplay';
-export { default as LoginPage } from './LoginPage';
 export { default as NotFound } from './NotFound';
 export { default as SearchPage } from './SearchPage';
+export { default as Sitemap } from './Sitemap';

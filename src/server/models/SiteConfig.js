@@ -1,5 +1,8 @@
 import mongoose from 'mongoose';
 import ShortcodeSchema from './ShortcodeSchema';
+import User from './User';
+import fs from 'fs';
+import path from 'path';
 
 let { Schema, model } = mongoose;
 
@@ -65,7 +68,44 @@ const SiteConfigSchema = new Schema({
     type: String,
     enum: ['en', 'zh'],
     default: 'en'
+  },
+  themeColor: {
+    type: String,
+    default: 'cadetblue'
   }
+});
+
+SiteConfigSchema.post('save', function() {
+  User.find({ }).then(users => {
+    users.forEach(user => { user.save(); });
+  });
+
+  var {
+    siteName, description, aboutBody, gaTrackingId, language,
+    keywords, iconUrl, profileTemplate, menuLinks, stylesheet,
+    shortcodes, themeColor
+  } = this;
+
+  fs.writeFileSync(path.join(__dirname, 'site-files/config.enigma'), JSON.stringify({
+    siteName, description, aboutBody, gaTrackingId, language,
+    keywords, iconUrl, profileTemplate, menuLinks, themeColor,
+    stylesheet
+  }));
+
+  fs.writeFileSync(path.join(__dirname, 'public/style.css'), stylesheet);
+
+  let shortcodeData = '{\n';
+
+  shortcodeData += shortcodes.map(({ name, args, code }) => {
+    if (name.length && code.length) {
+      return `${name}: new Function(${ args.map(arg => `"${arg}"`).join(', ')}, "${code}")`
+    }
+    else return null;
+  }).filter(i => i || false).join(',\n');
+
+  shortcodeData += '};\n'
+
+  fs.writeFileSync(path.join(__dirname, 'site-files/shortcodes.js'), shortcodeData);
 });
 
 export default model('SiteConfig', SiteConfigSchema);

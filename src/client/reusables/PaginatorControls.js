@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import { h, createElement } from 'preact'; /** @jsx h **/
+import { useContext } from 'preact/hooks';
 import fromCss from '../utils/component_from_css';
 import PaginatorControlContext from './PaginatorControlContext';
 
-var generateArray = function() {
+export function generateArray() {
   let retval = [], n = arguments[0], k = arguments[1];
 
   for (let i = (k !== undefined ? n : 1); i <= (k !== undefined ? k : n); i++) {
@@ -10,9 +11,9 @@ var generateArray = function() {
   }
 
   return retval;
-};
+}
 
-function truncatePageList(
+export function truncatePageList(
   numberOfPages, maxPageTabs, currentPage) {
   if (numberOfPages <= maxPageTabs) {
     return generateArray(numberOfPages);
@@ -38,10 +39,11 @@ function truncatePageList(
 }
 
 const PaginatorContainer = fromCss('div',
-    'clear:both;width:100%;margin:0px auto;'), PaginatorButton = fromCss('li',
-    ({ isActive }) => 'text-align:center;border:thin grey solid;padding:5px;width:35px;height:35px;display:inline-block;font-size:1.15em;color:white;' +
+    'clear:both;width:100%;margin:0px auto;'),
+  PaginatorButton = fromCss('li', ({ isActive }) =>
+    'text-align:center;border:thin grey solid;padding:5px;width:35px;height:35px;display:inline-block;font-size:1.15em;color:white;' +
   `background-color:${isActive ? 'black' : 'cadetblue'};`,
-    ['isActive', 'activeTabColor']),
+  ['isActive', 'activeTabColor']),
   PaginatorList = fromCss('ul', 'list-style:none;padding-left:0px;display:inline;'),
   PaginatorNumber = fromCss('a', 'color:inherit;font-size:inherit;');
 export default function PaginatorControls() {

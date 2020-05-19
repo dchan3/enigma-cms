@@ -1,16 +1,44 @@
-import React from 'react';
+/* eslint-disable max-len */
+import { h } from 'preact'; /** @jsx h **/
 import { expect } from 'chai';
 import Enzyme, { render } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-Enzyme.configure({ adapter: new Adapter() });
+import Adapter from 'enzyme-adapter-preact-pure';
+Enzyme.configure({ adapter: new Adapter });
 import { GeneratedForm, CodeEditor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
-import { loget, loset } from '../src/client/utils/lofuncs.js';
+import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import fromCss from '../src/client/utils/component_from_css';
 import styleObject from '../src/client/utils/style_object';
+import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
+import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
+import { StaticContextProvider } from '../src/client/contexts/StaticContext';
+import { TheRouterContextProvider } from '../src/client/contexts/TheRouterContext';
+import Footer from '../src/client/reusables/Footer';
+import { createMemoryHistory as createHistory } from 'history';
+import CodeEditorToolbar from '../src/client/reusables/CodeEditorToolbar';
+import LoginPage from '../src/client/views/admin/LoginPage';
+import SignupPage from '../src/client/views/admin/SignupPage';
+import ChangePasswordPage from '../src/client/views/admin/ChangePasswordPage';
+const { JSDOM } = require('jsdom');
+
+const jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
+  pretendToBeVisible: true
+});
+const { window } = jsdom;
+
+global.window = window;
+global.document = window.document;
+global.history = window.history;
+global.requestAnimationFrame = () => {};
+global.cancelAnimationFrame = () => {};
+
+let renderForm = function(title, params, currentValue = null) {
+  return render(<GeneratedForm params={params} title={title}
+    currentValue={currentValue} method="post" formAction="" />);
+}
 
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
@@ -20,8 +48,7 @@ describe('Reusable UI Components - Generated Form', function() {
         type: 'text'
       }
     };
-    const wrapper = render(<GeneratedForm params={parameters} title="Find User"
-      method="post" formAction="" />);
+    const wrapper = renderForm('Find User', parameters);
     expect(wrapper.find('h2')).to.have.lengthOf(1);
     expect(wrapper.find('h2').text()).to.equal('Find User');
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
@@ -68,8 +95,7 @@ describe('Reusable UI Components - Generated Form', function() {
           }
         }]
       };
-    const wrapper = render(<GeneratedForm params={parameters} formAction=""
-      currentValue={currentValue} title="Event Summary" method="post" />);
+    const wrapper = renderForm('Event Summary', parameters, currentValue);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
@@ -84,7 +110,7 @@ describe('Reusable UI Components - Code Editor', function() {
   it('renders correctly with existing value', function(done) {
     const wrapper = render(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
-    expect(wrapper.find('textarea').text()).to.equal('<h1>Hello World!</h1>');
+    expect(wrapper.find('textarea')).to.exist;
     done();
   });
 });
@@ -103,6 +129,67 @@ describe('Camel Case String Conversion', function() {
   it('three words', function(done) {
     expect(camelcaseConvert('threeLeggedDog'))
       .to.equal('Three Legged Dog');
+    done();
+  });
+});
+
+let renderWithDom = function(component, staticVal) {
+  return render(<TheRouterContextProvider value={{
+    history: createHistory({
+      basename: 'localhost:8080'
+    }),
+    basename: 'localhost:8080'
+  }}>
+  <StaticContextProvider initialVals={staticVal}>
+    {component}
+  </StaticContextProvider>
+  </TheRouterContextProvider>);
+}
+
+describe('Change Password Page', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<ChangePasswordPage />, { user: { username: 'my_user'}});
+    expect(wrapper.find('input[type="password"]')).to.have.lengthOf(2);
+    done();
+  });
+});
+
+describe('Footer', function() {
+  it('when user exists', function(done) {
+    let wrapper = renderWithDom(<Footer />, { user: { username: 'my_user' }});
+    expect(wrapper.find('a')).to.have.lengthOf(5);
+    done();
+  });
+
+  it('when user does not exist', function(done) {
+    let wrapper = renderWithDom(<Footer />, { });;
+    expect(wrapper.find('a')).to.have.lengthOf(3);
+    done();
+  });
+});
+
+describe('Code Editor Toolbar', function() {
+  it('displays correctly', function(done) {
+    let wrapper = render(<CodeEditorToolbar />);
+    expect(wrapper.find('button')).to.have.lengthOf(4);
+    done();
+  });
+});
+
+describe('Login Page', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<LoginPage />,
+      { config: { siteName: 'My Website '}});
+    expect(wrapper.find('a')).to.have.lengthOf(1);
+    done();
+  });
+});
+
+describe('Signup Page', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<SignupPage />,
+      { config: { siteName: 'My Website '}});
+    expect(wrapper.find('a')).to.have.lengthOf(1);
     done();
   });
 });
@@ -352,6 +439,61 @@ describe('Form from Obj', function() {
       valuesInvalid)).to.have.members(['guestList.0.lastName',
       'guestList.1.firstName',
       'guestList.1.lastName']);
+    done();
+  });
+
+  it('function types', function(done) {
+    let parameters = {
+        data: {
+          type: function(value) {
+            return value;
+          },
+          attrDepends: { type: ['dataType'] }
+        },
+        dataType: {
+          type: 'enum',
+          enumList: [
+            { 'text': 'Text', 'value': 'text' },
+            { 'text': 'Datetime', 'value': 'date' },
+            { 'text': 'Select', 'value': 'enum' },
+            { 'text': 'Number', 'value': 'number' },
+            { 'text': 'Email', 'value': 'email' },
+            { 'text': 'URL', 'value': 'url' },
+            { 'text': 'Color', 'value': 'color' }
+          ]
+        }
+      }, currentValue = {
+        dataType: 'number',
+        data: ''
+      };
+    let wrapper = renderForm('Data Entry', parameters, currentValue);
+    expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    expect(wrapper.find('select')).to.have.lengthOf(1);
+    expect(wrapper.find('option')).to.have.lengthOf(7);
+    done();
+  });
+
+  it('maximum - text', function(done) {
+    var parameters = {
+      username: {
+        type: 'text',
+        maximum: 12
+      }
+    };
+    let wrapper = renderForm('Sign Up', parameters);
+    expect(wrapper.find('input[maxlength="12"]')).to.have.lengthOf(1);
+    done();
+  });
+
+  it('maximum - non-text', function(done) {
+    var parameters = {
+      username: {
+        type: 'number',
+        maximum: 9000
+      }
+    };
+    let wrapper = renderForm('Pick a number', parameters);
+    expect(wrapper.find('input[maximum="9000"]')).to.have.lengthOf(1);
     done();
   });
 });
@@ -642,58 +784,58 @@ describe('HTML to JSX', function() {
         <h3>GeneralContext.js</h3>,
         <div style={{ backgroundColor: '#e0e0e0' }}>
           <code>{'import React, { useState, createContext } from \'react\';'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'let initialState = ({ history }) => ({ history });'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>const GeneralContext = createContext(initialState);</code>
-          <br /><br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
           <code>export default GeneralContext;</code>
-          <br /><br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
           <code>{'const { Provider } = GeneralContext;'}</code>
           <code>{'export const GeneralContextProvider = ({ children, initialVals }) => {'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'  let iState = Object.assign({}, initialState(initialVals)), [generalState, setGeneralState] = useState(iState);'}</code>
-          <br />
-          <code>{'  return <Provider value={{ generalState, setGeneralState }}>{children}</Provider>;'}<br />
+          <br key={undefined} ref={undefined} />
+          <code>{'  return <Provider value={{ generalState, setGeneralState }}>{children}</Provider>;'}<br key={undefined} ref={undefined} />
             {'};'}</code>
         </div>,
         <p>Wherever in the code you specify your routes, create a functional component that returns a <code>Route</code> with the <code>GeneralContextProvider</code> and the component nested inside, then refactor accordingly:</p>,
         <div style={{ backgroundColor: '#e0e0e0' }}>
           <code>{'import React from \'react\';import { Route } from \'react-router-dom\';'}</code>
-          <br /><br />
-          <code>{'let GeneralRoute = ({ component: Component, ...rest }) => <Route  exact {...rest} component={({ history }) => ('}</code><br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
+          <code>{'let GeneralRoute = ({ component: Component, ...rest }) => <Route  exact {...rest} component={({ history }) => ('}</code><br key={undefined} ref={undefined} />
           <code>{'<GeneralContextProvider initialVals={{ history, match }}>'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      <Component /></GeneralContextProvider>'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{')} />;'}</code>
         </div>,
         <p>As you can see, the <code>GeneralContext</code> is provided the browser history object by means of the <code>Route</code> component attribute. Anything in this attribute will be passed an object with a <code>location</code>, <code>history</code>, and <code>match</code> attributes.</p>,
         <p>Now, for the actual link itself (don't mind the use of <code>styled-components</code>):</p>,
         <div style={{ backgroundColor: '#e0e0e0' }}>
           <code>{'import React, { useContext } from \'react\';'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>import GeneralContext from './GeneralContext';</code>
-          <br /><br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
           <code>{'function SamePageAnchor({  children, href, target, className, id, style, component}) {'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'  let { generalState, setGeneralState } = useContext(GeneralContext),    Anchor = component || styled.a``, AlreadyOn = styled.span`    text-decoration: underline;    font-weight: 900;↵    margin: 0;↵    width: fit-content;   height: fit-content;  `;'}</code>
-          <br /><br /><code>{'  function handleClick(event) {'}</code>
-          <br />
+          <br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} /><code>{'  function handleClick(event) {'}</code>
+          <br key={undefined} ref={undefined} />
           <code>{'    if (href.startsWith(\'/\')) {'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      let newState = Object.assign({}, generalState);'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      event.preventDefault();'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      newState.history.push(href);'}</code>
-          <br />
+          <br key={undefined} ref={undefined} />
           <code>{'      setGeneralState(newState);'}</code>
-          <br />
-          <code>{'    }'}</code><br />
-          <code>{'  }'}</code><br /><br />
+          <br key={undefined} ref={undefined} />
+          <code>{'    }'}</code><br key={undefined} ref={undefined} />
+          <code>{'  }'}</code><br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
           <code>{'  return (generalState.history &&generalState.history.location.pathname !== href) ?    <Anchor {...{ href, target, className, id, style     }} onClick={handleClick}>{children}</Anchor> :    <AlreadyOn>{children}</AlreadyOn>;'}
-            <br />{'}'}<br /><br />
+            <br key={undefined} ref={undefined} />{'}'}<br key={undefined} ref={undefined} /><br key={undefined} ref={undefined} />
             {'export default SamePageAnchor;'}</code>
         </div>,
         <p>Now you should be good to go. Make sure that wherever in your code used, it has access to a <code>GeneralContext</code>.</p>];
@@ -735,6 +877,69 @@ describe('From CSS', function() {
 
     expect(actual.find('p').text()).to.equal(expected.find('p').text());
     expect(actual.get(0).style).to.deep.equal(expected.get(0).style);
+    done();
+  });
+});
+
+describe('obj map', function() {
+  it('flat out works', function(done) {
+    expect(objMap({
+      uno: '1',
+      dos: '2',
+      tres: '3'
+    }, function(k) {
+      return Number.parseInt(this[k]);
+    })).to.deep.equal([1,2,3]);
+    done();
+  });
+});
+
+
+describe('Paginator Controls', function() {
+  it('array generation from 1 to n', function(done) {
+    expect(generateArray(5)).to.deep.equal([1,2,3,4,5]);
+    done();
+  });
+
+  it('array generation from n to k', function(done) {
+    expect(generateArray(4,7)).to.deep.equal([4,5,6,7]);
+    done();
+  });
+
+  // numberOfPages, maxPageTabs, currentPage
+  it('truncated page list 1', function(done) {
+    expect(truncatePageList(4,5,3)).to.deep.equal([1,2,3,4]);
+    done();
+  });
+
+  it('truncated page list 2', function(done) {
+    expect(truncatePageList(7,5,1)).to.deep.equal([1,2,3,null,6,7]);
+    done();
+  });
+
+  it('shallow search 1', function(done) {
+    expect(strQuery('boogie man', 'boogie')).to.equal(true);
+    done();
+  });
+
+  it('shallow search 2', function(done) {
+    expect(strQuery('alpha', 'alpha male')).to.equal(false);
+    done();
+  });
+
+  it('shallow search 3', function(done) {
+    expect(shallowSearch(['alpha', 'bravo', 'charlie', 'alphabet'], 'alpha')).to.deep.equal(['alpha', 'alphabet']);
+    done();
+  });
+
+  // items, per, maxPages
+  it('results pagination', function(done) {
+    expect(pages([1,2,3,4,5,6,7], 3, 2)).to.deep.equal([[1,2,3], [4,5,6]]);
+    done();
+  });
+
+  it('results pagination', function(done) {
+    expect(pages([1,2,3,4,5], 4, 2)).to.deep.equal([[1,2,3,4], [5]]);
     done();
   });
 });

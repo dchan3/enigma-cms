@@ -1,7 +1,10 @@
-import React from 'react';
+import { h, createElement } from 'preact';
 import fromCss from '../utils/component_from_css';
 
-let ToolbarIconFrame = fromCss('div', 'min-height:40px;max-height:40px;min-width:40px;max-width:40px;'),
+/** @jsx h **/
+
+let ToolbarIconFrame = fromCss('div',
+    'min-height:40px;max-height:40px;min-width:40px;max-width:40px;'),
   IconContent = fromCss('button', 'width:100%;height:100%;'),
   BoldIconSpan = fromCss('span', 'font-weight:900;font-size:18px;'),
   ItalicIconSpan = fromCss('span', 'font-style:italic;font-size:18px;'),
@@ -15,19 +18,23 @@ function ToolbarIcon({ command, component: Component, label }) {
     document.execCommand(command);
   }
 
-  return <ToolbarIconFrame>
+  return <ToolbarButton><ToolbarIconFrame>
     <IconContent onClick={handleClick}>
       <Component>{label}</Component>
     </IconContent>
-  </ToolbarIconFrame>
+  </ToolbarIconFrame></ToolbarButton>
 }
+
+let iconData = [
+  { command: 'bold', component: BoldIconSpan, label: 'B' },
+  { command: 'italic', component: ItalicIconSpan, label: 'I' },
+  { command: 'underline', component: UnderlineIconSpan, label: 'U' },
+  { command: 'strikeThrough', component: StrikeThroughIconSpan, label: 'S' },
+];
 
 function CodeEditorToolbar() {
   return <ToolbarWhole>
-    <ToolbarButton><ToolbarIcon command='bold' component={BoldIconSpan} label="B" /></ToolbarButton>
-    <ToolbarButton><ToolbarIcon command='italic' component={ItalicIconSpan} label="I" /></ToolbarButton>
-    <ToolbarButton><ToolbarIcon command='underline' component={UnderlineIconSpan} label="U" /></ToolbarButton>
-    <ToolbarButton><ToolbarIcon command='strikeThrough' component={StrikeThroughIconSpan} label="S" /></ToolbarButton>
+    {iconData.map(icon => <ToolbarIcon {...icon} />)}
   </ToolbarWhole>;
 }
 

@@ -1,8 +1,8 @@
-import React from 'react';
-import { GeneratedForm, StyledDiv, SamePageAnchor, Fedora } from '../../reusables';
+import { h } from 'preact'; /** @jsx h **/
+import { GeneratedForm, StyledDiv, SamePageAnchor, Fedora } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext';
 
-function LoginPage() {
+export default function LoginPage() {
   let { config: { siteName } } = useStaticContext(['config']);
 
   return [<Fedora title={`Sign In | ${siteName}`}
@@ -15,5 +15,3 @@ function LoginPage() {
     here</SamePageAnchor>.</p>
   </StyledDiv>];
 }
-
-export default LoginPage;

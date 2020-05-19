@@ -1,9 +1,11 @@
-import { Document, DocumentType, DocumentDisplayTemplate, User }
+import { Document, DocumentType, DocumentDisplayTemplate }
   from '../../../models';
 import renderMarkup, { prepareDocumentsForRender }
   from '../../../utils/render_markup';
 import { categoryMetadata,
   documentMetadata } from '../../../utils/render_metadata';
+import fs from 'fs';
+import path from 'path';
 
 async function getTypes() {
   let types = await DocumentType.find({ });
@@ -29,33 +31,32 @@ async function getType2(docTypeId) {
 }
 
 async function getRenderedDocumentByTypeAndSlug(type, slug) {
-  let docType = await DocumentType.findOne({
-    $or: [
-      { docTypeName: type },
-      { docTypeNamePlural: type }]
-  });
-  if (!docType) return {};
-  let { docTypeId } = docType,
-    { templateBody } = await DocumentDisplayTemplate.findOne({ docTypeId }),
-    doc =
-      await Document.findOne({ docTypeId, slug });
+  let filename = path.join(__dirname, `documents/${type}/${slug}.enigma`), data = '', retval;
+  try {
+    if (!fs.exists(filename)) throw '';
 
-  if (!doc) return {};
-  let { creatorId, content, createdAt, editedAt } = doc,
-    authorInfo = await User.findOne({ userId: creatorId })
-      .select({ password: 0, _id: 0 }),
-    metadata = await documentMetadata(content),
-    rendered = await renderMarkup(templateBody, {
-      ...content, createdAt, editedAt, authorInfo });
+    data = fs.readFileSync(filename);
+    if (!data) throw '';
 
-  return {
-    slug,
-    editedAt,
-    createdAt,
-    authorInfo,
-    rendered,
-    metadata
-  };
+    retval = JSON.parse(data);
+    if (!retval) throw '';
+  } catch {
+    let docType = await DocumentType.findOne({
+      $or: [
+        { docTypeName: type },
+        { docTypeNamePlural: type }]
+    });
+    if (!docType) return {};
+    let { docTypeId } = docType,
+      doc = await Document.findOne({ docTypeId, slug });
+
+    if (!doc) return {};
+
+    let { rendered, content } = doc,
+      metadata = await documentMetadata(content);
+    retval = { rendered, metadata, slug }
+  }
+  return retval;
 }
 
 async function getRenderedDocumentsByTypeName(docTypeNamePlural) {

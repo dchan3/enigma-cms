@@ -15,3 +15,7 @@ export const loset = function(obj, keyString, val) {
     loset(obj[keys[0]], keyString.substring(keyString.indexOf('.') + 1), val);
   }
 }
+
+export const objMap = function(obj, func) {
+  return Object.keys(obj).map(func.bind(obj));
+}

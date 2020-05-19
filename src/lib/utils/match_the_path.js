@@ -25,23 +25,45 @@ export default function matchThePath(pathname, { path, exact }) {
       params: {}
     };
   }
-  if (path === '/' && pathname === '/') {
-    return {
-      path: '/',
-      url: pathname,
-      params: {}
-    };
+  if (path === '/') {
+    if (pathname === '/') {
+      return {
+        path: '/',
+        url: pathname,
+        params: {}
+      }
+    }
+    else if (pathname.length) {
+      return null;
+    }
   }
-  if (path === '/' && pathname.length) {
+  let { regex, keys } = returnPathKeys(path);
+
+  if (!keys.length && pathname !== path && pathname !== `${path}/`) {
     return null;
   }
-  let { regex, keys } = returnPathKeys(path), params = {},
+
+  if (!keys.length && (pathname === path && exact) || (pathname === `${path}/` && !exact)) {
+    return {
+      path,
+      url: pathname,
+      params: {}
+    }
+  }
+
+  let params = {},
     res = pathname.match(regex);
 
   if (!res) return null;
 
   for (let k = 0; k < keys.length; k++) {
     params[keys[k]] = res[k + 1];
+  }
+
+  for (let ky in params) {
+    if (params[ky].indexOf('/') >= 0) {
+      return null;
+    }
   }
 
   return {

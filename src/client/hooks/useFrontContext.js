@@ -1,47 +1,48 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'preact/hooks';
 import useStaticContext from './useStaticContext';
-import useGeneralContext from './useGeneralContext';
-import requests from '../utils/api_request_async';
-import { loget } from '../utils/lofuncs';
+import useTheRouterContext from './useTheRouterContext';
+import { getRequest } from '../utils/api_request_async';
+import { loget } from '../../lib/utils/lofuncs';
 
 export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
   initial }) {
-  let { generalState } = useGeneralContext(),
-    { match: { params } } = generalState,
-    { dataObj } = useStaticContext(['dataObj']), initState = {
-      dataObj
-    };
+  let { match } = useTheRouterContext(),
+    { dataObj } = useStaticContext(['dataObj']);
 
-  if (dataObj) {
-    let d = 0;
-    while (d < dataParams.length && initState.dataObj) {
-      var dt = loget(dataObj, dataParams[d]), ut =
-          loget(params, urlParams[d]);
-      if ((dt ===  null || dt === undefined) ||
-          (ut === null || ut === undefined) ||
-          (dt !== null && dt !== undefined) && (ut !== null && ut !== undefined)
-        && dt.toString() !== ut.toString()) {
-        initState.dataObj = null;
+  if (dataObj && match) {
+    let d = 0, { params } = match;
+    if (params && params.length) {
+      while (d < dataParams.length && dataObj) {
+        var dt = loget(dataObj, dataParams[d]), ut =
+            loget(params, urlParams[d]);
+        if ((dt ===  null || dt === undefined) ||
+            (ut === null || ut === undefined) || (dt && ut)
+          && dt.toString() !== ut.toString()) {
+          dataObj = null;
+        }
+        else d++;
       }
-      else d++;
     }
+    else dataObj = null;
   }
-  else { initState.dataObj = null; }
+  else dataObj = null;
 
-  let [state, setState] = useState(initState);
+  let [state, setState] = useState({ dataObj });
 
   useEffect(function() {
-    if (!state.dataObj) {
-      if (apiUrl(params || {}).length) {
-        requests.getRequest(apiUrl(params || {}), function(dataObj) {
-          if (cb) cb(dataObj, setState, params || {});
-          else setState({ dataObj: Object.keys(dataObj).length ? dataObj :
+    if (match && match.params && !dataObj) {
+      let reqUrl = apiUrl(match.params || {});
+
+      if (reqUrl.length) {
+        getRequest(reqUrl, function(d) {
+          if (cb) cb(d, setState, match.params || {});
+          else setState({ dataObj: Object.keys(d).length ? d :
             undefined });
         });
       }
-      else if (initial) setState(initial);
     }
-  }, []);
+    else if (initial) setState(initial);
+  }, match && match.params && Object.values(match.params) || []);
 
-  return { state, setState, apiUrl: apiUrl(params) };
+  return { state, setState, apiUrl: match && match.params && apiUrl(match.params) && null };
 }

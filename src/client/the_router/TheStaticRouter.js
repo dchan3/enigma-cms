@@ -1,4 +1,4 @@
-import React from 'react';
+import { h } from 'preact'; /** @jsx h **/
 import TheRouter from './TheRouter';
 import { createLocation, createPath } from 'history';
 

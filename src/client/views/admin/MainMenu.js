@@ -1,8 +1,8 @@
-import React from 'react';
-import { DropdownMenu } from '../../reusables';
+import { h } from 'preact'; /** @jsx h **/
+import { DropdownMenu } from '../../reusables/back_exports';
 import useStaticContext from '../../hooks/useStaticContext.js';
 
-function MainMenu() {
+export default function MainMenu() {
   let { user, types } = useStaticContext(['user', 'types']);
 
   let isAdmin = user && user.roleId === 0 || false, menuNodes = [];
@@ -40,5 +40,3 @@ function MainMenu() {
 
   return user ? <DropdownMenu {...{ menuNodes }} /> : null;
 }
-
-export default MainMenu;

@@ -1,6 +1,7 @@
-import { User, SiteConfig } from '../../../models';
-import renderMarkup from '../../../utils/render_markup';
+import { User } from '../../../models';
 import { profileMetadata } from '../../../utils/render_metadata';
+import fs from 'fs';
+import path from 'path';
 
 async function getAllUsers() {
   let q = await User.find({});
@@ -8,15 +9,26 @@ async function getAllUsers() {
 }
 
 async function getUserProfile({ username }) {
-  let config = await SiteConfig.findOne({});
-  let { profileTemplate } = config;
-  let user = await User.findOne({ username });
-  if (!user) return {};
-  let metadata = await profileMetadata(user);
-  let rendered = await renderMarkup(profileTemplate, user);
-  return {
-    metadata, rendered, username
-  }
-}
+  let filename = path.join(__dirname, `profiles/${username}.enigma`), data = '', retval;
+  try {
+    if (!fs.exists(filename)) throw '';
 
+    data = fs.readFileSync(filename);
+    if (!data) throw '';
+
+    retval = JSON.parse(data);
+    if (!retval) throw '';
+  } catch {
+    await User.findOne({ username }).then(async user => {
+      if (!user) return {};
+      let metadata = await profileMetadata(user);
+      let { rendered } = user;
+      retval = {
+        metadata, rendered, username
+      }
+    });
+  }
+
+  return retval;
+}
 export default { getAllUsers, getUserProfile };

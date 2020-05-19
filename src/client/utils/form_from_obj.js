@@ -1,4 +1,4 @@
-import { loget } from './lofuncs';
+import { loget } from '../../lib/utils/lofuncs';
 import { default as camelcaseConvert } from './camelcase_convert';
 
 const outputKeys = function(obj, includeParents, parent) {
@@ -28,7 +28,8 @@ const typeVerify = function(typeVar, argsToPass) {
 
 const calcFromDependValues = function(paramSpec, attr, formVal, keyToUse) {
   let args = paramSpec.attrDepends[attr].map(function(valVar) {
-    let index = keyToUse.match(/\.(\d+(?!\w))/g).pop().substring(1);
+    let idxMtch = keyToUse.match(/\.(\d+(?!\w))/g), index = undefined;
+    if (idxMtch) index = idxMtch.pop().substring(1);
     return loget(formVal, index !== undefined ?
       valVar.replace('$', index.toString()) : valVar);
   });
@@ -61,20 +62,18 @@ const genInputComponent =
         hidden: paramSpec.hidden || false,
       };
 
+    attributes = { ...paramSpec, ...attributes };
+
+    if (paramSpec.maximum) {
+      if (theType.match(/text/)) {
+        delete attributes.maximum;
+        attributes.maxLength = paramSpec.maximum;
+      }
+    }
+
     if (!theType.match(/enum/)) {
       attributes.type = theType.match(/[a-z]+/)[0];
       attributes.noValidate = true;
-    }
-
-    if (paramSpec.grammar) {
-      attributes.grammar = paramSpec.grammar;
-    }
-    if (paramSpec.maximum) {
-      if (theType.match(/text/)) attributes.maxLength = paramSpec.maximum;
-      else attributes.maximum = paramSpec.maximum
-    }
-    if (paramSpec.minimum) {
-      attributes.minimum = paramSpec.minimum;
     }
 
     let retval = {
@@ -99,14 +98,46 @@ const numKeyToShapeKey = function(key) {
     .replace(/\.\d+\./g, '.shape.').replace('.shape.shape.', '.shape.')
 };
 
+const emptyValuesObj = function(paramsObj) {
+  let retval = {};
+  for (let k in paramsObj) {
+    retval[k] = paramsObj[k].children ? (emptyValuesObj(
+      paramsObj[k].children)) :
+      (paramsObj[k].type.startsWith('[') ? [] : '');
+  }
+  return retval;
+}
+
 const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
   let retval = [],
     realParamsObj = Object.assign({}, (extra && extra.parentKey) ?
       loget(paramsObj,`${numKeyToShapeKey(extra.parentKey)}.shape`) :
-      paramsObj);
+      paramsObj), realValuesObj = valuesObj && Object.keys(valuesObj).length ?
+      valuesObj : {}, pushFunc = function(actualKey, i = null) {
+      let par = { parentKey: actualKey };
+      if (i) par.iteration = i;
+      if (!Object.keys(valuesObj).length) {
+        realValuesObj = emptyValuesObj(paramsObj);
+      }
+      retval.push(
+        ...formFromObj(paramsObj, realValuesObj, par, invalidFields));
+    }, genComp = function(actualKey, i = null) {
+      let thaKey = actualKey + (i ? `.${i}` : '');
+
+      retval.push(genInputComponent(paramsObj, loget(paramsObj,
+        numKeyToShapeKey(actualKey)), loget(realValuesObj, thaKey), thaKey,
+      i && undefined , realValuesObj, invalidFields));
+    }, arrayRemPush = function(actualKey, i) {
+      retval.push({
+        component: 'FormSubmitButton',
+        innerText: 'Remove',
+        attributes: { onClick: `handleArrayRemove ${actualKey} ${i}` }
+      });
+    }
+
   for (var key in realParamsObj) {
     var { label } = realParamsObj[key],
-      paramType = typeVerify(realParamsObj[key].type, [valuesObj[key]]),
+      paramType = typeVerify(realParamsObj[key].type, [realValuesObj[key]]),
       isArray = paramType.match(/\[.+\]/), isObj = paramType.match(/object/),
       keyConstruct = [];
     if (!label) label = camelcaseConvert(key);
@@ -128,45 +159,14 @@ const formFromObj = function(paramsObj, valuesObj, extra, invalidFields) {
       });
     }
 
-    if (isObj) {
-      if (!isArray) {
-        retval.push(
-          ...formFromObj(paramsObj, valuesObj, { parentKey: actualKey },
-            invalidFields))
-      }
-      else {
-        for (let i in valuesObj[key]) {
-          retval.push(
-            ...formFromObj(paramsObj, valuesObj,
-              { parentKey: actualKey, iteration: i }, invalidFields));
-          retval.push({
-            component: 'FormSubmitButton',
-            innerText: 'Remove',
-            attributes: { onClick: `handleArrayRemove ${actualKey} ${i}` }
-          });
-        }
+    if (isArray) {
+      for (let i in isObj ? realValuesObj[key] : loget(realValuesObj, actualKey)) {
+        isObj ? pushFunc(actualKey, i) : genComp(actualKey, i);
+        arrayRemPush(actualKey, i);
       }
     }
-    else  {
-      if (!isArray) {
-        retval.push(genInputComponent(paramsObj, loget(paramsObj,
-          numKeyToShapeKey(actualKey)), loget(valuesObj, actualKey), actualKey,
-        undefined, valuesObj, invalidFields));
-      }
-      else {
-        for (let i in loget(valuesObj, actualKey)) {
-          retval.push(
-            genInputComponent(paramsObj, loget(paramsObj,
-              numKeyToShapeKey(actualKey)),
-            loget(valuesObj, `${actualKey}.${i}`),
-            `${actualKey}.${i}`, i, valuesObj, invalidFields));
-          retval.push({
-            component: 'FormSubmitButton',
-            innerText: 'Remove',
-            attributes: { onClick: `handleArrayRemove ${actualKey} ${i}` }
-          });
-        }
-      }
+    else {
+      isObj ? pushFunc(actualKey) : genComp(actualKey);
     }
   }
   return retval;

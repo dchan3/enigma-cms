@@ -1,6 +1,7 @@
 import { Document, DocumentType, File } from '../../models';
 import { default as userFetchFuncs } from '../fetch_funcs/users';
 import { default as documentFetchFuncs } from '../fetch_funcs/documents';
+import { default as sitemapFetchFuncs } from '../fetch_funcs/sitemap';
 
 export default {
   '/profile/:username': async (path) => {
@@ -11,7 +12,15 @@ export default {
     let [ docTypeNamePlural, slug ] = path.split('/').slice(-2),
       retval = await documentFetchFuncs.getRenderedDocumentByTypeAndSlug(
         docTypeNamePlural, slug
-      )
+      );
+    return retval;
+  },
+  '/sitemap': async () => {
+    let retval = await sitemapFetchFuncs.renderSitemap();
+    return retval;
+  },
+  '/sitemap.html': async () => {
+    let retval = await sitemapFetchFuncs.renderSitemap();
     return retval;
   },
   '/:docType': async (path) => {
