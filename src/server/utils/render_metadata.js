@@ -20,7 +20,7 @@ export const documentMetadata = async function (content, appendSite = true) {
 
   if (appendSite) {
     attrs.title += attrs.title.length ? ` | ${siteName}` : siteName;
-    attrs.description += attrs.description.length ? attrs.description : description;
+    attrs.description += attrs.description.length ? '' : description;
     attrs.image += attrs.image.length ? attrs.image : (iconUrl || '');
     attrs.keywords = typeof attrs.keywords === 'string' ?
       [attrs.keywords, ...keywords].join(',') : (attrs.keywords.length ? [...attrs.keywords, ...keywords] : [keywords]).join(',');
