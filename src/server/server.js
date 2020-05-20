@@ -26,8 +26,8 @@ mongoose.connect(require('../../config/db.js').url, {
   useUnifiedTopology: true
 }, () => {
   SiteConfig.findOne({}).then(config => {
-    if (!fs.existsSync(path.join(__dirname, 'site-files'))) {
-      fs.mkdirSync(path.join(__dirname, 'site-files'));
+    if (!fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'site-files'))) {
+      fs.mkdirSync(path.join(process.env.DIRECTORY || __dirname, 'site-files'));
     }
 
     if (!config) {

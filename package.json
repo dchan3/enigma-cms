@@ -47,6 +47,7 @@
     "babel-plugin-lodash": "^3.3.4",
     "babel-preset-minify": "^0.5.1",
     "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "codacy-coverage": "^3.4.0",
     "crypto": "^1.0.1",
     "enzyme": "^3.11.0",
@@ -74,7 +75,7 @@
     "lint": "eslint .",
     "send": "nyc report --reporter=lcov --reporter=text && cat ./coverage/lcov.info | codacy-coverage --token $CODACY_PROJECT_TOKEN",
     "start": "nodemon server.bundle.js",
-    "test": "DB_CONN_URL='mongodb://localhost/enigma-test' DIRECTORY=$(echo $(pwd)/test/) mocha --require @babel/register --file test/*.js",
+    "test": "SERVER_PORT=8094 DB_CONN_URL='mongodb://localhost/enigma-test' DIRECTORY=$(echo $(pwd)/test/) mocha --require @babel/register --file test/*.js",
     "test-with-coverage": "nyc --silent npm run test && npm run send"
   }
 }
