@@ -4,7 +4,7 @@ import path from 'path';
 
 let renderMarkup = async function (templateBody, stuff) {
   let shortcodes = {}, code = '';
-  if (fs.exists(path.join(process.env.DIRECTORY || __dirname, 'site-files/shortcodes.js'))) {
+  if (fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'site-files/shortcodes.js'))) {
     code = fs.readFileSync(path.join(process.env.DIRECTORY || __dirname, 'site-files/shortcodes.js'), 'utf8');
     shortcodes = eval(`(function() { return ${code}; })()`);
   }
