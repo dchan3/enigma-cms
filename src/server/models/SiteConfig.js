@@ -33,7 +33,8 @@ const SiteConfigSchema = new Schema({
   },
   stylesheet: {
     type: String,
-    required: false
+    required: false,
+    default: ''
   },
   menuLinks: {
     type: Array,
