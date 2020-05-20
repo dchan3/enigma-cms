@@ -75,7 +75,7 @@
     "lint": "eslint .",
     "send": "nyc report --reporter=lcov --reporter=text && cat ./coverage/lcov.info | codacy-coverage --token $CODACY_PROJECT_TOKEN",
     "start": "nodemon server.bundle.js",
-    "test": "mocha --require @babel/register --file test/*.js",
+    "test": "DB_CONN_URL='mongodb://localhost/enigma-test' DIRECTORY=$(echo $(pwd)/test/) mocha --require @babel/register --file test/*.js",
     "test-with-coverage": "nyc --silent npm run test && npm run send"
   }
 }

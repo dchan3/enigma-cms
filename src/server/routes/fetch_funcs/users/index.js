@@ -9,7 +9,7 @@ async function getAllUsers() {
 }
 
 async function getUserProfile({ username }) {
-  let filename = path.join(__dirname, `profiles/${username}.enigma`), data = '', retval;
+  let filename = path.join(process.env.DIRECTORY || __dirname, `profiles/${username}.enigma`), data = '', retval;
   try {
     if (!fs.exists(filename)) throw '';
 

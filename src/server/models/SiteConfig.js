@@ -86,13 +86,21 @@ SiteConfigSchema.post('save', function() {
     shortcodes, themeColor
   } = this;
 
-  fs.writeFileSync(path.join(__dirname, 'site-files/config.enigma'), JSON.stringify({
+  if (!fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'site-files'))) {
+    fs.mkdirSync(path.join(process.env.DIRECTORY || __dirname, 'site-files'));
+  }
+
+  fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, 'site-files/config.enigma'), JSON.stringify({
     siteName, description, aboutBody, gaTrackingId, language,
     keywords, iconUrl, profileTemplate, menuLinks, themeColor,
     stylesheet
   }));
 
-  fs.writeFileSync(path.join(__dirname, 'public/style.css'), stylesheet);
+  if (!fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'public'))) {
+    fs.mkdirSync(path.join(process.env.DIRECTORY || __dirname, 'public'));
+  }
+
+  fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, 'public/style.css'), stylesheet);
 
   let shortcodeData = '{\n';
 
@@ -105,7 +113,7 @@ SiteConfigSchema.post('save', function() {
 
   shortcodeData += '};\n'
 
-  fs.writeFileSync(path.join(__dirname, 'site-files/shortcodes.js'), shortcodeData);
+  fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, 'site-files/shortcodes.js'), shortcodeData);
 });
 
 export default model('SiteConfig', SiteConfigSchema);

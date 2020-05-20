@@ -2,9 +2,9 @@ node_modules/
 build/
 .idea/
 dist/
-public/app*.js*
+/**/public/app*.js*
 public/dashboard*.js*
-public/*.css
+/**/public/*.css
 assets/app*.css*
 public/uploads/
 public/sitemap.txt
@@ -14,7 +14,7 @@ server.bundle.js*
 /**/.DS_Store
 coverage/
 .nyc_output
-documents/**/*.enigma
-profiles/*.enigma
+/**/documents/**/*.enigma
+/**/profiles/*.enigma
 sitemap/*.enigma
-site-files/
+/**/site-files/

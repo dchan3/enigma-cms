@@ -8,7 +8,7 @@ import fs from 'fs';
 import path from 'path';
 
 var conn = mongoose.createConnection(
-  require('../../../config/db.js').url, {
+  process.env.DB_CONN_URL || 'mongodb://localhost:27017/enigma-cms', {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }, () => { });
@@ -80,7 +80,11 @@ UserSchema.pre('save', async function saveHook(next) {
 
   user.rendered = r;
 
-  fs.writeFileSync(path.join(__dirname, `profiles/${user.username}.enigma`), JSON.stringify({
+  if (!fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'profiles'))) {
+    fs.mkdirSync(path.join(process.env.DIRECTORY || __dirname, 'profiles'));
+  }
+
+  fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, `profiles/${user.username}.enigma`), JSON.stringify({
     rendered: user.rendered,
     metadata: {
       title: `${user.username}'s Profile`,
