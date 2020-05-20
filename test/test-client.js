@@ -1,13 +1,15 @@
 /* eslint-disable max-len */
 import { h } from 'preact'; /** @jsx h **/
 import { expect } from 'chai';
-import Enzyme, { render } from 'enzyme';
+import Enzyme, { render, shallow, mount } from 'enzyme';
+import { act } from 'preact/test-utils';
 import Adapter from 'enzyme-adapter-preact-pure';
 Enzyme.configure({ adapter: new Adapter });
 import { GeneratedForm, CodeEditor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
+import formComps from '../src/client/reusables/formComps';
 import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
 import fromCss from '../src/client/utils/component_from_css';
@@ -39,6 +41,16 @@ global.cancelAnimationFrame = () => {};
 
 let renderForm = function(title, params, currentValue = null) {
   return render(<GeneratedForm params={params} title={title}
+    currentValue={currentValue} method="post" formAction="" />);
+}
+
+let shallowRenderForm = function(title, params, currentValue = null) {
+  return shallow(<GeneratedForm params={params} title={title}
+    currentValue={currentValue} method="post" formAction="" />);
+}
+
+let mountRenderForm = function(title, params, currentValue = null) {
+  return mount(<GeneratedForm params={params} title={title}
     currentValue={currentValue} method="post" formAction="" />);
 }
 
@@ -97,7 +109,7 @@ describe('Reusable UI Components - Generated Form', function() {
           }
         }]
       };
-    const wrapper = renderForm('Event Summary', parameters, currentValue);
+    let wrapper = renderForm('Event Summary', parameters, currentValue);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
@@ -106,11 +118,29 @@ describe('Reusable UI Components - Generated Form', function() {
     expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
     done();
   });
+
+  it('Array Add', function(done) {
+    let { FormSubmitButton } = formComps, params = {
+      names: {
+        type: '[text]'
+      }
+    }, wrapper = mountRenderForm("Guest List", params, { names: ['Jordan'] });
+    act(function() {
+      wrapper.find('button').at(0).props().onClick({
+        preventDefault: () => {}
+      })
+    });
+    wrapper.update();
+    expect(wrapper.find('input[type="text"]')).to.have.lengthOf(2);
+    expect(wrapper.find('input[type="text"]').at(0).props().value).to.deep.equal('Jordan');
+    expect(wrapper.find('input[type="text"]').at(1).props().value).to.deep.equal('');
+    done();
+  });
 });
 
 describe('Reusable UI Components - Code Editor', function() {
   it('renders correctly with existing value', function(done) {
-    const wrapper = render(<CodeEditor grammar="html" name="post-body"
+    let wrapper = render(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
     expect(wrapper.find('textarea')).to.exist;
     done();
