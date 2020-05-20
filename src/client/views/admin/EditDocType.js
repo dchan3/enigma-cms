@@ -9,7 +9,7 @@ export default function EditDocType({ isNew }) {
     urlParams: ['docTypeId'],
     apiUrl: function(params) {
       if (params && params.docTypeId)
-        return `documents/get_type_2/${params.docTypeId}`
+        return `documents/get_type_2/${params.docTypeId}`;
       else return '';
     },
     initial: {
@@ -37,7 +37,7 @@ export default function EditDocType({ isNew }) {
   let minMax = {
     type: (value) => (value === 'date') ? 'date' : 'number',
     attrDepends: { type: ['attributes.$.attrType'] }
-  }
+  };
 
   function updateParams({ attributes }) {
     var newState = Object.assign({}, state);

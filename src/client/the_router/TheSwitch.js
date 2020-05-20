@@ -9,7 +9,7 @@ export default function TheSwitch(props) {
 
   useEffect(function() {
     setSwitchLocation(context.location);
-  }, [context.location])
+  }, [context.location]);
 
   let [switchLocation, setSwitchLocation] =
     useState(props.location || context.location);

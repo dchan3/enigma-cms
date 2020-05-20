@@ -13,5 +13,5 @@ export default function fromCss(element, css, nonDomAttrs) {
       style: styleObject(typeof css === 'function' ? css(rest) : css),
       ...domAttrs
     }, children);
-  }
+  };
 }

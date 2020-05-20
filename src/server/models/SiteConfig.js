@@ -112,7 +112,7 @@ SiteConfigSchema.post('save', function() {
     else return null;
   }).filter(i => i || false).join(',\n');
 
-  shortcodeData += '};\n'
+  shortcodeData += '};\n';
 
   fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, 'site-files/shortcodes.js'), shortcodeData);
 });

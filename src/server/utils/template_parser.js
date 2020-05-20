@@ -44,5 +44,5 @@ export default (function() {
     registerHelper(keyName, fxn) {
       helpers[keyName] = fxn;
     }
-  }
+  };
 })();

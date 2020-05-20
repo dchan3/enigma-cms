@@ -11,7 +11,7 @@ export default function SearchPage() {
     getRequest(`search/${query}`, (data) => setResults(
       data.error ? {} : data
     ));
-  }, [query])
+  }, [query]);
 
   function handleChange(evt) {
     setQuery(evt.target.value);

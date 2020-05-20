@@ -27,7 +27,7 @@ function PreviewBox() {
     return <PreviewContainer contentEditable onInput={handlePreviewChange}
       onBlur={handlePreviewChange}>
       {htmlToJsx(state.value)}
-    </PreviewContainer>
+    </PreviewContainer>;
   }, [dummy]);
 }
 
@@ -35,7 +35,7 @@ function Preview() {
   return <PreviewOverall>
     <CodeEditorToolbar />
     <PreviewBox />
-  </PreviewOverall>
+  </PreviewOverall>;
 }
 
 function CodeEditor({ id, name }) {

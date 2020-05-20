@@ -49,7 +49,7 @@ function GenerateStaticJsx({ value, location, initialVals, component: Comp }) {
 }
 
 export function renderString(props) {
-  return renderToString(<GenerateStaticJsx {...props} />)
+  return renderToString(<GenerateStaticJsx {...props} />);
 }
 
 export function ssrGen(htmlTemplate) {
@@ -71,7 +71,7 @@ export function ssrGen(htmlTemplate) {
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
       res.end(htmlTemplate(config, { title: headTitle, meta, link: `<link rel="canonical" href="${`${location}?amp=true`}" />` }, markup, context, isDash));
     }).catch(next);
-  }
+  };
 }
 
 export function renderHead({ title, meta, link }) {
@@ -85,7 +85,7 @@ export function gaScript(gaTrackingId, attrs) {
     function gtag(){dataLayer.push(arguments);}
     gtag('js',new Date());
     gtag('config','${gaTrackingId}');
-  </script>`
+  </script>`;
 }
 
 export function staticScript(data, attrs) {

@@ -35,7 +35,7 @@ let FormInput = fromCss('input', ({ hidden, isInvalid }) => (
   FormObjectInputLabel = fromCss('p', ({ hidden }) =>
     'color:white;padding-right:4px;font-family:sans-serif;text-transform:uppercase;margin:8px;font-size:16px;width:calc(100% - 16px);' +
     `display:${hidden ? 'none' : 'block'};`,
-  ['hidden', 'isInvalid'])
+  ['hidden', 'isInvalid']);
 
 export default {
   FormInput,

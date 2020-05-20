@@ -40,7 +40,7 @@ const retThing = {
   enum: 'FormEnumInput',
   text: ['FormInput', 'CodeEditor'],
   defo: 'FormInput'
-}
+};
 
 const chooseComponent = (type, hasGrammar) => {
   let m = retThing[type.match(/[a-z]+/)[0]] || retThing['defo'];
@@ -95,7 +95,7 @@ const genInputComponent =
 
 const numKeyToShapeKey = function(key) {
   return key.replace(/([a-z]+)\.([a-z]+)$/, '$1.shape.$2')
-    .replace(/\.\d+\./g, '.shape.').replace('.shape.shape.', '.shape.')
+    .replace(/\.\d+\./g, '.shape.').replace('.shape.shape.', '.shape.');
 };
 
 const emptyValuesObj = function(paramsObj) {

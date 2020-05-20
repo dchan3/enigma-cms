@@ -70,7 +70,7 @@ var initialState = ({
     wrapper: wrapper || null,
     enumerate: enumerate || false,
     columns: columns || null
-  }
+  };
 };
 
 const PaginatorControlContext = createContext(initialState);

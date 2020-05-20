@@ -4,7 +4,7 @@ export const loget = function(obj, keyString) {
     temp = temp[keys[k]];
   }
   return temp;
-}
+};
 
 export const loset = function(obj, keyString, val) {
   var keys = keyString.split('.');
@@ -14,8 +14,8 @@ export const loset = function(obj, keyString, val) {
   else {
     loset(obj[keys[0]], keyString.substring(keyString.indexOf('.') + 1), val);
   }
-}
+};
 
 export const objMap = function(obj, func) {
   return Object.keys(obj).map(func.bind(obj));
-}
+};

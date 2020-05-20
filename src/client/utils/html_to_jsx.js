@@ -12,7 +12,7 @@ let esc =  {
 function escapeText(text) {
   return text.replace(/&([a-z]+);/g, function(match, p1) {
     return esc[p1];
-  })
+  });
 }
 
 function collapseNode(stack) {
@@ -99,7 +99,7 @@ export function createHtmlTree(html) {
         p.depth = getDepth();
       }
       return p;
-    }
+    };
   for (let c = 0; c < html.length; c++) {
     let peekToken = tokenStack[tokenStack.length - 1] &&
       tokenStack[tokenStack.length - 1].token || null, tagStartOrName =

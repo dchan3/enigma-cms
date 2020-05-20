@@ -11,7 +11,7 @@ export default function UserMgmtLanding() {
 
   useEffect(function() {
     getRequest('users/get_all_users', (users) => {
-      setState({ users })
+      setState({ users });
     });
   }, []);
 

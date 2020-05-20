@@ -15,7 +15,7 @@ let renderMarkup = async function (templateBody, stuff) {
   let template = TemplateParser.compile(templateBody), retval = template(stuff);
 
   return retval;
-}
+};
 
 export default renderMarkup;
 

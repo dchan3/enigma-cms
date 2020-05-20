@@ -49,7 +49,7 @@ export default function EditDocumentPage() {
       if (doc && doc.content) obj.currentValue = {
         draft: doc.draft,
         ...doc.content
-      }
+      };
       else if (doc) obj.currentValue = {
         draft: doc.draft
       }

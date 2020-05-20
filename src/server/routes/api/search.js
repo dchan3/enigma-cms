@@ -45,7 +45,7 @@ router.get('/:query', function({ params: {
 
             res.json(Object.keys(output) ? output : {
               error: 'Not found' }).status(200).end();
-          })
+          });
         });
     }
     else res.json({ error: 'Not found' }).status(200).end();

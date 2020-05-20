@@ -16,7 +16,7 @@ function TablePaginatorSearchBar() {
   }
 
   return <input type="text" placeholder="Search" value={searchQuery}
-    onChange={handleSearchChange}/>
+    onChange={handleSearchChange}/>;
 }
 
 function TablePaginatorDisplay() {
@@ -70,7 +70,7 @@ function TablePaginatorTop() {
   return <div>
     <TablePaginatorSearchBar />
     <TablePaginatorDiv />
-  </div>
+  </div>;
 }
 
 TablePaginatorTop.defaultProps = {
@@ -86,5 +86,5 @@ TablePaginatorTop.defaultProps = {
 export default function TablePaginator(props) {
   return <PaginatorControlProvider initialVals={{ ...props }}>
     <TablePaginatorTop />
-  </PaginatorControlProvider>
+  </PaginatorControlProvider>;
 }

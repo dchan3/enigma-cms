@@ -104,7 +104,7 @@ router.post('/update_type/:id', verifyMiddleware,
       newType.save(function (err) {
         if (err) return next(err);
         else res.redirect('/admin/');
-      })
+      });
     })
   });
 
@@ -198,7 +198,7 @@ router.delete('/delete_document/:docType/:id',
         ({ slug }) => {
           try {
             DocumentType.findOne({ docTypeId }).then(({ docTypeNamePlural }) =>
-              fs.unlinkSync(path.join(__dirname, `documents/${docTypeNamePlural}/${slug}.enigma`)))
+              fs.unlinkSync(path.join(__dirname, `documents/${docTypeNamePlural}/${slug}.enigma`)));
           } finally {
             res.redirect(`/admin/edit/${docTypeId}`);
           }

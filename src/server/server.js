@@ -83,7 +83,7 @@ mongoose.connect(require('../../config/db.js').url, {
 });
 
 app.post('/api', function(req, res) {
-  apiProxy.web(req, res, { target: `http://localhost:${port}/api` })
+  apiProxy.web(req, res, { target: `http://localhost:${port}/api` });
 });
 
 app.use(expressSession);

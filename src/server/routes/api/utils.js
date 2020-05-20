@@ -7,5 +7,5 @@ export const findTheOne = (collection, paramsList) => {
     collection.findOne(query).then(result => {
       res.status(200).json(result);
     }).catch(err => next(err));
-  }
+  };
 };

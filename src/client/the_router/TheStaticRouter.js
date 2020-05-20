@@ -11,7 +11,7 @@ function addBasename(basename, location) {
   return {
     ...location,
     pathname: addSlash(basename) + location.pathname
-  }
+  };
 }
 
 function makeUrl(location) {

@@ -64,7 +64,7 @@ export default function EditDocumentLanding() {
       return [<TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
         <p>No {docTypeNamePlural} created. Create one <SamePageAnchor
           href={`/admin/new/${docTypeId}`}>
-        here.</SamePageAnchor></p>]
+        here.</SamePageAnchor></p>];
     }
   }
   return null;

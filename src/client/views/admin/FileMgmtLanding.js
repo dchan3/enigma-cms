@@ -12,7 +12,7 @@ export default function FileMgmtLanding() {
   function handleDeleteClick() {
     return function(url) {
       syncReqs.deleteRequestSync(url);
-    }
+    };
   }
 
   let [state, setState] = useState({

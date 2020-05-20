@@ -40,7 +40,7 @@ function GeneratedFormContents() {
       setState(newState);
 
       if (parentCallback !== undefined) parentCallback(newState.values);
-    }
+    };
   }
 
   function handleArrayRemove(param, n) {
@@ -96,7 +96,7 @@ function GeneratedFormContents() {
       setState({
         errorMessage: `Fields missing: ${valid.join(', ')}.`,
         invalidFields: valid,
-        values: state.values })
+        values: state.values });
     }
   }
 
@@ -160,5 +160,5 @@ export default function GeneratedForm({
     parentCallback, fileContent, method
   }} {...rest}>
     <GeneratedFormContents />
-  </GeneratedFormContextProvider>
+  </GeneratedFormContextProvider>;
 }

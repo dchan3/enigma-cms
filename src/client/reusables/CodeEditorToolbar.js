@@ -22,7 +22,7 @@ function ToolbarIcon({ command, component: Component, label }) {
     <IconContent onClick={handleClick}>
       <Component>{label}</Component>
     </IconContent>
-  </ToolbarIconFrame></ToolbarButton>
+  </ToolbarIconFrame></ToolbarButton>;
 }
 
 let iconData = [

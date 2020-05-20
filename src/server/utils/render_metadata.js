@@ -12,7 +12,7 @@ export const documentMetadataSync = function (content) {
   };
 
   return attrs;
-}
+};
 
 export const documentMetadata = async function (content, appendSite = true) {
   let { siteName, keywords, iconUrl, description } =  await SiteConfig.findOne({}),

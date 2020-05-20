@@ -1,4 +1,4 @@
-import { h } from 'preact' /** @jsx h **/
+import { h } from 'preact'; /** @jsx h **/
 import { GeneratedForm, StyledDiv, SamePageAnchor } from '../../reusables/back_exports';
 
 export default () => [<GeneratedForm title="Sign Up" params={{

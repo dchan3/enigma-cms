@@ -54,7 +54,7 @@ async function getRenderedDocumentByTypeAndSlug(type, slug) {
 
     let { rendered, content } = doc,
       metadata = await documentMetadata(content);
-    retval = { rendered, metadata, slug }
+    retval = { rendered, metadata, slug };
   }
   return retval;
 }

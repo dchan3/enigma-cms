@@ -60,4 +60,4 @@ export default {
     var users = await userFetchFuncs.getAllUsers({ });
     return { users };
   }
-}
+};

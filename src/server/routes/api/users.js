@@ -74,7 +74,7 @@ router.post('/change_password', verifyMiddleware,
           else return res.status(200).end();
         });
       }
-    })
+    });
   });
 
 router.post('/update', verifyMiddleware,  function({ body }, res, next) {

@@ -31,7 +31,7 @@ export default function matchThePath(pathname, { path, exact }) {
         path: '/',
         url: pathname,
         params: {}
-      }
+      };
     }
     else if (pathname.length) {
       return null;
