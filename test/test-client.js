@@ -240,6 +240,45 @@ describe('Form from Obj', function() {
     done();
   });
 
+  it('empty values object - single level', function(done) {
+    let params = {
+      name: {
+        type: 'text'
+      },
+      age: {
+        type: 'number'
+      }
+    }, expected = { name: '', age: '' };
+
+    expect(formGenUtils.emptyValuesObj(params)).to.deep.equal(expected);
+    done();
+  });
+
+  it('empty values object - two levels', function(done) {
+    let params = {
+      name: {
+        type: 'object',
+        shape: {
+          firstName: {
+            type: 'text'
+          },
+          lastName: {
+            type: 'text'
+          }
+        }
+      },
+      age: {
+        type: 'number'
+      }
+    }, expected = { name: {
+      firstName: '',
+      lastName: ''
+    }, age: '' };
+
+    expect(formGenUtils.emptyValuesObj(params)).to.deep.equal(expected);
+    done();
+  });
+
   it('Form from JSON gen fucntion', function(done) {
     var parameters = {
         guestList: {

@@ -101,8 +101,8 @@ const numKeyToShapeKey = function(key) {
 const emptyValuesObj = function(paramsObj) {
   let retval = {};
   for (let k in paramsObj) {
-    retval[k] = paramsObj[k].children ? (emptyValuesObj(
-      paramsObj[k].children)) :
+    retval[k] = paramsObj[k].type === 'object' ? (emptyValuesObj(
+      paramsObj[k].shape)) :
       (paramsObj[k].type.startsWith('[') ? [] : '');
   }
   return retval;
@@ -199,4 +199,4 @@ const validateForm = function(paramObj, valueObj) {
 };
 
 export default { formFromObj, mapKeysToValues, outputKeys, validateForm,
-  numKeyToShapeKey };
+  numKeyToShapeKey, emptyValuesObj };
