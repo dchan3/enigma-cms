@@ -1,6 +1,6 @@
 before_install:
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install graphicsmagick -y; fi; npm install --no-optional
-- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then if [[ -z $(brew list | grep graphicsmagick) ]]; then brew install graphicsmagick; fi; if [[ -z $(brew list | grep mongodb) ]]; then brew install mongodb; fi; fi; npm install
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install graphicsmagick -y; fi; rm -rf node_modules; npm install --no-optional
+- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then if [[ -z $(brew list | grep graphicsmagick) ]]; then brew install graphicsmagick; fi; if [[ -z $(brew list | grep mongodb) ]]; then brew install mongodb; fi; fi; rm -rf node_modules; npm install
 language: node_js
 node_js:
   - node
