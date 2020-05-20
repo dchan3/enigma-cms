@@ -22,6 +22,8 @@ import CodeEditorToolbar from '../src/client/reusables/CodeEditorToolbar';
 import LoginPage from '../src/client/views/admin/LoginPage';
 import SignupPage from '../src/client/views/admin/SignupPage';
 import ChangePasswordPage from '../src/client/views/admin/ChangePasswordPage';
+import FrontMenu from '../src/client/reusables/FrontMenu';
+import DropdownMenu from '../src/client/reusables/DropdownMenu';
 const { JSDOM } = require('jsdom');
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
@@ -172,6 +174,32 @@ describe('Code Editor Toolbar', function() {
   it('displays correctly', function(done) {
     let wrapper = render(<CodeEditorToolbar />);
     expect(wrapper.find('button')).to.have.lengthOf(4);
+    done();
+  });
+});
+
+describe('Front Menu', function() {
+  it('displays as intended', function(done) {
+    let menuLinks = [{ linkUrl: '/', linkText: 'Home' },
+      { linkUrl: '/sitemap.html', linkText: 'Sitemap' }];
+
+    let wrapper = renderWithDom(<FrontMenu menuLinks={menuLinks} />, { });
+    expect(wrapper.find('li')).to.have.lengthOf(2);
+    done();
+  });
+});
+
+describe('Dropdown Menu', function() {
+  it('displays as intended', function(done) {
+    let menuNodes = [{ url: '/manage-users', text: 'Manage Users' },
+      { text: 'Posts', childNodes: [{
+        linkUrl: '/edit-post', linkText: 'Edit Post'
+      }]
+    }];
+
+    let wrapper = renderWithDom(<DropdownMenu menuNodes={menuNodes} />, { });
+    expect(wrapper.find('ul')).to.have.lengthOf(2);
+    expect(wrapper.find('li')).to.have.lengthOf(3);
     done();
   });
 });
