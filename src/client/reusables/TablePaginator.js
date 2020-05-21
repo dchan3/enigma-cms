@@ -53,7 +53,7 @@ function TablePaginatorDisplay() {
     </tbody>;
   }
 
-  return <table key='table-paginator' {...{ className, id }}>
+  return <table {...{ className, id }}>
     {renderHeader()}
     {renderPage()}
   </table>;
@@ -72,16 +72,6 @@ function TablePaginatorTop() {
     <TablePaginatorDiv />
   </div>;
 }
-
-TablePaginatorTop.defaultProps = {
-  activeTabColor: '#5940be',
-  truncate: false,
-  maxPageTabs: 5,
-  maxPages: null,
-  enumerate: false,
-  className: null,
-  id: null
-};
 
 export default function TablePaginator(props) {
   return <PaginatorControlProvider initialVals={{ ...props }}>

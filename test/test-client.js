@@ -26,6 +26,7 @@ import SignupPage from '../src/client/views/admin/SignupPage';
 import ChangePasswordPage from '../src/client/views/admin/ChangePasswordPage';
 import FrontMenu from '../src/client/reusables/FrontMenu';
 import DropdownMenu from '../src/client/reusables/DropdownMenu';
+import TablePaginator from '../src/client/reusables/TablePaginator';
 const { JSDOM } = require('jsdom');
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
@@ -1078,6 +1079,24 @@ describe('Paginator Controls', function() {
 
   it('results pagination', function(done) {
     expect(pages([1,2,3,4,5], 4, 2)).to.deep.equal([[1,2,3,4], [5]]);
+    done();
+  });
+
+  it('table paginator', function(done) {
+    let columns = [{ headerText: 'Name', display: (n) => n }],
+      items = ['John', 'Jane', 'Bob', 'Ann']
+    let wrapper = mount(<TablePaginator columns={columns} items={items} />);
+    expect(wrapper.find('table')).to.have.lengthOf(1);
+    expect(wrapper.find('table tr')).to.have.lengthOf(5);
+    expect(wrapper.find('input')).to.have.lengthOf(1);
+    act(function() {
+      wrapper.find('input').at(0).props().onChange({
+        target: { value: 'B' }
+      })
+    });
+    wrapper.update();
+    expect(wrapper.find('table tr')).to.have.lengthOf(2);
+    expect(wrapper.find('table tr').at(1).text()).to.deep.equal("Bob");
     done();
   });
 });
