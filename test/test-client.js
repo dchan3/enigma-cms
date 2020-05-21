@@ -120,7 +120,7 @@ describe('Reusable UI Components - Generated Form', function() {
   });
 
   it('Array Add', function(done) {
-    let { FormSubmitButton } = formComps, params = {
+    let params = {
       names: {
         type: '[text]'
       }
@@ -134,6 +134,47 @@ describe('Reusable UI Components - Generated Form', function() {
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(2);
     expect(wrapper.find('input[type="text"]').at(0).props().value).to.deep.equal('Jordan');
     expect(wrapper.find('input[type="text"]').at(1).props().value).to.deep.equal('');
+    done();
+  });
+
+  it('Array Add (object)', function(done) {
+    let formComps, params = {
+      familyMembers: {
+        type: '[object]',
+        shape: {
+          name: {
+            type: 'text'
+          },
+          age: {
+            type: 'number'
+          }
+        }
+      }
+    }, wrapper = mountRenderForm("Guest List", params, { familyMembers: [] });
+    act(function() {
+      wrapper.find('button').at(0).props().onClick({
+        preventDefault: () => {}
+      })
+    });
+    wrapper.update();
+    expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
+    expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    done();
+  });
+
+  it('Array Remove', function(done) {
+    let { FormSubmitButton } = formComps, params = {
+      names: {
+        type: '[text]'
+      }
+    }, wrapper = mountRenderForm("Guest List", params, { names: ['Jordan'] });
+    act(function() {
+      wrapper.find('button').at(1).props().onClick({
+        preventDefault: () => {}
+      })
+    });
+    wrapper.update();
+    expect(wrapper.find('input[type="text"]')).to.have.lengthOf(0);
     done();
   });
 });
