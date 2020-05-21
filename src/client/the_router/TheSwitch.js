@@ -4,20 +4,16 @@ import React from 'preact/compat';
 import useTheRouterContext from '../hooks/useTheRouterContext';
 import matchThePath from '../../lib/utils/match_the_path';
 
-export default function TheSwitch(props) {
-  let context = useTheRouterContext();
+export default function TheSwitch({ location: pLoc, children, }) {
+  let context = useTheRouterContext(), [switchLocation, setSwitchLocation] =
+    useState(pLoc || context.location), { basename } =
+    context, element, match;
 
   useEffect(function() {
     setSwitchLocation(context.location);
   }, [context.location]);
 
-  let [switchLocation, setSwitchLocation] =
-    useState(props.location || context.location);
-  let { basename } = context;
-
-  let element, match;
-
-  React.Children.forEach(props.children.length ? props.children : [props.children], (child) => {
+  React.Children.forEach(children.length ? children : [children], (child) => {
     if (match == null && isValidElement(child)) {
       element = child;
 

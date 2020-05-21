@@ -46,10 +46,12 @@ export default function EditDocumentPage() {
             `new_document/${dataObj.docType.docTypeId}`}`
       };
 
-      if (doc && doc.content) obj.currentValue = {
-        draft: doc.draft,
-        ...doc.content
-      };
+      if (doc && doc.content) {
+        obj.currentValue = {
+          draft: doc.draft,
+          ...doc.content
+        };
+      }
       else if (doc) obj.currentValue = {
         draft: doc.draft
       }

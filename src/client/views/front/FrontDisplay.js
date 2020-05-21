@@ -5,7 +5,7 @@ import { Fedora } from '../../reusables/front_exports';
 import InnerHtmlRenderer from '../../utils/inner_html_renderer';
 import useFrontContext from '../../hooks/useFrontContext';
 import useTheRouterContext from '../../hooks/useTheRouterContext';
-import HeadContext from '../../contexts/HeadContext'
+import HeadContext from '../../contexts/HeadContext';
 
 function FrontDisplay({ dataParams, urlParams, apiUrl }) {
   let { state: { dataObj } } = useFrontContext({

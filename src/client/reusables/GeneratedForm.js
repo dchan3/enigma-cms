@@ -17,7 +17,7 @@ function GeneratedFormContents() {
     let rdr = new FileReader();
     return new Promise((resolve, reject) => {
       rdr.onload = ({ target: { result } }) => resolve(result);
-      rdr.onerror = error => reject(error);
+      rdr.onerror = (error) => reject(error);
       rdr.readAsDataURL(file);
     });
   }

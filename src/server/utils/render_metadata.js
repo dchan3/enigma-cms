@@ -26,7 +26,7 @@ export const documentMetadata = async function (content, appendSite = true) {
       [attrs.keywords, ...keywords].join(',') : (attrs.keywords.length ? [...attrs.keywords, ...keywords] : [keywords]).join(',');
   }
   return attrs;
-}
+};
 
 export const categoryMetadata = async function (docTypeNamePlural) {
   let { siteName, iconUrl, keywords } = await SiteConfig.findOne({});
@@ -38,7 +38,7 @@ export const categoryMetadata = async function (docTypeNamePlural) {
     image: iconUrl || '',
     keywords: keywords.join(',')
   }
-}
+};
 
 export const profileMetadata = async (props) => {
   if (!props) return null;
@@ -50,7 +50,7 @@ export const profileMetadata = async (props) => {
   return {
     title, description, image: pictureSrc
   };
-}
+};
 
 export const profileMetadataSync = (props) => {
   if (!props) return null;
@@ -60,4 +60,4 @@ export const profileMetadataSync = (props) => {
   return {
     title, description, image: pictureSrc
   };
-}
+};

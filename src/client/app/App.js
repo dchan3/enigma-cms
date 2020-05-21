@@ -6,7 +6,7 @@ import useStaticContext from '../hooks/useStaticContext';
 import { TheRoute, TheSwitch } from '../the_router';
 
 /** @jsx h **/
-let FrontEndRoute = props => <TheRoute {...props} />;
+let FrontEndRoute = (props) => <TheRoute {...props} />;
 
 let mapRoutes = (Component) => (routeInfo) => <Component {...routeInfo} />;
 

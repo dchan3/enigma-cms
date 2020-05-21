@@ -19,7 +19,7 @@ async function getUserProfile({ username }) {
     retval = JSON.parse(data);
     if (!retval) throw '';
   } catch {
-    await User.findOne({ username }).then(async user => {
+    await User.findOne({ username }).then(async (user) => {
       if (!user) return {};
       let metadata = await profileMetadata(user);
       let { rendered } = user;
