@@ -24,7 +24,7 @@ let ContainerDiv = fromCss('div',
   </ListItem>;
 
 function renderNode(node) {
-  let L = !!node.childNodes ? SubMenu : LinkNode;
+  let L = node.childNodes ? SubMenu : LinkNode;
   return <L {...node} />;
 }
 

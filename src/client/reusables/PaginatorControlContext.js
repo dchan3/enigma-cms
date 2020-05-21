@@ -28,8 +28,8 @@ export function shallowSearch(items, query) {
 
 export function pages(items, per, maxPages) {
   let retval = [], page = 0, counter = 0;
-  for (let i in items) {
-    if (!!maxPages) {
+  for (let i = 0; i < items.length; i++) {
+    if (maxPages) {
       if (page >= maxPages) {
         break;
       }
