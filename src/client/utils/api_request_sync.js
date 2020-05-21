@@ -1,5 +1,5 @@
 async function getRequestSync(endpoint) {
-  return await fetch(`/api/${endpoint}`).then(response => response.json());
+  return await fetch(`/api/${endpoint}`).then((response) => response.json());
 }
 
 async function postRequestSync(endpoint) {

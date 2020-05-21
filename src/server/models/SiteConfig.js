@@ -77,8 +77,8 @@ const SiteConfigSchema = new Schema({
 });
 
 SiteConfigSchema.post('save', function() {
-  User.find({ }).then(users => {
-    users.forEach(user => { user.save(); });
+  User.find({ }).then((users) => {
+    users.forEach((user) => { user.save(); });
   });
 
   var {
@@ -107,10 +107,12 @@ SiteConfigSchema.post('save', function() {
 
   shortcodeData += shortcodes.map(({ name, args, code }) => {
     if (name.length && code.length) {
-      return `${name}: new Function(${ args.map(arg => `"${arg}"`).join(', ')}, "${code}")`
+      return `${name}: new Function(${ args.map((arg) => `"${arg}"`).join(', ')}, "${code}")`;
     }
-    else return null;
-  }).filter(i => i || false).join(',\n');
+    else {
+      return null;
+    }
+  }).filter((i) => i || false).join(',\n');
 
   shortcodeData += '};\n';
 

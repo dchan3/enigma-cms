@@ -30,7 +30,7 @@ describe('DB and CRUD tests', function () {
       testConfig.save(done);
     });
 
-    it('site config save hooks work', function(done) {
+    it('site config save hooks work - stylesheet', function(done) {
       SiteConfig.findOne({ }).then(config => {
         let style = 'body{font-family:"Comic Sans MS,sans-serif;"}';
         config.set('stylesheet', style);
@@ -38,6 +38,24 @@ describe('DB and CRUD tests', function () {
           fs.readFile(path.resolve(
             process.env.DIRECTORY || '', 'public/style.css'), 'utf8', (err, nuStyle) => {
               expect(style).to.deep.equal(nuStyle);
+              done();
+          });
+        });
+      });
+    });
+
+    it('site config save hooks work - shortcodes', function(done) {
+      SiteConfig.findOne({ }).then(config => {
+        let shortcodes = [{
+          name: 'dateFmt',
+          args: ['date'],
+          code: 'return date.toString();'
+        }], thaCode = '{\ndateFmt: new Function("date", "return date.toString();")};\n';
+        config.set('shortcodes', shortcodes);
+        config.save(() => {
+          fs.readFile(path.resolve(
+            process.env.DIRECTORY || '', 'site-files/shortcodes.js'), 'utf8', (err, nuCode) => {
+              expect(thaCode).to.deep.equal(nuCode);
               done();
           });
         });
