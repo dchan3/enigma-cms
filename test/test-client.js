@@ -1056,6 +1056,26 @@ describe('Paginator Controls', function() {
     done();
   });
 
+  it('truncated page list 3', function(done) {
+    expect(truncatePageList(8,5,8)).to.deep.equal([1,2,null,6,7,8]);
+    done();
+  });
+
+  it('truncated page list 4', function(done) {
+    expect(truncatePageList(10,5,6)).to.deep.equal([1,null,5,6,7,null,10]);
+    done();
+  });
+
+  it('truncated page list 5', function(done) {
+    expect(truncatePageList(9,5,7)).to.deep.equal([1,null,6,7,8,9]);
+    done();
+  });
+
+  it('truncated page list 5', function(done) {
+    expect(truncatePageList(8,5,6)).to.deep.equal([1,null,5,6,7,8]);
+    done();
+  });
+
   it('shallow search 1', function(done) {
     expect(strQuery('boogie man', 'boogie')).to.equal(true);
     done();

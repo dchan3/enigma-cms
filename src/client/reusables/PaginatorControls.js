@@ -31,11 +31,28 @@ export function truncatePageList(
       .concat([null, numberOfPages - 1, numberOfPages]);
   }
 
-  let quarter = Math.floor(half / 2);
-
-  return [1, null].concat(
+  let quarter = Math.floor(half / 2), retval = [1, null].concat(
     generateArray(currentPage - quarter, currentPage + quarter))
     .concat(currentPage + quarter < numberOfPages ? [null, numberOfPages] : []);
+
+  /* eslint-disable for-direction */
+  for (let l = retval.length; l <= 2; l--) {
+    if (retval[l - 2] + 2 === retval[l] && retval[l - 1] === null) {
+      retval[l - 1] = retval[l] - 1;
+    }
+  }
+
+  let q = 0;
+
+  while (q < retval.length - 2) {
+    if (retval[q] + 1 === retval[q + 2] && retval[q + 1] === null) {
+      retval = retval.slice(0, q + 1).concat(retval.slice(q + 2,
+        retval.length));
+    }
+    q++;
+  }
+
+  return retval;
 }
 
 const PaginatorContainer = fromCss('div',
