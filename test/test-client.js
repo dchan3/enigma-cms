@@ -187,6 +187,39 @@ describe('Reusable UI Components - Code Editor', function() {
     expect(wrapper.find('textarea')).to.exist;
     done();
   });
+
+  it('changes value', function(done) {
+    let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+      id="post-body" value="<h1>Hello World!</h1>" />);
+    expect(wrapper.find('textarea')).to.exist;
+    act(function() {
+      wrapper.find('textarea').props().onChange({ target: { value: "<p>Lol.</p>"}});
+    });
+    wrapper.update();
+    expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+    done();
+  });
+
+  it('preview box', function(done) {
+    let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+      id="post-body" value="<h1>Hello World!</h1>" />);
+    expect(wrapper.find('textarea')).to.exist;
+    expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello World!</h1>');
+    act(function() {
+      wrapper.find('button').at(0).props().onClick();
+    });
+    wrapper.update();
+    expect(wrapper.find('div')).to.exist;
+    expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+    expect(wrapper.find('div').at(6).find('h1')).to.exist;
+    expect(wrapper.find('div').at(6).find('h1').text()).to.deep.equal('Hello World!');
+    act(function() {
+      wrapper.find('button').at(0).props().onClick();
+    });
+    wrapper.update();
+    expect(wrapper.find('textarea')).to.exist;
+    done();
+  });
 });
 
 describe('Camel Case String Conversion', function() {

@@ -45,17 +45,13 @@ function CodeEditor({ id, name }) {
     setState({ value });
   }
 
-  function handleScroll({ currentTarget }) {
-    currentTarget.previousSibling.scrollTop = currentTarget.scrollTop;
-  }
-
   return <EditorContainer>
     <button onClick={toggleView}>Switch to { view ? 'Code' : 'Preview'}</button>
     {view ? <Preview /> :
       <TextInputArea {...{ id, name }} value={state.value}
-        onChange={handleChange} onScroll={handleScroll} />}
+        onChange={handleChange} />}
   </EditorContainer>;
 }
 
-export default ({ id, name, value }) => <CodeEditorContextProvider value={value}>
+export default ({ id, name, value }) => <CodeEditorContextProvider initialValue={value}>
   <CodeEditor id={id} name={name}/></CodeEditorContextProvider>;
