@@ -3,7 +3,10 @@ import autoIncrement, { plugin as autoIncrementPlugin } from
   'mongoose-auto-increment';
 
 var conn = mongoose.createConnection(
-  require('../../../config/db.js').url, {}, () => { });
+  process.env.DB_CONN_URL || 'mongodb://localhost:27017/enigma-cms', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  }, () => {});
 
 autoIncrement.initialize(conn);
 

@@ -79,4 +79,29 @@ describe('Router', function() {
     expect(actual).to.equal(null);
     done();
   });
+
+  it('path matcher 8', function(done) {
+    let actual = matchThePath('/', {
+      path: '/'
+    });
+    expect(actual).to.deep.equal({
+      path: '/',
+      url: '/',
+      params: {}
+    });
+    done();
+  });
+
+  it('path matcher 9', function(done) {
+    let actual = matchThePath('/admin', {
+      path: '/admin',
+      exact: true
+    });
+    expect(actual).to.deep.equal({
+      path: '/admin',
+      url: '/admin',
+      params: {}
+    });
+    done();
+  });
 });

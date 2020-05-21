@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import User from '../src/server/models/User';
 import SiteConfig from '../src/server/models/SiteConfig';
+import DocumentType from '../src/server/models/DocumentType';
 let dbURI = process.env.DB_CONN_URL || 'mongodb://localhost/enigma-test';
 
 let clearDB = function(done) {
@@ -110,6 +111,21 @@ describe('DB and CRUD tests', function () {
       });
 
       testUser.save(done);
+    });
+  });
+
+  describe('Document test', function() {
+    it('can create new document type', function(done) {
+      var testType = DocumentType({
+        docTypeName: 'post',
+        docTypeNamePlural: 'posts',
+        attributes: {
+          title: 'text',
+          body: 'text'
+        },
+        slugFrom: 'title'
+      });
+      testType.save(done);
     });
   });
 
