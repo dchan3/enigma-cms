@@ -200,7 +200,7 @@ describe('Reusable UI Components - Code Editor', function() {
     done();
   });
 
-  it('preview box', function(done) {
+  it('preview box - with value', function(done) {
     let wrapper = mount(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
     expect(wrapper.find('textarea')).to.exist;
@@ -220,6 +220,107 @@ describe('Reusable UI Components - Code Editor', function() {
     expect(wrapper.find('textarea')).to.exist;
     done();
   });
+});
+
+it('preview box - without value edit preview first', function(done) {
+  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+    id="post-body" value="" />);
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('');
+  act(function() {
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('div')).to.exist;
+  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+  act(function() {
+    wrapper.find('div').at(6).props().onInput({
+      target: { innerHTML: '<p>Lol.</p>'}
+    });
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+  done();
+});
+
+it('preview box - with value edit preview first', function(done) {
+  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+    id="post-body" value="<h1>Hello.</h1>" />);
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
+  act(function() {
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('div')).to.exist;
+  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+  expect(wrapper.find('div').at(6).find('h1')).to.exist;
+  expect(wrapper.find('div').at(6).find('h1').text()).to.equal('Hello.');
+  act(function() {
+    wrapper.find('div').at(6).props().onInput({
+      target: { innerHTML: '<p>Lol.</p>'}
+    });
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+  done();
+});
+
+it('preview box - with value edit code first not changing preview', function(done) {
+  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+    id="post-body" value="<h1>Hello.</h1>" />);
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
+  act(function() {
+    wrapper.find('textarea').at(0).props().onChange({
+      target: { value: '<p>Lol.</p>' }
+    });
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('div')).to.exist;
+  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+  expect(wrapper.find('div').at(6).find('p')).to.exist;
+  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol.');
+  act(function() {
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+  done();
+});
+
+it('preview box - with value edit code first changing preview', function(done) {
+  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+    id="post-body" value="<h1>Hello.</h1>" />);
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
+  act(function() {
+    wrapper.find('textarea').at(0).props().onChange({
+      target: { value: '<p>Lol.</p>' }
+    });
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('div')).to.exist;
+  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+  expect(wrapper.find('div').at(6).find('p')).to.exist;
+  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol.');
+  act(function() {
+    wrapper.find('div').at(6).props().onInput({
+      target: { innerHTML: '<h2>Bruh?</h2>' }
+    });
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<h2>Bruh?</h2>');
+  done();
 });
 
 describe('Camel Case String Conversion', function() {

@@ -49,7 +49,7 @@ function CodeEditor({ id, name }) {
     <button onClick={toggleView}>Switch to { view ? 'Code' : 'Preview'}</button>
     {view ? <Preview /> :
       <TextInputArea {...{ id, name }} value={state.value}
-        onChange={handleChange} />}
+        onChange={handleChange} onInput={handleChange} />}
   </EditorContainer>;
 }
 
