@@ -166,9 +166,29 @@ export const PaginatorControlProvider = ({ children, initialVals }) => {
   iState.pages = pages(iState.items, iState.perPage, iState.maxPages);
   if (iState.pages.length) iState.thePage = iState.pages[0];
 
-  let [state, dispatch] = useReducer(reducer, iState);
+  let [state, dispatch] = useReducer(reducer, iState), updateDisplay =
+    function(className, columns) {
+      if (document.querySelector('style#table-pag')) {
+        document.querySelector('style#table-pag').innerHTML = columns.map((c, i) => {
+          let actualWidth = document.querySelector(
+            `tbody td${className ? `.${className}` : ''}:nth-child(${i + 1})`)
+            ? Math.max(document.querySelector(
+              `tbody td${className ? `.${className}` : ''}:nth-child(${i + 1})`).
+              clientWidth - 2, document.querySelector(
+              `thead td${className ? `.${className}` : ''}:nth-child(${i + 1})`).
+              clientWidth - 2) : document.querySelector(
+              `thead td${className ? `.${className}` : ''}:nth-child(${i + 1})`).
+              clientWidth - 2;
 
-  return <Provider value={{ state, dispatch }}>{children}</Provider>;
+          return `thead td${className ? `.${className}` : ''}:nth-child(${i + 1}),
+            tbody td${className ? `.${className}` : ''}:nth-child(${i + 1}){
+              min-width: ${actualWidth}px;
+              max-width: ${actualWidth}px;
+            }`}).join('\n');
+      }
+    }
+
+  return <Provider value={{ state, dispatch, updateDisplay }}>{children}</Provider>;
 };
 
 export default PaginatorControlContext;

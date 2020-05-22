@@ -39,7 +39,10 @@ export default function EditDocumentLanding() {
           })),
           {
             headerText: 'Draft',
-            display: ({ draft }) => <p>{draft ? 'Yes' : 'No'}</p>
+            display: ({ draft }) => <p style={{
+              marginTop: 0,
+              marginBotton: 0
+            }}>{draft ? 'Yes' : 'No'}</p>
           },
           {
             headerText: 'Edit',

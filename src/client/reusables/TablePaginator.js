@@ -1,15 +1,23 @@
 import { h, createElement } from 'preact'; /** @jsx h **/
-import { useContext } from 'preact/hooks';
+import { useContext, useEffect } from 'preact/hooks';
 import PaginatorControls from './PaginatorControls';
 import PaginatorControlContext, {
   PaginatorControlProvider } from './PaginatorControlContext';
 import fromCss from '../utils/component_from_css';
 
-let TableHeaderCell = fromCss('td', '');
+let TableHeaderCell = fromCss('td', 'vertical-align:top;'),
+  TableCell = fromCss('td', 'vertical-align:top;'),
+  TableThiccBody = fromCss('tbody',
+    'max-height:50vh;display:block;overflow:scroll;'),
+  TableBigHead = fromCss('thead', 'display:block;');
 
 function TablePaginatorSearchBar() {
-  let { state: { searchQuery }, dispatch } =
+  let { state: { searchQuery, className, columns }, dispatch, updateDisplay } =
     useContext(PaginatorControlContext);
+
+  useEffect(function() {
+    updateDisplay(className, columns);
+  }, [searchQuery])
 
   function handleSearchChange(event) {
     dispatch({ type: 'query', val: event.target.value });
@@ -20,7 +28,7 @@ function TablePaginatorSearchBar() {
 }
 
 function TablePaginatorDisplay() {
-  let { state, dispatch } = useContext(PaginatorControlContext);
+  let { state, dispatch, updateDisplay } = useContext(PaginatorControlContext);
   let {
     enumerate, thePage, columns, className, id, ascDesc,
     currentColumn } = state;
@@ -33,24 +41,27 @@ function TablePaginatorDisplay() {
   }
 
   function renderHeader() {
-    return <thead><tr>
-      {enumerate ? <td><b>{'#'}</b></td> : null}
+    return <TableBigHead><tr>
+      {enumerate ? <TableCell><b>{'#'}</b></TableCell> : null}
       {columns.map(({ headerText }, i) => <TableHeaderCell
-        onClick={() => handleHeaderClick(i)}>
+        onClick={() => {
+          handleHeaderClick(i);
+          updateDisplay(className, columns);
+        } }>
         <b>{headerText}</b>
         {' '}
         {currentColumn === i ? <span>{ascDesc ? '▲' : '▼'}</span> : null}
       </TableHeaderCell>)}
-    </tr></thead>;
+    </tr></TableBigHead>;
   }
 
   function renderPage() {
-    return <tbody>
+    return <TableThiccBody>
       {thePage.map((item, i) => <tr key={i}>
-        {enumerate ? <td>{i}</td> : null}
-        {columns.map(({ display }, j) => <td key={j}>{display(item)}</td>)}
+        {enumerate ? <TableCell>{i}</TableCell> : null}
+        {columns.map(({ display }, j) => <TableCell key={j}>{display(item)}</TableCell>)}
       </tr>)}
-    </tbody>;
+    </TableThiccBody>;
   }
 
   return <table {...{ className, id }}>
@@ -61,6 +72,7 @@ function TablePaginatorDisplay() {
 
 function TablePaginatorDiv() {
   return <div>
+    <style id="table-pag" />
     <TablePaginatorDisplay />
     <PaginatorControls />
   </div>;

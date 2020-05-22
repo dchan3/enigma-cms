@@ -65,15 +65,17 @@ const PaginatorContainer = fromCss('div',
   PaginatorNumber = fromCss('a', 'color:inherit;font-size:inherit;');
 export default function PaginatorControls() {
   let { state, dispatch } = useContext(PaginatorControlContext),
-    { maxPages, maxPageTabs, currentPage, truncate, activeTabColor, pages } =
+    { maxPages, maxPageTabs, currentPage, truncate, activeTabColor, pages,
+      columns, className, updateDisplay } =
     state, truncated = truncate ?
       truncatePageList(maxPages ? maxPages : pages.length,
         maxPageTabs || 5, currentPage) : undefined;
 
   return <PaginatorContainer>
     <PaginatorList>
-      {currentPage > 1 && <PaginatorButton onClick={() =>
-        dispatch({ type: 'page', val: '-' })}>
+      {currentPage > 1 && <PaginatorButton onClick={() => {
+        dispatch({ type: 'page', val: '-' }); updateDisplay(className, columns);
+      }}>
         <PaginatorNumber>{'<'}</PaginatorNumber>
       </PaginatorButton> || null}
       {truncated ? (truncated.map(n => <PaginatorButton {...{ activeTabColor }}
@@ -86,8 +88,10 @@ export default function PaginatorControls() {
           isActive={currentPage === i + 1}>
           <PaginatorNumber>{i + 1}</PaginatorNumber>
         </PaginatorButton>))}
-      {currentPage < pages.length && <PaginatorButton onClick={() => dispatch({
-        type: 'page', val: '+' })}>
+      {currentPage < pages.length && <PaginatorButton onClick={() => {
+        dispatch({ type: 'page', val: '+' });
+        updateDisplay(className, columns);
+      }}>
         <PaginatorNumber>{'>'}</PaginatorNumber>
       </PaginatorButton> || null}
     </PaginatorList>
