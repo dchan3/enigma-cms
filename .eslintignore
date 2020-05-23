@@ -8,3 +8,4 @@ server.bundle.js
 test/
 babel/**/*.js
 webpack.config.js
+site-files/shortcodes.js

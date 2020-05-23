@@ -25,6 +25,7 @@ function PreviewBox() {
 
   return useMemo(() => {
     return <PreviewContainer contentEditable onInput={handlePreviewChange}
+      onChange={handlePreviewChange}
       onBlur={handlePreviewChange}>
       {htmlToJsx(state.value)}
     </PreviewContainer>;

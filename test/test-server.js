@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { default as createReverseIndex }
   from '../src/server/utils/create_reverse_index';
 import TemplateParser from '../src/server/utils/template_parser';
+import { prepareDocumentsForRender } from '../src/server/utils/render_markup';
 
 describe('Reverse Index function', function() {
   it ('works as desired', function(done) {
@@ -39,6 +40,25 @@ describe('Template parser', function() {
         genres: ['EDM', 'Rock', 'Misc']
       }), expected = '<ul><li>EDM</li><li>Rock</li><li>Misc</li></ul>';
     expect(actual).to.equal(expected);
+    done();
+  });
+});
+
+describe('document prep', function() {
+  it('works', function(done) {
+    let theDate = new Date(), itemList = [
+      { content: {
+        title: 'Lol',
+        body: 'Bruh...',
+      }, slug: 'lol', createdAt: theDate, editedAt: theDate }
+    ];
+    expect(prepareDocumentsForRender(itemList)).to.deep.equal([{
+      title: 'Lol',
+      body: 'Bruh...',
+      slug: 'lol',
+      createdAt: theDate,
+      editedAt: theDate
+    }])
     done();
   });
 });

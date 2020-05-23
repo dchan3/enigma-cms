@@ -1,5 +1,7 @@
 import { h, createElement } from 'preact';
+import { useContext } from 'preact/hooks';
 import fromCss from '../utils/component_from_css';
+import CodeEditorContext from './CodeEditorContext';
 
 /** @jsx h **/
 
@@ -14,8 +16,39 @@ let ToolbarIconFrame = fromCss('div',
   ToolbarButton = fromCss('li', 'display:inline-block;');
 
 function ToolbarIcon({ command, component: Component, label }) {
+  let { setState } = useContext(CodeEditorContext);
+
   function handleClick() {
-    document.execCommand(command);
+    if (document.execCommand) document.execCommand(command);
+    else if (document.getSelection().rangeCount) {
+      switch(command) {
+      case 'bold':
+        if (document.getSelection().getRangeAt(0).startContainer.innerHTML &&
+          document.getSelection().getRangeAt(0).startContainer.innerHTML.indexOf('<strong>') <= -1)
+          document.getSelection().getRangeAt(0).startContainer.innerHTML =
+          document.getSelection().getRangeAt(0).startContainer.innerHTML
+            .replace(document.getSelection().getRangeAt(0).toString(),
+              `<strong>${document.getSelection().getRangeAt(0).toString()}</strong>`);
+        else if (document.getSelection().getRangeAt(0).startContainer.innerHTML)
+          document.getSelection().getRangeAt(0).startContainer.innerHTML =
+            document.getSelection().getRangeAt(0).startContainer.innerHTML.replace(/<strong>/, '').replace(/<\/strong>/, '');
+        else if (document.getSelection().getRangeAt(0).startContainer.constructor.name === 'Text') {
+          let { startContainer, startOffset, endOffset } = document.getSelection().getRangeAt(0);
+          document.getSelection().getRangeAt(0).startContainer
+            .parentElement.innerHTML = `${startContainer
+              .parentElement.innerHTML.substring(0, startOffset)}<strong>${startContainer
+              .parentElement.innerHTML.substring(startOffset, endOffset)}</strong>${
+              startContainer.parentElement.innerHTML.substring(
+                endOffset
+              )}`;
+        }
+        break;
+      }
+
+      setState({
+        value: document.querySelector('div[contenteditable]').innerHTML
+      });
+    }
   }
 
   return <ToolbarButton><ToolbarIconFrame>

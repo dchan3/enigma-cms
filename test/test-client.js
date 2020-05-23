@@ -27,6 +27,7 @@ import ChangePasswordPage from '../src/client/views/admin/ChangePasswordPage';
 import FrontMenu from '../src/client/reusables/FrontMenu';
 import DropdownMenu from '../src/client/reusables/DropdownMenu';
 import TablePaginator from '../src/client/reusables/TablePaginator';
+import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
 const { JSDOM } = require('jsdom');
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
@@ -323,6 +324,80 @@ it('preview box - with value edit code first changing preview', function(done) {
   done();
 });
 
+it('preview box - edit preview bold command 1', function(done) {
+  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+    id="post-body" value="" />, {
+      attachTo: document.body
+    });
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('');
+  act(function() {
+    wrapper.find('textarea').at(0).props().onChange({
+      target: { value: '<p>Lol</p>' }
+    });
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('div')).to.exist;
+  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+  expect(wrapper.find('div').at(6).find('p')).to.exist;
+  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol');
+  act(function() {
+    let r = document.createRange(), s = document.getSelection();
+    r.selectNodeContents(wrapper.find('div').at(6).find('p').getDOMNode());
+    s.addRange(r);
+    wrapper.find('button').at(1).props().onClick();
+  });
+  wrapper.update();
+  act(function() {
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<p><strong>Lol</strong></p>');
+  wrapper.detach();
+  document.getSelection().removeAllRanges();
+  done();
+});
+
+it('preview box - edit preview bold command 2', function(done) {
+  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+    id="post-body" value="" />, {
+      attachTo: document.body
+    });
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('');
+  act(function() {
+    wrapper.find('textarea').at(0).props().onChange({
+      target: { value: '<p>Lol</p>' }
+    });
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('div')).to.exist;
+  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+  expect(wrapper.find('div').at(6).find('p')).to.exist;
+  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol');
+  act(function() {
+    let r = document.createRange(), s = document.getSelection();
+    r.selectNodeContents(wrapper.find('div').at(6).find('p').getDOMNode());
+    r.setStart(wrapper.find('div').at(6).find('p').getDOMNode().firstChild, 0);
+    r.setEnd(wrapper.find('div').at(6).find('p').getDOMNode().firstChild, 1);
+    s.addRange(r);
+    let range = document.getSelection().getRangeAt(0);
+    wrapper.find('button').at(1).props().onClick();
+  });
+  wrapper.update();
+  act(function() {
+    wrapper.find('button').at(0).props().onClick();
+  });
+  wrapper.update();
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal('<p><strong>L</strong>ol</p>');
+  wrapper.detach();
+  done();
+});
+
 describe('Camel Case String Conversion', function() {
   it('one word', function(done) {
     expect(camelcaseConvert('monkey')).to.equal('Monkey');
@@ -378,7 +453,9 @@ describe('Footer', function() {
 
 describe('Code Editor Toolbar', function() {
   it('displays correctly', function(done) {
-    let wrapper = render(<CodeEditorToolbar />);
+    let wrapper = render(<CodeEditorContextProvider>
+      <CodeEditorToolbar />
+    </CodeEditorContextProvider>);
     expect(wrapper.find('button')).to.have.lengthOf(4);
     done();
   });
@@ -1225,6 +1302,16 @@ describe('Paginator Controls', function() {
     done();
   });
 
+  it('shallow search 4', function(done) {
+    expect(shallowSearch([{ name: 'John', name: "Bob" }], 'o')).to.deep.equal([{ name: 'John', name: "Bob" }]);
+    done();
+  });
+
+  it('shallow search 5', function(done) {
+    expect(shallowSearch([{ name: 'John', name: "Bob" }], 'b')).to.deep.equal([{ name: "Bob" }]);
+    done();
+  });
+
   // items, per, maxPages
   it('results pagination', function(done) {
     expect(pages([1,2,3,4,5,6,7], 3, 2)).to.deep.equal([[1,2,3], [4,5,6]]);
@@ -1236,7 +1323,7 @@ describe('Paginator Controls', function() {
     done();
   });
 
-  it('table paginator', function(done) {
+  it('table paginator search and sort', function(done) {
     let columns = [{ headerText: 'Name', display: (n) => n }],
       items = ['John', 'Jane', 'Bob', 'Ann']
     let wrapper = mount(<TablePaginator columns={columns} items={items} />);
@@ -1251,6 +1338,16 @@ describe('Paginator Controls', function() {
     wrapper.update();
     expect(wrapper.find('table tr')).to.have.lengthOf(2);
     expect(wrapper.find('table tr').at(1).text()).to.deep.equal("Bob");
+    act(function() {
+      wrapper.find('input').at(0).props().onChange({
+        target: { value: 'J' }
+      });
+      wrapper.find('thead td').at(0).props().onClick({});
+      wrapper.find('thead td').at(0).props().onClick({});
+    });
+    wrapper.update();
+    expect(wrapper.find('table tr')).to.have.lengthOf(3);
+    expect(wrapper.find('table tr').at(1).text()).to.deep.equal("Jane");
     done();
   });
 });
