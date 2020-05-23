@@ -5,9 +5,16 @@ import TemplateParser from '../src/server/utils/template_parser';
 import { prepareDocumentsForRender } from '../src/server/utils/render_markup';
 
 describe('Reverse Index function', function() {
-  it ('works as desired', function(done) {
+  it ('works as desired 1', function(done) {
     var actual = createReverseIndex('Hello World'),
       expected = { 'Hello': [0], 'World': [6] };
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+
+  it ('works as desired 2', function(done) {
+    var actual = createReverseIndex('Lol'),
+      expected = { 'Lol': [0] };
     expect(actual).to.deep.equal(expected);
     done();
   });

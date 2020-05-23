@@ -18,6 +18,8 @@ import { generateArray, truncatePageList } from '../src/client/reusables/Paginat
 import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
 import { StaticContextProvider } from '../src/client/contexts/StaticContext';
 import { TheRouterContextProvider } from '../src/client/contexts/TheRouterContext';
+import { HeadContextProvider } from '../src/client/contexts/HeadContext';
+import Fedora from '../src/client/reusables/Fedora';
 import Footer from '../src/client/reusables/Footer';
 import { createMemoryHistory as createHistory } from 'history';
 import CodeEditorToolbar from '../src/client/reusables/CodeEditorToolbar';
@@ -1351,3 +1353,14 @@ describe('Paginator Controls', function() {
     done();
   });
 });
+
+describe('Fedora tests', function() {
+  it('works', function(done) {
+    let wrapper = mount(<HeadContextProvider>
+      <Fedora title="My Website" description='Welcome to my website!' />
+    </HeadContextProvider>, { attachTo: document.body });
+    expect(document.title).to.deep.equal('My Website');
+    wrapper.detach();
+    done();
+  });
+})
