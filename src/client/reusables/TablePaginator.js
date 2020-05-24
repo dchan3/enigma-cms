@@ -24,7 +24,7 @@ function TablePaginatorSearchBar() {
   }
 
   return <input type="text" placeholder="Search" value={searchQuery}
-    onChange={handleSearchChange}/>;
+    onChange={handleSearchChange} onInput={handleSearchChange}/>;
 }
 
 function TablePaginatorDisplay() {

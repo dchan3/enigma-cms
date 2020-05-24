@@ -5,7 +5,7 @@ import fromCss from '../utils/component_from_css';
 export default function SamePageAnchor({
   children, href, target, className, id, style
 }) {
-  let { history } = useTheRouterContext(),
+  let { history, setLocation } = useTheRouterContext(),
     Anchor = fromCss('a', 'font-weight:900;'), AlreadyOn = fromCss('span',
       'text-decoration:underline;font-weight:900;margin:0;width:fit-content;height:fit-content;');
 
@@ -13,7 +13,9 @@ export default function SamePageAnchor({
     if (history && href.startsWith('/')) {
       event.preventDefault();
       history.push(href);
+      setLocation(href);
     }
+    else if (href.startsWith('/')) setLocation(href);
   }
 
   return (history && history.location.pathname !== href) ?

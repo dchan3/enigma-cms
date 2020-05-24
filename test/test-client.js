@@ -5,7 +5,7 @@ import Enzyme, { render, shallow, mount } from 'enzyme';
 import { act } from 'preact/test-utils';
 import Adapter from 'enzyme-adapter-preact-pure';
 Enzyme.configure({ adapter: new Adapter });
-import { GeneratedForm, CodeEditor } from '../src/client/reusables';
+import { GeneratedForm, CodeEditor, SamePageAnchor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
@@ -30,6 +30,7 @@ import FrontMenu from '../src/client/reusables/FrontMenu';
 import DropdownMenu from '../src/client/reusables/DropdownMenu';
 import TablePaginator from '../src/client/reusables/TablePaginator';
 import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
+import { TheBrowserRouter, TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
 const { JSDOM } = require('jsdom');
 
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
@@ -1333,7 +1334,7 @@ describe('Paginator Controls', function() {
     expect(wrapper.find('table tr')).to.have.lengthOf(5);
     expect(wrapper.find('input')).to.have.lengthOf(1);
     act(function() {
-      wrapper.find('input').at(0).props().onChange({
+      wrapper.find('input').at(0).props().onInput({
         target: { value: 'B' }
       })
     });
@@ -1341,7 +1342,7 @@ describe('Paginator Controls', function() {
     expect(wrapper.find('table tr')).to.have.lengthOf(2);
     expect(wrapper.find('table tr').at(1).text()).to.deep.equal("Bob");
     act(function() {
-      wrapper.find('input').at(0).props().onChange({
+      wrapper.find('input').at(0).props().onInput({
         target: { value: 'J' }
       });
       wrapper.find('thead td').at(0).props().onClick({});
@@ -1364,3 +1365,28 @@ describe('Fedora tests', function() {
     done();
   });
 })
+
+describe('Routing Related', function() {
+  it('same page anchor', function(done) {
+    let wrapper = mount(<TheStaticRouter basename=''>
+      <TheSwitch>
+        <TheRoute exact={true} path='/sitemap.html' component={() => {
+          return <SamePageAnchor href='/'>Home</SamePageAnchor>;
+        }}/>
+        <TheRoute path='/' exact={true} component={() => {
+          return <SamePageAnchor href='/sitemap.html'>Sitemap</SamePageAnchor>;
+        }}/>
+      </TheSwitch>
+    </TheStaticRouter>, { attachTo: document.body });
+    expect(wrapper.find('a')).to.have.lengthOf(1);
+    act(function() {
+      wrapper.find('a').at(0).props().onClick({
+        preventDefault: () => {}
+      });
+    });
+    wrapper.update();
+    expect(wrapper.find('a')).to.have.lengthOf(1);
+    wrapper.detach();
+    done();
+  });
+});

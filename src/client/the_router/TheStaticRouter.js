@@ -25,7 +25,7 @@ export default function TheStaticRouter({
     action: 'POP',
     location: createLocation(location),
     block: {},
-    listen: {},
+    listen: () => {},
     replace: (location) => {
       context.action = 'REPLACE';
       context.location = createLocation(location);
