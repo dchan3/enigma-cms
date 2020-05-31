@@ -25,7 +25,7 @@
     "serialize-javascript": "^3.1.0",
     "sha1": "^1.1.1",
     "typescript": "^3.9.3",
-    "uuid": "^7.0.3",
+    "uuid": "^8.1.0",
     "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
@@ -52,7 +52,7 @@
     "crypto": "^1.0.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-preact-pure": "^2.2.0",
-    "eslint": "^6.8.0",
+    "eslint": "^7.1.0",
     "eslint-plugin-react": "^7.20.0",
     "history": "^4.10.1",
     "istanbul": "^0.4.5",
