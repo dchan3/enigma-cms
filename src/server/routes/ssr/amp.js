@@ -33,7 +33,7 @@ var htmlTemplate =
           "name":"${dataObj.authorInfo.displayName}",
           "logo":{
             "@type":"ImageObject",
-            "url":"${process.env.HOST && `https://${process.env.HOST}` || 'http://localhost:8080'}/favicon.ico"}}}
+            "url":"${process.env.HOST && `https://${process.env.HOST}` || `http://localhost:${process.env.SERVER_PORT}`}/favicon.ico"}}}
     </script>` : ''}
     <style amp-boilerplate>
       body{${css1.map(str => `${str

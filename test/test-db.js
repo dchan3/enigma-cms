@@ -1,11 +1,11 @@
 import { expect } from 'chai';
-import chaiHttp from 'chai-http';
 import mongoose from 'mongoose';
 import fs from 'fs';
 import path from 'path';
 import User from '../src/server/models/User';
 import SiteConfig from '../src/server/models/SiteConfig';
 import DocumentType from '../src/server/models/DocumentType';
+
 let dbURI = process.env.DB_CONN_URL || 'mongodb://localhost/enigma-test';
 
 let clearDB = function(done) {
@@ -24,7 +24,7 @@ describe('DB and CRUD tests', function () {
       });
     });
 
-  describe('Site config', function(done) {
+  describe('Site config', function() {
     it('site config creatable', function(done) {
       var testConfig = SiteConfig();
 

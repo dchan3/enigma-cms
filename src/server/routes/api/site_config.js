@@ -6,6 +6,13 @@ import path from 'path';
 
 var router = Router();
 
+router.get('/get_config', function(req, res) {
+  SiteConfig.findOne({ }).then(config => {
+    if (!config) res.send('nope').end();
+    return res.status(200).json(config).end();
+  }).catch(() => res.send('nope'));
+});
+
 router.post('/update', verifyMiddleware, function({ body }, res, next) {
   SiteConfig.findOne({ }).then(async config => {
     var reset = [];

@@ -55,8 +55,8 @@ export function renderString(props) {
 export function ssrGen(htmlTemplate) {
   return async function ssrRenderer({ path: p, url: location, user }, res, next) {
     let isDash = p.startsWith('/admin') || ['/login', '/signup'].includes(p);
-    let config = JSON.parse(fs.readFileSync(path.join(__dirname, 'site-files/config.enigma'))), routes = isDash ?
-        backEndRoutes :  frontEndRoutes, component = isDash ? Dashboard : App;
+    let config = JSON.parse(fs.readFileSync(path.join(process.env.DIRECTORY || __dirname, 'site-files/config.enigma'))), routes = isDash ?
+        backEndRoutes : frontEndRoutes, component = isDash ? Dashboard : App;
     let context = isDash ? { config, types: await DocumentType.find({}) } : { config }, foundRoutes =
       routes.find(route => matchThePath(p.replace('?amp=true', ''), route));
     let pathMatch = foundRoutes && (typeof foundRoutes.path === 'string' ? foundRoutes.path :
