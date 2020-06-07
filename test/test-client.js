@@ -25,6 +25,8 @@ import { createMemoryHistory as createHistory } from 'history';
 import CodeEditorToolbar from '../src/client/reusables/CodeEditorToolbar';
 import LoginPage from '../src/client/views/admin/LoginPage';
 import SignupPage from '../src/client/views/admin/SignupPage';
+import ConfigPage from '../src/client/views/admin/ConfigPage';
+import ThemePage from '../src/client/views/admin/ThemePage';
 import ChangePasswordPage from '../src/client/views/admin/ChangePasswordPage';
 import FrontMenu from '../src/client/reusables/FrontMenu';
 import DropdownMenu from '../src/client/reusables/DropdownMenu';
@@ -455,6 +457,22 @@ describe('Footer', function() {
     let wrapper = renderWithDom(<Footer />, { user: null });;
     expect(wrapper.find('a')).to.have.lengthOf(3);
     wrapper.detach();
+    done();
+  });
+});
+
+describe('Config Page', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<ConfigPage />, { user: { username: 'my_user', config: { } }});
+    expect(wrapper.find('input')).to.have.lengthOf(8);
+    done();
+  });
+});
+
+describe('Config Page', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<ThemePage />, { theme: null });
+    expect(wrapper.find('textarea')).to.have.lengthOf(4);
     done();
   });
 });
