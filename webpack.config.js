@@ -1,5 +1,4 @@
 const path = require('path'), nodeExternals = require('webpack-node-externals'),
-  MinifyPlugin = require('babel-minify-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin'), WrapperPlugin = require('wrapper-webpack-plugin'),
   kwTable = require('./babel/common-strings/kw-table.js');
 
@@ -10,6 +9,7 @@ let optimization = {
           output: {
             comments: false,
           },
+          sourceMap: true,
           mangle: {
             toplevel: true,
             reserved: Object.values(kwTable)
@@ -30,9 +30,7 @@ let optimization = {
   presets = [
     ['@babel/preset-env', { 'modules': 'cjs' }],
     '@babel/preset-react'], topPlugins = [
-    new MinifyPlugin({}, {
-      comments
-    }), new WrapperPlugin({
+      new WrapperPlugin({
       header: 'const ' + Object.keys(kwTable).map(
         (k) => {
           return k.match(/^\d+$/) ? (kwTable[k] + '=' + k)
@@ -59,22 +57,12 @@ module.exports = [{
           babelrc,
           comments,
           presets,
-          plugins: process.env.DEV_MODE ? [] :
-            ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/common-strings']
-        }
-      },
-      {
-        test,
-        include: /src\/client\/reusables/,
-        loader,
-        options: {
-          babelrc,
-          comments,
-          presets,
-          plugins: ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify',  './babel/unconcatify', './babel/common-strings',
-            ['./babel/from-css-ify', {
-              'toFile': path.resolve(__dirname, 'public/app.style.css') }]
-          ]
+          plugins: process.env.DEV_MODE ? [['./babel/from-css-ify', {
+            toFile: path.resolve(__dirname, 'public/app.style.css')
+          }]] :
+            ['@babel/plugin-transform-react-jsx', './babel/rightify', [['./babel/from-css-ify', {
+              toFile: path.resolve(__dirname, 'public/app.style.css')
+            }]], './babel/hashify', './babel/unconcatify', './babel/common-strings']
         }
       },
       {
@@ -105,6 +93,7 @@ module.exports = [{
     filename
   },
   resolve,
+  devtool: 'source-map'
 }, {
   optimization,
   mode,
@@ -131,17 +120,6 @@ module.exports = [{
       },
       {
         test,
-        include: /src\/client\/reusables/,
-        loader,
-        options: {
-          babelrc,
-          comments,
-          presets,
-          plugins: [ '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify',  './babel/unconcatify', './babel/from-css-ify', './babel/common-strings' ]
-        }
-      },
-      {
-        test,
         include: /src\/server\/routes\/ssr/,
         loader,
         options: {
@@ -159,5 +137,6 @@ module.exports = [{
     publicPath: '/'
   },
   resolve,
-  node: { __dirname: false }
+  node: { __dirname: false },
+  devtool: 'source-map'
 }];

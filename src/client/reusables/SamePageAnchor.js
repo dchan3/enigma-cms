@@ -1,6 +1,6 @@
 import { h, createElement } from 'preact'; /** @jsx h **/
 import useTheRouterContext from '../hooks/useTheRouterContext';
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 
 export default function SamePageAnchor({
   children, href, target, className, id, style

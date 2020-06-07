@@ -1,6 +1,6 @@
 import { h, createElement } from 'preact'; /** @jsx h **/
 import { useContext } from 'preact/hooks';
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 import PaginatorControlContext from './PaginatorControlContext';
 
 export function generateArray() {

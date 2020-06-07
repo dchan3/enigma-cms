@@ -15,6 +15,14 @@ let ProtectedRoute = ({ component: Component, isAdmin, isOutRoute = false, ...re
     return <TheRedirect to="/login" />;
   }
 
+  if (isOutRoute && user) {
+    return <TheRedirect to="/admin" />;
+  }
+
+  if (isOutRoute && !user) {
+    return <Component />;
+  }
+
   if (user && isAdmin && user.roleId > 0) {
     return <TheRedirect to="/admin" />;
   }

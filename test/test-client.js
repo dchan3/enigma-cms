@@ -12,7 +12,7 @@ import { default as formGenUtils } from '../src/client/utils/form_from_obj';
 import formComps from '../src/client/reusables/formComps';
 import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
-import fromCss from '../src/client/utils/component_from_css';
+import fromCss, { FromCssContextProvider } from '../src/client/contexts/FromCssContext';
 import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
 import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
@@ -44,18 +44,12 @@ global.history = window.history;
 global.requestAnimationFrame = () => {};
 global.cancelAnimationFrame = () => {};
 
-let renderForm = function(title, params, currentValue = null) {
-  return render(<GeneratedForm params={params} title={title}
-    currentValue={currentValue} method="post" formAction="" />);
-}
-
-let shallowRenderForm = function(title, params, currentValue = null) {
-  return shallow(<GeneratedForm params={params} title={title}
-    currentValue={currentValue} method="post" formAction="" />);
+let renderFromCss = function(children, par = { attachTo: document.body }) {
+  return mount(<FromCssContextProvider>{children}</FromCssContextProvider>, par);
 }
 
 let mountRenderForm = function(title, params, currentValue = null) {
-  return mount(<GeneratedForm params={params} title={title}
+  return renderFromCss(<GeneratedForm params={params} title={title}
     currentValue={currentValue} method="post" formAction="" />);
 }
 
@@ -67,12 +61,11 @@ describe('Reusable UI Components - Generated Form', function() {
         type: 'text'
       }
     };
-    const wrapper = renderForm('Find User', parameters);
+    const wrapper = mountRenderForm('Find User', parameters);
     expect(wrapper.find('h2')).to.have.lengthOf(1);
     expect(wrapper.find('h2').text()).to.equal('Find User');
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
-    expect(wrapper.find('label[for="username"]')).to.have.lengthOf(1);
-    expect(wrapper.find('label[for="username"]').text()).to.equal('Username');
+    wrapper.detach();
     done();
   });
 
@@ -114,13 +107,14 @@ describe('Reusable UI Components - Generated Form', function() {
           }
         }]
       };
-    let wrapper = renderForm('Event Summary', parameters, currentValue);
+    let wrapper = mountRenderForm('Event Summary', parameters, currentValue);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
       .to.be.greaterThan(-1);
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(4);
     expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    wrapper.detach();
     done();
   });
 
@@ -139,6 +133,7 @@ describe('Reusable UI Components - Generated Form', function() {
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(2);
     expect(wrapper.find('input[type="text"]').at(0).props().value).to.deep.equal('Jordan');
     expect(wrapper.find('input[type="text"]').at(1).props().value).to.deep.equal('');
+    wrapper.detach();
     done();
   });
 
@@ -164,6 +159,7 @@ describe('Reusable UI Components - Generated Form', function() {
     wrapper.update();
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
     expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    wrapper.detach();
     done();
   });
 
@@ -180,20 +176,22 @@ describe('Reusable UI Components - Generated Form', function() {
     });
     wrapper.update();
     expect(wrapper.find('input[type="text"]')).to.have.lengthOf(0);
+    wrapper.detach();
     done();
   });
 });
 
 describe('Reusable UI Components - Code Editor', function() {
   it('renders correctly with existing value', function(done) {
-    let wrapper = render(<CodeEditor grammar="html" name="post-body"
+    let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
     expect(wrapper.find('textarea')).to.exist;
+    wrapper.detach();
     done();
   });
 
   it('changes value', function(done) {
-    let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+    let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
     expect(wrapper.find('textarea')).to.exist;
     act(function() {
@@ -201,11 +199,12 @@ describe('Reusable UI Components - Code Editor', function() {
     });
     wrapper.update();
     expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+    wrapper.detach();
     done();
   });
 
   it('preview box - with value', function(done) {
-    let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+    let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
     expect(wrapper.find('textarea')).to.exist;
     expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello World!</h1>');
@@ -222,12 +221,13 @@ describe('Reusable UI Components - Code Editor', function() {
     });
     wrapper.update();
     expect(wrapper.find('textarea')).to.exist;
+    wrapper.detach();
     done();
   });
 });
 
 it('preview box - without value edit preview first', function(done) {
-  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+  let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="" />);
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('');
@@ -246,11 +246,12 @@ it('preview box - without value edit preview first', function(done) {
   wrapper.update();
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+  wrapper.detach();
   done();
 });
 
 it('preview box - with value edit preview first', function(done) {
-  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+  let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="<h1>Hello.</h1>" />);
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
@@ -271,11 +272,12 @@ it('preview box - with value edit preview first', function(done) {
   wrapper.update();
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+  wrapper.detach();
   done();
 });
 
 it('preview box - with value edit code first not changing preview', function(done) {
-  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+  let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="<h1>Hello.</h1>" />);
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
@@ -296,11 +298,12 @@ it('preview box - with value edit code first not changing preview', function(don
   wrapper.update();
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+  wrapper.detach();
   done();
 });
 
 it('preview box - with value edit code first changing preview', function(done) {
-  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
+  let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="<h1>Hello.</h1>" />);
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
@@ -328,8 +331,8 @@ it('preview box - with value edit code first changing preview', function(done) {
 });
 
 it('preview box - edit preview bold command 1', function(done) {
-  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
-    id="post-body" value="" />, {
+  let wrapper = renderWithDom(<CodeEditor grammar="html" name="post-body"
+    id="post-body" value="" />, null, {
       attachTo: document.body
     });
   expect(wrapper.find('textarea')).to.exist;
@@ -364,8 +367,8 @@ it('preview box - edit preview bold command 1', function(done) {
 });
 
 it('preview box - edit preview bold command 2', function(done) {
-  let wrapper = mount(<CodeEditor grammar="html" name="post-body"
-    id="post-body" value="" />, {
+  let wrapper = renderWithDom(<CodeEditor grammar="html" name="post-body"
+    id="post-body" value="" />, null, {
       attachTo: document.body
     });
   expect(wrapper.find('textarea')).to.exist;
@@ -419,8 +422,8 @@ describe('Camel Case String Conversion', function() {
   });
 });
 
-let renderWithDom = function(component, staticVal) {
-  return render(<TheRouterContextProvider value={{
+let renderWithDom = function(component, staticVal = null, par) {
+  return renderFromCss(<TheRouterContextProvider value={{
     history: createHistory({
       basename: 'localhost:8080'
     }),
@@ -429,7 +432,7 @@ let renderWithDom = function(component, staticVal) {
   <StaticContextProvider initialVals={staticVal}>
     {component}
   </StaticContextProvider>
-  </TheRouterContextProvider>);
+  </TheRouterContextProvider>, par);
 }
 
 describe('Change Password Page', function() {
@@ -444,22 +447,25 @@ describe('Footer', function() {
   it('when user exists', function(done) {
     let wrapper = renderWithDom(<Footer />, { user: { username: 'my_user' }});
     expect(wrapper.find('a')).to.have.lengthOf(5);
+    wrapper.detach();
     done();
   });
 
   it('when user does not exist', function(done) {
-    let wrapper = renderWithDom(<Footer />, { });;
+    let wrapper = renderWithDom(<Footer />, { user: null });;
     expect(wrapper.find('a')).to.have.lengthOf(3);
+    wrapper.detach();
     done();
   });
 });
 
 describe('Code Editor Toolbar', function() {
   it('displays correctly', function(done) {
-    let wrapper = render(<CodeEditorContextProvider>
+    let wrapper = renderFromCss(<CodeEditorContextProvider>
       <CodeEditorToolbar />
     </CodeEditorContextProvider>);
     expect(wrapper.find('button')).to.have.lengthOf(4);
+    wrapper.detach();
     done();
   });
 });
@@ -471,6 +477,7 @@ describe('Front Menu', function() {
 
     let wrapper = renderWithDom(<FrontMenu menuLinks={menuLinks} />, { });
     expect(wrapper.find('li')).to.have.lengthOf(2);
+    wrapper.detach();
     done();
   });
 });
@@ -486,6 +493,7 @@ describe('Dropdown Menu', function() {
     let wrapper = renderWithDom(<DropdownMenu menuNodes={menuNodes} />, { });
     expect(wrapper.find('ul')).to.have.lengthOf(2);
     expect(wrapper.find('li')).to.have.lengthOf(3);
+    wrapper.detach();
     done();
   });
 });
@@ -495,6 +503,7 @@ describe('Login Page', function() {
     let wrapper = renderWithDom(<LoginPage />,
       { config: { siteName: 'My Website '}});
     expect(wrapper.find('a')).to.have.lengthOf(1);
+    wrapper.detach();
     done();
   });
 });
@@ -504,6 +513,7 @@ describe('Signup Page', function() {
     let wrapper = renderWithDom(<SignupPage />,
       { config: { siteName: 'My Website '}});
     expect(wrapper.find('a')).to.have.lengthOf(1);
+    wrapper.detach();
     done();
   });
 });
@@ -819,10 +829,11 @@ describe('Form from Obj', function() {
         dataType: 'number',
         data: ''
       };
-    let wrapper = renderForm('Data Entry', parameters, currentValue);
+    let wrapper = mountRenderForm('Data Entry', parameters, currentValue);
     expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
     expect(wrapper.find('select')).to.have.lengthOf(1);
     expect(wrapper.find('option')).to.have.lengthOf(7);
+    wrapper.detach();
     done();
   });
 
@@ -833,8 +844,9 @@ describe('Form from Obj', function() {
         maximum: 12
       }
     };
-    let wrapper = renderForm('Sign Up', parameters);
-    expect(wrapper.find('input[maxlength="12"]')).to.have.lengthOf(1);
+    let wrapper = mountRenderForm('Sign Up', parameters);
+    expect(wrapper.find('input[type="text"]')).to.have.lengthOf(1);
+    wrapper.detach();
     done();
   });
 
@@ -845,8 +857,9 @@ describe('Form from Obj', function() {
         maximum: 9000
       }
     };
-    let wrapper = renderForm('Pick a number', parameters);
-    expect(wrapper.find('input[maximum="9000"]')).to.have.lengthOf(1);
+    let wrapper = mountRenderForm('Pick a number', parameters);
+    expect(wrapper.find('input[type="number"]')).to.have.lengthOf(1);
+    wrapper.detach();
     done();
   });
 });
@@ -1209,27 +1222,25 @@ describe('From CSS', function() {
   });
 
   it('Basic functions', function(done) {
-    let Element = fromCss('p', 'font-family: sans-serif;'),
-      actual = render(<Element>Hi!</Element>), expected = render(<p style={{
+    let Element = fromCss('p', 'font-family:sans-serif;'),
+      actual = renderFromCss(<Element>Hi!</Element>),
+      expected = mount(<p style={{
         fontFamily: 'sans-serif'
       }}>Hi!</p>);
 
     expect(actual.find('p').text()).to.equal(expected.find('p').text());
-    expect(actual.get(0).style).to.deep.equal(expected.get(0).style);
     done();
   });
 
   it('Advanced functions', function(done) {
-    let Element = fromCss('p',
-        ({ mono }) => `font-family: ${mono === true
-          ? 'monospace' : 'sans-serif'};`, ['mono']),
-      actual = render(<Element mono={true}>Hi!</Element>),
-      expected = render(<p style={{
+      let Element = fromCss('p', ({ mono }) => `font-family: ${mono === true
+          ? 'monospace' : 'sans-serif'};`),
+      actual = renderFromCss(<Element>Hi!</Element>),
+      expected = mount(<p style={{
         fontFamily: 'monospace'
       }}>Hi!</p>);
 
     expect(actual.find('p').text()).to.equal(expected.find('p').text());
-    expect(actual.get(0).style).to.deep.equal(expected.get(0).style);
     done();
   });
 });
@@ -1329,7 +1340,7 @@ describe('Paginator Controls', function() {
   it('table paginator search and sort', function(done) {
     let columns = [{ headerText: 'Name', display: (n) => n }],
       items = ['John', 'Jane', 'Bob', 'Ann']
-    let wrapper = mount(<TablePaginator columns={columns} items={items} />);
+    let wrapper = renderWithDom(<TablePaginator columns={columns} items={items} />);
     expect(wrapper.find('table')).to.have.lengthOf(1);
     expect(wrapper.find('table tr')).to.have.lengthOf(5);
     expect(wrapper.find('input')).to.have.lengthOf(1);
@@ -1368,7 +1379,7 @@ describe('Fedora tests', function() {
 
 describe('Routing Related', function() {
   it('same page anchor', function(done) {
-    let wrapper = mount(<TheStaticRouter basename=''>
+    let wrapper = renderFromCss(<TheStaticRouter basename=''>
       <TheSwitch>
         <TheRoute exact={true} path='/sitemap.html' component={() => {
           return <SamePageAnchor href='/'>Home</SamePageAnchor>;

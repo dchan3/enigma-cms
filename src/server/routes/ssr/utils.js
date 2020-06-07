@@ -3,6 +3,7 @@ import renderToString from 'preact-render-to-string';
 import TheStaticRouter from '../../../client/the_router/TheStaticRouter';
 import { HeadContextProvider } from '../../../client/contexts/HeadContext';
 import { StaticContextProvider } from '../../../client/contexts/StaticContext';
+import { FromCssSheet } from '../../../client/contexts/FromCssContext';
 import { default as fetchers } from './fetch_data';
 import { DocumentType } from '../../models';
 import matchThePath from  '../../../lib/utils/match_the_path';
@@ -38,6 +39,7 @@ export function generateMeta(d) {
   };
 }
 
+
 function GenerateStaticJsx({ value, location, initialVals, component: Comp }) {
   return <HeadContextProvider {...{ value }}>
     <TheStaticRouter {...{ location }}>
@@ -48,12 +50,9 @@ function GenerateStaticJsx({ value, location, initialVals, component: Comp }) {
   </HeadContextProvider>;
 }
 
-export function renderString(props) {
-  return renderToString(<GenerateStaticJsx {...props} />);
-}
-
 export function ssrGen(htmlTemplate) {
   return async function ssrRenderer({ path: p, url: location, user }, res, next) {
+    let cssSheet = FromCssSheet();
     let isDash = p.startsWith('/admin') || ['/login', '/signup'].includes(p);
     let config = JSON.parse(fs.readFileSync(path.join(process.env.DIRECTORY || __dirname, 'site-files/config.enigma'))), routes = isDash ?
         backEndRoutes : frontEndRoutes, component = isDash ? Dashboard : App;
@@ -66,10 +65,10 @@ export function ssrGen(htmlTemplate) {
     promise.then(data => {
       if (data) context.dataObj = data;
       let { meta, value, headTitle } = generateMeta(data && data.metadata || config);
-      let markup = renderString({ value, location, initialVals: { ...context, user }, component });
+      let markup = renderToString(cssSheet.collectStyles(<GenerateStaticJsx {...{ value, location, initialVals: { ...context, user }, component }}/>));
 
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
-      res.end(htmlTemplate(config, { title: headTitle, meta, link: `<link rel="canonical" href="${`${location}?amp=true`}" />` }, markup, context, isDash));
+      res.end(htmlTemplate(config, { title: headTitle, meta, link: `<link rel="canonical" href="${`${location}?amp=true`}" />` }, markup, context, isDash, cssSheet.spitSheet()));
     }).catch(next);
   };
 }

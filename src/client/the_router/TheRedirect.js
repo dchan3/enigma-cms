@@ -1,10 +1,10 @@
 import useTheRouterContext from '../hooks/useTheRouterContext';
 
 export default function Redirect({ to }) {
-  let { history, setLocation } = useTheRouterContext();
+  let { history, setHistory } = useTheRouterContext();
 
-  history.replace(to);
-  setLocation(to);
+  history.replace(to.replace(/^\//, ''));
+  setHistory(history);
 
   return null;
 }

@@ -1,6 +1,6 @@
 import { h, createElement } from 'preact'; /** @jsx h **/
 import SamePageAnchor from './SamePageAnchor';
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 
 let ContainerDiv = fromCss('div',
     'width:10%;margin:0;text-align:center;vertical-align:top;display:inline-block;overflow-y:scroll;height:100vh;'),

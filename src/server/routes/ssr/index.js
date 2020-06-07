@@ -3,8 +3,9 @@ import { ssrGen, renderHead, gaScript, gaUrl, staticScript } from './utils';
 
 var htmlTemplate =
   ({ language, gaTrackingId, themeColor },
-    head, dom, data, back) => `<!DOCTYPE html>
+    head, dom, data, back, style) => `<!DOCTYPE html>
 <html lang="${language}"><head>
+  <style data-fc>${style}</style>
 ${(gaTrackingId && !back) ?
     `<script async src="${gaUrl(gaTrackingId)}">
   </script>${gaScript(gaTrackingId)}` : ''}

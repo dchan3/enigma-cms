@@ -1,6 +1,6 @@
 import { h, createElement } from 'preact'; /** @jsx h **/
 import SamePageAnchor from './SamePageAnchor';
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 import useStaticContext from '../hooks/useStaticContext';
 
 let FooterContainer = fromCss('div',

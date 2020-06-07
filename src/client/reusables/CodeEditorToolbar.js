@@ -1,6 +1,6 @@
 import { h, createElement } from 'preact';
 import { useContext } from 'preact/hooks';
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 import CodeEditorContext from './CodeEditorContext';
 
 /** @jsx h **/

@@ -1,5 +1,5 @@
 import { createElement } from 'preact';
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 
 /** @jsx h **/
 

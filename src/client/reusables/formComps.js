@@ -1,5 +1,5 @@
 import { createElement } from 'preact'; /** @jsx h **/
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 import CodeEditor from './CodeEditor';
 
 export const FormContainer = fromCss('div', 'width:100%;');
@@ -8,7 +8,7 @@ export const FormBackground = fromCss('form',
   'background-color:cadetblue;width:45%;margin:auto;text-align:left;');
 
 export const FormDiv = fromCss('div', ({ hidden }) => 'padding:8px;' +
-    `display:${hidden ? 'none' : 'block'};`, ['hidden']);
+    `display:${hidden ? 'none' : 'block'};`);
 
 export const FormHeader = fromCss('h2',
   'text-align:center;font-family:sans-serif;');

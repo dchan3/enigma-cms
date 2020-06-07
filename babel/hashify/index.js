@@ -1,13 +1,24 @@
-let crypto = require('crypto'),
-  hashifyName =
-    (name) => crypto.createHash('sha1').update(name).digest('base64')
-      .replace(/^\d/g, '_').replace(/[+/=]/g, '_').substring(0, 6),
-  cap = str => str.replace(/^[a-z]/, match => match.toUpperCase()),
-  renameToHash = (path, key, capit) => {
+const first = '一', last = '龥',
+  saizeu = last.charCodeAt(0) - first.charCodeAt(0),
+  murmur = require('murmurhash-js/murmurhash3_gc'), getAlphabeticChar = (code) =>
+    String.fromCharCode(first.charCodeAt(0) + code),
+  generateAlphabeticName = (code) => {
+  let name = '';
+  let x;
+  for (x = code; x > saizeu; x = Math.floor(x / saizeu)) {
+    name = getAlphabeticChar(x % saizeu) + name;
+  }
+
+  name = getAlphabeticChar(x % saizeu) + name;
+  return name;
+}, hashifyName = (name) => generateAlphabeticName(murmur(name)),
+  renameToHash = (path, key, minLength) => {
     let thing = path.node[key];
-    if (thing && thing.type === 'Identifier') {
+    if (thing) {
       let { name } = thing, hashed = hashifyName(name);
-      path.scope.rename(name, capit ? cap(hashed) : hashed);
+      if (name.length > minLength) {
+        path.scope.rename(name, hashed);
+      }
     }
   };
 
@@ -15,10 +26,10 @@ module.exports = function () {
   return {
     visitor: {
       FunctionDeclaration(path) {
-        renameToHash(path, 'id', true);
+        renameToHash(path, 'id', 1);
       },
       VariableDeclarator(path) {
-        renameToHash(path, 'id', true);
+        renameToHash(path, 'id', 1);
       }
     },
   };

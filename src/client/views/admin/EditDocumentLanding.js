@@ -4,7 +4,7 @@ import { TextHeader, SamePageAnchor, TablePaginator } from
 import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 import { default as syncReqs } from '../../utils/api_request_sync';
-import fromCss from '../../utils/component_from_css';
+import fromCss from '../../contexts/FromCssContext';
 
 let TableText = fromCss('p', 'text-align:center;font-family:sans-serif;');
 

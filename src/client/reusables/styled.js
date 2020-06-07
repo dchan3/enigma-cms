@@ -1,5 +1,5 @@
 import { createElement } from 'preact'; /** @jsx h **/
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 
 export const StyledDiv = fromCss('div',
   'font-family:sans-serif;text-align:center;');

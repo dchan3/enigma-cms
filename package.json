@@ -11,7 +11,6 @@
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
-    "crypto-js": "^4.0.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "gm": "^1.23.1",
@@ -24,6 +23,7 @@
     "passport-local-mongoose": "^6.0.1",
     "serialize-javascript": "^3.1.0",
     "sha1": "^1.1.1",
+    "source-map-explorer": "^2.4.2",
     "typescript": "^3.9.3",
     "uuid": "^8.1.0",
     "webpack-node-externals": "^1.7.2"
@@ -59,6 +59,7 @@
     "jsdom": "^16.2.2",
     "mocha": "^7.2.0",
     "mocha-lcov-reporter": "^1.3.0",
+    "murmurhash-js": "^1.0.0",
     "nodemon": "^2.0.4",
     "nyc": "^15.0.1",
     "preact": "^10.4.4",
@@ -71,6 +72,7 @@
   "name": "enigma-cms",
   "private": true,
   "scripts": {
+    "analyze": "source-map-explorer public/*.js",
     "build": "webpack --progress -w",
     "lint": "eslint .",
     "send": "nyc report --reporter=lcov --reporter=text && cat ./coverage/lcov.info | codacy-coverage --token $CODACY_PROJECT_TOKEN",

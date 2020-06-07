@@ -3,7 +3,7 @@ import { useContext, useEffect } from 'preact/hooks';
 import PaginatorControls from './PaginatorControls';
 import PaginatorControlContext, {
   PaginatorControlProvider } from './PaginatorControlContext';
-import fromCss from '../utils/component_from_css';
+import fromCss from '../contexts/FromCssContext';
 
 let TableHeaderCell = fromCss('td', 'vertical-align:top;'),
   TableCell = fromCss('td', 'vertical-align:top;'),
