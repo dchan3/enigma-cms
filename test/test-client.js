@@ -28,6 +28,7 @@ import LoginPage from '../src/client/views/admin/LoginPage';
 import SignupPage from '../src/client/views/admin/SignupPage';
 import ConfigPage from '../src/client/views/admin/ConfigPage';
 import ThemePage from '../src/client/views/admin/ThemePage';
+import AdminLanding from '../src/client/views/admin/AdminLanding';
 import ChangePasswordPage from '../src/client/views/admin/ChangePasswordPage';
 import FrontMenu from '../src/client/reusables/FrontMenu';
 import DropdownMenu from '../src/client/reusables/DropdownMenu';
@@ -475,6 +476,16 @@ describe('Theme Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<ThemePage />, { theme: null });
     expect(wrapper.find('textarea')).to.have.lengthOf(4);
+    wrapper.detach();
+    done();
+  });
+});
+
+describe('Admin Landing', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<AdminLanding />, { user: { username: 'my_user' } });
+    expect(wrapper.find('h1')).to.have.lengthOf(1);
+    expect(wrapper.find('h1').text()).to.deep.equal('Welcome, my_user.');
     wrapper.detach();
     done();
   });
