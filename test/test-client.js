@@ -30,6 +30,7 @@ import ConfigPage from '../src/client/views/admin/ConfigPage';
 import ThemePage from '../src/client/views/admin/ThemePage';
 import AdminLanding from '../src/client/views/admin/AdminLanding';
 import ChangePasswordPage from '../src/client/views/admin/ChangePasswordPage';
+import MainMenu from '../src/client/views/admin/MainMenu';
 import FrontMenu from '../src/client/reusables/FrontMenu';
 import DropdownMenu from '../src/client/reusables/DropdownMenu';
 import TablePaginator from '../src/client/reusables/TablePaginator';
@@ -486,6 +487,25 @@ describe('Admin Landing', function() {
     let wrapper = renderWithDom(<AdminLanding />, { user: { username: 'my_user' } });
     expect(wrapper.find('h1')).to.have.lengthOf(1);
     expect(wrapper.find('h1').text()).to.deep.equal('Welcome, my_user.');
+    wrapper.detach();
+    done();
+  });
+});
+
+describe('Main Menu', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<MainMenu />, { user: { username: 'my_user' } });
+    expect(wrapper.find('ul')).to.have.lengthOf(4);
+    wrapper.detach();
+    done();
+  });
+
+  it('displays as intended with types', function(done) {
+    let wrapper = renderWithDom(<MainMenu />, { user: { username: 'my_user' }, types: [{
+      docTypeId: 0,
+      docTypeName: 'posts'
+    }]});
+    expect(wrapper.find('ul')).to.have.lengthOf(4);
     wrapper.detach();
     done();
   });

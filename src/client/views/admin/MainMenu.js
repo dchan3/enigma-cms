@@ -11,25 +11,25 @@ export default function MainMenu() {
     text: 'Theme Settings' }, { url: '/admin/register-type',
     text: 'Register Document Type' }, {
     url: '', text: 'Edit Document Type...', childNodes:
-      types.map(({ docTypeId, docTypeName }) => {
+      types && types.map(({ docTypeId, docTypeName }) => {
         return { url: `/admin/edit-type/${docTypeId}`, text: docTypeName };
-      })
+      }) || []
   });
 
   menuNodes.push({ url: '', text: 'New...', childNodes:
-    types.map(({ docTypeId, docTypeName }) => {
+    types && types.map(({ docTypeId, docTypeName }) => {
       return { url: `/admin/new/${docTypeId}`, text: docTypeName };
-    })
+    }) || []
   },
   { url: '', text: 'Edit Existing...', childNodes:
-    types.map(({ docTypeId, docTypeName }) => {
+    types && types.map(({ docTypeId, docTypeName }) => {
       return { url: `/admin/edit/${docTypeId}`, text: docTypeName };
-    })
+    }) || []
   },
   { url: '', text: 'Edit Display Template For...', childNodes:
-    types.map(({ docTypeId, docTypeName }) => {
+    types && types.map(({ docTypeId, docTypeName }) => {
       return { url: `/admin/edit-template/${docTypeId}`, text: docTypeName };
-    })
+    }) || []
   }, {
     url: '/admin/file-mgmt', text: 'Manage Files'
   }, {
