@@ -12,6 +12,7 @@ import { default as formGenUtils } from '../src/client/utils/form_from_obj';
 import formComps from '../src/client/reusables/formComps';
 import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx, { createHtmlTree } from '../src/client/utils/html_to_jsx';
+import InnerHtmlRenderer from '../src/client/utils/inner_html_renderer';
 import fromCss, { FromCssContextProvider } from '../src/client/contexts/FromCssContext';
 import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
@@ -465,14 +466,26 @@ describe('Config Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<ConfigPage />, { user: { username: 'my_user', config: { } }});
     expect(wrapper.find('input')).to.have.lengthOf(8);
+    wrapper.detach();
     done();
   });
 });
 
-describe('Config Page', function() {
+describe('Theme Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<ThemePage />, { theme: null });
     expect(wrapper.find('textarea')).to.have.lengthOf(4);
+    wrapper.detach();
+    done();
+  });
+});
+
+describe('Inner HTML Renderer', function() {
+  it('displays as intended', function(done) {
+    let wrapper = renderWithDom(<InnerHtmlRenderer innerHtml='<p>Dude.</p><a href="youtube.com">Here.</a>' />, { theme: null });
+    expect(wrapper.find('p')).to.have.lengthOf(1);
+    expect(wrapper.find('a')).to.have.lengthOf(1);
+    wrapper.detach();
     done();
   });
 });
