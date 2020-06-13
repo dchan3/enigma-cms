@@ -3,15 +3,13 @@ import { useState } from 'preact/hooks';
 
 /** @jsx h **/
 
-let initialState = staticContext => staticContext;
-const StaticContext = createContext(initialState);
+const StaticContext = createContext();
 
 export default StaticContext;
 
 const { Provider } = StaticContext;
 export const StaticContextProvider = ({ children, initialVals }) => {
-  let iState = Object.assign({}, initialState(initialVals)),
-    [staticContext, setStaticContext] = useState(iState);
+  let [staticContext, setStaticContext] = useState(initialVals);
 
   return <Provider value={{
     staticContext, setStaticContext }}>{children}</Provider>;

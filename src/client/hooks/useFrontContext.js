@@ -7,11 +7,11 @@ import { loget } from '../../lib/utils/lofuncs';
 export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
   initial }) {
   let { match } = useTheRouterContext(),
-    { dataObj } = useStaticContext(['dataObj']);
+    { dataObj } = useStaticContext();
 
   if (dataObj && match) {
     let d = 0, { params } = match;
-    if (params && params.length) {
+    if (params && Object.keys(params).length) {
       while (d < dataParams.length && dataObj) {
         var dt = loget(dataObj, dataParams[d]), ut =
             loget(params, urlParams[d]);
@@ -44,5 +44,6 @@ export default function useFrontContext({ dataParams, urlParams, apiUrl, cb,
     else if (initial) setState(initial);
   }, match && match.params && Object.values(match.params) || []);
 
-  return { state, setState, apiUrl: match && match.params && apiUrl(match.params) && null };
+  return { state, setState,
+    apiUrl: match && match.params && apiUrl(match.params) && null };
 }

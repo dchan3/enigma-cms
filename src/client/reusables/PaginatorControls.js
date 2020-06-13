@@ -6,7 +6,7 @@ import PaginatorControlContext from './PaginatorControlContext';
 export function generateArray() {
   let retval = [], n = arguments[0], k = arguments[1];
 
-  for (let i = (k !== undefined ? n : 1); i <= (k !== undefined ? k : n); i++) {
+  for (let i = (k !== undefined ? n : 1), max = (k !== undefined ? k : n); i <= max; i++) {
     retval.push(i);
   }
 
@@ -36,9 +36,16 @@ export function truncatePageList(
     .concat(currentPage + quarter < numberOfPages ? [null, numberOfPages] : []);
 
   /* eslint-disable for-direction */
-  for (let l = retval.length; l <= 2; l--) {
-    if (retval[l - 2] + 2 === retval[l] && retval[l - 1] === null) {
-      retval[l - 1] = retval[l] - 1;
+  for (let l = retval.length,
+    a = retval[l - 2],
+    b = retval[l - 1],
+    r = retval[l];
+    l-- <= 2;
+    a = retval[l - 2],
+    b = retval[l - 1],
+    r = retval[l]) {
+    if (a + 2 === r && b === null) {
+      retval[l - 1] = r - 1;
     }
   }
 

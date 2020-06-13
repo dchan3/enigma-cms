@@ -60,9 +60,9 @@ module.exports = [{
           plugins: process.env.DEV_MODE ? [['./babel/from-css-ify', {
             toFile: path.resolve(__dirname, 'public/app.style.css')
           }]] :
-            ['@babel/plugin-transform-react-jsx', './babel/rightify', [['./babel/from-css-ify', {
+            ['@babel/plugin-transform-react-jsx', './babel/rightify', ['./babel/from-css-ify', {
               toFile: path.resolve(__dirname, 'public/app.style.css')
-            }]], './babel/hashify', './babel/unconcatify', './babel/common-strings']
+            }], './babel/hashify', './babel/unconcatify', './babel/common-strings']
         }
       },
       {
