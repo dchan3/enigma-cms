@@ -50,7 +50,13 @@ global.requestAnimationFrame = () => {};
 global.cancelAnimationFrame = () => {};
 
 let renderFromCss = function(children, par = { attachTo: document.body }) {
-  return mount(<FromCssContextProvider>{children}</FromCssContextProvider>, par);
+  return mount(<FromCssContextProvider>
+      <StaticContextProvider initialVals={{
+      config: {
+        themeColor: 'blue'
+      }
+    }}>{children}</StaticContextProvider>
+    </FromCssContextProvider>, par);
 }
 
 let mountRenderForm = function(title, params, currentValue = null) {
@@ -442,7 +448,7 @@ let renderWithDom = function(component, staticVal = null, par) {
 
 describe('Change Password Page', function() {
   it('displays as intended', function(done) {
-    let wrapper = renderWithDom(<ChangePasswordPage />, { user: { username: 'my_user'}});
+    let wrapper = renderWithDom(<ChangePasswordPage />, { config: { themeColor: 'blue' }, user: { username: 'my_user'}});
     expect(wrapper.find('input[type="password"]')).to.have.lengthOf(2);
     done();
   });
@@ -450,14 +456,14 @@ describe('Change Password Page', function() {
 
 describe('Footer', function() {
   it('when user exists', function(done) {
-    let wrapper = renderWithDom(<Footer />, { user: { username: 'my_user' }});
+    let wrapper = renderWithDom(<Footer />, { config: { themeColor: 'blue' }, user: { username: 'my_user' }});
     expect(wrapper.find('a')).to.have.lengthOf(5);
     wrapper.detach();
     done();
   });
 
   it('when user does not exist', function(done) {
-    let wrapper = renderWithDom(<Footer />, { user: null });;
+    let wrapper = renderWithDom(<Footer />, { config: { themeColor: 'blue' }, user: null });;
     expect(wrapper.find('a')).to.have.lengthOf(3);
     wrapper.detach();
     done();
@@ -466,7 +472,7 @@ describe('Footer', function() {
 
 describe('Config Page', function() {
   it('displays as intended', function(done) {
-    let wrapper = renderWithDom(<ConfigPage />, { user: { username: 'my_user', config: { } }});
+    let wrapper = renderWithDom(<ConfigPage />, { config: { themeColor: 'blue' }, user: { username: 'my_user', config: { } }});
     expect(wrapper.find('input')).to.have.lengthOf(8);
     wrapper.detach();
     done();
@@ -475,7 +481,7 @@ describe('Config Page', function() {
 
 describe('Theme Page', function() {
   it('displays as intended', function(done) {
-    let wrapper = renderWithDom(<ThemePage />, { theme: null });
+    let wrapper = renderWithDom(<ThemePage />, { config: { themeColor: 'blue' }, theme: null });
     expect(wrapper.find('textarea')).to.have.lengthOf(4);
     wrapper.detach();
     done();
@@ -484,7 +490,7 @@ describe('Theme Page', function() {
 
 describe('Admin Landing', function() {
   it('displays as intended', function(done) {
-    let wrapper = renderWithDom(<AdminLanding />, { user: { username: 'my_user' } });
+    let wrapper = renderWithDom(<AdminLanding />, { config: { themeColor: 'blue' }, user: { username: 'my_user' } });
     expect(wrapper.find('h1')).to.have.lengthOf(1);
     expect(wrapper.find('h1').text()).to.deep.equal('Welcome, my_user.');
     wrapper.detach();
@@ -494,14 +500,14 @@ describe('Admin Landing', function() {
 
 describe('Main Menu', function() {
   it('displays as intended', function(done) {
-    let wrapper = renderWithDom(<MainMenu />, { user: { username: 'my_user' } });
+    let wrapper = renderWithDom(<MainMenu />, { config: { themeColor: 'blue' }, user: { username: 'my_user' } });
     expect(wrapper.find('ul')).to.have.lengthOf(4);
     wrapper.detach();
     done();
   });
 
   it('displays as intended with types', function(done) {
-    let wrapper = renderWithDom(<MainMenu />, { user: { username: 'my_user' }, types: [{
+    let wrapper = renderWithDom(<MainMenu />, { config: { themeColor: 'blue' }, user: { username: 'my_user' }, types: [{
       docTypeId: 0,
       docTypeName: 'posts'
     }]});
@@ -513,7 +519,8 @@ describe('Main Menu', function() {
 
 describe('Inner HTML Renderer', function() {
   it('displays as intended', function(done) {
-    let wrapper = renderWithDom(<InnerHtmlRenderer innerHtml='<p>Dude.</p><a href="youtube.com">Here.</a>' />, { theme: null });
+    let wrapper = renderWithDom(<InnerHtmlRenderer innerHtml='<p>Dude.</p><a href="youtube.com">Here.</a>' />,
+      { config: { themeColor: 'blue' },  theme: null });
     expect(wrapper.find('p')).to.have.lengthOf(1);
     expect(wrapper.find('a')).to.have.lengthOf(1);
     wrapper.detach();
@@ -537,7 +544,7 @@ describe('Front Menu', function() {
     let menuLinks = [{ linkUrl: '/', linkText: 'Home' },
       { linkUrl: '/sitemap.html', linkText: 'Sitemap' }];
 
-    let wrapper = renderWithDom(<FrontMenu menuLinks={menuLinks} />, { });
+    let wrapper = renderWithDom(<FrontMenu menuLinks={menuLinks} />, { config: { themeColor: 'blue' } });
     expect(wrapper.find('li')).to.have.lengthOf(2);
     wrapper.detach();
     done();
@@ -552,7 +559,7 @@ describe('Dropdown Menu', function() {
       }]
     }];
 
-    let wrapper = renderWithDom(<DropdownMenu menuNodes={menuNodes} />, { });
+    let wrapper = renderWithDom(<DropdownMenu menuNodes={menuNodes} />, { config: { themeColor: 'blue' } });
     expect(wrapper.find('ul')).to.have.lengthOf(2);
     expect(wrapper.find('li')).to.have.lengthOf(3);
     wrapper.detach();
@@ -563,7 +570,7 @@ describe('Dropdown Menu', function() {
 describe('Login Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<LoginPage />,
-      { config: { siteName: 'My Website '}});
+      { config: { siteName: 'My Website', themeColor: 'blue' }});
     expect(wrapper.find('a')).to.have.lengthOf(1);
     wrapper.detach();
     done();
@@ -573,7 +580,7 @@ describe('Login Page', function() {
 describe('Signup Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<SignupPage />,
-      { config: { siteName: 'My Website '}});
+      { config: { siteName: 'My Website', themeColor: 'blue' }});
     expect(wrapper.find('a')).to.have.lengthOf(1);
     wrapper.detach();
     done();
@@ -1402,7 +1409,7 @@ describe('Paginator Controls', function() {
   it('table paginator search and sort', function(done) {
     let columns = [{ headerText: 'Name', display: (n) => n }],
       items = ['John', 'Jane', 'Bob', 'Ann']
-    let wrapper = renderWithDom(<TablePaginator columns={columns} items={items} />);
+    let wrapper = renderWithDom(<TablePaginator columns={columns} items={items} />, { config: { themeColor: 'blue' } });
     expect(wrapper.find('table')).to.have.lengthOf(1);
     expect(wrapper.find('table tr')).to.have.lengthOf(5);
     expect(wrapper.find('input')).to.have.lengthOf(1);
