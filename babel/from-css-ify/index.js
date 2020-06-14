@@ -27,9 +27,19 @@ module.exports = function () {
       retval.alternate += `${attr}${ifFalse}`;
       return retval;
     }, getCssFromBinaryExp = function({ left, right }, str = '') {
-      if (left.type === 'StringLiteral' && right.type === 'TemplateLiteral' &&
-        right.expressions[0].type === 'ConditionalExpression') {
-        return getCssFromTemplateIfTernary(right, left.value);
+      if (left.type === 'StringLiteral' && right.type === 'TemplateLiteral') {
+        if (right.expressions[0].type === 'ConditionalExpression') {
+          if (right.expressions[0].consequent === 'StringLiteral' &&
+            right.expressions[0].alternate === 'Identifier') {
+            return left.value;
+          }
+          else {
+            return getCssFromTemplateIfTernary(right, left.value);
+          }
+        }
+        else if (right.expressions[0].type === 'Identifier') {
+          return left.value;
+        }
       }
       else if (left.type === 'StringLiteral' &&
         right.type === 'BinaryExpression') {

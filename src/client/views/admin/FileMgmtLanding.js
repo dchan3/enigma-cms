@@ -7,7 +7,7 @@ import { getRequest } from '../../utils/api_request_async';
 import { default as syncReqs } from '../../utils/api_request_sync';
 
 export default function FileMgmtLanding() {
-  let { files } = useStaticContext(['files']);
+  let { files, config: { themeColor } } = useStaticContext();
 
   function handleDeleteClick() {
     return function(url) {
@@ -35,7 +35,7 @@ export default function FileMgmtLanding() {
   return [
     <TextHeader>Manage Files</TextHeader>,
     <SamePageAnchor href='/admin/upload-file'>Upload File</SamePageAnchor>,
-    stateFiles.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
+    stateFiles.length ? <TablePaginator perPage={10} activeTabColor={themeColor}
       items={stateFiles} truncate={true} columns={[
         {
           headerText: 'File Name',

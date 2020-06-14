@@ -5,6 +5,7 @@ import { TheRedirect } from '../../the_router';
 import useFrontContext from '../../hooks/useFrontContext';
 import { default as syncReqs } from '../../utils/api_request_sync';
 import fromCss from '../../contexts/FromCssContext';
+import useStaticContext from '../../hooks/useStaticContext';
 
 let TableText = fromCss('p', 'text-align:center;font-family:sans-serif;');
 
@@ -21,7 +22,7 @@ export default function EditDocumentLanding() {
       apiUrl: function({ docType }) {
         return `documents/get_documents/${docType}`;
       }
-    }), { dataObj } = state;
+    }), { dataObj } = state, { config: { themeColor } } = useStaticContext();
 
   if (dataObj === undefined) return <TheRedirect to='/admin' />;
   else if (dataObj) {
@@ -30,7 +31,7 @@ export default function EditDocumentLanding() {
     if (docType && documents && documents.length) {
       let { docTypeName, docTypeNamePlural, attributes } = docType;
       return [<TextHeader>{`Edit ${docTypeName}`}</TextHeader>,
-        <TablePaginator perPage={10} activeTabColor="cadetblue"
+        <TablePaginator perPage={10} activeTabColor={themeColor}
           items={documents} truncate={true} columns={[attributes.map(({
             attrName }) => ({
             headerText: attrName,

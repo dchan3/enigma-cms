@@ -1,6 +1,7 @@
 import { h } from 'preact'; /** @jsx h **/
 import { useContext } from 'preact/hooks';
 import GeneratedFormContext, { GeneratedFormContextProvider } from './GeneratedFormContext';
+import useStaticContext from '../hooks/useStaticContext';
 import { loget, loset } from '../../lib/utils/lofuncs';
 import { getRequest, postRequest } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
@@ -10,8 +11,9 @@ import { default as comps, FormContainer, FormHeader, FormErrorMessage,
 
 function GeneratedFormContents() {
   let { state, setState, params, parentCallback, method, formAction,
-    successCallback, redirectUrl, title, fileContent
-  } = useContext(GeneratedFormContext);
+      successCallback, redirectUrl, title, fileContent
+    } = useContext(GeneratedFormContext), { config: { themeColor } }
+    = useStaticContext();
 
   function readFile(file) {
     let rdr = new FileReader();
@@ -106,7 +108,8 @@ function GeneratedFormContents() {
     <FormHeader>{title}</FormHeader>
     {state.errorMessage ?
       <FormErrorMessage>{state.errorMessage}</FormErrorMessage> : null}
-    <FormBackground noValidate={true} onSubmit={(e) => e.preventDefault()}>
+    <FormBackground noValidate={true} onSubmit={(e) => e.preventDefault()}
+      bgColor={themeColor}>
       {formGenUtils.formFromObj(
         params, state.values, null, state.invalidFields).map(
         function(node) {

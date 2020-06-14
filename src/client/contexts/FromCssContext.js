@@ -34,7 +34,7 @@ function styleFromPseudoObj(obj, props) {
   };
 }
 
-export default function fromCss(Element, style) {
+export default function fromCss(Element, style, useFirstNCharacters) {
   return function({ children, ...rest }) {
     let { numComponents, ref, setNum } = useContext(FromCssContext);
 
@@ -42,8 +42,11 @@ export default function fromCss(Element, style) {
       styleFromPseudoObj(style, rest) :
       (typeof style === 'function' ? style(rest) : style);
 
-    let className = `fc-${hashifyName(`fc ${
-      (typeof actualStyle === 'function' ? actualStyle('fc') : actualStyle)}`)}`;
+    let hashable = (typeof actualStyle === 'function' ?
+      actualStyle('fc') : actualStyle);
+    if (useFirstNCharacters) hashable = actualStyle.substring(0, useFirstNCharacters);
+
+    let className = `fc-${hashifyName(`fc ${hashable}`)}`;
 
     useEffect(function() {
       setNum(numComponents + 1);

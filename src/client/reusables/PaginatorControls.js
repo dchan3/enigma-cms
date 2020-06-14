@@ -2,6 +2,7 @@ import { h, createElement } from 'preact'; /** @jsx h **/
 import { useContext } from 'preact/hooks';
 import fromCss from '../contexts/FromCssContext';
 import PaginatorControlContext from './PaginatorControlContext';
+import useStaticContext from '../hooks/useStaticContext';
 
 export function generateArray() {
   let retval = [], n = arguments[0], k = arguments[1];
@@ -64,13 +65,20 @@ export function truncatePageList(
 
 const PaginatorContainer = fromCss('div',
     'clear:both;width:100%;margin:0px auto;'),
-  PaginatorButton = fromCss('li', ({ isActive }) =>
+  PaginatorColoredButton = fromCss('li', ({ isActive, bgColor }) =>
     'text-align:center;border:thin grey solid;padding:5px;width:35px;height:35px;display:inline-block;font-size:1.15em;color:white;' +
-  `background-color:${isActive ? 'black' : 'cadetblue'};`,
-  ['isActive', 'activeTabColor']),
+  `background-color:${isActive ? 'black' : bgColor };`, 126),
   PaginatorList = fromCss('ul', 'list-style:none;padding-left:0px;display:inline;'),
   PaginatorNumber = fromCss('a', 'color:inherit;font-size:inherit;');
+
 export default function PaginatorControls() {
+  let { config: { themeColor } } = useStaticContext();
+
+  let PaginatorButton = function({ onClick, children }) {
+    return <PaginatorColoredButton bgColor={themeColor} onClick={onClick}>{children}
+    </PaginatorColoredButton>
+  }
+
   let { state, dispatch } = useContext(PaginatorControlContext),
     { maxPages, maxPageTabs, currentPage, truncate, activeTabColor, pages,
       columns, className, updateDisplay } =

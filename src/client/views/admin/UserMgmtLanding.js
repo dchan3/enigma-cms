@@ -3,6 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { TextHeader, SamePageAnchor, TablePaginator, ProfileImage } from
   '../../reusables/back_exports';
 import { getRequest } from '../../utils/api_request_async';
+import useStaticContext from '../../hooks/useStaticContext';
 
 export default function UserMgmtLanding() {
   let [state, setState] = useState({
@@ -15,11 +16,11 @@ export default function UserMgmtLanding() {
     });
   }, []);
 
-  let { users } = state;
+  let { users } = state, { config: { themeColor } } = useStaticContext();
 
   return [
     <TextHeader>Manage Users</TextHeader>,
-    users.length ? <TablePaginator perPage={10} activeTabColor="cadetblue"
+    users.length ? <TablePaginator perPage={10} activeTabColor={themeColor}
       items={users} truncate={true} columns={[
         {
           headerText: 'Picture',
