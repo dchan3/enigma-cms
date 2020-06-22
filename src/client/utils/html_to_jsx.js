@@ -19,6 +19,12 @@ function domTreeToJsx(tree, rpl) {
           if (name === 'style') {
             attrMap[name] = styleObject(value);
           }
+          else if (name === 'class') {
+            attrMap['className'] = value;
+          }
+          else if (name === 'for') {
+            attrMap['htmlFor'] = value;
+          }
           else attrMap[name] = value;
         }
       }
