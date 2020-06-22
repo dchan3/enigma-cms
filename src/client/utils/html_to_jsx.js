@@ -1,6 +1,16 @@
 import { createElement } from 'preact';
 import styleObject from './style_object';
 
+let attrNameMap = new Proxy({
+  'class': 'className',
+  'for': 'htmlFor'
+}, {
+  get(target, property) {
+    if (property in target) return target[property];
+    else return property;
+  }
+});
+
 function domTree(html) {
   let parser = new DOMParser(), doc = parser.parseFromString(html, 'text/html');
   return doc.body.children;
@@ -19,13 +29,9 @@ function domTreeToJsx(tree, rpl) {
           if (name === 'style') {
             attrMap[name] = styleObject(value);
           }
-          else if (name === 'class') {
-            attrMap['className'] = value;
+          else {
+            attrMap[attrNameMap[name]] = value;
           }
-          else if (name === 'for') {
-            attrMap['htmlFor'] = value;
-          }
-          else attrMap[name] = value;
         }
       }
       let theNodeName = rpl && rpl[curr.tagName.toLowerCase()] ||
