@@ -1,9 +1,12 @@
 export const loget = function(obj, keyString) {
-  var keys = keyString.split('.'), temp = Object.assign({}, obj);
-  for (var k = 0; k < keys.length && temp !== undefined; k++) {
-    temp = temp[keys[k]];
+  var keys = keyString.split('.');
+
+  if (keys.length <= 1) {
+    return obj[keyString];
   }
-  return temp;
+  else {
+    return loget(obj[keys[0]], keyString.substring(keyString.indexOf('.') + 1));
+  }
 };
 
 export const loset = function(obj, keyString, val) {

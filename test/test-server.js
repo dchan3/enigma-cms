@@ -3,6 +3,7 @@ import { default as createReverseIndex }
   from '../src/server/utils/create_reverse_index';
 import TemplateParser from '../src/server/utils/template_parser';
 import { prepareDocumentsForRender } from '../src/server/utils/render_markup';
+import { documentMetadataSync, profileMetadataSync } from '../src/server/utils/render_metadata';
 
 describe('Reverse Index function', function() {
   it ('works as desired 1', function(done) {
@@ -66,6 +67,37 @@ describe('document prep', function() {
       createdAt: theDate,
       editedAt: theDate
     }])
+    done();
+  });
+
+  it('document metadata', function(done) {
+    let content = {
+      name: 'The Movie',
+      synopsis: 'This movie is great. I love it. 10 / 5 stars!',
+      tags: 'why,are,you,reading,these,tags'
+    }, rendered = documentMetadataSync(content);
+
+    expect(rendered).to.deep.equal({
+      title: 'The Movie',
+      description: 'This movie is great. I love it. 10 / 5 stars!',
+      image: '',
+      keywords: 'why,are,you,reading,these,tags'
+    });
+    done();
+  });
+
+  it('profile metadata', function(done) {
+    expect(profileMetadataSync()).to.equal(null);
+
+    expect(profileMetadataSync({
+      displayName: 'New User',
+      username: 'testUser1',
+      pictureSrc: 'testuser.jpg'
+    })).to.deep.equal({
+      title: "New User's Profile",
+      description: "New User's Profile.",
+      image: 'testuser.jpg'
+    });
     done();
   });
 });

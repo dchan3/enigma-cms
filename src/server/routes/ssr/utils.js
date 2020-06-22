@@ -77,7 +77,7 @@ export function ssrGen(htmlTemplate) {
         Promise.resolve();
     promise.then(data => {
       if (data) context.dataObj = data;
-      let { meta, value, headTitle } = generateMeta(data && data.metadata || config);
+      let { meta, value, headTitle } = generateMeta(data ? data.metadata : config);
       let markup = renderToString(<GenerateStaticJsx {...{ value, location, initialVals: { ...context, user }, component }}/>);
 
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' } );
