@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { h } from 'preact'; /** @jsx h **/
-import { expect } from 'chai';
+import chai, { expect } from 'chai';
 import Enzyme, { render, shallow, mount } from 'enzyme';
 import { act } from 'preact/test-utils';
 import Adapter from 'enzyme-adapter-preact-pure';
@@ -36,9 +36,11 @@ import DropdownMenu from '../src/client/reusables/DropdownMenu';
 import TablePaginator from '../src/client/reusables/TablePaginator';
 import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
 import { TheBrowserRouter, TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
-const { JSDOM } = require('jsdom');
+import chaiExclude from 'chai-exclude';
 
-const jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
+chai.use(chaiExclude);
+
+const { JSDOM } = require('jsdom'), jsdom = new JSDOM('<!doctype html><html><body></body></html>', {
   pretendToBeVisible: true
 });
 const { window } = jsdom;
@@ -48,6 +50,7 @@ global.document = window.document;
 global.history = window.history;
 global.requestAnimationFrame = () => {};
 global.cancelAnimationFrame = () => {};
+global.DOMParser = window.DOMParser;
 
 let renderFromCss = function(children, par = { attachTo: document.body }) {
   return mount(<FromCssContextProvider>
@@ -983,7 +986,7 @@ describe('HTML to JSX', function() {
       expected = [{ node: 'tag', name: 'img', attributes: [
         { name: 'src', value: '"trolol.jpeg"' }
       ] }];
-    expect(actual).to.deep.equal(expected);
+    expect(actual).excluding(['key', 'ref']).to.deep.equal(expected);
     done();
   });
 
@@ -1000,7 +1003,7 @@ describe('HTML to JSX', function() {
         { name: 'name', value: '"keywords"' },
         { name: 'content', value: '"cheese,milk"' }
       ] }];
-    expect(actual).to.deep.equal(expected);
+    expect(actual).excludingEvery(['key', 'ref']).to.deep.equal(expected);
     done();
   });
 
@@ -1274,7 +1277,7 @@ describe('HTML to JSX', function() {
             {'export default SamePageAnchor;'}</code>
         </div>,
         <p>Now you should be good to go. Make sure that wherever in your code used, it has access to a <code>GeneralContext</code>.</p>];
-    expect(actual).to.deep.equal(expected);
+    expect(actual).excludingEvery(['key', 'ref']).to.deep.equal(expected);
     done();
   })
 });

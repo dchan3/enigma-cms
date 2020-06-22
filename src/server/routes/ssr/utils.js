@@ -14,6 +14,18 @@ import backEndRoutes from '../../../lib/routes/route_data';
 import serialize from 'serialize-javascript';
 import fs from 'fs';
 import path from 'path';
+import { JSDOM } from 'jsdom';
+
+const { window } = new JSDOM('<!doctype html><html><body></body></html>', {
+  pretendToBeVisible: true
+});
+
+global.window = window;
+global.document = window.document;
+global.history = window.history;
+global.requestAnimationFrame = () => {};
+global.cancelAnimationFrame = () => {};
+global.DOMParser = window.DOMParser;
 
 function makeMeta(type, attr, content) {
   return `<meta ${type}="${attr}" content="${content}"/>`;
