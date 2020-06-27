@@ -108,7 +108,7 @@ export function staticScript(data, attrs) {
 
 export function adSenseScript(pubId) {
   return `<script data-ad-client="ca-pub-${
-    pubId} async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>`
+    pubId}" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>`
 }
 
 export function gaUrl(gaTrackingId) {
