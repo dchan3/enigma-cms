@@ -88,7 +88,7 @@ SiteConfigSchema.post('save', function() {
   var {
     siteName, description, aboutBody, gaTrackingId, language,
     keywords, iconUrl, profileTemplate, menuLinks, stylesheet,
-    shortcodes, themeColor
+    shortcodes, themeColor, adSenseId
   } = this;
 
   if (!fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'site-files'))) {
@@ -98,7 +98,7 @@ SiteConfigSchema.post('save', function() {
   fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, 'site-files/config.enigma'), JSON.stringify({
     siteName, description, aboutBody, gaTrackingId, language,
     keywords, iconUrl, profileTemplate, menuLinks, themeColor,
-    stylesheet
+    stylesheet, adSenseId
   }));
 
   if (!fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'public'))) {

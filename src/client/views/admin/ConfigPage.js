@@ -43,6 +43,10 @@ export default function ConfigPage() {
       },
       themeColor: {
         type: 'color'
+      },
+      adSenseId: {
+        type: 'text',
+        label: 'Adsense ID'
       }
     }} redirectUrl='/admin' formAction='site_config/update' />
 }
