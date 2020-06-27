@@ -73,6 +73,10 @@ const SiteConfigSchema = new Schema({
   themeColor: {
     type: String,
     default: 'cadetblue'
+  },
+  adSenseId: {
+    type: String,
+    required: false
   }
 });
 

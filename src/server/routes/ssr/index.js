@@ -1,10 +1,12 @@
 import { h } from 'preact'; /** @jsx h **/
-import { ssrGen, renderHead, gaScript, gaUrl, staticScript } from './utils';
+import { ssrGen, renderHead, gaScript, gaUrl, staticScript, adSenseScript } from './utils';
 
 var htmlTemplate =
-  ({ language, gaTrackingId, themeColor },
+  ({ language, gaTrackingId, themeColor, adSenseId },
     head, dom, data, back, style) => `<!DOCTYPE html>
-<html lang="${language}"><head>
+<html lang="${language}">
+  <head>
+  ${adSenseId ? adSenseScript(adSenseId) : ''}
   <style data-fc>${style}</style>
 ${(gaTrackingId && !back) ?
     `<script async src="${gaUrl(gaTrackingId)}">
