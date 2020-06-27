@@ -4,6 +4,7 @@ import { default as createReverseIndex }
 import TemplateParser from '../src/server/utils/template_parser';
 import { prepareDocumentsForRender } from '../src/server/utils/render_markup';
 import { documentMetadataSync, profileMetadataSync } from '../src/server/utils/render_metadata';
+import { gaScript, staticScript, adSenseScript } from '../src/server/routes/ssr/utils';
 
 describe('Reverse Index function', function() {
   it ('works as desired 1', function(done) {
@@ -21,6 +22,17 @@ describe('Reverse Index function', function() {
   });
 });
 
+describe('script tag functions', function() {
+  it ('analytics script', function(done) {
+    expect(gaScript('12345')).to.deep.equal(`<script>
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config','12345');
+</script>`)
+    done();
+  });
+});
 
 describe('Template parser', function() {
   it('basics', function(done) {

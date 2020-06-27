@@ -476,7 +476,7 @@ describe('Footer', function() {
 describe('Config Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<ConfigPage />, { config: { themeColor: 'blue' }, user: { username: 'my_user', config: { } }});
-    expect(wrapper.find('input')).to.have.lengthOf(8);
+    expect(wrapper.find('input')).to.have.lengthOf(9);
     wrapper.detach();
     done();
   });

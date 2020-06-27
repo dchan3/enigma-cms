@@ -93,11 +93,11 @@ export function renderHead({ title, meta, link }) {
 
 export function gaScript(gaTrackingId, attrs) {
   return `<script${attrs ? (` ${attrs}`) : ''}>
-    window.dataLayer=window.dataLayer||[];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js',new Date());
-    gtag('config','${gaTrackingId}');
-  </script>`;
+  window.dataLayer=window.dataLayer||[];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js',new Date());
+  gtag('config','${gaTrackingId}');
+</script>`;
 }
 
 export function staticScript(data, attrs) {
