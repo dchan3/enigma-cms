@@ -34,7 +34,7 @@ describe('script tag functions', function() {
   });
 
   it('AdSense script', function(done) {
-    expect(adSenseScript('12345')).to.deep.eqaul('<script data-ad-client="ca-pub-12345" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>')
+    expect(adSenseScript('12345')).to.deep.equal('<script data-ad-client="ca-pub-12345" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>')
   });
 });
 
