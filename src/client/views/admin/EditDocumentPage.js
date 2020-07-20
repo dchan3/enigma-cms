@@ -31,7 +31,7 @@ export default function EditDocumentPage() {
       }) => {
         params[attrName] = {
           label: attrName,
-          type: repeatable ? `[${attrType}]` : attrType
+          type: (repeatable && repeatable === true) ? `[${attrType}]` : attrType
         };
 
         if (grammar) {

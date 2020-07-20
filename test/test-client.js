@@ -34,6 +34,7 @@ import MainMenu from '../src/client/views/admin/MainMenu';
 import FrontMenu from '../src/client/reusables/FrontMenu';
 import DropdownMenu from '../src/client/reusables/DropdownMenu';
 import TablePaginator from '../src/client/reusables/TablePaginator';
+import NotFound from '../src/client/views/front/NotFound';
 import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
 import { TheBrowserRouter, TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
 import chaiExclude from 'chai-exclude';
@@ -1255,6 +1256,15 @@ describe('Routing Related', function() {
     wrapper.update();
     expect(wrapper.find('a')).to.have.lengthOf(1);
     wrapper.detach();
+    done();
+  });
+
+  it('not found page', function(done) {
+    let wrapper = mount(<NotFound/>);
+    expect(wrapper.find('h1')).to.have.lengthOf(1);
+    expect(wrapper.find('h1').text()).to.deep.equal('Not Found');
+    expect(wrapper.find('p')).to.have.lengthOf(1);
+    expect(wrapper.find('p').text()).to.deep.equal("We're sorry, but the page you requested could not be found.");
     done();
   });
 });
