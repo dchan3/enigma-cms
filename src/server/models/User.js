@@ -66,53 +66,47 @@ UserSchema.methods.comparePassword = function comparePassword(password) {
 };
 
 UserSchema.pre('save', async function saveHook(next) {
-  const user = this;
+  return await (async () => {
+    var profileTemplate = await SiteConfig.findOne({ }, 'profileTemplate', r => r).then(({ profileTemplate }) => profileTemplate);
 
-  var profileTemplate = await SiteConfig.findOne({ }, 'profileTemplate', r => r).then(({ profileTemplate }) => profileTemplate);
-
-  let r = await renderMarkup(profileTemplate, {
-    displayName: user.displayName,
-    bio: user.bio,
-    username: user.username,
-    email: user.email,
-    pictureSrc: user.pictureSrc
-  });
-
-  user.rendered = r;
-
-  if (!fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'profiles'))) {
-    fs.mkdirSync(path.join(process.env.DIRECTORY || __dirname, 'profiles'));
-  }
-
-  fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, `profiles/${user.username}.enigma`), JSON.stringify({
-    rendered: user.rendered,
-    metadata: {
-      title: `${user.username}'s Profile`,
-      image: user.pictureSrc,
-      description: `Profile of ${user.username}`
-    },
-    username: user.username
-  }));
-
-
-  // proceed further only if the password is modified or the user is new
-  if (!user.isModified('password')) {
-    if (next && typeof next === 'function') return next();
-  }
-
-  return genSalt((saltError, salt) => {
-    if (saltError) { return next(saltError); }
-
-    return hash(user.password, salt, (hashError, hash) => {
-      if (hashError) { return next(hashError); }
-
-      // replace a password string with hash value
-      user.password = hash;
-
-      if (next && typeof next === 'function') return next();
-      return;
+    let r = await renderMarkup(profileTemplate, {
+      displayName: this.displayName,
+      bio: this.bio,
+      username: this.username,
+      email: this.email,
+      pictureSrc: this.pictureSrc
     });
-  });
+
+    this.rendered = r;
+
+    if (!fs.existsSync(path.join(process.env.DIRECTORY || __dirname, 'profiles'))) {
+      fs.mkdirSync(path.join(process.env.DIRECTORY || __dirname, 'profiles'));
+    }
+
+    fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, `profiles/${this.username}.enigma`), JSON.stringify({
+      rendered: this.rendered,
+      metadata: {
+        title: `${this.username}'s Profile`,
+        image: this.pictureSrc,
+        description: `Profile of ${this.username}`
+      },
+      username: this.username
+    }));
+
+
+    // proceed further only if the password is modified or the user is new
+    if (!this.isModified('password')) {
+      if (next && typeof next === 'function') return next();
+    }
+
+    try {
+      let salt = await genSalt();
+      this.password = await hash(this.password, salt);
+    }
+    catch(err) {
+      return next(err);
+    }
+  }).bind(this)();
 });
 
 UserSchema.plugin(autoIncrementPlugin,

@@ -40,7 +40,7 @@ router.get('/get_user_profile/:username',
 
 // POST Requests
 router.post('/register', verifyMiddleware, function(req, res, next) {
-  passport.authenticate('local-signup',  function(err, user) {
+  passport.authenticate('local-signup', function(err, user) {
     if (err) return next(err);
     if (!user) return next({ error: 'Invalid Credentials.' });
     req.logIn(user, function(er) {

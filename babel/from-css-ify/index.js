@@ -116,7 +116,7 @@ module.exports = function () {
             className = `fc-${hashifyName(`fc ${css}`)}`;
             styles[`.${className}`] = css;
           }
-          else {
+          else if (css) {
             if (Object.keys(css).includes('&')) {
               // First aggregate all selectors
               let mash = '';
