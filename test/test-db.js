@@ -15,7 +15,7 @@ let clearDB = function(done) {
 
 describe('DB and CRUD tests', function () {
   before(function (done) {
-    mongoose.connect(dbURI);
+    mongoose.connect(dbURI, {useNewUrlParser: true});
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error'));
     db.once('open', function() {

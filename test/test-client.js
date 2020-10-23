@@ -210,7 +210,7 @@ describe('Reusable UI Components - Code Editor', function() {
       id="post-body" value="<h1>Hello World!</h1>" />);
     expect(wrapper.find('textarea')).to.exist;
     act(function() {
-      wrapper.find('textarea').props().onChange({ target: { value: "<p>Lol.</p>"}});
+      wrapper.find('textarea').props().onInput({ target: { value: "<p>Lol.</p>"}});
     });
     wrapper.update();
     expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
@@ -297,7 +297,7 @@ it('preview box - with value edit code first not changing preview', function(don
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
   act(function() {
-    wrapper.find('textarea').at(0).props().onChange({
+    wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol.</p>' }
     });
     wrapper.find('button').at(0).props().onClick();
@@ -323,7 +323,7 @@ it('preview box - with value edit code first changing preview', function(done) {
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
   act(function() {
-    wrapper.find('textarea').at(0).props().onChange({
+    wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol.</p>' }
     });
     wrapper.find('button').at(0).props().onClick();
@@ -353,7 +353,7 @@ it('preview box - edit preview bold command 1', function(done) {
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('');
   act(function() {
-    wrapper.find('textarea').at(0).props().onChange({
+    wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol</p>' }
     });
     wrapper.find('button').at(0).props().onClick();
@@ -389,7 +389,7 @@ it('preview box - edit preview bold command 2', function(done) {
   expect(wrapper.find('textarea')).to.exist;
   expect(wrapper.find('textarea').props().value).to.deep.equal('');
   act(function() {
-    wrapper.find('textarea').at(0).props().onChange({
+    wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol</p>' }
     });
     wrapper.find('button').at(0).props().onClick();
