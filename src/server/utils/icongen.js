@@ -1,5 +1,4 @@
 import sha1 from 'sha1';
-import gm from 'gm';
 import { resolve } from 'path';
 import childProcess from 'child_process';
 
