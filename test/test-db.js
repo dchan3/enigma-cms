@@ -15,14 +15,11 @@ let clearDB = function(done) {
 
 describe('DB and CRUD tests', function () {
   before(function (done) {
-    mongoose.connect(dbURI, {useNewUrlParser: true});
-    const db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error'));
-    db.once('open', function() {
-        console.log('We are connected to test database!');
-        done();
-      });
+    mongoose.connect(dbURI, {useNewUrlParser: true}, function(e,c) {
+      if (!e && c) { console.log('We are connected to test database!'); done(); }
+      if (e) throw e;
     });
+  });
 
   describe('Site config', function() {
     it('site config creatable', function(done) {
