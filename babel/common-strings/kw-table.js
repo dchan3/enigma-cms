@@ -58,5 +58,9 @@ module.exports = {
   "Fragment": '塊',
   "defineProperty": '解',
   "getOwnPropertyDescriptor": '己',
-  "getOwnPropertySymbols": '代'
+  "getOwnPropertySymbols": '代',
+  'true': '真',
+  'false': '假',
+  'null': '零',
+  "UNDEFINED": '冇'
 }
