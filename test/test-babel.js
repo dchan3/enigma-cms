@@ -69,25 +69,61 @@ describe('Forify', function() {
       tests: [
       {
         code: 'function p(array) { array.forEach(parseInt); }',
-        output: 'function p(array) {\n  for (item of array) parseInt(item);\n}',
+        output: 'function p(array) {\n  for (let item of array) parseInt(item);\n}',
         snapshot: false,
         error: false
       },
       {
         code: 'array.forEach(console.log);',
-        output: 'for (item of array) console.log(item);',
+        output: 'for (let item of array) console.log(item);',
         snapshot: false,
         error: false
       },
       {
         code: 'array.forEach(function(i) { console.log(i); });',
-        output: 'for (i of array) {\n  console.log(i);\n}',
+        output: 'for (let i of array) {\n  console.log(i);\n}',
         snapshot: false,
         error: false
       },
       {
         code: 'array.forEach(function(i, n) { console.log(i, n); });',
-        output: 'for (n in array) {\n  if (n !== "length") {\n    let i = array[n];\n    console.log(i, n);\n  }\n}',
+        output: 'for (let n in array) {\n  if (n !== "length") {\n    let i = array[n];\n    console.log(i, n);\n  }\n}',
+        snapshot: false,
+        error: false
+      },
+      {
+          code: 'array.forEach(function({ i }) { console.log(i); });',
+          output: 'for (let { i } of array) {\n  console.log(i);\n}',
+          snapshot: false,
+          error: false
+      },
+      {
+        code: 'array.forEach(function({ h, k }) { console.log(h, k); });',
+        output: 'for (let { h, k } of array) {\n  console.log(h, k);\n}',
+        snapshot: false,
+        error: false
+      },
+      {
+        code: 'array.forEach(function({ j: i }) { console.log(i); });',
+        output: 'for (let { j: i } of array) {\n  console.log(i);\n}',
+        snapshot: false,
+        error: false
+      },
+      {
+        code: 'array.forEach(function({ h, k }, n) { console.log(h, k, n); });',
+        output: 'for (let n in array) {\n  if (n !== "length") {\n    let { h, k } = array[n];\n    console.log(h, k, n);\n  }\n}',
+        snapshot: false,
+        error: false
+      },
+      {
+        code: 'array.forEach(function({ h, i: { j, k } }, n) { console.log(h, j, k, n); });',
+        output: 'for (let n in array) {\n  if (n !== "length") {\n    let {\n      h,\n      i: { j, k },\n    } = array[n];\n    console.log(h, j, k, n);\n  }\n}',
+        snapshot: false,
+        error: false
+      },
+      {
+        code: 'array.forEach(function({ h, i: k }, n) { console.log(h, k, n); });',
+        output: 'for (let n in array) {\n  if (n !== "length") {\n    let { h, i: k } = array[n];\n    console.log(h, k, n);\n  }\n}',
         snapshot: false,
         error: false
       }]
