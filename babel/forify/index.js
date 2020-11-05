@@ -26,15 +26,8 @@ module.exports = function () {
               )])));
             }
           }
-          else if (path.node.arguments[0].type === 'Identifier') {
-            path.parentPath.replaceWith(t.forOfStatement(
-              t.variableDeclaration('let', [t.variableDeclarator(t.identifier('item'))]),
-              t.identifier(path.node.callee.object.name),
-              t.expressionStatement(
-                t.callExpression(t.identifier(path.node.arguments[0].name), [t.identifier('item')])
-              )));
-          }
-          else if (path.node.arguments[0].type === 'MemberExpression') {
+          else if (path.node.arguments[0].type === 'Identifier' ||
+            path.node.arguments[0].type === 'MemberExpression') {
             path.parentPath.replaceWith(t.forOfStatement(
               t.variableDeclaration('let', [t.variableDeclarator(t.identifier('item'))]),
               path.node.callee.object,
