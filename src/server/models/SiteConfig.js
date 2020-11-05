@@ -105,7 +105,8 @@ SiteConfigSchema.post('save', function() {
     fs.mkdirSync(path.join(process.env.DIRECTORY || __dirname, 'public'));
   }
 
-  fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, 'public/style.css'), stylesheet);
+  fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, 'public/style.css'),
+    `.themed{background:${themeColor};}${stylesheet}`);
 
   let shortcodeData = '{\n';
 

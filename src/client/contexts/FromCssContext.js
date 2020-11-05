@@ -35,7 +35,7 @@ function styleFromPseudoObj(obj, props) {
 }
 
 export default function fromCss(Element, style, useFirstNCharacters) {
-  return function({ children, ...rest }) {
+  return function({ children, className: cName, ...rest }) {
     let { numComponents, ref, setNum } = useContext(FromCssContext);
 
     let actualStyle = typeof style === 'object' ?
@@ -57,7 +57,7 @@ export default function fromCss(Element, style, useFirstNCharacters) {
         actualStyle(className) : `.${className}{${actualStyle}}`;
     }
 
-    return <Element className={className} {...rest}>{children}</Element>;
+    return <Element className={className + ((cName && cName.length) ? (` ${cName}`) : '')} {...rest}>{children}</Element>;
   };
 }
 

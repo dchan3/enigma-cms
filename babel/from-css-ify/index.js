@@ -12,21 +12,18 @@ const first = '一', last = '龥',
     }
     name = getAlphabeticChar(x % saizeu) + name;
     return name;
-  }, hashifyName = (name) => generateAlphabeticName(murmur(name));
-
-module.exports = function () {
-  let styles = {}, fn = '',
-    getCssFromTemplateIfTernary = function(node, str = '') {
-      let retval = { consequent: str, alternate: str };
-      let attr = node.quasis[0].value.raw,
-        {
-          consequent: { value: ifTrue },
-          alternate: { value: ifFalse }
-        } = node.expressions[0];
-      retval.consequent +=  `${attr}${ifTrue}`;
-      retval.alternate += `${attr}${ifFalse}`;
-      return retval;
-    }, getCssFromBinaryExp = function({ left, right }, str = '') {
+  }, hashifyName = (name) => generateAlphabeticName(murmur(name)),
+  getCssFromTemplateIfTernary = function(node, str = '') {
+    let retval = { consequent: str, alternate: str };
+    let attr = node.quasis[0].value.raw,
+      {
+        consequent: { value: ifTrue },
+        alternate: { value: ifFalse }
+      } = node.expressions[0];
+    retval.consequent +=  `${attr}${ifTrue}`;
+    retval.alternate += `${attr}${ifFalse}`;
+    return retval;
+  }, getCssFromBinaryExp = function({ left, right }, str = '') {
       if (left.type === 'StringLiteral' && right.type === 'TemplateLiteral') {
         if (right.expressions[0].type === 'ConditionalExpression') {
           if (right.expressions[0].consequent === 'StringLiteral' &&
@@ -76,9 +73,14 @@ module.exports = function () {
       }
     }
 
+module.exports = function () {
+  let styles = {}, fn = '';
+
   return {
     visitor: {
-      CallExpression({ node: { callee, arguments: args } }, { opts }) {
+      CallExpression(path, { opts }) {
+        var { node: { callee, arguments: args } } = path, diff = -1;
+
         if (fn === '') {
           if (opts && opts.toFile) fn = opts.toFile;
         }
@@ -100,6 +102,9 @@ module.exports = function () {
               if (styleBody.type === 'BinaryExpression' &&
                 styleBody.operator == '+') {
                 css = getCssFromBinaryExp(styleBody);
+                if (styleBody.left.type === 'StringLiteral') {
+                  diff = styleBody.left.value.length;
+                }
               }
             }
           }
@@ -136,6 +141,12 @@ module.exports = function () {
                 styles[`.${className}`] = ac;
               }
             }
+          }
+
+          if (diff > -1) {
+            let newPath = path;
+            newPath.node.arguments[2] = t.numericLiteral(diff);
+            path.replaceWith(newPath.node);
           }
         }
       }

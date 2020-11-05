@@ -4,8 +4,7 @@ import CodeEditor from './CodeEditor';
 
 export const FormContainer = fromCss('div', 'width:100%;');
 
-export const FormBackground = fromCss('form', ({ bgColor }) =>
-  'width:45%;margin:auto;text-align:left;' + `background-color:${bgColor};`, 38);
+export const FormBackground = fromCss('form', 'width:45%;margin:auto;text-align:left;');
 
 export const FormDiv = fromCss('div', ({ hidden }) => 'padding:8px;' +
     `display:${hidden ? 'none' : 'block'};`);
