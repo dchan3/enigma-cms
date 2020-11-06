@@ -1,6 +1,6 @@
 const first = '一', last = '龥',
   saizeu = last.charCodeAt(0) - first.charCodeAt(0),
-  murmur = require('murmurhash-js/murmurhash3_gc'), getAlphabeticChar = (code) =>
+  { murmur } = require('../../addons/murmur/build/Release/murmur.node'), getAlphabeticChar = (code) =>
     String.fromCharCode(first.charCodeAt(0) + code),
   generateAlphabeticName = (code) => {
   let name = '';
