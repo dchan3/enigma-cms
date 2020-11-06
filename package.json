@@ -16,7 +16,11 @@
     "gm": "^1.23.1",
     "http-proxy": "^1.18.1",
     "limax": "^2.1.0",
+<<<<<<< HEAD
     "mongoose": "^5.10.12",
+=======
+    "mongoose": "^5.10.11",
+>>>>>>> babel-tests
     "mongoose-auto-increment": "^5.0.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
@@ -45,6 +49,7 @@
     "babel-loader": "^8.1.0",
     "babel-minify-webpack-plugin": "^0.3.1",
     "babel-plugin-lodash": "^3.3.4",
+    "babel-plugin-tester": "^10.0.0",
     "babel-preset-minify": "^0.5.1",
     "chai": "^4.2.0",
     "chai-exclude": "^2.0.2",
@@ -53,7 +58,7 @@
     "crypto": "^1.0.1",
     "enzyme": "^3.11.0",
     "enzyme-adapter-preact-pure": "^2.2.3",
-    "eslint": "^7.11.0",
+    "eslint": "^7.12.1",
     "eslint-plugin-react": "^7.21.5",
     "history": "^4.10.1",
     "istanbul": "^0.4.5",

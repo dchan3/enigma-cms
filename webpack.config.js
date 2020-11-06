@@ -1,6 +1,6 @@
 const path = require('path'), nodeExternals = require('webpack-node-externals'),
   TerserPlugin = require('terser-webpack-plugin'), WrapperPlugin = require('wrapper-webpack-plugin'),
-  kwTable = require('./babel/common-strings/kw-table.js');
+  kwTable = require('./babel/common-strings/kw-table.js'), commonStringsCfg = require('./commonStringsConfig.js');
 
 let optimization = {
     minimizer: [
@@ -31,13 +31,18 @@ let optimization = {
     ['@babel/preset-env', { 'modules': 'cjs' }],
     '@babel/preset-react'], topPlugins = [
       new WrapperPlugin({
-      header: 'const ' + Object.keys(kwTable).map(
-        (k) => {
-          return k.match(/^\d+$/) ? (kwTable[k] + '=' + k)
-          : (kwTable[k] + '="' + k + '"');
-        }).join(',') + ';'
-    })
-  ]
+        header: 'const ' + Object.keys(kwTable).map(
+          (k) => {
+            if (k === 'true' || k === 'false' || k === 'null' || k === 'UNDEFINED') {
+              return kwTable[k] + '=' + k.toLowerCase();
+            }
+            else return k.match(/^\d+$/) ? (kwTable[k] + '=' + k) : (kwTable[k] + '="' + k + '"');
+          }).join(',') + (
+              (commonStringsCfg && Object.keys(commonStringsCfg).length > 0) ?
+              (',' + Object.keys(commonStringsCfg).map(k => commonStringsCfg[k] + '=' +  "'" + k + "'").join(',')) : "") + ';'
+        })
+    ];
+
 module.exports = [{
   plugins: topPlugins,
   optimization,
@@ -62,29 +67,11 @@ module.exports = [{
           }]] :
             ['@babel/plugin-transform-react-jsx', './babel/rightify', ['./babel/from-css-ify', {
               toFile: path.resolve(__dirname, 'public/app.style.css')
-            }], './babel/hashify', './babel/unconcatify', './babel/common-strings']
+            }], './babel/hashify', './babel/unconcatify', ['./babel/common-strings', {
+              table: commonStringsCfg
+            }]]
         }
-      },
-      {
-        test,
-        include: /react/,
-        loader,
-        options: {
-          comments,
-          plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify', './babel/common-strings']
-        }
-      },
-      {
-        test,
-        include: /buffer/,
-        loader: 'babel-loader',
-        options: {
-          comments,
-          plugins: process.env.DEV_MODE ? [] :
-            ['./babel/rightify', './babel/hashify', './babel/common-strings']
-        }
-      },
+      }
     ]
   },
   output: {
@@ -114,19 +101,19 @@ module.exports = [{
           comments,
           presets,
           plugins: process.env.DEV_MODE ? [] :
-            ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/common-strings']
-
+            ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify',
+              ['./babel/common-strings', { table: commonStringsCfg }]]
         }
       },
       {
         test,
-        include: /src\/server\/routes\/ssr/,
+        exclude,
         loader,
         options: {
           babelrc,
           comments,
           presets,
-          plugins: ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/autominify', './babel/common-strings']
+          plugins: ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/autominify', ['./babel/common-strings', { table: commonStringsCfg }]]
         }
       },
     ],
