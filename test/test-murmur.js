@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { default as ogMurmur } from 'murmurhash-js/murmurhash3_gc';
-import { murmur as newMurmur } from '../addons/murmur/build/Release/murmur';
+import { murmur as newMurmur } from '../build/Release/murmur';
 
 describe('Murmur', function () {
   it("works", function(done) {
