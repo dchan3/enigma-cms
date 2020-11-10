@@ -1,5 +1,5 @@
 before_install:
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install graphicsmagick -y; fi; rm -rf node_modules; npm install --no-optional; cd addons/murmur; CC="g++ -I$(cd ../../ && pwd)/node_modules/node-addon-api" npm install -g node-gyp; node-gyp rebuild; cd ../../;
+- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install graphicsmagick -y; fi; rm -rf node_modules; npm install --no-optional; npm install -g node-gyp; node-gyp rebuild;
 language: node_js
 node_js:
   - node

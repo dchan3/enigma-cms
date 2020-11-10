@@ -1,5 +1,5 @@
 let t = require('@babel/types'), fs = require('fs'),
-  { murmur } = require('../../addons/murmur/build/Release/murmur.node');
+  { murmur } = require('../../build/Release/murmur.node');
 
 const first = '一', last = '龥',
   saizeu = last.charCodeAt(0) - first.charCodeAt(0),

@@ -2,7 +2,7 @@
     "targets": [
         {
             "target_name": "murmur",
-            "sources": ["src/murmur.cc"],
+            "sources": ["addons/murmur/murmur.cc"],
             "include_dirs": [
                 "node_modules/napi",
                 "node_modules/node-addon-api"
