@@ -16,11 +16,7 @@
     "gm": "^1.23.1",
     "http-proxy": "^1.18.1",
     "limax": "^2.1.0",
-<<<<<<< HEAD
     "mongoose": "^5.10.12",
-=======
-    "mongoose": "^5.10.11",
->>>>>>> babel-tests
     "mongoose-auto-increment": "^5.0.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
