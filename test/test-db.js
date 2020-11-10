@@ -19,8 +19,7 @@ describe('DB and CRUD tests', function () {
       if (!e && c) {
         console.log('We are connected to test database!');
         fs.writeFile(path.resolve(
-          process.env.DIRECTORY || '', 'public/style.css'), '');
-        done();
+          process.env.DIRECTORY || '', 'public/style.css'), '', done);
       }
       if (e) throw e;
     });
