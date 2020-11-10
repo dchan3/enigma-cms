@@ -17,13 +17,13 @@ describe('DB and CRUD tests', function () {
   before(function (done) {
     mongoose.connect(dbURI, {useNewUrlParser: true}, function(e,c) {
       if (!e && c) {
-        console.log('We are connected to test database!'); done();
+        console.log('We are connected to test database!');
+        fs.writeFile(path.resolve(
+          process.env.DIRECTORY || '', 'public/style.css'), '');
+        done();
       }
       if (e) throw e;
     });
-
-    fs.writeFile(path.resolve(
-      process.env.DIRECTORY || '', 'public/style.css'), '');
   });
 
   describe('Site config', function() {
