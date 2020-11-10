@@ -106,7 +106,8 @@ SiteConfigSchema.post('save', function() {
   }
 
   fs.writeFileSync(path.join(process.env.DIRECTORY || __dirname, 'public/style.css'),
-    `.themed{background:${themeColor};}${stylesheet}`);
+    stylesheet.startsWith('.themed') ? stylesheet :
+      `.themed{background:${themeColor};}${stylesheet}`);
 
   let shortcodeData = '{\n';
 

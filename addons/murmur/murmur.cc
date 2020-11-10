@@ -1,5 +1,4 @@
 #include "murmur.h"
-#include <iostream>
 
 unsigned int rotateLeft(unsigned int h, int k) {
   return (h << k) | (h >> (32 - k));
@@ -8,11 +7,7 @@ unsigned int rotateLeft(unsigned int h, int k) {
 unsigned int murmurGen(std::string key){
   unsigned int len = key.length(), seed = 0, hash = seed,
     c1 = 0xcc9e2d51,
-    c2 = 0x1b873593,
-    r1 = 15,
-    r2 = 13,
-    m = 5,
-    n = 0xe6546b64, i = 0, remainder = len % 4,
+    c2 = 0x1b873593, i = 0, remainder = len % 4,
       bytes = len - remainder;
 
       while (i < bytes) {
@@ -20,13 +15,15 @@ unsigned int murmurGen(std::string key){
             (((unsigned int)key[i] & 0xFF)) |
             (((unsigned int)key[++i] & 0xFF) << 8) |
             (((unsigned int)key[++i] & 0xFF) << 16) |
-            (((unsigned int)key[++i] & 0xFF) << 24)) * c1;
-        k = rotateLeft(k, r1) * c2;
+            (((unsigned int)key[++i] & 0xFF) << 24));
+        k *= c1;
+        k = (k << 15) | (k >> 17);
+        k *= c2;
 
         hash ^= k;
-        hash = rotateLeft(hash, r2);
-        hash *= m;
-        hash += n;
+        hash = (hash << 13) | (hash >> 19);
+        hash *= 5;
+        hash += 0xe6546b64;
         i++;
       }
 
@@ -34,13 +31,11 @@ unsigned int murmurGen(std::string key){
         unsigned int rem = 0, p = 0;
 
         while (i < len) {
-          rem |= (((unsigned int) key[i] & 0xFF)) << (8 * p);
-          i++;
-          p++;
+          rem |= (((unsigned int) key[i++] & 0xFF)) << (8 * p++);
         }
 
         rem *= c1;
-        rem = rotateLeft(rem, r1);
+        rem = (rem << 15) | (rem >> 17);
         rem *= c2;
 
         hash ^= rem;

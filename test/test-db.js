@@ -21,6 +21,9 @@ describe('DB and CRUD tests', function () {
       }
       if (e) throw e;
     });
+
+    fs.writeFile(path.resolve(
+      process.env.DIRECTORY || '', 'public/style.css'), '');
   });
 
   describe('Site config', function() {
