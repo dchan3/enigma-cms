@@ -2,7 +2,7 @@ node_modules/
 build/
 .idea/
 dist/
-/**/public/app*.js*
+/**/public/*.js*
 public/dashboard*.js*
 /**/public/*.css
 assets/app*.css*
