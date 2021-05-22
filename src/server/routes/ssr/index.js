@@ -13,6 +13,9 @@ ${(gaTrackingId && !back) ?
   </script>${gaScript(gaTrackingId)}` : ''}
 ${renderHead(head)}
 ${staticScript(data)}
+    <script src='/preact.bundle.js' defer></script>
+    <script src='/preactHooks.bundle.js' defer></script>
+    <script src='/preactCompat.bundle.js' defer></script>
     <script src='/${back ? 'dashboard' : 'app'}.bundle.js' defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="theme-color" content="${themeColor}"/>

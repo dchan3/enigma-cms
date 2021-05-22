@@ -21,7 +21,9 @@ let optimization = {
   }, resolve = {
     alias: {
       'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',
-        'history.min.js')
+        'history.min.js'),
+      'preact': path.resolve(__dirname, 'node_modules', 'preact', 'dist',
+        'preact.min.js')
     }
   }, filename = '[name].bundle.js',
   pubPath = path.resolve( __dirname, 'public' ),
@@ -44,6 +46,30 @@ let optimization = {
     ];
 
 module.exports = [{
+  entry: {
+    preact: path.resolve(__dirname, 'node_modules', 'preact', 'dist',
+      'preact.min.js'),
+    preactHooks: path.resolve(__dirname, 'node_modules', 'preact', 'hooks', 'dist',
+      'hooks.js'),
+    preactCompat: path.resolve(__dirname, 'node_modules', 'preact', 'compat', 'dist',
+      'compat.js')
+  },
+  target: 'web',
+  module: {
+    rules: [
+      {
+
+      }
+    ]
+  },
+  output: {
+    path: pubPath,
+    publicPath: pubPath,
+    filename,
+    libraryTarget: 'var',
+    library: '[name]',
+  }
+}, {
   plugins: topPlugins,
   optimization,
   mode,
@@ -52,6 +78,11 @@ module.exports = [{
     dashboard: './src/client/dashboard/index.js'
   },
   target: 'web',
+  externals: {
+    "preact": "preact",
+    "preact/hooks": "preactHooks",
+    "preact/compat": "preactCompat"
+  },
   module: {
     rules: [
       {
