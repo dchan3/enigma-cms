@@ -33,11 +33,12 @@ describe('DB and CRUD tests', function () {
     it('site config save hooks work - stylesheet', function(done) {
       SiteConfig.findOne({ }).then(config => {
         let style = 'body{font-family:"Comic Sans MS,sans-serif;"}';
+        let expectedStyle = '.themed{background:cadetblue;}' + style;
         config.set('stylesheet', style);
         config.save(() => {
           fs.readFile(path.resolve(
             process.env.DIRECTORY || '', 'public/style.css'), 'utf8', (err, nuStyle) => {
-              expect(style).to.deep.equal(nuStyle);
+              expect(expectedStyle).to.deep.equal(nuStyle);
               done();
           });
         });
