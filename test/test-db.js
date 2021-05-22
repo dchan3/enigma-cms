@@ -32,7 +32,7 @@ describe('DB and CRUD tests', function () {
 
     it('site config save hooks work - stylesheet', function(done) {
       SiteConfig.findOne({ }).then(config => {
-        let style = '.themed{background:cadetblue;}body{font-family:"Comic Sans MS,sans-serif;"}';
+        let style = 'body{font-family:"Comic Sans MS,sans-serif;"}';
         config.set('stylesheet', style);
         config.save(() => {
           fs.readFile(path.resolve(
