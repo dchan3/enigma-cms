@@ -5,7 +5,7 @@ import { loget, loset } from '../../lib/utils/lofuncs';
 import { getRequest, postRequest } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
-import { default as comps, FormContainer, FormHeader, FormErrorMessage,
+import { default as comps, FormContainer, FormHeader, FormErrorMessage, FormInput,
   FormBackground, FormDiv, FormSubmit } from './formComps';
 
 function GeneratedFormContents() {
@@ -106,7 +106,7 @@ function GeneratedFormContents() {
     <FormHeader>{title}</FormHeader>
     {state.errorMessage ?
       <FormErrorMessage>{state.errorMessage}</FormErrorMessage> : null}
-    <FormBackground noValidate={true} onSubmit={(e) => e.preventDefault()}
+    <FormBackground noValidate={true} onSubmit={handleSumbit}
       className="themed">
       {formGenUtils.formFromObj(
         params, state.values, null, state.invalidFields).map(
@@ -138,6 +138,8 @@ function GeneratedFormContents() {
               return <FormDiv><NodeComponent {...attrObj}>
                 {children.map(({ component: c, attributes, innerText }) => {
                   let ChildComponent = comps[c];
+                  console.log(c);
+                  console.log(ChildComponent);
                   return <ChildComponent {...attributes}>
                     {innerText}
                   </ChildComponent>;

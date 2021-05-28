@@ -93,12 +93,10 @@ module.exports = [{
           babelrc,
           comments,
           presets,
-          plugins: process.env.DEV_MODE ? [['./babel/from-css-ify', {
+          plugins: process.env.DEV_MODE ? [['poggerstylez/babel', {
             toFile: path.resolve(__dirname, 'public/app.style.css')
           }]] :
-            ['@babel/plugin-transform-react-jsx', './babel/rightify', ['./babel/from-css-ify', {
-              toFile: path.resolve(__dirname, 'public/app.style.css')
-            }], './babel/hashify', './babel/unconcatify', ['./babel/common-strings', {
+            [["poggerstylez/babel", { toFile: path.resolve(__dirname, 'public/app.style.css') }], '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify', ['./babel/common-strings', {
               table: commonStringsCfg
             }]]
         }
@@ -110,7 +108,14 @@ module.exports = [{
     publicPath: pubPath,
     filename
   },
-  resolve,
+  resolve: {
+    alias: {
+      'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',
+        'history.min.js'),
+      'preact': path.resolve(__dirname, 'node_modules', 'preact', 'dist',
+        'preact.min.js') 
+    }
+  },
   devtool: 'source-map'
 }, {
   optimization,
@@ -132,7 +137,7 @@ module.exports = [{
           comments,
           presets,
           plugins: process.env.DEV_MODE ? [] :
-            ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify',
+            ["poggerstylez/babel", '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify',
               ['./babel/common-strings', { table: commonStringsCfg }]]
         }
       },
@@ -144,7 +149,7 @@ module.exports = [{
           babelrc,
           comments,
           presets,
-          plugins: ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/autominify', ['./babel/common-strings', { table: commonStringsCfg }]]
+          plugins: ["poggerstylez/babel", '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify', './babel/autominify', ['./babel/common-strings', { table: commonStringsCfg }]]
         }
       },
     ],
