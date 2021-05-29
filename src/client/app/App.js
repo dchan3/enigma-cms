@@ -20,6 +20,6 @@ export default function App() {
     </TheSwitch>,
     <TheSwitch>
       {frontEndRoutes.map(mapRoutes(FrontEndRoute))}
-    </TheSwitch>,
+    </TheSwitch>
   ];
 }
