@@ -3,7 +3,6 @@ import renderToString from 'preact-render-to-string';
 import TheStaticRouter from '../../../client/the_router/TheStaticRouter';
 import { HeadContextProvider } from '../../../client/contexts/HeadContext';
 import { StaticContextProvider } from '../../../client/contexts/StaticContext';
-import { FromCssContextProvider } from '../../../client/contexts/FromCssContext';
 import { default as fetchers } from './fetch_data';
 import { DocumentType } from '../../models';
 import matchThePath from  '../../../lib/utils/match_the_path';
@@ -53,15 +52,13 @@ export function generateMeta(d) {
 
 
 function GenerateStaticJsx({ value, location, initialVals, component: Comp }) {
-  return <FromCssContextProvider>
-    <HeadContextProvider {...{ value }}>
+  return <HeadContextProvider {...{ value }}>
       <TheStaticRouter {...{ location }}>
         <StaticContextProvider {... { initialVals }}>
           <Comp/>
         </StaticContextProvider>
       </TheStaticRouter>
-    </HeadContextProvider>
-  </FromCssContextProvider>;
+    </HeadContextProvider>;
 }
 
 export function ssrGen(htmlTemplate) {

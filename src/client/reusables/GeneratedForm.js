@@ -74,7 +74,11 @@ function GeneratedFormContents() {
     }
   }
 
-  function handleSubmit({ target: { parentElement: { elements } } }) {
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    let { target: { parentElement: { elements } } } = e;
+
     let requestBody = {}, valid =
       formGenUtils.validateForm(params, state.values);
     if (valid === true) {
@@ -138,6 +142,8 @@ function GeneratedFormContents() {
               return <FormDiv><NodeComponent {...attrObj}>
                 {children.map(({ component: c, attributes, innerText }) => {
                   let ChildComponent = comps[c];
+                  console.log(c);
+                  console.log(ChildComponent);
                   return <ChildComponent {...attributes}>
                     {innerText}
                   </ChildComponent>;

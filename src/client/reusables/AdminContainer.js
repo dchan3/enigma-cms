@@ -1,4 +1,4 @@
-import { createElement } from 'preact';
+import { h } from 'preact';
 import fromCss from '../contexts/FromCssContext';
 
 /** @jsx h **/

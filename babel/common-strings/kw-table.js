@@ -10,7 +10,7 @@ module.exports = {
   'number': '數',
   'value': '價',
   'string': '絲',
-  'component': '部',
+  //'component': '部',
   'createElement': '造',
   'useState': '狀',
   'useEffect': '果',
