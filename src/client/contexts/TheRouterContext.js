@@ -1,6 +1,6 @@
 import { h, createContext } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
-import { createBrowserHistory as createHistory } from 'history';
+import { createBrowserHistory as createHistory, parsePath } from 'history';
 
 /** @jsx h **/
 
@@ -10,13 +10,16 @@ export default TheRouterContext;
 
 const { Provider } = TheRouterContext;
 export const TheRouterContextProvider = ({ value, children }) => {
-  let [location, setLocation] = useState(value.location || null);
+  let [location, setLocation] = useState(
+    value.location && (typeof value.location !== 'string' ? value.location : parsePath(value.location)) || null);
 
   let [history, setHistory] = useState(value.history ||
     createHistory({ basename: value.basename }));
 
   useEffect(function() {
-    history.listen(loc => setLocation(loc));
+    history.listen(({ location }) => { 
+      setLocation(location);
+    });
   }, []);
 
   useEffect(function() {

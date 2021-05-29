@@ -18,13 +18,6 @@ let optimization = {
         },
         test: /\.jsx?$/i
       })]
-  }, resolve = {
-    alias: {
-      'history': path.resolve(__dirname, 'node_modules', 'history', 'cjs',
-        'history.min.js'),
-      'preact': path.resolve(__dirname, 'node_modules', 'preact', 'dist',
-        'preact.min.js')
-    }
   }, filename = '[name].bundle.js',
   pubPath = path.resolve( __dirname, 'public' ),
   mode = process.env.DEV_MODE ? 'development' : 'production', test = /\.jsx?$/i,
@@ -48,20 +41,9 @@ let optimization = {
 module.exports = [{
   entry: {
     preact: path.resolve(__dirname, 'node_modules', 'preact', 'dist',
-      'preact.min.js'),
-    preactHooks: path.resolve(__dirname, 'node_modules', 'preact', 'hooks', 'dist',
-      'hooks.js'),
-    preactCompat: path.resolve(__dirname, 'node_modules', 'preact', 'compat', 'dist',
-      'compat.js')
+      'preact.min.js')
   },
   target: 'web',
-  module: {
-    rules: [
-      {
-
-      }
-    ]
-  },
   output: {
     path: pubPath,
     publicPath: pubPath,
@@ -79,9 +61,7 @@ module.exports = [{
   },
   target: 'web',
   externals: {
-    "preact": "preact",
-    "preact/hooks": "preactHooks",
-    "preact/compat": "preactCompat"
+    "preact": "preact"
   },
   module: {
     rules: [
@@ -96,9 +76,7 @@ module.exports = [{
           plugins: process.env.DEV_MODE ? [['./babel/from-css-ify', {
             toFile: path.resolve(__dirname, 'public/app.style.css')
           }]] :
-            ['@babel/plugin-transform-react-jsx', './babel/rightify', ['./babel/from-css-ify', {
-              toFile: path.resolve(__dirname, 'public/app.style.css')
-            }], './babel/hashify', './babel/unconcatify', ['./babel/common-strings', {
+            [["poggerstylez/babel", { toFile: path.resolve(__dirname, 'public/app.style.css') }], '@babel/plugin-transform-react-jsx', './babel/unconcatify', ['./babel/common-strings', {
               table: commonStringsCfg
             }]]
         }
@@ -110,7 +88,21 @@ module.exports = [{
     publicPath: pubPath,
     filename
   },
-  resolve,
+  resolve: {
+    alias: {
+      'preact/devtools': path.resolve(__dirname, 'node_modules', 'preact', 'devtools', 'dist',
+        'devtools.js'),
+      'preact/debug': path.resolve(__dirname, 'node_modules', 'preact', 'debug', 'dist',
+        'debug.js'),
+      'preact/compat': path.resolve(__dirname, 'node_modules', 'preact', 'compat', 'dist',
+        'compat.js'),
+      'preact/hooks': path.resolve(__dirname, 'node_modules', 'preact', 'hooks', 'dist',
+        'hooks.js') ,
+      'preact': path.resolve(__dirname, 'node_modules', 'preact', 'dist',
+        'preact.min.js'),
+      'history': path.resolve(__dirname, 'node_modules', 'history')
+    }
+  },
   devtool: 'source-map'
 }, {
   optimization,
@@ -154,7 +146,21 @@ module.exports = [{
     filename,
     publicPath: '/'
   },
-  resolve,
+  resolve: {
+    alias: {
+      'preact/devtools': path.resolve(__dirname, 'node_modules', 'preact', 'devtools', 'dist',
+        'devtools.js'),
+      'preact/debug': path.resolve(__dirname, 'node_modules', 'preact', 'debug', 'dist',
+        'debug.js'),
+      'preact/compat': path.resolve(__dirname, 'node_modules', 'preact', 'compat', 'dist',
+        'compat.js') ,
+      'preact/hooks': path.resolve(__dirname, 'node_modules', 'preact', 'hooks', 'dist',
+        'hooks.js') ,
+      'preact': path.resolve(__dirname, 'node_modules', 'preact', 'dist',
+        'preact.min.js'),
+      'history': path.resolve(__dirname, 'node_modules', 'history')
+    }
+  },
   node: { __dirname: false },
   devtool: 'source-map'
 }];

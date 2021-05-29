@@ -4,7 +4,7 @@ import React from 'preact/compat';
 import useTheRouterContext from '../hooks/useTheRouterContext';
 import matchThePath from '../../lib/utils/match_the_path';
 
-export default function TheSwitch({ location: pLoc, children, }) {
+export default function TheSwitch({ location: pLoc, children }) {
   let context = useTheRouterContext(), [switchLocation, setSwitchLocation] =
     useState(pLoc || context.location), { basename } =
     context, element, match;
@@ -24,7 +24,7 @@ export default function TheSwitch({ location: pLoc, children, }) {
           { ...child.props, path }) : context.match;
     }
   });
-
+  
   return match ? cloneElement(element, {
     switchLocation, computedMatch: match }) : null;
 }
