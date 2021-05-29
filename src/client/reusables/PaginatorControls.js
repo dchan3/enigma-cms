@@ -64,9 +64,8 @@ export function truncatePageList(
 
 const PaginatorContainer = fromCss('div',
     'clear:both;width:100%;margin:0px auto;'),
-  PaginatorColoredButton = fromCss('li', ({ isActive }) =>
-    'text-align:center;border:thin grey solid;padding:5px;width:35px;height:35px;display:inline-block;font-size:1.15em;color:white;' +
-  `${isActive ? 'background-color:black;' : '' }`),
+  PaginatorColoredButton = fromCss('li',
+    'text-align:center;border:thin grey solid;padding:5px;width:35px;height:35px;display:inline-block;font-size:1.15em;color:white;'),
   PaginatorList = fromCss('ul', 'list-style:none;padding-left:0px;display:inline;'),
   PaginatorNumber = fromCss('a', 'color:inherit;font-size:inherit;');
 

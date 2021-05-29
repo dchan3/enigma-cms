@@ -5,7 +5,7 @@ import { loget, loset } from '../../lib/utils/lofuncs';
 import { getRequest, postRequest } from '../utils/api_request_async';
 import { default as gensig } from '../../lib/utils/gensig';
 import { default as formGenUtils } from '../utils/form_from_obj';
-import { default as comps, FormContainer, FormHeader, FormErrorMessage, FormInput,
+import { default as comps, FormContainer, FormHeader, FormErrorMessage,
   FormBackground, FormDiv, FormSubmit } from './formComps';
 
 function GeneratedFormContents() {
@@ -74,7 +74,11 @@ function GeneratedFormContents() {
     }
   }
 
-  function handleSubmit({ target: { parentElement: { elements } } }) {
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    let { target: { parentElement: { elements } } } = e;
+
     let requestBody = {}, valid =
       formGenUtils.validateForm(params, state.values);
     if (valid === true) {
@@ -106,7 +110,7 @@ function GeneratedFormContents() {
     <FormHeader>{title}</FormHeader>
     {state.errorMessage ?
       <FormErrorMessage>{state.errorMessage}</FormErrorMessage> : null}
-    <FormBackground noValidate={true} onSubmit={handleSumbit}
+    <FormBackground noValidate={true} onSubmit={(e) => e.preventDefault()}
       className="themed">
       {formGenUtils.formFromObj(
         params, state.values, null, state.invalidFields).map(
