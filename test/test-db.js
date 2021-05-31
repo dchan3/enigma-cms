@@ -17,7 +17,7 @@ describe('DB and CRUD tests', function () {
   before(function (done) {
     mongoose.connect(dbURI, {useNewUrlParser: true}, function(e,c) {
       if (!e && c) {
-        console.log('We are connected to test database!'); done();
+        console.log('We are connected to test database!'); return done();
       }
       if (e) throw e;
     });

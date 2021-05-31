@@ -988,7 +988,7 @@ describe('HTML to JSX', function() {
       '<img alt="im a meme" src="me.com/" /></a>'),
       expected = <a target="_self" href="localhost:8080/">
         <img alt="im a meme" src="me.com/" /></a>;
-    expect(actual).to.deep.equal(expected);
+    expect(actual).excludingEvery(['key', 'ref', '__v']).to.deep.equal(expected);
     done();
   });
 
@@ -1063,7 +1063,7 @@ describe('HTML to JSX', function() {
             {'export default SamePageAnchor;'}</code>
         </div>,
         <p>Now you should be good to go. Make sure that wherever in your code used, it has access to a <code>GeneralContext</code>.</p>];
-    expect(actual).excludingEvery(['key', 'ref']).to.deep.equal(expected);
+    expect(actual).excludingEvery(['key', 'ref', '__v']).to.deep.equal(expected);
     done();
   })
 });
