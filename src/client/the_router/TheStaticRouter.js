@@ -1,6 +1,6 @@
 import { h } from 'preact'; /** @jsx h **/
 import TheRouter from './TheRouter';
-import { parsePath } from 'history';
+import { createPath, parsePath } from 'history';
 
 function addSlash(path) {
   return path[0] === '/' ? path : `/${path}`;
