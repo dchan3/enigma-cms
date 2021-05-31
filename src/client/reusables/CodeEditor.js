@@ -1,4 +1,4 @@
-import { h, createElement } from 'preact';
+import { h } from 'preact';
 import { useContext, useMemo, useState } from 'preact/hooks';
 import fromCss from '../contexts/FromCssContext';
 import CodeEditorContext, { CodeEditorContextProvider } from './CodeEditorContext';

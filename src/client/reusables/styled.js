@@ -1,4 +1,4 @@
-import { createElement } from 'preact'; /** @jsx h **/
+import { h } from 'preact'; /** @jsx h **/
 import fromCss from '../contexts/FromCssContext';
 
 export const StyledDiv = fromCss('div',

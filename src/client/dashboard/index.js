@@ -10,12 +10,12 @@ import { getRequest } from '../utils/api_request_async';
 
 getRequest('users/get', (resp) => {
   var user = resp || null;
-  hydrate(<FromCssContextProvider><HeadContextProvider>
+  hydrate(<HeadContextProvider>
     <TheBrowserRouter>
       <StaticContextProvider initialVals={{ ...window.__INITIAL_DATA__, user }}>
         <Dashboard />
       </StaticContextProvider>
     </TheBrowserRouter>
-  </HeadContextProvider></FromCssContextProvider>,
+  </HeadContextProvider>,
   document.getElementById('root'));
 });

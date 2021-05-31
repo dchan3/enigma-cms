@@ -73,7 +73,7 @@ module.exports = [{
           babelrc,
           comments,
           presets,
-          plugins: process.env.DEV_MODE ? [['./babel/from-css-ify', {
+          plugins: process.env.DEV_MODE ? [['poggerstylez/babel', {
             toFile: path.resolve(__dirname, 'public/app.style.css')
           }]] :
             [["poggerstylez/babel", { toFile: path.resolve(__dirname, 'public/app.style.css') }], '@babel/plugin-transform-react-jsx', './babel/unconcatify', ['./babel/common-strings', {
@@ -124,7 +124,7 @@ module.exports = [{
           comments,
           presets,
           plugins: process.env.DEV_MODE ? [] :
-            ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify',
+            ["poggerstylez/babel", '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify',
               ['./babel/common-strings', { table: commonStringsCfg }]]
         }
       },
@@ -136,7 +136,7 @@ module.exports = [{
           babelrc,
           comments,
           presets,
-          plugins: ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/hashify', './babel/unconcatify', './babel/autominify', ['./babel/common-strings', { table: commonStringsCfg }]]
+          plugins: ["poggerstylez/babel", '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify', './babel/autominify', ['./babel/common-strings', { table: commonStringsCfg }]]
         }
       },
     ],
