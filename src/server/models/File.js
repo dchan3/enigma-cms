@@ -1,14 +1,7 @@
 import mongoose, { Schema, model } from 'mongoose';
-import autoIncrement, { plugin as autoIncrementPlugin } from
-  'mongoose-auto-increment';
+import autoInc from 'mongoose-sequence';
 
-var conn = mongoose.createConnection(
-  require('../../../config/db.js').url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }, () => { });
-
-autoIncrement.initialize(conn);
+let autoIncPlugin = autoInc(mongoose);
 
 const FileSchema = new Schema({
   fileName: {
@@ -42,7 +35,6 @@ const FileSchema = new Schema({
   }
 });
 
-FileSchema.plugin(autoIncrementPlugin,
-  { model: 'File', field: 'fileId', startAt: 0, incrementBy: 1 });
+FileSchema.plugin(autoIncPlugin, { inc_field: 'fileId', start_seq: 0, inc_amount: 1 });
 
 export default model('File', FileSchema);

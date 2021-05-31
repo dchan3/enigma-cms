@@ -1,14 +1,7 @@
 import mongoose, { Schema, model } from 'mongoose';
-import autoIncrement, { plugin as autoIncrementPlugin } from
-  'mongoose-auto-increment';
+import autoInc from 'mongoose-sequence';
 
-var conn =
-  mongoose.createConnection(require('../../../config/db.js').url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }, () => {});
-
-autoIncrement.initialize(conn);
+let autoIncPlugin = autoInc(mongoose);
 
 var RoleSchema = new Schema({
   name: {
@@ -17,7 +10,6 @@ var RoleSchema = new Schema({
   roleId: { type: Number }
 });
 
-RoleSchema.plugin(autoIncrementPlugin,
-  { model: 'Role', field: 'roleId', startAt: 0, incrementBy: 1 });
+RoleSchema.plugin(autoIncPlugin, { inc_field: 'roleId', start_seq: 0, inc_amount: 1 });
 
 export default model('Role', RoleSchema);

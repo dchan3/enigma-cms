@@ -8,7 +8,7 @@
     "@babel/plugin-syntax-export-default-from",
     "@babel/plugin-transform-strict-mode",
     "@babel/plugin-transform-react-jsx",
-    "./babel/unconcatify", "./babel/hashify",
+    "./babel/unconcatify",
     "./babel/rightify", "./babel/unitify-react", "./babel/forify"
   ],
   "comments": false

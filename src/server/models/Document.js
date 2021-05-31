@@ -1,6 +1,5 @@
 import mongoose, { Schema, model } from 'mongoose';
-import autoIncrement, { plugin as autoIncrementPlugin } from
-  'mongoose-auto-increment';
+import autoInc from 'mongoose-sequence';
 import ReverseIndex from './ReverseIndex.js';
 import DocumentDisplayTemplate from './DocumentDisplayTemplate.js';
 import User from './User';
@@ -11,13 +10,7 @@ import { documentMetadataSync } from '../utils/render_metadata';
 import fs from 'fs';
 import path from 'path';
 
-var conn = mongoose.createConnection(
-  require('../../../config/db.js').url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }, () => { });
-
-autoIncrement.initialize(conn);
+let autoIncPlugin = autoInc(mongoose);
 
 const DocumentSchema = new Schema({
   docTypeId: { type: Number },
@@ -32,8 +25,7 @@ const DocumentSchema = new Schema({
   rendered: { type: String }
 });
 
-DocumentSchema.plugin(autoIncrementPlugin,
-  { model: 'Document', field: 'docNodeId', startAt: 0, incrementBy: 1 });
+DocumentSchema.plugin(autoIncPlugin, { inc_field: 'docNodeId', start_seq: 0, inc_amount: 1 });
 
 DocumentSchema.pre('save', async function saveHook(next) {
   const doc = this, { docNodeId, docTypeId,

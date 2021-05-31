@@ -1,4 +1,4 @@
-import { createElement } from 'preact';
+import { h } from 'preact';
 import styleObject from './style_object';
 
 let attrNameMap = new Proxy({
@@ -38,7 +38,7 @@ function domTreeToJsx(tree, rpl) {
         curr.tagName.toLowerCase();
       if (curr.childNodes && curr.childNodes.length) attrMap.children = domTreeToJsx(curr.childNodes, rpl);
 
-      jsxTree.push(createElement(theNodeName, attrMap));
+      jsxTree.push(h(theNodeName, attrMap));
     }
     else jsxTree.push(curr.textContent);
   }

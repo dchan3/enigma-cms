@@ -1,14 +1,7 @@
 import mongoose, { Schema, model } from 'mongoose';
-import autoIncrement, { plugin as autoIncrementPlugin } from
-  'mongoose-auto-increment';
+import autoInc from 'mongoose-sequence';
 
-var conn = mongoose.createConnection(
-  process.env.DB_CONN_URL || 'mongodb://localhost:27017/enigma-cms', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }, () => {});
-
-autoIncrement.initialize(conn);
+let autoIncPlugin = autoInc(mongoose);
 
 const DocumentTypeSchema = new Schema({
   docTypeId: { type: Number },
@@ -19,7 +12,6 @@ const DocumentTypeSchema = new Schema({
   rendered: { type: String }
 });
 
-DocumentTypeSchema.plugin(autoIncrementPlugin,
-  { model: 'DocumentType', field: 'docTypeId', startAt: 0, incrementBy: 1 });
+DocumentTypeSchema.plugin(autoIncPlugin, { inc_field: 'docTypeId', start_seq: 0, inc_amount: 1 });
 
 export default model('DocumentType', DocumentTypeSchema);

@@ -1,19 +1,12 @@
 import mongoose from 'mongoose';
 import bcrypt, { hash, genSalt } from 'bcrypt';
-import autoIncrement, { plugin as autoIncrementPlugin } from
-  'mongoose-auto-increment';
+import autoInc from 'mongoose-sequence';
 import renderMarkup from '../utils/render_markup';
 import SiteConfig from './SiteConfig';
 import fs from 'fs';
 import path from 'path';
 
-var conn = mongoose.createConnection(
-  process.env.DB_CONN_URL || 'mongodb://localhost:27017/enigma-cms', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }, () => { });
-
-autoIncrement.initialize(conn);
+let autoIncPlugin = autoInc(mongoose);
 
 var UserSchema = new mongoose.Schema({
   username: {
@@ -50,7 +43,8 @@ var UserSchema = new mongoose.Schema({
   },
   userId: {
     type: Number,
-    required: true
+    required: true,
+    default: -1
   },
   bio: {
     type: String,
@@ -109,7 +103,6 @@ UserSchema.pre('save', async function saveHook(next) {
   }).bind(this)();
 });
 
-UserSchema.plugin(autoIncrementPlugin,
-  { model: 'User', field: 'userId', startAt: 0, incrementBy: 1 });
+UserSchema.plugin(autoIncPlugin, { inc_field: 'userId', startAt: 0, incrementBy: 1 });
 
 export default mongoose.model('User', UserSchema);
