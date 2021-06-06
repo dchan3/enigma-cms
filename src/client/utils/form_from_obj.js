@@ -178,13 +178,18 @@ const checkRequired = function(paramObj, valueObj) {
         k => k.replace('.required', '')), vks = outputKeys(valueObj),
     vs = mapKeysToValues(valueObj);
 
-  for (let reqField in reqFields) {
-    if (pks[`${reqFields[reqField]}.required`]) {
-      let relevant = vks.filter(k =>
-        reqFields[reqField] === numKeyToShapeKey(k));
-      for (let r in relevant) {
-        if (!vs[relevant[r]] || vs[relevant[r]] === '') {
-          invalidFields.push(relevant[r]);
+  for (let reqField of reqFields) {
+    if (pks[`${reqField}.required`]) {
+      if (!vks[reqField]) {
+        invalidFields.push(reqField);
+      }
+      else {
+        let relevant = vks.filter(k => reqField === numKeyToShapeKey(k));
+
+        for (let r in relevant) {
+          if (!vs[relevant[r]] || vs[relevant[r]] === '') {
+            invalidFields.push(relevant[r]);
+          }
         }
       }
     }

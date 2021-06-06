@@ -18,9 +18,12 @@ export const FormSubmit = fromCss('input',
 export const FormErrorMessage = fromCss('p',
   'font-family:sans-serif;text-transform:uppercase;text-align:center;');
 
-export const FormInput = fromCss('input',
-    'border-radius:8px;vertical-align:top;height:16px;width:calc(100% - 16px);margin-top:5px;font-family:sans-serif;font-size:16px;padding:5px;'), FormLabel = fromCss('label', ({ hidden, isInvalid }) => (
-    'color:white;font-size:16px;padding-right:4px;font-family:sans-serif;text-transform:uppercase;' +
+export const FormInput = fromCss('input',({ hidden, isInvalid }) => (
+    'border-radius:8px;vertical-align:top;height:16px;width:calc(100% - 16px);margin-top:5px;font-family:sans-serif;font-size:16px;padding:5px;'
+    + `display:${hidden ? 'none' : 'block'};` +
+      `box-shadow:${isInvalid ? 'red 2px 2px' : 'unset'};`)), 
+      FormLabel = fromCss('label', ({ hidden, isInvalid }) => (
+        'color:white;font-size:16px;padding-right:4px;font-family:sans-serif;text-transform:uppercase;' +
       `display:${hidden ? 'none' : 'block'};` +
       `text-shadow:${isInvalid ? 'red 2px 2px' : 'unset'};`)), FormSubmitButton = fromCss('button',
     'font-size:16px;font-family:sans-serif;text-transform:uppercase;padding:8px;border-radius:8px;margin:8px;'),
