@@ -1,4 +1,4 @@
 exit: true
 require: '@babel/register'
 file:
-    - 'test/test-*.js'
+    - "test/"
