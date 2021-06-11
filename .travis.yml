@@ -1,5 +1,5 @@
 before_install:
-- sudo apt-get install graphicsmagick -y; sudo rm -rf node_modules; npm install --no-optional --force
+- sudo apt-get install graphicsmagick -y; sudo rm -rf node_modules; npm install
 language: node_js
 node_js:
   - node
