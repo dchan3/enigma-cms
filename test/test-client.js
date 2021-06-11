@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { h } from 'preact'; /** @jsx h **/
 import chai, { expect } from 'chai';
-import Enzyme, { render, shallow, mount } from 'enzyme';
+import { configure, render, shallow, mount } from 'enzyme';
 import { act } from 'preact/test-utils';
 import Adapter from 'enzyme-adapter-preact-pure';
-Enzyme.configure({ adapter: new Adapter });
+configure({ adapter: new Adapter() });
 import { GeneratedForm, CodeEditor, SamePageAnchor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
@@ -13,7 +13,7 @@ import formComps from '../src/client/reusables/formComps';
 import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx from '../src/client/utils/html_to_jsx';
 import InnerHtmlRenderer from '../src/client/utils/inner_html_renderer';
-import fromCss, { FromCssContextProvider } from '../src/client/contexts/FromCssContext';
+import fromCss from '../src/client/contexts/FromCssContext';
 import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
 import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
@@ -54,13 +54,11 @@ global.cancelAnimationFrame = () => {};
 global.DOMParser = window.DOMParser;
 
 let renderFromCss = function(children, par = { attachTo: document.body }) {
-  return mount(<FromCssContextProvider>
-      <StaticContextProvider initialVals={{
+  return mount(<StaticContextProvider initialVals={{
       config: {
         themeColor: 'blue'
       }
-    }}>{children}</StaticContextProvider>
-    </FromCssContextProvider>, par);
+    }}>{children}</StaticContextProvider>, par);
 }
 
 let mountRenderForm = function(title, params, currentValue = null) {
@@ -870,6 +868,7 @@ describe('Form from Obj', function() {
           }
         }]
       };
+    console.log(formGenUtils.validateForm(parameters, valuesValid));
     expect(formGenUtils.validateForm(parameters, valuesValid)).to.be.true;
     expect(formGenUtils.validateForm(parameters,
       valuesInvalid)).to.have.members(['guestList.0.lastName',

@@ -1,5 +1,5 @@
 before_install:
-- if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install graphicsmagick -y; fi; docker run -dit --name emscripten -v $(pwd):/src trzeci/emscripten:sdk-incoming-64bit bash; rm -rf node_modules; npm install --no-optional --force
+- sudo apt-get install graphicsmagick -y; sudo rm -rf node_modules; npm install
 language: node_js
 node_js:
   - node
@@ -8,7 +8,6 @@ cache:
   - node_modules
 os:
 - linux
-script: npm run test-with-coverage
+script: npm run test
 services:
 - mongodb
-- docker

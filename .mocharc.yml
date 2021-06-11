@@ -1,0 +1,9 @@
+exit: true
+require: '@babel/register'
+file:
+    - "test/test-babel.js"
+    - "test/test-client.js"
+    - "test/test-db.js"
+    - "test/test-lib.js"
+    - "test/test-rest.js"
+    - "test/test-server.js"
