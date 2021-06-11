@@ -868,6 +868,7 @@ describe('Form from Obj', function() {
           }
         }]
       };
+    console.log(formGenUtils.validateForm(parameters, valuesValid));
     expect(formGenUtils.validateForm(parameters, valuesValid)).to.be.true;
     expect(formGenUtils.validateForm(parameters,
       valuesInvalid)).to.have.members(['guestList.0.lastName',
