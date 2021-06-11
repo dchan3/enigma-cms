@@ -180,15 +180,15 @@ const checkRequired = function(paramObj, valueObj) {
 
   for (let reqField of reqFields) {
     if (pks[`${reqField}.required`]) {
-      if (!vks[reqField]) {
+      if (!loget(vks, reqField)) {
         invalidFields.push(reqField);
       }
       else {
         let relevant = vks.filter(k => reqField === numKeyToShapeKey(k));
 
-        for (let r in relevant) {
-          if (!vs[relevant[r]] || vs[relevant[r]] === '') {
-            invalidFields.push(relevant[r]);
+        for (let r of relevant) {
+          if (!loget(vs, r) || loget(vs, r) === '') {
+            invalidFields.push(r);
           }
         }
       }
