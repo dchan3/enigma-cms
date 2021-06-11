@@ -1,10 +1,10 @@
 /* eslint-disable max-len */
 import { h } from 'preact'; /** @jsx h **/
 import chai, { expect } from 'chai';
-import Enzyme, { render, shallow, mount } from 'enzyme';
+import { configure, render, shallow, mount } from 'enzyme';
 import { act } from 'preact/test-utils';
 import Adapter from 'enzyme-adapter-preact-pure';
-Enzyme.configure({ adapter: new Adapter });
+configure({ adapter: new Adapter() });
 import { GeneratedForm, CodeEditor, SamePageAnchor } from '../src/client/reusables';
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
