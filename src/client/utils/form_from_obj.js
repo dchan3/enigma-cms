@@ -187,9 +187,7 @@ const checkRequired = function(paramObj, valueObj) {
         let relevant = vks.filter(k => reqField === numKeyToShapeKey(k));
 
         for (let r of relevant) {
-          console.log(vs, r);
-          console.log(loget(vs, r));
-          if (!loget(vs, r) || loget(vs, r) === '') {
+          if (!vs[r] || vs[r] === '') {
             invalidFields.push(r);
           }
         }
