@@ -1,11 +1,16 @@
 export const loget = function(obj, keyString) {
-  var keys = keyString.split('.');
+  try {
+    var keys = keyString.split('.');
 
-  if (keys.length <= 1) {
-    return obj[keyString];
+    if (!keys || keys.length <= 1) {
+      return obj[keyString];
+    }
+    else if (keys) {
+      return loget(obj[keys[0]], keyString.substring(keyString.indexOf('.') + 1));
+    }
   }
-  else {
-    return loget(obj[keys[0]], keyString.substring(keyString.indexOf('.') + 1));
+  catch (e) {
+    return undefined;
   }
 };
 
