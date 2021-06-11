@@ -49,11 +49,10 @@ export function FrontCategoryDisplay() {
 
 export function FrontDocumentDisplay() {
   let o = {
-    dataParams: ['slug'],
-    urlParams: ['docNode'],
+    dataParams: ['docTypeNamePlural', 'slug'],
+    urlParams: ['docType', 'docNode'],
     apiUrl: function({ docType, docNode }) {
-      return `documents/get_rendered_document_by_type_and_slug/${docType
-      }/${docNode}`;
+      return `documents/get_rendered_document_by_type_and_slug/${docType}/${docNode}`;
     }
   };
   return <FrontDisplay {...o} />;
