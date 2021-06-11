@@ -8,6 +8,6 @@ cache:
   - node_modules
 os:
 - linux
-script: npm run test-with-coverage
+script: npm run test
 services:
 - mongodb
