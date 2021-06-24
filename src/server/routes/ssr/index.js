@@ -10,7 +10,7 @@ var htmlTemplate =
 ${(gaTrackingId && !back) ?
     `<script async src="${gaUrl(gaTrackingId)}">
   </script>${gaScript(gaTrackingId)}` : ''}
-${head ? renderHead(head) : ""}
+${head ? renderHead(head) : ''}
 ${staticScript(data)}
     <script src='/preact.bundle.js' defer></script>
     <script src='/${back ? 'dashboard' : 'app'}.bundle.js' defer></script>

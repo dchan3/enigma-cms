@@ -13,7 +13,7 @@ router.get('/get', async function (req, res) {
 
 router.post('/upload_file', verifyMiddleware, ({ user,
   body }, res, next) => {
-    let { userId: uploadedBy } = user,  { fileToUpload, fileType, fileContent } = body;
+  let { userId: uploadedBy } = user,  { fileToUpload, fileType, fileContent } = body;
   let fileName = fileToUpload.split('\\').pop(), newFile = new File({
       fileName, fileType, uploadedBy,
       createdDate: new Date(), modifiedDate: new Date()
