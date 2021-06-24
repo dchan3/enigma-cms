@@ -53,12 +53,12 @@ export function generateMeta(d) {
 
 function GenerateStaticJsx({ value, location, initialVals, component: Comp }) {
   return <HeadContextProvider {...{ value }}>
-      <TheStaticRouter {...{ location }}>
-        <StaticContextProvider {... { initialVals }}>
-          <Comp/>
-        </StaticContextProvider>
-      </TheStaticRouter>
-    </HeadContextProvider>;
+    <TheStaticRouter {...{ location }}>
+      <StaticContextProvider {... { initialVals }}>
+        <Comp/>
+      </StaticContextProvider>
+    </TheStaticRouter>
+  </HeadContextProvider>;
 }
 
 export function ssrGen(htmlTemplate) {
