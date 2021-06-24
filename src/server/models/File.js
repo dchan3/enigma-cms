@@ -15,7 +15,8 @@ const FileSchema = new Schema({
   },
   fileId: {
     type: Number,
-    required: true
+    required: true,
+    default: -1
   },
   uploadedBy: {
     type: Number,

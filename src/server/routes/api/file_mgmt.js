@@ -11,8 +11,9 @@ router.get('/get', async function (req, res) {
   return res.status(200).json(await fileFetchFuncs.getAllFiles());
 });
 
-router.post('/upload_file', verifyMiddleware, ({ user: { userId: uploadedBy },
-  body: { fileToUpload, fileType, fileContent } }, res, next) => {
+router.post('/upload_file', verifyMiddleware, ({ user,
+  body }, res, next) => {
+  let { userId: uploadedBy } = user,  { fileToUpload, fileType, fileContent } = body;
   let fileName = fileToUpload.split('\\').pop(), newFile = new File({
       fileName, fileType, uploadedBy,
       createdDate: new Date(), modifiedDate: new Date()

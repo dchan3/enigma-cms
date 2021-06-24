@@ -1,0 +1,17 @@
+{
+  "presets": [
+      ["@babel/preset-env", { "modules": "cjs" }]
+    ],
+  "plugins": [
+    ["../../../node_modules/poggerstylez/babel", { "toFile": "public/dashboard.style.css" }],
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-runtime",
+    "@babel/plugin-syntax-export-default-from",
+    "@babel/plugin-transform-strict-mode",
+    ["@babel/plugin-transform-react-jsx", {
+      "pragma": "h"
+    }],
+    "../../../babel/unconcatify"
+  ],
+  "comments": false
+}
