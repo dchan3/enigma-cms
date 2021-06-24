@@ -142,8 +142,6 @@ function GeneratedFormContents() {
               return <FormDiv><NodeComponent {...attrObj}>
                 {children.map(({ component: c, attributes, innerText }) => {
                   let ChildComponent = comps[c];
-                  console.log(c);
-                  console.log(ChildComponent);
                   return <ChildComponent {...attributes}>
                     {innerText}
                   </ChildComponent>;

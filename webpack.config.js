@@ -56,7 +56,60 @@ module.exports = [{
   optimization,
   mode,
   entry: {
-    app: './src/client/app/index.js',
+    app: './src/client/app/index.js'
+  },
+  target: 'web',
+  externals: {
+    "preact": "preact"
+  },
+  module: {
+    rules: [
+      {
+        test,
+        exclude,
+        loader,
+        options: {
+          babelrc,
+          comments,
+          presets,
+          plugins: process.env.DEV_MODE ? [['poggerstylez/babel', {
+            toFile: 'public/app.style.css'
+          }]] :
+            [['poggerstylez/babel', {
+              toFile: 'public/app.style.css'
+            }], '@babel/plugin-transform-react-jsx', './babel/unconcatify', ['./babel/common-strings', {
+              table: commonStringsCfg
+            }]]
+        }
+      }
+    ]
+  },
+  output: {
+    path: pubPath,
+    publicPath: pubPath,
+    filename
+  },
+  resolve: {
+    alias: {
+      'preact/devtools': path.resolve(__dirname, 'node_modules', 'preact', 'devtools', 'dist',
+        'devtools.js'),
+      'preact/debug': path.resolve(__dirname, 'node_modules', 'preact', 'debug', 'dist',
+        'debug.js'),
+      'preact/compat': path.resolve(__dirname, 'node_modules', 'preact', 'compat', 'dist',
+        'compat.js'),
+      'preact/hooks': path.resolve(__dirname, 'node_modules', 'preact', 'hooks', 'dist',
+        'hooks.js') ,
+      'preact': path.resolve(__dirname, 'node_modules', 'preact', 'dist',
+        'preact.min.js'),
+      'history': path.resolve(__dirname, 'node_modules', 'history')
+    }
+  },
+  devtool: 'source-map'
+}, {
+  plugins: topPlugins,
+  optimization,
+  mode,
+  entry: {
     dashboard: './src/client/dashboard/index.js'
   },
   target: 'web',
@@ -74,9 +127,11 @@ module.exports = [{
           comments,
           presets,
           plugins: process.env.DEV_MODE ? [['poggerstylez/babel', {
-            toFile: path.resolve(__dirname, 'public/app.style.css')
+            toFile: 'public/dashboard.style.css'
           }]] :
-            [["poggerstylez/babel", { toFile: path.resolve(__dirname, 'public/app.style.css') }], '@babel/plugin-transform-react-jsx', './babel/unconcatify', ['./babel/common-strings', {
+            [['poggerstylez/babel', {
+              toFile: 'public/dashboard.style.css'
+            }], '@babel/plugin-transform-react-jsx', './babel/unconcatify', ['./babel/common-strings', {
               table: commonStringsCfg
             }]]
         }
@@ -124,7 +179,7 @@ module.exports = [{
           comments,
           presets,
           plugins: process.env.DEV_MODE ? [] :
-            ["poggerstylez/babel", '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify',
+            ['@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify',
               ['./babel/common-strings', { table: commonStringsCfg }]]
         }
       },
@@ -136,7 +191,7 @@ module.exports = [{
           babelrc,
           comments,
           presets,
-          plugins: ["poggerstylez/babel", '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify', './babel/autominify', ['./babel/common-strings', { table: commonStringsCfg }]]
+          plugins: ['poggerstylez/babel', '@babel/plugin-transform-react-jsx', './babel/rightify', './babel/unconcatify', './babel/autominify', ['./babel/common-strings', { table: commonStringsCfg }]]
         }
       },
     ],

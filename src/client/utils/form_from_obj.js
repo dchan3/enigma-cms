@@ -180,7 +180,7 @@ const checkRequired = function(paramObj, valueObj) {
 
   for (let reqField of reqFields) {
     if (pks[`${reqField}.required`]) {
-      if (vks.indexOf(reqField) > -1) {
+      if (vks.indexOf(reqField) <= -1) {        
         invalidFields.push(reqField);
       }
       else {

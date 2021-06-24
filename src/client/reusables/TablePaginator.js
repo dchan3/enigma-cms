@@ -1,4 +1,4 @@
-import { h, createElement } from 'preact'; /** @jsx h **/
+import { h } from 'preact'; /** @jsx h **/
 import { useContext, useEffect } from 'preact/hooks';
 import PaginatorControls from './PaginatorControls';
 import PaginatorControlContext, {
