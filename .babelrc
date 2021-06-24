@@ -3,6 +3,7 @@
         ["@babel/preset-env", { "modules": "cjs" }]
       ],
     "plugins": [
+      "poggerstylez/babel",
       "@babel/plugin-proposal-class-properties",
       "@babel/plugin-transform-runtime",
       "@babel/plugin-syntax-export-default-from",
