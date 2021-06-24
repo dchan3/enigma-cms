@@ -3,7 +3,6 @@ import Dashboard from './Dashboard';
 import TheBrowserRouter from '../the_router/TheBrowserRouter';
 import { StaticContextProvider } from '../contexts/StaticContext';
 import { HeadContextProvider } from '../contexts/HeadContext';
-import { FromCssContextProvider } from '../contexts/FromCssContext';
 import { getRequest } from '../utils/api_request_async';
 
 /** @jsx h **/
