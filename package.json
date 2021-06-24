@@ -83,7 +83,7 @@
     "analyze": "source-map-explorer public/*.js",
     "build": "webpack --progress -w",
     "lint": "eslint .",
-    "send": "nyc report --reporter=lcov --reporter=text && bash <(curl -Ls https://coverage.codacy.com/get.sh) -r ./coverage/lcov.info",
+    "send": "nyc report --reporter=lcov --reporter=text && bash (curl -Ls https://coverage.codacy.com/get.sh) -r ./coverage/lcov.info",
     "start": "nodemon server.bundle.js",
     "test-no-send": "nyc --silent npm run test && nyc report --reporter=lcov --reporter=text",
     "test": "SERVER_PORT=8094 DB_CONN_URL='mongodb://localhost/enigma-test' DIRECTORY=$(echo $(pwd)/test/) mocha",
