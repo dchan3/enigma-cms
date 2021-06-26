@@ -1,7 +1,7 @@
 export default function createReverseIndex(text) {
   let i = 0, savedLoc = -1, map = {}, str = '';
   for (let txt of text) {
-    if (!(' ,."\':;()[]{}+=-_<>!\\/\n'.includes(text[i]))) {
+    if (!(' ,."\':;()[]{}+=-_<>!\\/\n'.includes(txt))) {
       str += txt;
       if (savedLoc == -1) {
         savedLoc = i;

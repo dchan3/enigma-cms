@@ -36,7 +36,7 @@ import DropdownMenu from '../src/client/reusables/DropdownMenu';
 import TablePaginator from '../src/client/reusables/TablePaginator';
 import NotFound from '../src/client/views/front/NotFound';
 import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
-import { TheBrowserRouter, TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
+import { TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
 import chaiExclude from 'chai-exclude';
 
 chai.use(chaiExclude);

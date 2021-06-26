@@ -14,7 +14,7 @@ export function returnPathKeys(path) {
 }
 
 export default function matchThePath(pathname, { path, exact }) {
-  if (typeof path !== 'string') {
+  if (typeof path !== 'string' && path.length) {
     return path.map(p => matchThePath(pathname, {
       path: p, exact })).find((t) => t !== null);
   }
@@ -60,7 +60,7 @@ export default function matchThePath(pathname, { path, exact }) {
     params[keys[k]] = res[k + 1];
   }
 
-  for (let param of params) {
+  for (let param of Object.values(params)) {
     if (param.indexOf('/') >= 0) {
       return null;
     }
