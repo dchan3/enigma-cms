@@ -38,6 +38,7 @@ import NotFound from '../src/client/views/front/NotFound';
 import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
 import { TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
 import chaiExclude from 'chai-exclude';
+import { verify } from 'crypto';
 
 chai.use(chaiExclude);
 
@@ -66,6 +67,48 @@ let mountRenderForm = function(title, params, currentValue = null) {
     currentValue={currentValue} method="post" formAction="" />);
 }
 
+let guestListParams = {
+  guestList: {
+    type: '[object]',
+    shape: {
+      firstName: {
+        type: 'text',
+        required: true
+      },
+      lastName: {
+        type: 'text',
+        required: true
+      },
+      age: {
+        type: 'number'
+      },
+      contactInformation: {
+        type: 'object',
+        shape: {
+          phone: {
+            type: 'text'
+          },
+          email: {
+            type: 'text'
+          }
+        }
+      }
+    }
+  }
+}
+
+function verifyEditor(wrapper, value) {
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal(value);
+}
+
+function verifyPreview(wrapper, element, value) {
+  expect(wrapper.find('div')).to.exist;
+  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+  expect(wrapper.find('div').at(6).find(element)).to.exist;
+  expect(wrapper.find('div').at(6).find(element).text()).to.deep.equal(value);
+}
+
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
     var parameters = {
@@ -83,33 +126,7 @@ describe('Reusable UI Components - Generated Form', function() {
   });
 
   it('renders recursively without error', function(done) {
-    var parameters = {
-        guestList: {
-          type: '[object]',
-          shape: {
-            firstName: {
-              type: 'text'
-            },
-            lastName: {
-              type: 'text'
-            },
-            age: {
-              type: 'number'
-            },
-            contactInformation: {
-              type: 'object',
-              shape: {
-                phone: {
-                  type: 'text'
-                },
-                email: {
-                  type: 'text'
-                }
-              }
-            }
-          }
-        }
-      }, currentValue = {
+    let currentValue = {
         guestList: [{
           firstName: 'John',
           lastName: 'Doe',
@@ -120,7 +137,7 @@ describe('Reusable UI Components - Generated Form', function() {
           }
         }]
       };
-    let wrapper = mountRenderForm('Event Summary', parameters, currentValue);
+    let wrapper = mountRenderForm('Event Summary', guestListParams, currentValue);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
@@ -151,7 +168,7 @@ describe('Reusable UI Components - Generated Form', function() {
   });
 
   it('Array Add (object)', function(done) {
-    let formComps, params = {
+    let params = {
       familyMembers: {
         type: '[object]',
         shape: {
@@ -219,16 +236,12 @@ describe('Reusable UI Components - Code Editor', function() {
   it('preview box - with value', function(done) {
     let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
-    expect(wrapper.find('textarea')).to.exist;
-    expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello World!</h1>');
+    verifyEditor(wrapper, '<h1>Hello World!</h1>');
     act(function() {
       wrapper.find('button').at(0).props().onClick();
     });
     wrapper.update();
-    expect(wrapper.find('div')).to.exist;
-    expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-    expect(wrapper.find('div').at(6).find('h1')).to.exist;
-    expect(wrapper.find('div').at(6).find('h1').text()).to.deep.equal('Hello World!');
+    verifyPreview(wrapper, 'h1', 'Hello World!');
     act(function() {
       wrapper.find('button').at(0).props().onClick();
     });
@@ -272,10 +285,7 @@ it('preview box - with value edit preview first', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('h1')).to.exist;
-  expect(wrapper.find('div').at(6).find('h1').text()).to.equal('Hello.');
+  verifyPreview(wrapper, 'h1', 'Hello.');
   act(function() {
     wrapper.find('div').at(6).props().onInput({
       target: { innerHTML: '<p>Lol.</p>'}
@@ -292,8 +302,7 @@ it('preview box - with value edit preview first', function(done) {
 it('preview box - with value edit code first not changing preview', function(done) {
   let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="<h1>Hello.</h1>" />);
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
+  verifyEditor(wrapper, '<h1>Hello.</h1>');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol.</p>' }
@@ -301,16 +310,12 @@ it('preview box - with value edit code first not changing preview', function(don
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('p')).to.exist;
-  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol.');
+  verifyPreview(wrapper, 'p', 'Lol.');
   act(function() {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+  verifyEditor(wrapper, '<p>Lol.</p>');
   wrapper.detach();
   done();
 });
@@ -318,8 +323,7 @@ it('preview box - with value edit code first not changing preview', function(don
 it('preview box - with value edit code first changing preview', function(done) {
   let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="<h1>Hello.</h1>" />);
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
+  verifyEditor(wrapper, '<h1>Hello.</h1>');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol.</p>' }
@@ -327,10 +331,7 @@ it('preview box - with value edit code first changing preview', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('p')).to.exist;
-  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol.');
+  verifyPreview(wrapper, 'p', 'Lol.');
   act(function() {
     wrapper.find('div').at(6).props().onInput({
       target: { innerHTML: '<h2>Bruh?</h2>' }
@@ -348,8 +349,7 @@ it('preview box - edit preview bold command 1', function(done) {
     id="post-body" value="" />, null, {
       attachTo: document.body
     });
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('');
+  verifyEditor(wrapper, '');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol</p>' }
@@ -357,10 +357,7 @@ it('preview box - edit preview bold command 1', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('p')).to.exist;
-  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol');
+  verifyPreview(wrapper, 'p', 'Lol');
   act(function() {
     let r = document.createRange(), s = document.getSelection();
     r.selectNodeContents(wrapper.find('div').at(6).find('p').getDOMNode());
@@ -372,8 +369,7 @@ it('preview box - edit preview bold command 1', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('<p><strong>Lol</strong></p>');
+  verifyEditor(wrapper, '<p><strong>Lol</strong></p>');
   wrapper.detach();
   document.getSelection().removeAllRanges();
   done();
@@ -384,8 +380,7 @@ it('preview box - edit preview bold command 2', function(done) {
     id="post-body" value="" />, null, {
       attachTo: document.body
     });
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('');
+  verifyEditor(wrapper, '');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol</p>' }
@@ -393,10 +388,7 @@ it('preview box - edit preview bold command 2', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('p')).to.exist;
-  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol');
+  verifyPreview(wrapper, 'p', 'Lol');
   act(function() {
     let r = document.createRange(), s = document.getSelection();
     r.selectNodeContents(wrapper.find('div').at(6).find('p').getDOMNode());
@@ -647,33 +639,7 @@ describe('Form from Obj', function() {
   });
 
   it('Form from JSON gen fucntion', function(done) {
-    var parameters = {
-        guestList: {
-          type: '[object]',
-          shape: {
-            firstName: {
-              type: 'text'
-            },
-            lastName: {
-              type: 'text'
-            },
-            age: {
-              type: 'number'
-            },
-            contactInformation: {
-              type: 'object',
-              shape: {
-                phone: {
-                  type: 'text'
-                },
-                email: {
-                  type: 'text'
-                }
-              }
-            }
-          }
-        }
-      }, values = {
+    let values = {
         guestList: [{
           firstName: 'John',
           lastName: 'Doe',
@@ -684,7 +650,7 @@ describe('Form from Obj', function() {
           }
         }]
       };
-    expect(formGenUtils.formFromObj(parameters, values)).to.deep.equal([
+    expect(formGenUtils.formFromObj(guestListParams, values)).to.deep.equal([
       {
         component: 'FormObjectInputLabel',
         innerText: 'Guest List'
@@ -708,7 +674,7 @@ describe('Form from Obj', function() {
           name: 'guestList.0.firstName',
           onChange: 'handleChange guestList.0.firstName',
           type: 'text',
-          required: false,
+          required: true,
           hidden: false,
           noValidate: true
         }
@@ -727,7 +693,7 @@ describe('Form from Obj', function() {
           name: 'guestList.0.lastName',
           onChange: 'handleChange guestList.0.lastName',
           type: 'text',
-          required: false,
+          required: true,
           hidden: false,
           noValidate: true
         }
@@ -811,35 +777,7 @@ describe('Form from Obj', function() {
   });
 
   it('Validation function', function(done) {
-    var parameters = {
-        guestList: {
-          type: '[object]',
-          shape: {
-            firstName: {
-              type: 'text',
-              required: true
-            },
-            lastName: {
-              type: 'text',
-              required: true
-            },
-            age: {
-              type: 'number'
-            },
-            contactInformation: {
-              type: 'object',
-              shape: {
-                phone: {
-                  type: 'text'
-                },
-                email: {
-                  type: 'text'
-                }
-              }
-            }
-          }
-        }
-      }, valuesValid = {
+    var valuesValid = {
         guestList: [{
           firstName: 'John',
           lastName: 'Doe',
@@ -868,9 +806,8 @@ describe('Form from Obj', function() {
           }
         }]
       };
-    console.log(formGenUtils.validateForm(parameters, valuesValid));
-    expect(formGenUtils.validateForm(parameters, valuesValid)).to.be.true;
-    expect(formGenUtils.validateForm(parameters,
+    expect(formGenUtils.validateForm(guestListParams, valuesValid)).to.be.true;
+    expect(formGenUtils.validateForm(guestListParams,
       valuesInvalid)).to.have.members(['guestList.0.lastName',
       'guestList.1.firstName',
       'guestList.1.lastName']);
