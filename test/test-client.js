@@ -659,33 +659,7 @@ describe('Form from Obj', function() {
   });
 
   it('Form from JSON gen fucntion', function(done) {
-    var parameters = {
-        guestList: {
-          type: '[object]',
-          shape: {
-            firstName: {
-              type: 'text'
-            },
-            lastName: {
-              type: 'text'
-            },
-            age: {
-              type: 'number'
-            },
-            contactInformation: {
-              type: 'object',
-              shape: {
-                phone: {
-                  type: 'text'
-                },
-                email: {
-                  type: 'text'
-                }
-              }
-            }
-          }
-        }
-      }, values = {
+    let values = {
         guestList: [{
           firstName: 'John',
           lastName: 'Doe',
@@ -696,7 +670,7 @@ describe('Form from Obj', function() {
           }
         }]
       };
-    expect(formGenUtils.formFromObj(parameters, values)).to.deep.equal([
+    expect(formGenUtils.formFromObj(guestListParams, values)).to.deep.equal([
       {
         component: 'FormObjectInputLabel',
         innerText: 'Guest List'
