@@ -71,10 +71,12 @@ let guestListParams = {
     type: '[object]',
     shape: {
       firstName: {
-        type: 'text'
+        type: 'text',
+        required: true
       },
       lastName: {
-        type: 'text'
+        type: 'text',
+        required: true
       },
       age: {
         type: 'number'
