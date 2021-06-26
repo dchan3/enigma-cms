@@ -18,14 +18,13 @@ function domTree(html) {
 
 function domTreeToJsx(tree, rpl) {
   let jsxTree = [];
-  for (let l = 0; l < tree.length; l++) {
-    let curr = tree[l];
+  for (let curr of tree) {
     if (curr.getAttributeNames) {
       let attributes =
         curr.getAttributeNames(), attrMap = { key: undefined, ref: undefined };
       if (attributes.length) {
-        for (let a = 0; a < attributes.length; a++) {
-          let name = attributes[a], value = curr.getAttribute(name);
+        for (let name of attributes) {
+          let value = curr.getAttribute(name);
           if (name === 'style') {
             attrMap[name] = styleObject(value);
           }
