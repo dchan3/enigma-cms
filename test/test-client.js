@@ -694,7 +694,7 @@ describe('Form from Obj', function() {
           name: 'guestList.0.firstName',
           onChange: 'handleChange guestList.0.firstName',
           type: 'text',
-          required: false,
+          required: true,
           hidden: false,
           noValidate: true
         }
@@ -713,7 +713,7 @@ describe('Form from Obj', function() {
           name: 'guestList.0.lastName',
           onChange: 'handleChange guestList.0.lastName',
           type: 'text',
-          required: false,
+          required: true,
           hidden: false,
           noValidate: true
         }
