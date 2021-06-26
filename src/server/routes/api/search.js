@@ -15,10 +15,8 @@ router.get('/:query', function({ params: {
   } }).then(indexes => {
     if (indexes.length && indexes.length === qSplit.length) {
       let docs = {}, output = {};
-      for (let n = 0, len = indexes.length, idx = indexes[n]; n++ < len; idx = indexes[n]) {
-        let { string, where } = idx;
-        for (let w = 0, len = where.length, wh = where[w]; w++ < len; wh = where[w]) {
-          let { docNodeId, locations } = wh
+      for (let { string, where } of indexes) {
+        for (let { docNodeId, locations } of where) {
           if (!docs[docNodeId]) docs[docNodeId] = {};
           docs[docNodeId][string] = locations;
         }

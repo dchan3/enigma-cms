@@ -1,8 +1,8 @@
 export default function createReverseIndex(text) {
-  let savedLoc = -1, map = {}, str = '';
-  for (var i = 0; i < text.length; i++) {
-    if (!(' ,."\':;()[]{}+=-_<>!\\/\n'.includes(text[i]))) {
-      str += text[i];
+  let i = 0, savedLoc = -1, map = {}, str = '';
+  for (let txt of text) {
+    if (!(' ,."\':;()[]{}+=-_<>!\\/\n'.includes(txt))) {
+      str += txt;
       if (savedLoc == -1) {
         savedLoc = i;
       }
@@ -19,6 +19,7 @@ export default function createReverseIndex(text) {
       }
       str = '';
     }
+    i++;
   }
   return map;
 }
