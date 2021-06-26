@@ -38,6 +38,7 @@ import NotFound from '../src/client/views/front/NotFound';
 import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
 import { TheBrowserRouter, TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
 import chaiExclude from 'chai-exclude';
+import { verify } from 'crypto';
 
 chai.use(chaiExclude);
 
@@ -94,6 +95,18 @@ let guestListParams = {
       }
     }
   }
+}
+
+function verifyEditor(wrapper, value) {
+  expect(wrapper.find('textarea')).to.exist;
+  expect(wrapper.find('textarea').props().value).to.deep.equal(value);
+}
+
+function verifyPreview(wrapper, element, value) {
+  expect(wrapper.find('div')).to.exist;
+  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+  expect(wrapper.find('div').at(6).find(element)).to.exist;
+  expect(wrapper.find('div').at(6).find(element).text()).to.deep.equal(value);
 }
 
 describe('Reusable UI Components - Generated Form', function() {
@@ -199,18 +212,6 @@ describe('Reusable UI Components - Generated Form', function() {
 });
 
 describe('Reusable UI Components - Code Editor', function() {
-  function verifyEditor(wrapper, value) {
-    expect(wrapper.find('textarea')).to.exist;
-    expect(wrapper.find('textarea').props().value).to.deep.equal(value);
-  }
-
-  function verifyPreview(wrapper, element, value) {
-    expect(wrapper.find('div')).to.exist;
-    expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-    expect(wrapper.find('div').at(6).find(element)).to.exist;
-    expect(wrapper.find('div').at(6).find(element).text()).to.deep.equal(value);
-  }
-
   it('renders correctly with existing value', function(done) {
     let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
@@ -301,8 +302,7 @@ it('preview box - with value edit preview first', function(done) {
 it('preview box - with value edit code first not changing preview', function(done) {
   let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="<h1>Hello.</h1>" />);
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
+  verifyEditor(wrapper, '<h1>Hello.</h1>');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol.</p>' }
@@ -323,8 +323,7 @@ it('preview box - with value edit code first not changing preview', function(don
 it('preview box - with value edit code first changing preview', function(done) {
   let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="<h1>Hello.</h1>" />);
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello.</h1>');
+  verifyEditor(wrapper, '<h1>Hello.</h1>');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol.</p>' }
@@ -350,8 +349,7 @@ it('preview box - edit preview bold command 1', function(done) {
     id="post-body" value="" />, null, {
       attachTo: document.body
     });
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('');
+  verifyEditor(wrapper, '');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol</p>' }
@@ -359,10 +357,7 @@ it('preview box - edit preview bold command 1', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('p')).to.exist;
-  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol');
+  verifyPreview(wrapper, 'p', 'Lol');
   act(function() {
     let r = document.createRange(), s = document.getSelection();
     r.selectNodeContents(wrapper.find('div').at(6).find('p').getDOMNode());
@@ -374,8 +369,7 @@ it('preview box - edit preview bold command 1', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('<p><strong>Lol</strong></p>');
+  verifyEditor(wrapper, '<p><strong>Lol</strong></p>');
   wrapper.detach();
   document.getSelection().removeAllRanges();
   done();
@@ -386,8 +380,7 @@ it('preview box - edit preview bold command 2', function(done) {
     id="post-body" value="" />, null, {
       attachTo: document.body
     });
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('');
+  verifyEditor(wrapper, '');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
       target: { value: '<p>Lol</p>' }
@@ -395,10 +388,7 @@ it('preview box - edit preview bold command 2', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('p')).to.exist;
-  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol');
+  verifyPreview(wrapper, 'p', 'Lol');
   act(function() {
     let r = document.createRange(), s = document.getSelection();
     r.selectNodeContents(wrapper.find('div').at(6).find('p').getDOMNode());
