@@ -6,7 +6,7 @@ export default function createReverseIndex(text) {
       if (savedLoc == -1) {
         savedLoc = i;
       }
-      if (++i === text.length) {
+      if (i + 1 === text.length) {
         if (!map[str]) map[str] = [];
         map[str].push(savedLoc);
       }
@@ -19,6 +19,7 @@ export default function createReverseIndex(text) {
       }
       str = '';
     }
+    i++;
   }
   return map;
 }
