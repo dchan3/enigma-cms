@@ -284,10 +284,7 @@ it('preview box - with value edit preview first', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('h1')).to.exist;
-  expect(wrapper.find('div').at(6).find('h1').text()).to.equal('Hello.');
+  verifyPreview(wrapper, 'h1', 'Hello.');
   act(function() {
     wrapper.find('div').at(6).props().onInput({
       target: { innerHTML: '<p>Lol.</p>'}
@@ -313,16 +310,12 @@ it('preview box - with value edit code first not changing preview', function(don
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('p')).to.exist;
-  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol.');
+  verifyPreview(wrapper, 'p', 'Lol.');
   act(function() {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('textarea')).to.exist;
-  expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
+  verifyEditor(wrapper, '<p>Lol.</p>');
   wrapper.detach();
   done();
 });
@@ -339,10 +332,7 @@ it('preview box - with value edit code first changing preview', function(done) {
     wrapper.find('button').at(0).props().onClick();
   });
   wrapper.update();
-  expect(wrapper.find('div')).to.exist;
-  expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-  expect(wrapper.find('div').at(6).find('p')).to.exist;
-  expect(wrapper.find('div').at(6).find('p').text()).to.equal('Lol.');
+  verifyPreview(wrapper, 'p', 'Lol.');
   act(function() {
     wrapper.find('div').at(6).props().onInput({
       target: { innerHTML: '<h2>Bruh?</h2>' }
