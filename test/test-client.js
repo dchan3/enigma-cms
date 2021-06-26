@@ -66,6 +66,34 @@ let mountRenderForm = function(title, params, currentValue = null) {
     currentValue={currentValue} method="post" formAction="" />);
 }
 
+let guestListParams = {
+  guestList: {
+    type: '[object]',
+    shape: {
+      firstName: {
+        type: 'text'
+      },
+      lastName: {
+        type: 'text'
+      },
+      age: {
+        type: 'number'
+      },
+      contactInformation: {
+        type: 'object',
+        shape: {
+          phone: {
+            type: 'text'
+          },
+          email: {
+            type: 'text'
+          }
+        }
+      }
+    }
+  }
+}
+
 describe('Reusable UI Components - Generated Form', function() {
   it('renders one parameter correctly', function(done) {
     var parameters = {
@@ -83,33 +111,7 @@ describe('Reusable UI Components - Generated Form', function() {
   });
 
   it('renders recursively without error', function(done) {
-    var parameters = {
-        guestList: {
-          type: '[object]',
-          shape: {
-            firstName: {
-              type: 'text'
-            },
-            lastName: {
-              type: 'text'
-            },
-            age: {
-              type: 'number'
-            },
-            contactInformation: {
-              type: 'object',
-              shape: {
-                phone: {
-                  type: 'text'
-                },
-                email: {
-                  type: 'text'
-                }
-              }
-            }
-          }
-        }
-      }, currentValue = {
+    let currentValue = {
         guestList: [{
           firstName: 'John',
           lastName: 'Doe',
@@ -120,7 +122,7 @@ describe('Reusable UI Components - Generated Form', function() {
           }
         }]
       };
-    let wrapper = mountRenderForm('Event Summary', parameters, currentValue);
+    let wrapper = mountRenderForm('Event Summary', guestListParams, currentValue);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
@@ -151,7 +153,7 @@ describe('Reusable UI Components - Generated Form', function() {
   });
 
   it('Array Add (object)', function(done) {
-    let formComps, params = {
+    let params = {
       familyMembers: {
         type: '[object]',
         shape: {
@@ -195,6 +197,18 @@ describe('Reusable UI Components - Generated Form', function() {
 });
 
 describe('Reusable UI Components - Code Editor', function() {
+  function verifyEditor(wrapper, value) {
+    expect(wrapper.find('textarea')).to.exist;
+    expect(wrapper.find('textarea').props().value).to.deep.equal(value);
+  }
+
+  function verifyPreview(wrapper, element, value) {
+    expect(wrapper.find('div')).to.exist;
+    expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
+    expect(wrapper.find('div').at(6).find(element)).to.exist;
+    expect(wrapper.find('div').at(6).find(element).text()).to.deep.equal(value);
+  }
+
   it('renders correctly with existing value', function(done) {
     let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
@@ -219,16 +233,12 @@ describe('Reusable UI Components - Code Editor', function() {
   it('preview box - with value', function(done) {
     let wrapper = renderFromCss(<CodeEditor grammar="html" name="post-body"
       id="post-body" value="<h1>Hello World!</h1>" />);
-    expect(wrapper.find('textarea')).to.exist;
-    expect(wrapper.find('textarea').props().value).to.deep.equal('<h1>Hello World!</h1>');
+    verifyEditor(wrapper, '<h1>Hello World!</h1>');
     act(function() {
       wrapper.find('button').at(0).props().onClick();
     });
     wrapper.update();
-    expect(wrapper.find('div')).to.exist;
-    expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
-    expect(wrapper.find('div').at(6).find('h1')).to.exist;
-    expect(wrapper.find('div').at(6).find('h1').text()).to.deep.equal('Hello World!');
+    verifyPreview(wrapper, 'h1', 'Hello World!');
     act(function() {
       wrapper.find('button').at(0).props().onClick();
     });
@@ -811,35 +821,7 @@ describe('Form from Obj', function() {
   });
 
   it('Validation function', function(done) {
-    var parameters = {
-        guestList: {
-          type: '[object]',
-          shape: {
-            firstName: {
-              type: 'text',
-              required: true
-            },
-            lastName: {
-              type: 'text',
-              required: true
-            },
-            age: {
-              type: 'number'
-            },
-            contactInformation: {
-              type: 'object',
-              shape: {
-                phone: {
-                  type: 'text'
-                },
-                email: {
-                  type: 'text'
-                }
-              }
-            }
-          }
-        }
-      }, valuesValid = {
+    var valuesValid = {
         guestList: [{
           firstName: 'John',
           lastName: 'Doe',
@@ -868,9 +850,8 @@ describe('Form from Obj', function() {
           }
         }]
       };
-    console.log(formGenUtils.validateForm(parameters, valuesValid));
-    expect(formGenUtils.validateForm(parameters, valuesValid)).to.be.true;
-    expect(formGenUtils.validateForm(parameters,
+    expect(formGenUtils.validateForm(guestListParams, valuesValid)).to.be.true;
+    expect(formGenUtils.validateForm(guestListParams,
       valuesInvalid)).to.have.members(['guestList.0.lastName',
       'guestList.1.firstName',
       'guestList.1.lastName']);
