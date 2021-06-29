@@ -49,6 +49,11 @@ describe('Common Strings', function() {
         output: 'React[造](分, 零);',
         snapshot: false,
         error: false
+      }, {
+        code: 'console.log(window["location"] === undefined);',
+        output: 'console.log(window[點] === 冇);',
+        snapshot: false,
+        error: false
       }]
     });
     expect(allGud).to.equal(true);

@@ -20,10 +20,10 @@ module.exports =
           if (path.node.value === 'history' && ['ImportDeclaration', 'CallExpression'].includes(path.parent.type)) {
             return;
           }
-          if (opts.table && opts.table[path.node.value] && !['ObjectProperty', 'VariableDeclarator', 'JSXAttribute'].includes(path.parent.type)) {
+          if (opts.table && opts.table[path.node.value] && !['VariableDeclarator', 'JSXAttribute'].includes(path.parent.type)) {
             path.replaceWith(t.identifier(opts.table[path.node.value]));
           }
-          if (kwTable[path.node.value] && !['ObjectProperty', 'VariableDeclarator', 'JSXAttribute'].includes(path.parent.type)) {
+          if (kwTable[path.node.value] && !['VariableDeclarator', 'JSXAttribute'].includes(path.parent.type)) {
             path.replaceWith(t.identifier(kwTable[path.node.value]));
           }
         },
@@ -65,7 +65,7 @@ module.exports =
         },
         Identifier(path) {
           if (path.node.name === 'undefined') {
-            path.node.name = kwTable["UNDEFINED"];
+            path.replaceWith(t.identifier(kwTable["UNDEFINED"]));
           }
         },
         NumericLiteral(path) {
