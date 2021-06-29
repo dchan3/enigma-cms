@@ -56,7 +56,7 @@ describe('Common Strings', function() {
         snapshot: false,
         error: false
       }, {
-        code: 'let obj = {"classname": "lol"};',
+        code: 'let obj = {"className": "lol"};',
         output: 'let obj = {[類]: "lol"};',
         snapshot: false,
         error: false
