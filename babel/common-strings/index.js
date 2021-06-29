@@ -33,20 +33,7 @@ module.exports =
         },
         MemberExpression(path, { opts }) {
           if (path.node.computed) {
-            if (path.node.property.type === 'StringLiteral' && path.node.property.value.length > 1) {
-              getValue(path.node.property.value, opts, repl => {
-                if (typeof repl === 'string') {
-                  path.replaceWith(t.memberExpression(
-                    path.node.object,
-                    t.identifier(repl),
-                    true
-                  ));
-                }
-              });
-            }
-          }
-          else {
-            getValue(path.node.property.name, opts, (repl) => {
+            getValue(path.node.property[path.node.property.type === 'StringLiteral' ? "value" : "name"], opts, repl => {
               if (typeof repl === 'string') {
                 path.replaceWith(t.memberExpression(
                   path.node.object,
