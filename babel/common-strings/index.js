@@ -32,17 +32,17 @@ module.exports =
           });
         },
         MemberExpression(path, { opts }) {
-          if (path.node.computed) {
-            getValue(path.node.property[path.node.property.type === 'StringLiteral' ? "value" : "name"], opts, repl => {
-              if (typeof repl === 'string') {
-                path.replaceWith(t.memberExpression(
-                  path.node.object,
-                  t.identifier(repl),
-                  true
-                ));
-              }
-            });
-          }
+          let isDefComputed = path.node.computed;
+
+          getValue(path.node.property[isDefComputed ? "value" : "name"], opts, repl => {
+            if (typeof repl === 'string') {
+              path.replaceWith(t.memberExpression(
+                path.node.object,
+                t.identifier(repl),
+                true
+              ));
+            }
+          });
         },
         Identifier(path) {
           if (path.node.name === 'undefined') {
