@@ -13,7 +13,7 @@ module.exports =
       visitor: {
         ObjectProperty(path, { opts }) {
           let isString = path.node.key.type === 'StringLiteral';
-          let isIdentifier = path.node.key.type === 'Identifier' && !path.node.key.computed;
+          let isIdentifier = path.node.key.type === 'Identifier' && !path.node.computed;
 
           if (isString || isIdentifier) {
             getValue(path.node.key[isString ? "value" : "name"], opts, repl => {
