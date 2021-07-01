@@ -60,6 +60,11 @@ describe('Common Strings', function() {
         output: 'let obj = {\n  [類]: "lol",\n};',
         snapshot: false,
         error: false
+      },{
+        code: 'let className = "theClassname", obj = {[className]: "lol"};',
+        output: 'let className = "theClassname", obj = {\n  [className]: "lol",\n};',
+        snapshot: false,
+        error: false
       }]
     });
     expect(allGud).to.equal(true);

@@ -13,10 +13,13 @@ module.exports =
       visitor: {
         ObjectProperty(path, { opts }) {
           let isString = path.node.key.type === 'StringLiteral';
+          let isIdentifier = path.node.key.type === 'Identifier' && !path.node.key.computed;
 
-          getValue(path.node.key[isString ? "value" : "name"], opts, repl => {
-            path.replaceWith(t.objectProperty(t.identifier(repl), path.node.value, true));
-          });
+          if (isString || isIdentifier) {
+            getValue(path.node.key[isString ? "value" : "name"], opts, repl => {
+              path.replaceWith(t.objectProperty(t.identifier(repl), path.node.value, true));
+            });
+          }
         },
         StringLiteral(path, { opts }) {
           if (path.node.value === 'history' && ['ImportDeclaration', 'CallExpression'].includes(path.parent.type)) {
