@@ -49,6 +49,22 @@ describe('Common Strings', function() {
         output: 'React[造](分, 零);',
         snapshot: false,
         error: false
+      }, 
+      {
+        code: 'console.log(window["location"] === undefined);',
+        output: 'console.log(window[點] === 冇);',
+        snapshot: false,
+        error: false
+      }, {
+        code: 'let obj = {"className": "lol"};',
+        output: 'let obj = {\n  [類]: "lol",\n};',
+        snapshot: false,
+        error: false
+      },{
+        code: 'let className = "theClassname", obj = {[className]: "lol"};',
+        output: 'let className = "theClassname",\n  obj = {\n    [className]: "lol",\n  };',
+        snapshot: false,
+        error: false
       }]
     });
     expect(allGud).to.equal(true);

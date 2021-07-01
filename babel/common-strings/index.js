@@ -1,71 +1,53 @@
 let t = require('@babel/types'), kwTable = require('./kw-table');
 
+function getValue(str, options, cb) {
+  let repl = (options.table && options.table[str]) || kwTable[str];
+  if (repl) {
+    cb(repl);
+  }
+};
+
 module.exports =
   function () {
     return {
       visitor: {
         ObjectProperty(path, { opts }) {
-          if (path.node.computed) { // when obj[computedValue]
-            if (path.node.key.type === 'StringLiteral') { // obj["variable"]
-              if (opts.table && opts.table[path.node.key.value]) {
-                path.replaceWith(t.objectProperty(t.identifier(opts.table[path.node.key.value]), path.node.value, true));
-              }
-              if (kwTable[path.node.key.value] && typeof kwTable[path.node.key.value] === 'string') {
-                path.replaceWith(t.objectProperty(t.identifier(kwTable[path.node.key.value]), path.node.value, true));
-              }
-            }
+          let isString = path.node.key.type === 'StringLiteral';
+          let isIdentifier = path.node.key.type === 'Identifier' && !path.node.computed;
+
+          if (isString || isIdentifier) {
+            getValue(path.node.key[isString ? "value" : "name"], opts, repl => {
+              path.replaceWith(t.objectProperty(t.identifier(repl), path.node.value, true));
+            });
           }
         },
         StringLiteral(path, { opts }) {
           if (path.node.value === 'history' && ['ImportDeclaration', 'CallExpression'].includes(path.parent.type)) {
             return;
           }
-          if (opts.table && opts.table[path.node.value] && !['ObjectProperty', 'VariableDeclarator', 'JSXAttribute'].includes(path.parent.type)) {
-            path.replaceWith(t.identifier(opts.table[path.node.value]));
-          }
-          if (kwTable[path.node.value] && !['ObjectProperty', 'VariableDeclarator', 'JSXAttribute'].includes(path.parent.type)) {
-            path.replaceWith(t.identifier(kwTable[path.node.value]));
-          }
+
+          getValue(path.node.value, opts, (repl) => {
+            if (!['VariableDeclarator', 'JSXAttribute'].includes(path.parent.type)) {
+              path.replaceWith(t.identifier(repl));
+            }
+          });
         },
         MemberExpression(path, { opts }) {
-          if (path.node.computed) {
-            if (path.node.property.type === 'StringLiteral' && path.node.property.value.length > 1) {
-              if (opts && opts.table && opts.table[path.node.property.value] && typeof opts.table[path.node.property.value] === 'string') {
-                path.replaceWith(t.memberExpression(
-                  path.node.object,
-                  t.identifier(opts.table[path.node.property.value]),
-                  true
-                ));
-              }
-              if (kwTable[path.node.property.value] && typeof kwTable[path.node.property.value] === 'string') {
-                path.replaceWith(t.memberExpression(
-                  path.node.object,
-                  t.identifier(kwTable[path.node.property.value]),
-                  true
-                ));
-              }
-            }
-          }
-          else {
-            if (opts && opts.table && opts.table[path.node.property.name] && typeof opts.table[path.node.property.name] === 'string') {
+          let isDefComputed = path.node.computed;
+
+          getValue(path.node.property[isDefComputed ? "value" : "name"], opts, repl => {
+            if (typeof repl === 'string') {
               path.replaceWith(t.memberExpression(
                 path.node.object,
-                t.identifier(opts.table[path.node.property.name]),
+                t.identifier(repl),
                 true
               ));
             }
-            if (kwTable[path.node.property.name] && typeof kwTable[path.node.property.name] === 'string') {
-              path.replaceWith(t.memberExpression(
-                path.node.object,
-                t.identifier(kwTable[path.node.property.name]),
-                true
-              ));
-            }
-          }
+          });
         },
         Identifier(path) {
           if (path.node.name === 'undefined') {
-            path.node.name = kwTable["UNDEFINED"];
+            path.replaceWith(t.identifier(kwTable["UNDEFINED"]));
           }
         },
         NumericLiteral(path) {
