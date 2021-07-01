@@ -62,7 +62,7 @@ describe('Common Strings', function() {
         error: false
       },{
         code: 'let className = "theClassname", obj = {[className]: "lol"};',
-        output: 'let className = "theClassname", obj = {\n  [className]: "lol",\n};',
+        output: 'let className = "theClassname",\n  obj = {\n    [className]: "lol",\n  };',
         snapshot: false,
         error: false
       }]
