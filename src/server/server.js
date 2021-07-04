@@ -8,7 +8,6 @@ import {
   userRoutes, configRoutes, documentRoutes, fileRoutes, searchRoutes,
   sitemapRoutes, themeRoutes
 } from './routes/api';
-import bodyParser from 'body-parser';
 import { default as expressSession } from './session';
 import { default as ssrRoutes } from './routes/ssr';
 import { default as ampRoutes } from './routes/ssr/amp';
@@ -82,23 +81,21 @@ mongoose.connect(require('../../config/db.js').url, {
   });
 });
 
-app.post('/api', function(req, res) {
-  apiProxy.web(req, res, { target: `http://localhost:${port}/api` });
-});
-
-app.use(expressSession);
-
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
 
+app.use(expressSession);
 app.use(passport.initialize());
 app.use(passport.session());
+
+passport.use('local-signup', SignupStrategy);
+passport.use('local-login', LoginStrategy);
 
 passport.serializeUser(({ _id }, done) => {
   done(null, _id);
@@ -108,9 +105,6 @@ passport.deserializeUser((_id, done) => {
     done(err, user);
   });
 });
-
-passport.use('local-signup', SignupStrategy);
-passport.use('local-login', LoginStrategy);
 
 app.use(express.static(path.join(process.env.DIRECTORY || __dirname, '/public')));
 app.use('/api/users', userRoutes);
@@ -125,6 +119,9 @@ app.use('/', express.static(path.join(process.env.DIRECTORY || __dirname, '/publ
 app.get('/*', function(req, res, next) {
   if (req.query.amp) return ampRoutes(req, res, next);
   return ssrRoutes(req, res, next);
+});
+app.post('/api', function(req, res) {
+  apiProxy.web(req, res, { target: `http://localhost:${port}/api` });
 });
 
 app.listen(port);
