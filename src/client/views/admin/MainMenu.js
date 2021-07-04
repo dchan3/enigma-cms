@@ -37,9 +37,9 @@ export default function MainMenu() {
   }, {
     url: '/admin/user-mgmt', text: 'Manage Users'
   }, {
-    url: '/admin/edit-profile', text: "Edit Profile"
+    url: '/admin/edit-profile', text: 'Edit Profile'
   }, {
-    url: '/admin/change-password', text: "Change Password"
+    url: '/admin/change-password', text: 'Change Password'
   });
 
   return user ? <DropdownMenu {...{ menuNodes }} /> : null;
