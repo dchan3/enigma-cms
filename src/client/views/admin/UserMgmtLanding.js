@@ -19,7 +19,7 @@ function ChangeableProfilePicture({ pictureSrc, username, userId }) {
       fileContent: { type: 'string', hidden: true },
     }} redirectUrl='' formAction='users/update_profile_picture' />
     <p onClick={() => setChanging(false)}>Cancel</p>
-   </div>: <HoverButton onClick={() => setChanging(true)}>Change</HoverButton>}
+    </div>: <HoverButton onClick={() => setChanging(true)}>Change</HoverButton>}
   </div>;
 }
 
