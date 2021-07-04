@@ -8,18 +8,18 @@ import useStaticContext from '../../hooks/useStaticContext';
 function ChangeableProfilePicture({ pictureSrc, username, userId }) {
   let [changing, setChanging] = useState(false);
 
-  return <div style={{ position: "relative" }}>
-    <ProfileImage src={pictureSrc} role="presentation" title={`${username}'s profile picture`} />
+  return <div style={{ position: 'relative' }}>
+    <ProfileImage src={pictureSrc} role='presentation' title={`${username}'s profile picture`} />
     {changing ? <div><GeneratedForm title='Upload Profile Picture' currentValue={{
-      userId, profilePhoto: "", fileContent: ""
+      userId, profilePhoto: '', fileContent: ''
     }}
-      params={{
-        userId: { label: 'User ID', type: 'text', hidden: true },
-        profilePhoto: { type: 'file' },
-        fileContent: { type: 'string', hidden: true },
-      }} redirectUrl='' formAction='users/update_profile_picture' />
-      <p onClick={() => setChanging(false)}>Cancel</p>
-    </div>: <HoverButton onClick={() => setChanging(true)}>Change</HoverButton>}
+    params={{
+      userId: { label: 'User ID', type: 'text', hidden: true },
+      profilePhoto: { type: 'file' },
+      fileContent: { type: 'string', hidden: true },
+    }} redirectUrl='' formAction='users/update_profile_picture' />
+    <p onClick={() => setChanging(false)}>Cancel</p>
+   </div>: <HoverButton onClick={() => setChanging(true)}>Change</HoverButton>}
   </div>;
 }
 
