@@ -77,6 +77,26 @@ router.post('/change_password', verifyMiddleware,
     });
   });
 
+router.post('/update_profile_picture', verifyMiddleware, function({ body, user: reqUser }, res, next) {
+  if (reqUser.userId.toString() === body.userId.toString()) {
+    let { profilePhoto, fileContent } = body;
+    User.findOne({ userId: reqUser.userId }).then(async user => {
+      if (profilePhoto && fileContent) {
+        let fmt = profilePhoto.split('.').pop(), filepath = path.resolve(
+          __dirname, `./public/profile-pix/${user.username}.${fmt}`);
+        writeFileSync(filepath, Buffer.from(fileContent, 'base64'),
+          { flag: 'a+' });
+        user.set('pictureSrc', `/profile-pix/${user.username}.${fmt}`);
+      }
+      user.save(function (err) {
+        if (err) return next({ error: err.message });
+        else return res.status(200).end();
+      });
+    });
+  }
+  else return res.status(500).end();
+});
+
 router.post('/update', verifyMiddleware,  function({ body }, res, next) {
   var { userId, username, currentPassword, profilePhoto, fileContent } = body;
   User.findOne({ userId }).then(async user => {

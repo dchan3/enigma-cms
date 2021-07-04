@@ -1,9 +1,27 @@
 import { h } from 'preact'; /** @jsx h **/
 import { useEffect, useState } from 'preact/hooks';
-import { TextHeader, SamePageAnchor, TablePaginator, ProfileImage } from
+import { TextHeader, SamePageAnchor, TablePaginator, ProfileImage, HoverButton, GeneratedForm } from
   '../../reusables/back_exports';
 import { getRequest } from '../../utils/api_request_async';
 import useStaticContext from '../../hooks/useStaticContext';
+
+function ChangeableProfilePicture({ pictureSrc, username, userId }) {
+  let [changing, setChanging] = useState(false);
+
+  return <div style={{ position: "relative" }}>
+    <ProfileImage src={pictureSrc} role="presentation" title={`${username}'s profile picture`} />
+    {changing ? <div><GeneratedForm title='Upload Profile Picture' currentValue={{
+      userId, profilePhoto: "", fileContent: ""
+    }}
+      params={{
+        userId: { label: 'User ID', type: 'text', hidden: true },
+        profilePhoto: { type: 'file' },
+        fileContent: { type: 'string', hidden: true },
+      }} redirectUrl='' formAction='users/update_profile_picture' />
+      <p onClick={() => setChanging(false)}>Cancel</p>
+    </div>: <HoverButton onClick={() => setChanging(true)}>Change</HoverButton>}
+  </div>;
+}
 
 export default function UserMgmtLanding() {
   let [state, setState] = useState({
@@ -16,7 +34,7 @@ export default function UserMgmtLanding() {
     });
   }, []);
 
-  let { users } = state, { config: { themeColor } } = useStaticContext();
+  let { users } = state, { config: { themeColor }, user } = useStaticContext();
 
   return [
     <TextHeader>Manage Users</TextHeader>,
@@ -24,7 +42,9 @@ export default function UserMgmtLanding() {
       items={users} truncate={true} columns={[
         {
           headerText: 'Picture',
-          display: ({ pictureSrc }) => <div><ProfileImage src={pictureSrc} /></div>
+          display: ({ pictureSrc, username, userId }) => userId === user.userId ? 
+            <ChangeableProfilePicture pictureSrc={pictureSrc} username={username} userId={userId} /> :
+            <ProfileImage pictureSrc={pictureSrc} />
         },
         {
           headerText: 'Username',
