@@ -37,28 +37,23 @@ router.get('/get_user_profile/:username',
       username }));
   });
 
-// POST Requests
-router.post('/register', verifyMiddleware, function(req, res, next) {
-  passport.authenticate('local-signup', function(err, user) {
-    if (err) return next(err);
-    if (!user) return next({ error: 'Invalid Credentials.' });
-    req.logIn(user, function(er) {
-      if (er) { return next(er); }
-      return res.status(200).end();
-    });
-  })(req, res, next);
-});
+function auth(scheme) {
+  return function(req, res, next) {
+    passport.authenticate(scheme, function(err, user) {
+      if (err) return next(err);
+      if (!user) return next({ error: 'Invalid Credentials.' });
+      req.logIn(user, function(er) {
+        if (er) { return next(er); }
+        return res.status(200).end();
+      });
+    })(req, res, next);
+  }
+}
 
-router.post('/login', verifyMiddleware, function(req, res, next) {
-  passport.authenticate('local-login', function(err, user) {
-    if (err) return next(err);
-    if (!user) return next({ error: 'Invalid Credentials.' });
-    req.logIn(user, function(er) {
-      if (er) { return next(er); }
-      return res.status(200).end();
-    });
-  })(req, res, next);
-});
+// POST Requests
+router.post('/register', verifyMiddleware, auth('local-signup'));
+
+router.post('/login', verifyMiddleware, auth('local-login'));
 
 router.post('/change_password', verifyMiddleware,
   function({ body: { currentPassword, newPassword }, user: reqUser }, res, next) {
@@ -110,9 +105,9 @@ let updateProfile = (needPassword) => function({ body, user: reqUser }, res, nex
             else return res.status(200).end();
           });
         }
-    }
-    else res.status(500);
-  }).catch((err) => {
+      }
+      else res.status(500);
+    }).catch((err) => {
       return next(err);
     });
   }

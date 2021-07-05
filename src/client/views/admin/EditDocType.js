@@ -5,7 +5,7 @@ import useFrontContext from '../../hooks/useFrontContext';
 
 export default function EditDocType({ isNew }) {
   let { state, setState } = useFrontContext({
-    dataParams: ['docType.docTypeId'],
+    dataParams: ['docTypeId'],
     urlParams: ['docTypeId'],
     apiUrl: function(params) {
       if (params && params.docTypeId)
@@ -124,7 +124,7 @@ export default function EditDocType({ isNew }) {
             ],
           value: ''
         } }} parentCallback={updateParams} redirectUrl='/admin'
-      formAction={`documents/${(docType && docType.docTypeId) ?
+      formAction={`documents/${!isNew ?
         `update_type/${docType.docTypeId}`
         : 'register_type'}`} />;
   }
