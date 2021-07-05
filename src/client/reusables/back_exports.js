@@ -7,3 +7,4 @@ export { TextHeader, StyledDiv, PreviewImage, ProfileImage } from './styled';
 export { default as TablePaginator } from './TablePaginator';
 export { default as DropdownMenu } from './DropdownMenu';
 export { default as Fedora } from './Fedora';
+export { default as HoverButton } from './HoverButton'; 

@@ -89,7 +89,7 @@ function GeneratedFormContents() {
           credentials: 'include'
         }, cbFunc = function(data) {
           if (successCallback) successCallback(data);
-          else if (redirectUrl) window.location.href = redirectUrl;
+          else if (redirectUrl && redirectUrl.length) window.location.href = redirectUrl;
         };
       method.match('/^get$/i') ?
         getRequest(formAction, cbFunc, config) :
