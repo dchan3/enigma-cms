@@ -1,7 +1,6 @@
 import passport from 'passport';
 import { Router } from 'express';
 import { User } from '../../models';
-import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
 import { writeFileSync } from 'fs';
@@ -62,8 +61,8 @@ router.post('/login', verifyMiddleware, function(req, res, next) {
 });
 
 router.post('/change_password', verifyMiddleware,
-  function({ body: { userId, currentPassword, newPassword } }, res, next) {
-    User.findOne({ _id: ObjectId(userId) }).then(user => {
+  function({ body: { currentPassword, newPassword }, user: reqUser }, res, next) {
+    User.findOne({ userId: reqUser.userId }).then(user => {
       if (!user.comparePassword(currentPassword)) {
         return next({ error: 'Wrong password.' });
       }
