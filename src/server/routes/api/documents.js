@@ -87,7 +87,7 @@ router.post('/update_type/:id', verifyMiddleware,
         if (err) return next(err);
         else res.redirect('/admin/');
       }, {
-        ignore: [""]
+        ignore: ['']
       });
     })
   });
