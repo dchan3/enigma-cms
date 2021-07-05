@@ -96,11 +96,11 @@ router.post('/new_document/:type_id', verifyMiddleware,
   ({ params: { type_id: docTypeId, node_id },
     user: { userId }, body }, res) => {
     let newDoc = new Document({
-        docTypeId,
-        createdAt: new Date(),
-        creatorId: userId,
-        editedAt: new Date(),
-        editorId: userId
+      docTypeId,
+      createdAt: new Date(),
+      creatorId: userId,
+      editedAt: new Date(),
+      editorId: userId
     });
     DocumentType.findOne({ docTypeId }).then(({ slugFrom }) => {
       let propSlug = slug(newDoc.content[slugFrom]);
