@@ -22,7 +22,7 @@ router.post('/update', verifyMiddleware, function({ body }, res, next) {
       let fn = iconFile.split('\\').pop();
       await writeFile(path.resolve(__dirname,
         `./public/site-icon/${fn}`),
-      Buffer.from(fileContent, 'base64'), { flag: 'a+' },
+      Buffer.from(fileContent, 'base64'), { flag: 'w' },
       function(error) {
         if (error) return next(error);
         config.set('iconUrl', `/site-icon/${fn}`);
@@ -31,7 +31,7 @@ router.post('/update', verifyMiddleware, function({ body }, res, next) {
     updateMongoDoc(body, config, (function (err) {
       if (err) next(err);
       else res.status(200).end();
-    }, { ignore: ['iconFile', 'fileContent']}));
+    }, { ignore: ['iconFile', 'fileContent'] }));
   });
 });
 

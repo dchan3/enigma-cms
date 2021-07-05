@@ -75,7 +75,7 @@ router.post('/register_type', verifyMiddleware, ({ body }, res, next) => {
       });
     }
   }, {
-    ignore: [""]
+    ignore: ['']
   });
   newType.save();
 });
@@ -101,7 +101,7 @@ router.post('/new_document/:type_id', verifyMiddleware,
         creatorId: userId,
         editedAt: new Date(),
         editorId: userId
-      });
+    });
     DocumentType.findOne({ docTypeId }).then(({ slugFrom }) => {
       let propSlug = slug(newDoc.content[slugFrom]);
       Document.find({ docNodeId: { $ne: node_id }, slug: {
@@ -114,7 +114,7 @@ router.post('/new_document/:type_id', verifyMiddleware,
         updateMongoDoc(body, newDoc, function(err) {
           if (err) res.status(500);
           else res.redirect('/admin/');
-        }, { prefix: 'content.', exceptions: ["draft"] });
+        }, { prefix: 'content.', exceptions: ['draft'] });
       });
     }).catch(() => { res.status(500); });
   });
@@ -133,10 +133,10 @@ router.post('/update_document/:node_id', verifyMiddleware, (
           propSlug = `${slug}-${length}`;
         }
         doc.set('slug', propSlug);
-        updateMongoDoc(body, newDoc, (function(err) {
+        updateMongoDoc(body, doc, (function(err) {
           if (err) res.status(500);
           else res.redirect('/admin/');
-        }, { prefix: 'content.', exceptions: ["draft", ""] }));
+        }, { prefix: 'content.', exceptions: ['draft', ''] }));
       });
     });
   }).catch((err) => {

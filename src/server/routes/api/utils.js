@@ -12,11 +12,11 @@ export const findTheOne = (collection, paramsList) => {
   };
 };
 
-export const updateMongoDoc = (body, mongoDoc, cb, { prefix = "", exceptions = [], ignore = []}) => {
+export const updateMongoDoc = (body, mongoDoc, cb, { prefix = '', exceptions = [], ignore = [] }) => {
   var reset = [];
   for (var attr in body) {
     if (!ignore.includes(attr)) {
-      let truePrefix = (prefix.length && !exceptions.includes(attr)) ? prefix : "";
+      let truePrefix = (prefix.length && !exceptions.includes(attr)) ? prefix : '';
       if (attr.indexOf('.') > -1) {
         var mainKey = attr.split('.')[0];
         if (!reset.includes(mainKey)) {
