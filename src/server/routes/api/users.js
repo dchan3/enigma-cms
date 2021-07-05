@@ -1,7 +1,6 @@
 import passport from 'passport';
 import { Router } from 'express';
 import { User } from '../../models';
-import { ObjectId } from 'mongodb';
 import icongen from '../../utils/icongen';
 import { default as verifyMiddleware } from '../middleware';
 import { writeFileSync } from 'fs';
