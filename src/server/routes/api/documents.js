@@ -6,6 +6,7 @@ import { ObjectId } from 'mongodb';
 import { default as documentFetchFuncs } from '../fetch_funcs/documents';
 import fs from 'fs';
 import path from 'path';
+import { updateMongoDoc } from './utils';
 
 var router = Router();
 
@@ -59,18 +60,7 @@ router.get('/get_template/:id', async (req, res) => {
 
 router.post('/register_type', verifyMiddleware, ({ body }, res, next) => {
   let newType = new DocumentType();
-  let reset = [];
-  for (let attr in body) {
-    if (attr.indexOf('.') > -1) {
-      let [mainKey,] = attr.split('.');
-      if (!reset.includes(mainKey)) {
-        newType.set(mainKey, {});
-        reset.push(mainKey);
-      }
-    }
-    newType.set(attr, body[attr]);
-  }
-  newType.save(function (err) {
+  newType = updateMongoDoc(body, newType, function (err) {
     if (err) return next(err);
     else {
       let newTemplate = new
@@ -84,26 +74,20 @@ router.post('/register_type', verifyMiddleware, ({ body }, res, next) => {
         else return res.redirect('/admin/');
       });
     }
+  }, {
+    ignore: [""]
   });
+  newType.save();
 });
 
 router.post('/update_type/:id', verifyMiddleware,
   ({ body, params: { id: docTypeId } }, res, next) => {
     DocumentType.findOne({ docTypeId }).then(newType => {
-      let reset = [];
-      for (var attr in body) {
-        if (attr.indexOf('.') > -1) {
-          var mainKey = attr.split('.')[0];
-          if (!reset.includes(mainKey)) {
-            newType.set(mainKey, {});
-            reset.push(mainKey);
-          }
-        }
-        newType.set(attr, body[attr]);
-      }
-      newType.save(function (err) {
+      updateMongoDoc(body, newType, function (err) {
         if (err) return next(err);
         else res.redirect('/admin/');
+      }, {
+        ignore: [""]
       });
     })
   });
@@ -117,20 +101,7 @@ router.post('/new_document/:type_id', verifyMiddleware,
         creatorId: userId,
         editedAt: new Date(),
         editorId: userId
-      }), reset = [];
-    for (var attr in body) {
-      if (attr !== 'draft') {
-        if (attr.indexOf('.') > -1) {
-          var mainKey = attr.split('.')[0];
-          if (!reset.includes(mainKey)) {
-            newDoc.set(`content.${mainKey}`, {});
-            reset.push(mainKey);
-          }
-        }
-        newDoc.set(`content.${attr}`, body[attr]);
-      }
-      else { newDoc.set(attr, body[attr]); }
-    }
+      });
     DocumentType.findOne({ docTypeId }).then(({ slugFrom }) => {
       let propSlug = slug(newDoc.content[slugFrom]);
       Document.find({ docNodeId: { $ne: node_id }, slug: {
@@ -140,10 +111,10 @@ router.post('/new_document/:type_id', verifyMiddleware,
           propSlug = `${slug}-${length}`;
         }
         newDoc.set('slug', propSlug);
-        newDoc.save(function(err) {
+        updateMongoDoc(body, newDoc, function(err) {
           if (err) res.status(500);
           else res.redirect('/admin/');
-        });
+        }, { prefix: 'content.', exceptions: ["draft"] });
       });
     }).catch(() => { res.status(500); });
   });
@@ -153,22 +124,6 @@ router.post('/update_document/:node_id', verifyMiddleware, (
   Document.findOne({ docNodeId }).then(doc => {
     doc.set('editedAt', new Date());
     doc.set('editorId', user.userId);
-    var reset = [];
-    for (var attr in body) {
-      if (attr !== '') {
-        if (attr !== 'draft') {
-          if (attr.indexOf('.') > -1) {
-            var mainKey = attr.split('.')[0];
-            if (!reset.includes(mainKey)) {
-              doc.set(`content.${mainKey}`, {});
-              reset.push(mainKey);
-            }
-          }
-          doc.set(`content.${attr}`, body[attr]);
-        }
-        else { doc.set(attr, body[attr]); }
-      }
-    }
     DocumentType.findOne({ docTypeId: doc.docTypeId }).then(({ slugFrom }) => {
       let propSlug = slug(doc.content[slugFrom]);
       Document.find({ docNodeId: { $ne: docNodeId }, slug: {
@@ -178,10 +133,10 @@ router.post('/update_document/:node_id', verifyMiddleware, (
           propSlug = `${slug}-${length}`;
         }
         doc.set('slug', propSlug);
-        doc.save(function(err) {
+        updateMongoDoc(body, newDoc, (function(err) {
           if (err) res.status(500);
           else res.redirect('/admin/');
-        });
+        }, { prefix: 'content.', exceptions: ["draft", ""] }));
       });
     });
   }).catch((err) => {
