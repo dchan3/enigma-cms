@@ -93,7 +93,7 @@ router.post('/update_type/:id', verifyMiddleware,
   });
 
 router.post('/new_document/:type_id', verifyMiddleware,
-  ({ params: { type_id: docTypeId, node_id },
+  ({ params: { type_id: docTypeId },
     user: { userId }, body }, res) => {
     let newDoc = new Document({
       docTypeId,
@@ -103,8 +103,8 @@ router.post('/new_document/:type_id', verifyMiddleware,
       editorId: userId
     });
     DocumentType.findOne({ docTypeId }).then(({ slugFrom }) => {
-      let propSlug = slug(newDoc.content[slugFrom]);
-      Document.find({ docNodeId: { $ne: node_id }, slug: {
+      let propSlug = slug(body[slugFrom]);
+      Document.find({ docNodeId: { $ne: docNodeId }, slug: {
         $regex: new RegExp(`^${propSlug}`)
       } }).sort({ slug: -1 }).then(({ length }) => {
         if (length > 0) {
@@ -125,7 +125,7 @@ router.post('/update_document/:node_id', verifyMiddleware, (
     doc.set('editedAt', new Date());
     doc.set('editorId', user.userId);
     DocumentType.findOne({ docTypeId: doc.docTypeId }).then(({ slugFrom }) => {
-      let propSlug = slug(doc.content[slugFrom]);
+      let propSlug = slug(body[slugFrom]);
       Document.find({ docNodeId: { $ne: docNodeId }, slug: {
         $regex: new RegExp(`^${propSlug}`)
       } }).sort({ slug: -1 }).then(({ length }) => {
@@ -133,10 +133,10 @@ router.post('/update_document/:node_id', verifyMiddleware, (
           propSlug = `${slug}-${length}`;
         }
         doc.set('slug', propSlug);
-        updateMongoDoc(body, doc, (function(err) {
+        updateMongoDoc(body, doc, function(err) {
           if (err) res.status(500);
           else res.redirect('/admin/');
-        }, { prefix: 'content.', exceptions: ['draft', ''] }));
+        }, { prefix: 'content.', exceptions: ['draft', ''] });
       });
     });
   }).catch((err) => {
