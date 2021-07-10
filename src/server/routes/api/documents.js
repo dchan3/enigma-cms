@@ -104,7 +104,7 @@ router.post('/new_document/:type_id', verifyMiddleware,
     });
     DocumentType.findOne({ docTypeId }).then(({ slugFrom }) => {
       let propSlug = slug(body[slugFrom]);
-      Document.find({ docNodeId: { $ne: docNodeId }, slug: {
+      Document.find({ slug: {
         $regex: new RegExp(`^${propSlug}`)
       } }).sort({ slug: -1 }).then(({ length }) => {
         if (length > 0) {
