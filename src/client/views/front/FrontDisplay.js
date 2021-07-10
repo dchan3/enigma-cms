@@ -20,12 +20,7 @@ function FrontDisplay({ dataParams, urlParams, apiUrl }) {
   }, []);
 
   useEffect(function() {
-    if (dataObj) setMeta({
-      title: dataObj.metadata.title,
-      description: dataObj.metadata.description,
-      keywords: dataObj.metadata.keywords,
-      image: dataObj.metadata.image
-    });
+    if (dataObj) setMeta(dataObj.metadata);
   }, [dataObj]);
 
   if (dataObj === undefined) return <TheRedirect to='/not-found' />;
@@ -49,8 +44,8 @@ export function FrontCategoryDisplay() {
 
 export function FrontDocumentDisplay() {
   let o = {
-    dataParams: ['docTypeNamePlural', 'slug'],
-    urlParams: ['docType', 'docNode'],
+    dataParams: ['slug'],
+    urlParams: ['docNode'],
     apiUrl: function({ docType, docNode }) {
       return `documents/get_rendered_document_by_type_and_slug/${docType}/${docNode}`;
     }
