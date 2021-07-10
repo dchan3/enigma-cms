@@ -8,7 +8,7 @@ var htmlTemplate =
   <head>
   ${adSenseId ? adSenseScript(adSenseId) : ''}
 ${(gaTrackingId && !back) ?
-    `<script async src="${gaUrl(gaTrackingId)}">
+    `<script defer src="${gaUrl(gaTrackingId)}">
   </script>${gaScript(gaTrackingId)}` : ''}
 ${head ? renderHead(head) : ''}
 ${staticScript(data)}
