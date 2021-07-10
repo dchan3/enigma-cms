@@ -31,35 +31,41 @@ function FrontDisplay({ dataParams, urlParams, apiUrl }) {
   return null;
 }
 
-export function FrontCategoryDisplay() {
+function createFrontDisplayElement(dataParams, urlParams, apiUrl) {
   let o = {
-    dataParams: ['docTypeNamePlural'],
-    urlParams: ['docType'],
-    apiUrl: function({ docType }) {
+    dataParams,
+    urlParams,
+    apiUrl
+  }
+
+  return <FrontDisplay {...o} />;
+}
+
+export function FrontCategoryDisplay() {
+  return createFrontDisplayElement(
+    ['docTypeNamePlural'],
+    ['docType'],
+    function({ docType }) {
       return `documents/get_rendered_documents_by_type_name/${docType}`;
     }
-  };
-  return <FrontDisplay {...o} />;
+  );
 }
 
 export function FrontDocumentDisplay() {
-  let o = {
-    dataParams: ['slug'],
-    urlParams: ['docNode'],
-    apiUrl: function({ docType, docNode }) {
+  return createFrontDisplayElement(
+    ['slug'],
+    ['docNode'],
+    function({ docType, docNode }) {
       return `documents/get_rendered_document_by_type_and_slug/${docType}/${docNode}`;
     }
-  };
-  return <FrontDisplay {...o} />;
+  );
 }
-
 export function FrontProfileDisplay() {
-  let o = {
-    dataParams: ['username'],
-    urlParams: ['username'],
-    apiUrl: function({ username }) {
+  return createFrontDisplayElement(
+    ['username'],
+    ['username'],
+    function({ username }) {
       return `users/get_user_profile/${username}`;
     }
-  };
-  return <FrontDisplay {...o} />;
+  );
 }
