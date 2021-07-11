@@ -10,7 +10,7 @@ export default function styleObject(css) {
   for (let statement of statements) {
     let [attr, val] = sp(statement, ':');
     if (attr.length) retval[camel(attr)]
-      = val.match(/^\d+$/) ? parseInt(val,10) : val;
+            = val.match(/^\d+$/) ? parseInt(val, 10) : val;
   }
   return retval;
 }

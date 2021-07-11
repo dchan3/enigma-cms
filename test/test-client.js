@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { h } from 'preact'; /** @jsx h **/
 import chai, { expect } from 'chai';
-import { configure, render, shallow, mount } from 'enzyme';
+import { configure, mount } from 'enzyme';
 import { act } from 'preact/test-utils';
 import Adapter from 'enzyme-adapter-preact-pure';
 configure({ adapter: new Adapter() });
@@ -9,11 +9,9 @@ import { GeneratedForm, CodeEditor, SamePageAnchor } from '../src/client/reusabl
 import { default as camelcaseConvert }
   from '../src/client/utils/camelcase_convert';
 import { default as formGenUtils } from '../src/client/utils/form_from_obj';
-import formComps from '../src/client/reusables/formComps';
 import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx from '../src/client/utils/html_to_jsx';
 import InnerHtmlRenderer from '../src/client/utils/inner_html_renderer';
-import fromCss from '../src/client/contexts/FromCssContext';
 import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
 import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
@@ -38,7 +36,6 @@ import NotFound from '../src/client/views/front/NotFound';
 import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
 import { TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
 import chaiExclude from 'chai-exclude';
-import { verify } from 'crypto';
 
 chai.use(chaiExclude);
 
@@ -56,10 +53,10 @@ global.DOMParser = window.DOMParser;
 
 let renderFromCss = function(children, par = { attachTo: document.body }) {
   return mount(<StaticContextProvider initialVals={{
-      config: {
-        themeColor: 'blue'
-      }
-    }}>{children}</StaticContextProvider>, par);
+    config: {
+      themeColor: 'blue'
+    }
+  }}>{children}</StaticContextProvider>, par);
 }
 
 let mountRenderForm = function(title, params, currentValue = null) {
@@ -68,34 +65,44 @@ let mountRenderForm = function(title, params, currentValue = null) {
 }
 
 let guestListParams = {
-  guestList: {
-    type: '[object]',
-    shape: {
-      firstName: {
-        type: 'text',
-        required: true
-      },
-      lastName: {
-        type: 'text',
-        required: true
-      },
-      age: {
-        type: 'number'
-      },
-      contactInformation: {
-        type: 'object',
-        shape: {
-          phone: {
-            type: 'text'
-          },
-          email: {
-            type: 'text'
+    guestList: {
+      type: '[object]',
+      shape: {
+        firstName: {
+          type: 'text',
+          required: true
+        },
+        lastName: {
+          type: 'text',
+          required: true
+        },
+        age: {
+          type: 'number'
+        },
+        contactInformation: {
+          type: 'object',
+          shape: {
+            phone: {
+              type: 'text'
+            },
+            email: {
+              type: 'text'
+            }
           }
         }
       }
     }
-  }
-}
+  }, guestListValues = {
+    guestList: [{
+      firstName: 'John',
+      lastName: 'Doe',
+      age: 50,
+      contactInformation: {
+        phone: '123-456-7890',
+        email: 'john@johndoe.net'
+      }
+    }]
+  };
 
 function verifyEditor(wrapper, value) {
   expect(wrapper.find('textarea')).to.exist;
@@ -126,18 +133,7 @@ describe('Reusable UI Components - Generated Form', function() {
   });
 
   it('renders recursively without error', function(done) {
-    let currentValue = {
-        guestList: [{
-          firstName: 'John',
-          lastName: 'Doe',
-          age: 50,
-          contactInformation: {
-            phone: '123-456-7890',
-            email: 'john@johndoe.net'
-          }
-        }]
-      };
-    let wrapper = mountRenderForm('Event Summary', guestListParams, currentValue);
+    let wrapper = mountRenderForm('Event Summary', guestListParams, guestListValues);
     expect(wrapper.text().indexOf('Contact Information'))
       .to.be.greaterThan(-1);
     expect(wrapper.text().indexOf('Phone'))
@@ -150,10 +146,10 @@ describe('Reusable UI Components - Generated Form', function() {
 
   it('Array Add', function(done) {
     let params = {
-      names: {
-        type: '[text]'
-      }
-    }, wrapper = mountRenderForm("Guest List", params, { names: ['Jordan'] });
+        names: {
+          type: '[text]'
+        }
+      }, wrapper = mountRenderForm('Guest List', params, { names: ['Jordan'] });
     act(function() {
       wrapper.find('button').at(0).props().onClick({
         preventDefault: () => {}
@@ -169,18 +165,18 @@ describe('Reusable UI Components - Generated Form', function() {
 
   it('Array Add (object)', function(done) {
     let params = {
-      familyMembers: {
-        type: '[object]',
-        shape: {
-          name: {
-            type: 'text'
-          },
-          age: {
-            type: 'number'
+        familyMembers: {
+          type: '[object]',
+          shape: {
+            name: {
+              type: 'text'
+            },
+            age: {
+              type: 'number'
+            }
           }
         }
-      }
-    }, wrapper = mountRenderForm("Guest List", params, { familyMembers: [] });
+      }, wrapper = mountRenderForm('Guest List', params, { familyMembers: [] });
     act(function() {
       wrapper.find('button').at(0).props().onClick({
         preventDefault: () => {}
@@ -194,11 +190,11 @@ describe('Reusable UI Components - Generated Form', function() {
   });
 
   it('Array Remove', function(done) {
-    let { FormSubmitButton } = formComps, params = {
-      names: {
-        type: '[text]'
-      }
-    }, wrapper = mountRenderForm("Guest List", params, { names: ['Jordan'] });
+    let params = {
+        names: {
+          type: '[text]'
+        }
+      }, wrapper = mountRenderForm('Guest List', params, { names: ['Jordan'] });
     act(function() {
       wrapper.find('button').at(1).props().onClick({
         preventDefault: () => {}
@@ -225,7 +221,7 @@ describe('Reusable UI Components - Code Editor', function() {
       id="post-body" value="<h1>Hello World!</h1>" />);
     expect(wrapper.find('textarea')).to.exist;
     act(function() {
-      wrapper.find('textarea').props().onInput({ target: { value: "<p>Lol.</p>"}});
+      wrapper.find('textarea').props().onInput({ target: { value: '<p>Lol.</p>' } });
     });
     wrapper.update();
     expect(wrapper.find('textarea').props().value).to.deep.equal('<p>Lol.</p>');
@@ -265,7 +261,7 @@ it('preview box - without value edit preview first', function(done) {
   expect(wrapper.find('div').at(6).props().contentEditable).to.be.true;
   act(function() {
     wrapper.find('div').at(6).props().onInput({
-      target: { innerHTML: '<p>Lol.</p>'}
+      target: { innerHTML: '<p>Lol.</p>' }
     });
     wrapper.find('button').at(0).props().onClick();
   });
@@ -288,7 +284,7 @@ it('preview box - with value edit preview first', function(done) {
   verifyPreview(wrapper, 'h1', 'Hello.');
   act(function() {
     wrapper.find('div').at(6).props().onInput({
-      target: { innerHTML: '<p>Lol.</p>'}
+      target: { innerHTML: '<p>Lol.</p>' }
     });
     wrapper.find('button').at(0).props().onClick();
   });
@@ -347,8 +343,8 @@ it('preview box - with value edit code first changing preview', function(done) {
 it('preview box - edit preview bold command 1', function(done) {
   let wrapper = renderWithDom(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="" />, null, {
-      attachTo: document.body
-    });
+    attachTo: document.body
+  });
   verifyEditor(wrapper, '');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
@@ -378,8 +374,8 @@ it('preview box - edit preview bold command 1', function(done) {
 it('preview box - edit preview bold command 2', function(done) {
   let wrapper = renderWithDom(<CodeEditor grammar="html" name="post-body"
     id="post-body" value="" />, null, {
-      attachTo: document.body
-    });
+    attachTo: document.body
+  });
   verifyEditor(wrapper, '');
   act(function() {
     wrapper.find('textarea').at(0).props().onInput({
@@ -395,7 +391,6 @@ it('preview box - edit preview bold command 2', function(done) {
     r.setStart(wrapper.find('div').at(6).find('p').getDOMNode().firstChild, 0);
     r.setEnd(wrapper.find('div').at(6).find('p').getDOMNode().firstChild, 1);
     s.addRange(r);
-    let range = document.getSelection().getRangeAt(0);
     wrapper.find('button').at(1).props().onClick();
   });
   wrapper.update();
@@ -434,15 +429,15 @@ let renderWithDom = function(component, staticVal = null, par) {
     }),
     basename: 'localhost:8080'
   }}>
-  <StaticContextProvider initialVals={staticVal}>
-    {component}
-  </StaticContextProvider>
+    <StaticContextProvider initialVals={staticVal}>
+      {component}
+    </StaticContextProvider>
   </TheRouterContextProvider>, par);
 }
 
 describe('Change Password Page', function() {
   it('displays as intended', function(done) {
-    let wrapper = renderWithDom(<ChangePasswordPage />, { config: { themeColor: 'blue' }, user: { username: 'my_user'}});
+    let wrapper = renderWithDom(<ChangePasswordPage />, { config: { themeColor: 'blue' }, user: { username: 'my_user' } });
     expect(wrapper.find('input[type="password"]')).to.have.lengthOf(2);
     done();
   });
@@ -450,14 +445,14 @@ describe('Change Password Page', function() {
 
 describe('Footer', function() {
   it('when user exists', function(done) {
-    let wrapper = renderWithDom(<Footer />, { config: { themeColor: 'blue' }, user: { username: 'my_user' }});
+    let wrapper = renderWithDom(<Footer />, { config: { themeColor: 'blue' }, user: { username: 'my_user' } });
     expect(wrapper.find('a')).to.have.lengthOf(5);
     wrapper.detach();
     done();
   });
 
   it('when user does not exist', function(done) {
-    let wrapper = renderWithDom(<Footer />, { config: { themeColor: 'blue' }, user: null });;
+    let wrapper = renderWithDom(<Footer />, { config: { themeColor: 'blue' }, user: null });
     expect(wrapper.find('a')).to.have.lengthOf(3);
     wrapper.detach();
     done();
@@ -466,7 +461,7 @@ describe('Footer', function() {
 
 describe('Config Page', function() {
   it('displays as intended', function(done) {
-    let wrapper = renderWithDom(<ConfigPage />, { config: { themeColor: 'blue' }, user: { username: 'my_user', config: { } }});
+    let wrapper = renderWithDom(<ConfigPage />, { config: { themeColor: 'blue' }, user: { username: 'my_user', config: { } } });
     expect(wrapper.find('input')).to.have.lengthOf(9);
     wrapper.detach();
     done();
@@ -504,7 +499,7 @@ describe('Main Menu', function() {
     let wrapper = renderWithDom(<MainMenu />, { config: { themeColor: 'blue' }, user: { username: 'my_user' }, types: [{
       docTypeId: 0,
       docTypeName: 'posts'
-    }]});
+    }] });
     expect(wrapper.find('ul')).to.have.lengthOf(4);
     wrapper.detach();
     done();
@@ -551,7 +546,7 @@ describe('Dropdown Menu', function() {
       { text: 'Posts', childNodes: [{
         linkUrl: '/edit-post', linkText: 'Edit Post'
       }]
-    }];
+      }];
 
     let wrapper = renderWithDom(<DropdownMenu menuNodes={menuNodes} />, { config: { themeColor: 'blue' } });
     expect(wrapper.find('ul')).to.have.lengthOf(2);
@@ -564,7 +559,7 @@ describe('Dropdown Menu', function() {
 describe('Login Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<LoginPage />,
-      { config: { siteName: 'My Website', themeColor: 'blue' }});
+      { config: { siteName: 'My Website', themeColor: 'blue' } });
     expect(wrapper.find('a')).to.have.lengthOf(1);
     wrapper.detach();
     done();
@@ -574,7 +569,7 @@ describe('Login Page', function() {
 describe('Signup Page', function() {
   it('displays as intended', function(done) {
     let wrapper = renderWithDom(<SignupPage />,
-      { config: { siteName: 'My Website', themeColor: 'blue' }});
+      { config: { siteName: 'My Website', themeColor: 'blue' } });
     expect(wrapper.find('a')).to.have.lengthOf(1);
     wrapper.detach();
     done();
@@ -601,13 +596,13 @@ describe('Form from Obj', function() {
 
   it('empty values object - single level', function(done) {
     let params = {
-      name: {
-        type: 'text'
-      },
-      age: {
-        type: 'number'
-      }
-    }, expected = { name: '', age: '' };
+        name: {
+          type: 'text'
+        },
+        age: {
+          type: 'number'
+        }
+      }, expected = { name: '', age: '' };
 
     expect(formGenUtils.emptyValuesObj(params)).to.deep.equal(expected);
     done();
@@ -615,42 +610,31 @@ describe('Form from Obj', function() {
 
   it('empty values object - two levels', function(done) {
     let params = {
-      name: {
-        type: 'object',
-        shape: {
-          firstName: {
-            type: 'text'
-          },
-          lastName: {
-            type: 'text'
+        name: {
+          type: 'object',
+          shape: {
+            firstName: {
+              type: 'text'
+            },
+            lastName: {
+              type: 'text'
+            }
           }
+        },
+        age: {
+          type: 'number'
         }
-      },
-      age: {
-        type: 'number'
-      }
-    }, expected = { name: {
-      firstName: '',
-      lastName: ''
-    }, age: '' };
+      }, expected = { name: {
+        firstName: '',
+        lastName: ''
+      }, age: '' };
 
     expect(formGenUtils.emptyValuesObj(params)).to.deep.equal(expected);
     done();
   });
 
   it('Form from JSON gen fucntion', function(done) {
-    let values = {
-        guestList: [{
-          firstName: 'John',
-          lastName: 'Doe',
-          age: 50,
-          contactInformation: {
-            phone: '123-456-7890',
-            email: 'john@johndoe.net'
-          }
-        }]
-      };
-    expect(formGenUtils.formFromObj(guestListParams, values)).to.deep.equal([
+    expect(formGenUtils.formFromObj(guestListParams, guestListValues)).to.deep.equal([
       {
         component: 'FormObjectInputLabel',
         innerText: 'Guest List'
@@ -777,36 +761,26 @@ describe('Form from Obj', function() {
   });
 
   it('Validation function', function(done) {
-    var valuesValid = {
-        guestList: [{
-          firstName: 'John',
-          lastName: 'Doe',
-          age: 50,
-          contactInformation: {
-            phone: '123-456-7890',
-            email: 'john@johndoe.net'
-          }
-        }]
-      }, valuesInvalid = {
-        guestList: [{
-          firstName: 'John',
-          lastName: '',
-          age: 50,
-          contactInformation: {
-            phone: '123-456-7890',
-            email: 'john@johndoe.net'
-          }
-        }, {
-          firstName: '',
-          lastName: '',
-          age: 50,
-          contactInformation: {
-            phone: '123-456-7890',
-            email: 'john@johndoe.net'
-          }
-        }]
-      };
-    expect(formGenUtils.validateForm(guestListParams, valuesValid)).to.be.true;
+    var valuesInvalid = {
+      guestList: [{
+        firstName: 'John',
+        lastName: '',
+        age: 50,
+        contactInformation: {
+          phone: '123-456-7890',
+          email: 'john@johndoe.net'
+        }
+      }, {
+        firstName: '',
+        lastName: '',
+        age: 50,
+        contactInformation: {
+          phone: '123-456-7890',
+          email: 'john@johndoe.net'
+        }
+      }]
+    };
+    expect(formGenUtils.validateForm(guestListParams, guestListValues)).to.be.true;
     expect(formGenUtils.validateForm(guestListParams,
       valuesInvalid)).to.have.members(['guestList.0.lastName',
       'guestList.1.firstName',
@@ -1004,8 +978,8 @@ describe('HTML to JSX', function() {
   })
 });
 
-describe('From CSS', function() {
-  it('To Style Object', function(done) {
+describe('From CSS', function () {
+  it('To Style Object', function (done) {
     var actual = styleObject('opacity:1;width:calc(100%-16px);'),
       expected = {
         opacity: 1,
@@ -1014,31 +988,7 @@ describe('From CSS', function() {
     expect(actual).to.deep.equal(expected);
     done();
   });
-
-  it('Basic functions', function(done) {
-    let Element = fromCss('p', 'font-family:sans-serif;'),
-      actual = renderFromCss(<Element>Hi!</Element>),
-      expected = mount(<p style={{
-        fontFamily: 'sans-serif'
-      }}>Hi!</p>);
-
-    expect(actual.find('p').text()).to.equal(expected.find('p').text());
-    done();
-  });
-
-  it('Advanced functions', function(done) {
-      let Element = fromCss('p', ({ mono }) => `font-family: ${mono === true
-          ? 'monospace' : 'sans-serif'};`),
-      actual = renderFromCss(<Element>Hi!</Element>),
-      expected = mount(<p style={{
-        fontFamily: 'monospace'
-      }}>Hi!</p>);
-
-    expect(actual.find('p').text()).to.equal(expected.find('p').text());
-    done();
-  });
-});
-
+}); 
 describe('obj map', function() {
   it('flat out works', function(done) {
     expect(objMap({
@@ -1110,13 +1060,15 @@ describe('Paginator Controls', function() {
     done();
   });
 
+  let nameList = [{ name: 'John' }, { name: 'Bob' }];
+
   it('shallow search 4', function(done) {
-    expect(shallowSearch([{ name: 'John', name: "Bob" }], 'o')).to.deep.equal([{ name: 'John', name: "Bob" }]);
+    expect(shallowSearch(nameList, 'o')).to.deep.equal([{ name: 'John' }, { name: 'Bob' }]);
     done();
   });
 
   it('shallow search 5', function(done) {
-    expect(shallowSearch([{ name: 'John', name: "Bob" }], 'b')).to.deep.equal([{ name: "Bob" }]);
+    expect(shallowSearch(nameList, 'b')).to.deep.equal([{ name: 'Bob' }]);
     done();
   });
 
@@ -1145,7 +1097,7 @@ describe('Paginator Controls', function() {
     });
     wrapper.update();
     expect(wrapper.find('table tr')).to.have.lengthOf(2);
-    expect(wrapper.find('table tr').at(1).text()).to.deep.equal("Bob");
+    expect(wrapper.find('table tr').at(1).text()).to.deep.equal('Bob');
     act(function() {
       wrapper.find('input').at(0).props().onInput({
         target: { value: 'J' }
@@ -1155,7 +1107,7 @@ describe('Paginator Controls', function() {
     });
     wrapper.update();
     expect(wrapper.find('table tr')).to.have.lengthOf(3);
-    expect(wrapper.find('table tr').at(1).text()).to.deep.equal("Jane");
+    expect(wrapper.find('table tr').at(1).text()).to.deep.equal('Jane');
     done();
   });
 });
@@ -1200,7 +1152,7 @@ describe('Routing Related', function() {
     expect(wrapper.find('h1')).to.have.lengthOf(1);
     expect(wrapper.find('h1').text()).to.deep.equal('Not Found');
     expect(wrapper.find('p')).to.have.lengthOf(1);
-    expect(wrapper.find('p').text()).to.deep.equal("We're sorry, but the page you requested could not be found.");
+    expect(wrapper.find('p').text()).to.deep.equal('We\'re sorry, but the page you requested could not be found.');
     done();
   });
 });

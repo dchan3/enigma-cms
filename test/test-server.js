@@ -37,6 +37,24 @@ describe('script tag functions', function() {
     expect(adSenseScript('12345')).to.deep.equal('<script data-ad-client="ca-pub-12345" defer src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>')
     done();
   });
+
+  it('static script', function (done) {
+    expect(staticScript({
+      'helloText': 'world'
+    })).to.equal(`<script>
+    window.__INITIAL_DATA__={"helloText":"world"};
+  </script>`);
+    done();
+  });
+
+  it('static script with attributes', function (done) {
+    expect(staticScript({
+      'helloText': 'world'
+    }, 'defer')).to.equal(`<script defer>
+    window.__INITIAL_DATA__={"helloText":"world"};
+  </script>`);
+    done();
+  })
 });
 
 describe('Template parser', function() {
@@ -111,8 +129,8 @@ describe('document prep', function() {
       username: 'testUser1',
       pictureSrc: 'testuser.jpg'
     })).to.deep.equal({
-      title: "New User's Profile",
-      description: "New User's Profile.",
+      title: 'New User\'s Profile',
+      description: 'New User\'s Profile.',
       image: 'testuser.jpg'
     });
     done();
