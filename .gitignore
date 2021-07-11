@@ -19,3 +19,4 @@ coverage/
 sitemap/*.enigma
 /**/site-files/
 .vscode
+.vs/

@@ -1,7 +1,7 @@
-/* eslint-disable max-len */
+/* eslint-disable max-len */renderFromCss
 import { h } from 'preact'; /** @jsx h **/
 import chai, { expect } from 'chai';
-import { configure, render, shallow, mount } from 'enzyme';
+import { configure, mount } from 'enzyme';
 import { act } from 'preact/test-utils';
 import Adapter from 'enzyme-adapter-preact-pure';
 configure({ adapter: new Adapter() });
@@ -13,8 +13,6 @@ import formComps from '../src/client/reusables/formComps';
 import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx from '../src/client/utils/html_to_jsx';
 import InnerHtmlRenderer from '../src/client/utils/inner_html_renderer';
-import fromCss from '../src/client/contexts/FromCssContext';
-import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
 import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
 import { StaticContextProvider } from '../src/client/contexts/StaticContext';
@@ -38,7 +36,6 @@ import NotFound from '../src/client/views/front/NotFound';
 import { CodeEditorContextProvider } from '../src/client/reusables/CodeEditorContext';
 import { TheStaticRouter, TheSwitch, TheRoute } from '../src/client/the_router';
 import chaiExclude from 'chai-exclude';
-import { verify } from 'crypto';
 
 chai.use(chaiExclude);
 
@@ -153,7 +150,7 @@ describe('Reusable UI Components - Generated Form', function() {
       names: {
         type: '[text]'
       }
-    }, wrapper = mountRenderForm("Guest List", params, { names: ['Jordan'] });
+    }, wrapper = mountRenderForm('Guest List', params, { names: ['Jordan'] });
     act(function() {
       wrapper.find('button').at(0).props().onClick({
         preventDefault: () => {}
@@ -1002,41 +999,6 @@ describe('HTML to JSX', function() {
     expect(actual).excludingEvery(['key', 'ref', '__v']).to.deep.equal(expected);
     done();
   })
-});
-
-describe('From CSS', function() {
-  it('To Style Object', function(done) {
-    var actual = styleObject('opacity:1;width:calc(100%-16px);'),
-      expected = {
-        opacity: 1,
-        width: 'calc(100%-16px)'
-      };
-    expect(actual).to.deep.equal(expected);
-    done();
-  });
-
-  it('Basic functions', function(done) {
-    let Element = fromCss('p', 'font-family:sans-serif;'),
-      actual = renderFromCss(<Element>Hi!</Element>),
-      expected = mount(<p style={{
-        fontFamily: 'sans-serif'
-      }}>Hi!</p>);
-
-    expect(actual.find('p').text()).to.equal(expected.find('p').text());
-    done();
-  });
-
-  it('Advanced functions', function(done) {
-      let Element = fromCss('p', ({ mono }) => `font-family: ${mono === true
-          ? 'monospace' : 'sans-serif'};`),
-      actual = renderFromCss(<Element>Hi!</Element>),
-      expected = mount(<p style={{
-        fontFamily: 'monospace'
-      }}>Hi!</p>);
-
-    expect(actual.find('p').text()).to.equal(expected.find('p').text());
-    done();
-  });
 });
 
 describe('obj map', function() {
