@@ -42,8 +42,8 @@ describe('script tag functions', function() {
     expect(staticScript({
       'helloText': 'world'
     })).to.equal(`<script>
-    window.__INITIAL_DATA__ = { "helloText": "world" };
-  </script >`);
+    window.__INITIAL_DATA__={"helloText": "world"};
+  </script>`);
     done();
   });
 
@@ -51,8 +51,8 @@ describe('script tag functions', function() {
     expect(staticScript({
       'helloText': 'world'
     }, 'defer')).to.equal(`<script defer>
-    window.__INITIAL_DATA__ = { "helloText": "world" };
-  </script >`);
+    window.__INITIAL_DATA__={"helloText":"world"};
+  </script>`);
     done();
   })
 });
