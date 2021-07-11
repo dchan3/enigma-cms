@@ -1,5 +1,5 @@
 import { transform } from "@babel/core";
-import chai, { expect } from 'chai';
+import { expect } from 'chai';
 import pluginTester from 'babel-plugin-tester';
 import unitify from '../babel/unitify-react';
 import commonStrings from '../babel/common-strings';
@@ -34,7 +34,7 @@ describe('Common Strings', function() {
       plugin: commonStrings,
       babelOptions: {
         plugins: [
-          "@babel/plugin-transform-react-jsx",
+          '@babel/plugin-transform-react-jsx',
         ],
         comments: false
       },

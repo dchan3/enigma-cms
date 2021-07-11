@@ -13,6 +13,7 @@ import formComps from '../src/client/reusables/formComps';
 import { loget, loset, objMap } from '../src/lib/utils/lofuncs.js';
 import htmlToJsx from '../src/client/utils/html_to_jsx';
 import InnerHtmlRenderer from '../src/client/utils/inner_html_renderer';
+import styleObject from '../src/client/utils/style_object';
 import { generateArray, truncatePageList } from '../src/client/reusables/PaginatorControls';
 import { strQuery, shallowSearch, pages } from '../src/client/reusables/PaginatorControlContext';
 import { StaticContextProvider } from '../src/client/contexts/StaticContext';
@@ -1001,6 +1002,17 @@ describe('HTML to JSX', function() {
   })
 });
 
+describe('From CSS', function () {
+  it('To Style Object', function (done) {
+    var actual = styleObject('opacity:1;width:calc(100%-16px);'),
+      expected = {
+          opacity: 1,
+          width: 'calc(100%-16px)'
+      };
+    expect(actual).to.deep.equal(expected);
+    done();
+  });
+}); 
 describe('obj map', function() {
   it('flat out works', function(done) {
     expect(objMap({
