@@ -42,7 +42,7 @@ describe('script tag functions', function() {
     expect(staticScript({
       'helloText': 'world'
     })).to.equal(`<script>
-    window.__INITIAL_DATA__={"helloText": "world"};
+    window.__INITIAL_DATA__={"helloText":"world"};
   </script>`);
     done();
   });
