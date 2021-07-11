@@ -1,4 +1,4 @@
-/* eslint-disable max-len */renderFromCss
+/* eslint-disable max-len */
 import { h } from 'preact'; /** @jsx h **/
 import chai, { expect } from 'chai';
 import { configure, mount } from 'enzyme';
