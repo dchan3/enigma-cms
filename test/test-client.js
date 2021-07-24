@@ -424,16 +424,17 @@ describe('Camel Case String Conversion', function() {
 
 let renderWithDom = function(component, staticVal = null, par) {
   return renderFromCss(<HeadContextProvider>
-    <TheRouterContextProvider value={{
-    history: createHistory({
+      <TheRouterContextProvider value={{
+      history: createHistory({
+        basename: 'localhost:8080'
+      }),
       basename: 'localhost:8080'
-    }),
-    basename: 'localhost:8080'
-  }}>
-    <StaticContextProvider initialVals={staticVal}>
-      {component}
-    </StaticContextProvider>
-  </TheRouterContextProvider></HeadContextProvider>, par);
+    }}>
+      <StaticContextProvider initialVals={staticVal}>
+        {component}
+      </StaticContextProvider>
+    </TheRouterContextProvider>
+  </HeadContextProvider>, par);
 }
 
 describe('Change Password Page', function() {
