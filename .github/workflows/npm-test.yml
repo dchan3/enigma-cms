@@ -21,6 +21,8 @@ jobs:
       - uses: webfactory/ssh-agent@v0.2.0
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
