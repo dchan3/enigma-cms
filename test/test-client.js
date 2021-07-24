@@ -424,7 +424,7 @@ describe('Camel Case String Conversion', function() {
 
 let renderWithDom = function(component, staticVal = null, par) {
   return renderFromCss(<HeadContextProvider>
-      <TheRouterContextProvider value={{
+    <TheRouterContextProvider value={{
       history: createHistory({
         basename: 'localhost:8080'
       }),
