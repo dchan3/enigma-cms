@@ -4,8 +4,13 @@ import { TheBrowserRouter } from '../the_router';
 import { StaticContextProvider } from '../contexts/StaticContext';
 import { HeadContextProvider } from '../contexts/HeadContext';
 
+let value = null;
+if (window.__INITIAL_DATA__.dataObj) {
+  value = window.__INITIAL_DATA__.dataObj.metadata;  
+}
+
 /** @jsx h **/
-hydrate(<HeadContextProvider>
+hydrate(<HeadContextProvider value={value}>
   <TheBrowserRouter>
     <StaticContextProvider initialVals={{ ...window.__INITIAL_DATA__ }}>
       <App />
