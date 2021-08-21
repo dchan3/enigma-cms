@@ -1,7 +1,7 @@
 import { h } from 'preact'; /** @jsx h **/
 import { ssrGen, renderHead, gaScript, gaUrl, staticScript } from './utils';
-import fs from 'fs';
 import path from 'path';
+import { getFile } from '../../utils/fs_utils';
 
 const css1 = ['-webkit-', '-moz-', '-ms-', ''],
   css2 = ['-webkit-', '-moz-', '-ms-', '-o-', ''];
@@ -41,8 +41,8 @@ var htmlTemplate =
   css2.map(str => `@${str}keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}`).join('')
 }</style><noscript><style amp-boilerplate>body{${css1.map(str =>
   `${str}animation:none`).join(';')}}</style></noscript><style amp-custom>
-      ${fs.readFileSync(path.resolve(__dirname, 'public/app.style.css'))}
-      ${fs.readFileSync(path.resolve(__dirname, 'public/style.css'))}</style>
+      ${getFile(path.resolve(__dirname, 'public/app.style.css')) || ''}
+      ${getFile(path.resolve(__dirname, 'public/style.css')) || ''}</style>
     ${renderable ?
     gaScript(gaTrackingId, 'id="gainit" type="text/plain" target="amp-script"') : ''}
     ${staticScript(data, 'id="ctx" type="text/plain" target="amp-script"')}</head><body>
