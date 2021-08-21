@@ -1,7 +1,7 @@
 import { User } from '../../../models';
 import { profileMetadata } from '../../../utils/render_metadata';
-import fs from 'fs';
 import path from 'path';
+import { getFile } from '../../../utils/fs_utils';
 
 async function getAllUsers() {
   let q = await User.find({});
@@ -11,13 +11,11 @@ async function getAllUsers() {
 async function getUserProfile({ username }) {
   let filename = path.join(process.env.DIRECTORY || __dirname, `profiles/${username}.enigma`), data = '', retval;
   try {
-    if (!fs.exists(filename)) throw '';
-
-    data = fs.readFileSync(filename);
-    if (!data) throw '';
-
-    retval = JSON.parse(data);
-    if (!retval) throw '';
+    data = getFile(filename);
+    if (data) {
+      retval = JSON.parse(data);
+      if (!retval) throw '';
+    }
   } catch {
     await User.findOne({ username }).then(async (user) => {
       if (!user) return {};
