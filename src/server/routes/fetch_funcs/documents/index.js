@@ -4,8 +4,8 @@ import renderMarkup, { prepareDocumentsForRender }
   from '../../../utils/render_markup';
 import { categoryMetadata,
   documentMetadata } from '../../../utils/render_metadata';
-import fs from 'fs';
 import path from 'path';
+import { getFile } from '../../../utils/fs_utils';
 
 async function getTypes() {
   let types = await DocumentType.find({ });
@@ -33,9 +33,7 @@ async function getType2(docTypeId) {
 async function getRenderedDocumentByTypeAndSlug(type, slug) {
   let filename = path.join(__dirname, `documents/${type}/${slug}.enigma`), data = '', retval;
   try {
-    if (!fs.exists(filename)) throw '';
-
-    data = fs.readFileSync(filename);
+    data = getFile(filename);
     if (!data) throw '';
 
     retval = JSON.parse(data);
